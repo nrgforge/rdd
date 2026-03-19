@@ -4,7 +4,7 @@
 
 ## Context
 
-ADR-010 establishes the inversion principle at two levels: as a procedural step within `/rdd-product` (producing assumption inversions) and as a cross-cutting principle across RESEARCH, PRODUCT DISCOVERY, DECIDE, and ARCHITECT.
+ADR-010 establishes the inversion principle at two levels: as a procedural step within `/rdd-discover` (producing assumption inversions) and as a cross-cutting principle across RESEARCH, PRODUCT DISCOVERY, DECIDE, and ARCHITECT.
 
 Essay 003 §5 identifies a third level: the inversion principle applies to narrative framing in the synthesis phase. The most interesting essays do not confirm what readers expect — they start from the expected conclusion and show why it is incomplete or misleading. The domain model (Amendment 7) already records this third level in the Inversion Principle concept definition.
 

@@ -30,7 +30,7 @@
 - Create `agents/argument-auditor.md` with same pattern
 - Update `/rdd-research` to dispatch agents instead of invoking `/citation-audit` and `/argument-audit`
 - Update `/rdd-decide` to dispatch argument-auditor instead of invoking `/argument-audit`
-- Update `/rdd-synthesis` to dispatch both agents instead of invoking skills
+- Update `/rdd-synthesize` to dispatch both agents instead of invoking skills
 - Verify audit artifact files are produced and read back by phase skills
 
 **Scenarios covered:** Artifact-mediated communication (3), Specialist subagent extraction (4)

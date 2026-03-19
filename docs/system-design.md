@@ -65,7 +65,7 @@
 **Depends on:** Orchestrator (protocol); Citation Auditor Agent (dispatched during essay finalization); Argument Auditor Agent (dispatched after citation audit); Lit Reviewer Agent (dispatched as user-selected research method); Spike Runner Agent (dispatched as user-selected research method)
 **Depended on by:** None directly (produces essay artifact consumed by Product Discovery Skill and Model Skill via file)
 
-### Module: Product Discovery Skill (`rdd-product/SKILL.md`) — NEW
+### Module: Product Discovery Skill (`rdd-discover/SKILL.md`) — NEW
 **Purpose:** Surfaces user needs, stakeholder maps, value tensions, and assumption inversions, producing a product discovery artifact in user language that feeds forward into MODEL, DECIDE, and ARCHITECT.
 **Provenance:** ADR-006 (phase placement); ADR-007 (artifact structure); ADR-008 (forward/backward modes); ADR-010 (inversion principle procedural home); ADR-011 (epistemic gate); Invariant 0 (product dimension of authority)
 **Owns:** Product discovery process (forward and backward modes), five-section artifact template, assumption inversion procedural step, product debt table (backward mode), epistemic gate prompts
@@ -100,7 +100,7 @@
 **Depends on:** Orchestrator (protocol)
 **Depended on by:** None
 
-### Module: Synthesis Skill (`skills/rdd-synthesis/SKILL.md`)
+### Module: Synthesis Skill (`skills/synthesize/SKILL.md`)
 **Purpose:** Mines the artifact trail for novelty signals, conducts a structured conversation (journey review, novelty surfacing, framing with four-dimension navigation via structural experiments) to help the writer find their story, and produces a two-register (argumentative backbone + curatorial arrangement) outline as springboard for the synthesis essay.
 **Provenance:** ADR-012 (phase placement); ADR-013 (conversation structure + outline); ADR-014 (quality gate); ADR-015 (narrative context rollup); ADR-016 (subsumes gate); ADR-017 (narrative inversions); ADR-018 (cross-project Level 1); ADR-027 (four-dimension framing); ADR-028 (structural experiments); ADR-029 (re-entry); ADR-030 (two-register outline); ADR-032 (agent dispatch for audits); Essay 003; Essay 006; Invariant 0 (public authority dimension)
 **Owns:** Synthesis-phase process, artifact trail mining, novelty signal detection (five signals), three-phase conversation, four-dimension framing model (discovery type, narrative form, audience constraint, epistemic posture), structural experiment mechanism (agent proposes, writer executes externalized trials), worth-the-calories quality tests (Davis/ABT/inversion), two-register outline production (argumentative backbone verified by argument audit + curatorial arrangement with selection/juxtaposition/scale shifts/shimmer/negative space/personal voice), pre-populated references, cross-project conversational prompting (Level 1), narrative inversion lenses, re-entry decision logic (writer-initiated, scoped narrowly)
@@ -507,7 +507,7 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 **Owned by:** Orchestrator (defines re-entry as a valid pipeline operation); the receiving skill (interprets and incorporates feedback).
 
 ### Orchestrator → Synthesis Skill — NEW
-**Protocol:** The orchestrator invokes `/rdd-synthesis` as an optional terminal phase. Unlike other phase skills, the synthesis skill does NOT follow the standard 5-step epistemic gate protocol — the three-phase conversation (journey review, novelty surfacing, framing) subsumes the gate function (ADR-016).
+**Protocol:** The orchestrator invokes `/rdd-synthesize` as an optional terminal phase. Unlike other phase skills, the synthesis skill does NOT follow the standard 5-step epistemic gate protocol — the three-phase conversation (journey review, novelty surfacing, framing) subsumes the gate function (ADR-016).
 **Shared types:** The synthesis skill reads the FULL artifact trail:
 - Essays: `./docs/essays/NNN-*.md`
 - Research logs: `./docs/essays/research-logs/*.md`

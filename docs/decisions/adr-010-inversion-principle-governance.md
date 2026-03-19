@@ -10,7 +10,7 @@ Essay 002 §5.5 identifies the Inversion Principle as a pattern across critical 
 
 The Inversion Principle operates at two levels:
 
-1. **Procedural step within `/rdd-product`**: A structured moment producing the Assumption Inversions section (ADR-007, section 4). For each major product assumption, state the inverted form and its implications. This is the primary home.
+1. **Procedural step within `/rdd-discover`**: A structured moment producing the Assumption Inversions section (ADR-007, section 4). For each major product assumption, state the inverted form and its implications. This is the primary home.
 
 2. **Cross-cutting principle in the orchestrator**: A habit of mind that applies wherever assumptions can harden into structure:
    - RESEARCH: "Am I researching the right problem, or the problem I was told to research?"

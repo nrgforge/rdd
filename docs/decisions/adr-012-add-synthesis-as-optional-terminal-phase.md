@@ -12,7 +12,7 @@ Strengthened Invariant 0 requires the user to speak with authority about "what w
 
 ## Decision
 
-Add Synthesis as an optional terminal phase to the RDD pipeline. Implemented as a new skill (`/rdd-synthesis`). The pipeline becomes:
+Add Synthesis as an optional terminal phase to the RDD pipeline. Implemented as a new skill (`/rdd-synthesize`). The pipeline becomes:
 
 ```
 RESEARCH → PRODUCT DISCOVERY → MODEL → DECIDE → ARCHITECT → BUILD → [SYNTHESIS]

@@ -16,7 +16,7 @@ Extract six specialist subagents from existing phase skills:
 
 | Subagent | Extracted from | Input artifacts | Output artifact | Model |
 |----------|---------------|-----------------|-----------------|-------|
-| citation-auditor | `/rdd-research` Step 4a, `/rdd-synthesis` Step 6 | Essay, research log | Citation audit report | sonnet |
+| citation-auditor | `/rdd-research` Step 4a, `/rdd-synthesize` Step 6 | Essay, research log | Citation audit report | sonnet |
 | argument-auditor | `/rdd-research` Step 4b, `/rdd-decide` Step 3 | Essay, research log, ADRs | Argument audit report | sonnet |
 | lit-reviewer | `/rdd-research` Step 2 (academic topics) | Research question | Research log entry | sonnet |
 | conformance-scanner | `/rdd-decide` Step 3.5, `/rdd-conform` | ADRs, codebase | Conformance debt table | sonnet |

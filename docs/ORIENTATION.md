@@ -17,7 +17,7 @@ RDD is a deep work tool for building software through structured understanding. 
 
 - **Research-Engineer-Writer** — uses the research, product discovery, and modeling phases as a structured investigation methodology, whether or not software gets built.
   - Start: [rdd-research SKILL.md](../rdd-research/SKILL.md) (research loop mechanics)
-  - Then: [rdd-product SKILL.md](../rdd-product/SKILL.md) (product discovery process)
+  - Then: [rdd-discover SKILL.md](../discover/SKILL.md) (product discovery process)
   - Then: [domain-model.md](domain-model.md) (vocabulary authority)
   - Background: [Essay 003](essays/003-synthesis-as-final-epistemic-act.md) (synthesis methodology)
 
@@ -72,8 +72,8 @@ RDD is a deep work tool for building software through structured understanding. 
 
 **What's settled:**
 - Epistemic gate protocol (ADRs 001-005) — implemented in all skill files
-- Product discovery phase (ADRs 006-011) — implemented as `/rdd-product` with forward, backward, and update modes
-- Synthesis phase (ADRs 012-018) — implemented as `/rdd-synthesis`
+- Product discovery phase (ADRs 006-011) — implemented as `/rdd-discover` with forward, backward, and update modes
+- Synthesis phase (ADRs 012-018) — implemented as `/rdd-synthesize`
 - Orientation document (ADRs 019-021) — integrated into orchestrator with three-tier hierarchy
 - Roadmap generation (ADR-022) — architect skill generates roadmap alongside system design
 - Field guide generation (ADR-023) — build skill generates field guide when implementation exists
@@ -82,7 +82,7 @@ RDD is a deep work tool for building software through structured understanding. 
 - Scoped cycles (ADR-026) — first-class workflow pattern: scope → cycle → graduate
 - Deep work tool framing (ADR-026) — RDD composes with existing workflows
 
-- Synthesis enrichment (ADRs 027-030) — four-dimension framing model, structural experiments, two-register outline, synthesis re-entry. Implemented in `/rdd-synthesis` SKILL.md.
+- Synthesis enrichment (ADRs 027-030) — four-dimension framing model, structural experiments, two-register outline, synthesis re-entry. Implemented in `/rdd-synthesize` SKILL.md.
 
 **Open questions (selected):**
 - How would Pair-RDD work at epistemic gates?

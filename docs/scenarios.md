@@ -105,7 +105,7 @@
 **And** the workflow mode descriptions use epistemic gate language
 
 ### Scenario: rdd-product SKILL.md contains an epistemic gate section
-**Given** the `/rdd-product` skill file exists
+**Given** the `/rdd-discover` skill file exists
 **When** the file is read
 **Then** it contains an EPISTEMIC GATE section with 2-3 exploratory prompts specific to product discovery artifacts
 **And** prompts reference specific stakeholders, jobs, value tensions, or assumption inversions from the artifact
@@ -116,12 +116,12 @@
 **Given** the orchestrator (`rdd/SKILL.md`) describes the Full Pipeline workflow mode
 **When** the pipeline sequence is read
 **Then** PRODUCT DISCOVERY appears after UNDERSTAND (RESEARCH) and before MODEL
-**And** the PRODUCT DISCOVERY phase invokes `/rdd-product`
+**And** the PRODUCT DISCOVERY phase invokes `/rdd-discover`
 
-### Scenario: Orchestrator Available Skills table includes /rdd-product
+### Scenario: Orchestrator Available Skills table includes /rdd-discover
 **Given** the orchestrator skill file exists
 **When** the Available Skills table is read
-**Then** it includes a row for `/rdd-product` with purpose "Product discovery — stakeholder maps, jobs, value tensions, assumption inversions" and invocation by topic or essay
+**Then** it includes a row for `/rdd-discover` with purpose "Product discovery — stakeholder maps, jobs, value tensions, assumption inversions" and invocation by topic or essay
 
 ### Scenario: Orchestrator state tracking table includes PRODUCT DISCOVERY
 **Given** an RDD cycle is in progress
@@ -136,19 +136,19 @@
 ## Feature: Product Discovery Artifact Structure (ADR-007)
 
 ### Scenario: Product discovery artifact contains five sections
-**Given** `/rdd-product` has completed forward-mode discovery
+**Given** `/rdd-discover` has completed forward-mode discovery
 **When** the product discovery artifact (`./docs/product-discovery.md`) is read
 **Then** it contains sections for: Stakeholder Map, Jobs and Mental Models, Value Tensions, Assumption Inversions, and Product Vocabulary Table
 **And** all sections use user-facing language, not system vocabulary
 
 ### Scenario: Stakeholder Map includes direct and indirect stakeholders
-**Given** `/rdd-product` is producing a stakeholder map
+**Given** `/rdd-discover` is producing a stakeholder map
 **When** the map is complete
 **Then** it identifies both direct stakeholders (who interact with the system) and indirect stakeholders (who are affected without interacting)
 **And** it does not use the term "persona" for the stakeholder entries
 
 ### Scenario: Product Vocabulary Table includes stakeholder attribution
-**Given** `/rdd-product` has completed the Product Vocabulary Table
+**Given** `/rdd-discover` has completed the Product Vocabulary Table
 **When** the table is read
 **Then** each term includes: User Term, Stakeholder (who uses this term), Context, and Notes
 
@@ -157,26 +157,26 @@
 ### Scenario: Forward mode produces discovery artifact from essay
 **Given** no prior RDD artifacts exist for the system (greenfield)
 **And** `/rdd-research` has produced an essay
-**When** `/rdd-product` runs
+**When** `/rdd-discover` runs
 **Then** it operates in forward mode
 **And** it reads the essay as primary input
 **And** it produces the five-section product discovery artifact (ADR-007)
 
 ### Scenario: Backward mode produces product debt table from existing artifacts
 **Given** prior RDD artifacts exist (domain model, ADRs, system design)
-**When** `/rdd-product` runs
+**When** `/rdd-discover` runs
 **Then** it operates in backward mode
 **And** it reads existing architecture, ADRs, and domain model
 **And** it extracts implicit product assumptions from architectural choices
 **And** it produces the five-section product discovery artifact plus a Product Debt table
 
 ### Scenario: Product Debt table maps assumption gaps
-**Given** `/rdd-product` is running in backward mode
+**Given** `/rdd-discover` is running in backward mode
 **When** it identifies a gap between an architectural assumption and actual user need
 **Then** the Product Debt table includes a row with: Assumption, Baked Into (which artifact/code encodes it), Actual User Need, Gap Type, and Resolution
 
 ### Scenario: Backward mode product debt triggers amendment propagation
-**Given** `/rdd-product` backward mode has identified product debt items
+**Given** `/rdd-discover` backward mode has identified product debt items
 **When** a debt item affects the domain model (e.g., invalidates a concept or invariant)
 **Then** the item triggers backward propagation through the existing amendment infrastructure
 **And** an amendment is logged in the domain model's Amendment Log
@@ -184,7 +184,7 @@
 ## Feature: Product Vocabulary Provenance in Domain Model (ADR-009)
 
 ### Scenario: Domain model Concepts table includes Product Origin column
-**Given** `/rdd-model` runs after `/rdd-product` has produced a product discovery artifact
+**Given** `/rdd-model` runs after `/rdd-discover` has produced a product discovery artifact
 **When** the domain model Concepts table is produced
 **Then** it includes a Product Origin column tracing each system term to its user-facing source
 
@@ -199,15 +199,15 @@
 **Then** it lists all sources (e.g., "Open enrollment crunch" (Benefits Admin), "Enrollment period" (HR Manager))
 
 ### Scenario: /rdd-model reads product discovery artifact
-**Given** `/rdd-product` has produced a product discovery artifact at `./docs/product-discovery.md`
+**Given** `/rdd-discover` has produced a product discovery artifact at `./docs/product-discovery.md`
 **When** `/rdd-model` begins Step 1 (Read the Source Material)
 **Then** it reads the product discovery artifact alongside the essay
 **And** it uses the Product Vocabulary Table as input for the Product Origin column
 
 ## Feature: Inversion Principle Governance (ADR-010)
 
-### Scenario: /rdd-product includes assumption inversion as procedural step
-**Given** `/rdd-product` is running in forward mode
+### Scenario: /rdd-discover includes assumption inversion as procedural step
+**Given** `/rdd-discover` is running in forward mode
 **When** it reaches the Assumption Inversions section
 **Then** for each major product assumption, it states the inverted form and its implications
 **And** this is the primary procedural home of the Inversion Principle
@@ -233,7 +233,7 @@
 ## Feature: Product Discovery Epistemic Gate (ADR-011)
 
 ### Scenario: PRODUCT DISCOVERY gate presents epistemic act prompts after artifact
-**Given** `/rdd-product` has produced a product discovery artifact
+**Given** `/rdd-discover` has produced a product discovery artifact
 **When** the skill presents the artifact to the user at the gate
 **Then** the skill presents 2 exploratory epistemic act prompts referencing specific stakeholders, jobs, tensions, or inversions from the artifact
 **And** the skill waits for the user to respond to at least one prompt before offering to proceed
@@ -272,25 +272,25 @@
 **Given** the orchestrator (`rdd/SKILL.md`) describes the Full Pipeline workflow mode
 **When** the pipeline sequence is read
 **Then** SYNTHESIS appears as an optional phase after BUILD
-**And** the SYNTHESIS phase invokes `/rdd-synthesis`
+**And** the SYNTHESIS phase invokes `/rdd-synthesize`
 **And** the phase is marked as optional — the pipeline is complete without it
 
 ### Scenario: Synthesis available after any terminal phase
 **Given** an RDD cycle has completed its terminal phase (BUILD in full pipeline, ARCHITECT in scoping mode)
-**When** the user invokes `/rdd-synthesis`
+**When** the user invokes `/rdd-synthesize`
 **Then** the skill accepts the invocation and reads the artifact trail from the completed cycle
 **And** does not require BUILD to have been the terminal phase
 
 ### Scenario: Synthesis requires substantial artifact trail
 **Given** an RDD cycle produced only a research essay and domain model (no product discovery, ADRs, or system design)
-**When** the user invokes `/rdd-synthesis`
+**When** the user invokes `/rdd-synthesize`
 **Then** the skill notes the artifact trail may be too thin for a productive synthesis conversation
 **And** asks the user whether to proceed or defer
 
-### Scenario: Orchestrator Available Skills table includes /rdd-synthesis
+### Scenario: Orchestrator Available Skills table includes /rdd-synthesize
 **Given** the orchestrator skill file exists
 **When** the Available Skills table is read
-**Then** it includes a row for `/rdd-synthesis` with purpose describing optional post-build synthesis and essay outline production
+**Then** it includes a row for `/rdd-synthesize` with purpose describing optional post-build synthesis and essay outline production
 
 ### Scenario: Orchestrator state tracking table includes SYNTHESIS
 **Given** an RDD cycle is in progress and BUILD is complete
@@ -306,7 +306,7 @@
 ## Feature: Synthesis Conversation Structure (ADR-013)
 
 ### Scenario: Agent mines artifact trail before conversation
-**Given** the user has invoked `/rdd-synthesis`
+**Given** the user has invoked `/rdd-synthesize`
 **When** the skill begins
 **Then** the agent reads the full artifact trail (essays, research logs, reflections, domain model, ADRs, product discovery, system design, code)
 **And** applies the five novelty signals to produce a ranked list of candidate discoveries
@@ -1026,30 +1026,30 @@
 ## Feature: Conformance — Synthesis Skill Implements ADRs 027-030
 
 ### Scenario: Synthesis skill Phase 3 navigates four dimensions
-**Given** the `/rdd-synthesis` skill file exists
+**Given** the `/rdd-synthesize` skill file exists
 **When** the Phase 3 (framing conversation) section is read
 **Then** it references all four dimensions: discovery type, narrative form, audience constraint, epistemic posture
 **And** the dimensions are navigated through the conversation, not presented as a checklist
 
 ### Scenario: Synthesis skill includes structural experiment mechanism
-**Given** the `/rdd-synthesis` skill file exists
+**Given** the `/rdd-synthesize` skill file exists
 **When** the Phase 3 section is read
 **Then** it describes the structural experiment mechanism: agent proposes, writer executes quick externalized trials
 **And** failed experiments are described as diagnostic
 
 ### Scenario: Synthesis skill NEXT PHASE section reflects re-entry possibility
-**Given** the `/rdd-synthesis` skill file exists
+**Given** the `/rdd-synthesize` skill file exists
 **When** the NEXT PHASE section is read
 **Then** it states that synthesis is usually terminal but can re-enter RESEARCH when structural experimentation surfaces new questions
 **And** it does not say "There is no next phase"
 
 ### Scenario: Synthesis skill cycle position diagram shows re-entry arrow
-**Given** the `/rdd-synthesis` skill file exists
+**Given** the `/rdd-synthesize` skill file exists
 **When** the cycle position diagram is read
 **Then** it shows a conditional arrow from SYNTHESIS back to RESEARCH
 
 ### Scenario: Synthesis skill outline section describes two registers
-**Given** the `/rdd-synthesis` skill file exists
+**Given** the `/rdd-synthesize` skill file exists
 **When** the outline production section is read
 **Then** it instructs the agent to identify both the argumentative backbone and the curatorial arrangement
 **And** it provides the curatorial vocabulary (selection, juxtaposition, scale shifts, shimmer, negative space, personal voice)

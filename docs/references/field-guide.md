@@ -75,7 +75,7 @@ Research is the only phase that loops — question → investigate → synthesiz
 ## Module: Product Discovery Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-product/SKILL.md`
+**Code location:** `skills/discover/SKILL.md`
 **Stability:** Settled — three modes (forward, backward, update) fully implemented
 
 ### Domain Concepts in Code
@@ -220,7 +220,7 @@ The build skill is the longest SKILL.md because it carries the most operational 
 ## Module: Synthesis Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-synthesis/SKILL.md`
+**Code location:** `skills/synthesize/SKILL.md`
 **Stability:** Settled
 
 ### Domain Concepts in Code
@@ -268,7 +268,7 @@ Unique architectural property: the three-phase conversation subsumes the epistem
 
 This is NOT a pipeline phase — it's a utility invoked as needed. All four operations are pragmatic actions (Invariant 3). The two-level severity classification (structural/format) prevents format obsession from blocking real work. Graduation is explicitly flagged as "open design territory" — the framework will be refined through practice.
 
-Distinct from product conformance (ADR-008, `/rdd-product` backward mode), which checks product assumptions against user needs.
+Distinct from product conformance (ADR-008, `/rdd-discover` backward mode), which checks product assumptions against user needs.
 
 ### Key Integration Points
 

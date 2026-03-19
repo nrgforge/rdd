@@ -10,7 +10,7 @@ The strengthened Invariant 0 requires the user to speak with authority about "wh
 
 ## Decision
 
-Add a Product Discovery phase to the RDD pipeline, positioned between RESEARCH and MODEL. The phase is implemented as a new skill (`/rdd-product`) that produces a product discovery artifact. The pipeline becomes:
+Add a Product Discovery phase to the RDD pipeline, positioned between RESEARCH and MODEL. The phase is implemented as a new skill (`/rdd-discover`) that produces a product discovery artifact. The pipeline becomes:
 
 ```
 RESEARCH → PRODUCT DISCOVERY → MODEL → DECIDE → ARCHITECT → BUILD

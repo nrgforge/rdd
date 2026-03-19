@@ -8,7 +8,7 @@ Product Discovery (ADR-006) must handle two distinct situations: greenfield syst
 
 ## Decision
 
-The `/rdd-product` skill operates in two modes:
+The `/rdd-discover` skill operates in two modes:
 
 1. **Forward mode** (greenfield): Runs between RESEARCH and MODEL. Takes the essay as input. Produces the product discovery artifact (ADR-007) through stakeholder interviews, JTBD analysis, and assumption inversion. Output feeds forward into MODEL, DECIDE, and ARCHITECT.
 
