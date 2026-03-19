@@ -26,7 +26,7 @@ RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → SYNTHESIZ
 - **Decide** — Make architectural decisions (ADRs) and write refutable behavior scenarios. Each decision traces to research; each scenario is testable.
 - **Architect** — Decompose the system into modules with provenance chains linking every design choice back to research and user needs.
 - **Build** — Turn scenarios into working software through BDD and TDD. The architecture prevents surprises; the scenarios prevent ambiguity.
-- **Synthesize** — Write about what you built. Not a summary — an act of inquiry. The essay is the final act of discovery.
+- **Synthesize** — Write about what you built. Not a summary — an act of inquiry. The essay is the final act of discovery. New research questions may emerge here that loop back into a new cycle.
 - **Graduate** — Fold the durable knowledge into your project's native docs. Archive the RDD artifacts. The scaffolding comes down until the next hard problem.
 
 Each gate takes 5-10 minutes. The methodology is a deep work tool — you reach for it when a problem warrants structured thinking and put it away when the knowledge has been absorbed.
