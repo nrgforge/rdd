@@ -216,16 +216,20 @@
       a genuinely engaging way to spend your time in an era that increasingly
       optimizes it away. Research reshapes the problem statement. Synthesis surfaces
       connections you didn't expect. The act of explaining what you've learned reveals
-      what you haven't. This is thinking as craft.
+      what you haven't. This is thinking as craft — and as AI coding becomes the norm,
+      it's the process that matters. Code is cheap. Software is fast becoming a commodity.
+      What's scarce is knowing what to build and why. The ideas are the hard part now,
+      and ideas come from figuring out how to ask the right questions.
     </p>
 
     <h2>The Pipeline</h2>
 
     <p>
-      RDD moves through phases. Each phase produces an artifact and ends at an
-      <strong>epistemic gate</strong> — a moment where you must generate something
-      (an explanation, a prediction, an articulation) rather than merely approve
-      an output. These gates are where learning happens — grounded in
+      RDD moves through phases. Each phase produces an artifact and ends with
+      a challenge: can you explain what you just learned? Not approve it — explain
+      it, in your own words. Predict what comes next. Articulate why a decision
+      was made. These <strong>epistemic gates</strong> are where learning
+      happens — grounded in
       research on the <a href="https://en.wikipedia.org/wiki/Generation_effect">generation effect</a> (Slamecka &amp; Graf),
       <a href="https://bjorklab.psych.ucla.edu/research/">desirable difficulties</a> (Bjork),
       and <a href="https://en.wikipedia.org/wiki/Reflective_practice">reflective practice</a> (Schon). The
@@ -236,14 +240,14 @@
     <div class="pipeline">RESEARCH &rarr; DISCOVER &rarr; MODEL &rarr; DECIDE &rarr; ARCHITECT &rarr; BUILD &rarr; SYNTHESIZE &rarr; GRADUATE</div>
 
     <ul class="phase-list">
-      <li><span class="phase-name">Research</span> — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.</li>
-      <li><span class="phase-name">Discover</span> — Surface who this is for, what they need, and what you're assuming. Donna Haraway calls it "staying with the trouble" — sitting with value tensions rather than resolving them prematurely. RDD's inversion principle systematically asks "what if this assumption were wrong?" before it hardens into architecture.</li>
-      <li><span class="phase-name">Model</span> — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants that the system must respect.</li>
-      <li><span class="phase-name">Decide</span> — Make architectural decisions and write refutable behavior scenarios. Each decision traces to research; each scenario is testable.</li>
-      <li><span class="phase-name">Architect</span> — Decompose the system into modules. Every boundary should answer the question: why here and not somewhere else? Provenance chains link each design choice back through a decision to a research finding to a user need. If you can't follow the chain, the boundary is arbitrary.</li>
-      <li><span class="phase-name">Build</span> — Scenarios become tests. Tests become software. <a href="https://dannorth.net/introducing-bdd/">BDD</a> and <a href="https://www.agilealliance.org/glossary/tdd/">TDD</a>.</li>
-      <li><span class="phase-name">Synthesize</span> — Don't let your discoveries die in the artifacts that produced them. Write about what you built — not a summary, but an act of inquiry. <a href="https://en.wikipedia.org/wiki/Laurel_Richardson">Laurel Richardson</a> called writing "a method of discovery": you write to find out what you think, not to report what you already know. Find the form your story demands — an essay, a talk, a <a href="https://en.wikipedia.org/wiki/Hermit_crab_essay">hermit crab form</a> that borrows the shell of another genre, an arrangement closer to an exhibition where meaning emerges from juxtaposition and the spaces between. Sometimes the act of synthesis surfaces new questions the pipeline hasn't addressed — when that happens, loop back into research. The pipeline isn't strictly linear; understanding generates new questions.</li>
-      <li><span class="phase-name">Graduate</span> — Fold the durable knowledge — architectural decisions, domain vocabulary, product context, key rationale — into your project's native documentation. Archive the RDD artifacts. The scaffolding has done its job; the understanding lives in you and in the project's own docs now. RDD comes down until the next problem warrants it.</li>
+      <li><span class="phase-name">Research</span> — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build. <em>Gate: What surprised you? What do you understand differently now than when you started?</em></li>
+      <li><span class="phase-name">Discover</span> — Surface who this is for, what they need, and what you're assuming. Donna Haraway calls it "staying with the trouble" — sitting with value tensions rather than resolving them prematurely. RDD's inversion principle systematically asks "what if this assumption were wrong?" before it hardens into architecture. <em>Gate: Who is this actually for, and which assumption are you most nervous about?</em></li>
+      <li><span class="phase-name">Model</span> — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants that the system must respect. <em>Gate: What did naming things precisely reveal that was hidden before?</em></li>
+      <li><span class="phase-name">Decide</span> — Make architectural decisions and write refutable behavior scenarios. Each decision traces to research; each scenario is testable. <em>Gate: Why this approach and not the alternatives? What would change your mind?</em></li>
+      <li><span class="phase-name">Architect</span> — Decompose the system into modules. Every boundary should answer the question: why here and not somewhere else? Provenance chains link each design choice back through a decision to a research finding to a user need. If you can't follow the chain, the boundary is arbitrary. <em>Gate: Pick a module boundary — what user need does it trace back to?</em></li>
+      <li><span class="phase-name">Build</span> — Scenarios become tests. Tests become software. <a href="https://dannorth.net/introducing-bdd/">BDD</a> and <a href="https://www.agilealliance.org/glossary/tdd/">TDD</a>. <em>Gate: What did the tests reveal that the design didn't anticipate?</em></li>
+      <li><span class="phase-name">Synthesize</span> — Don't let your discoveries die in the artifacts that produced them. Write about what you built — not a summary, but an act of inquiry. <a href="https://en.wikipedia.org/wiki/Laurel_Richardson">Laurel Richardson</a> called writing "a method of discovery": you write to find out what you think, not to report what you already know. Find the form your story demands — an essay, a talk, a <a href="https://en.wikipedia.org/wiki/Hermit_crab_essay">hermit crab form</a> that borrows the shell of another genre, an arrangement closer to an exhibition where meaning emerges from juxtaposition and the spaces between. Sometimes the act of synthesis surfaces new questions the pipeline hasn't addressed — when that happens, loop back into research. The pipeline isn't strictly linear; understanding generates new questions. <em>Gate: What was the real discovery — the thing you didn't expect when you started?</em></li>
+      <li><span class="phase-name">Graduate</span> — Fold the durable knowledge — architectural decisions, domain vocabulary, product context, key rationale — into your project's native documentation. Archive the RDD artifacts. The scaffolding has done its job; the understanding lives in you and in the project's own docs now. RDD comes down until the next problem warrants it. <em>Gate: Can you explain this system to someone new without reaching for the RDD artifacts?</em></li>
     </ul>
 
     <h2>Core Principles</h2>
