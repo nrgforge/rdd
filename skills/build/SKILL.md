@@ -455,4 +455,4 @@ When a design constraint feels wrong, follow the provenance chain in the system 
 
 ## NEXT PHASE
 
-When all scenarios are implemented and the user is ready to proceed, **`/rdd-synthesis`** is available as an optional terminal phase. Use it when the writer wants to extract publishable insight from the RDD cycle. If the user does not want synthesis, the build phase is the terminal phase — the pipeline is complete.
+When all scenarios are implemented and the user is ready to proceed, **`/rdd-synthesize`** is available as an optional terminal phase. Use it when the writer wants to extract publishable insight from the RDD cycle. If the user does not want synthesis, the build phase is the terminal phase — the pipeline is complete.

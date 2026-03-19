@@ -23,7 +23,7 @@ $ARGUMENTS
 | `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
 | `/rdd-architect` | System design with responsibility allocation + provenance | Domain model + ADRs + scenarios |
 | `/rdd-build` | BDD scenarios → TDD loop → working software | Scenarios + domain model |
-| `/rdd-synthesis` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build) |
+| `/rdd-synthesize` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build) |
 | `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation, graduation | Artifact corpus + skill files (utility, invoked as needed) |
 | `/rdd-lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd-research`) |
 
@@ -78,7 +78,7 @@ Phase 6: INTEGRATE
     [Gate: New components verified against real neighbors, not just stubs.]
 
 Phase 7: SYNTHESIS (optional)
-└── /rdd-synthesis — Artifact trail mining → synthesis conversation → essay outline
+└── /rdd-synthesize — Artifact trail mining → synthesis conversation → essay outline
     [No separate gate: the three-phase conversation (journey review, novelty surfacing, framing) IS the epistemic gate. Writer generates at every step.]
 ```
 
@@ -152,7 +152,7 @@ Maintain a running status table:
 | ARCHITECT | /rdd-architect | ☐ Pending | — | — | — |
 | BUILD | /rdd-build | ☐ Pending | — | — | — |
 | INTEGRATE | /rdd-build Step 5 | ☐ Pending | — | — | — |
-| SYNTHESIS | /rdd-synthesis | ☐ Optional | — | — | — |
+| SYNTHESIS | /rdd-synthesize | ☐ Optional | — | — | — |
 ```
 
 Update and display this table at each gate. The "Key Epistemic Response" column captures a brief summary of the user's most significant epistemic gate response for that phase — this is the feed-forward signal that subsequent phases should attend to, especially when resuming across sessions.
@@ -194,9 +194,9 @@ Findings from earlier phases inform later ones:
 - If `/rdd-build` stewardship review reveals a design flaw, a Design Amendment updates the system design (not the ADRs)
 - If `/rdd-build` reveals a flaw in a decision, go back and update the ADR
 - When any phase changes a domain model invariant, **backward propagation triggers**: all prior documents are swept for contradictions, supersession notes are added, and the amendment is logged in the domain model. This is a cross-cutting event that interrupts normal phase sequence.
-- `/rdd-synthesis` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, and system design. It does not read just the preceding phase's output.
-- `/rdd-synthesis` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
-- `/rdd-synthesis` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
+- `/rdd-synthesize` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, and system design. It does not read just the preceding phase's output.
+- `/rdd-synthesize` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
+- `/rdd-synthesize` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
 - The synthesis essay, when written by the user, serves as a **narrative context rollup** — the orchestrator should treat it as a primary context source when bootstrapping new sessions for the project. It answers "what was discovered, and why does it matter?" where structured artifacts answer "what was decided?"
 
 ### Artifacts Summary

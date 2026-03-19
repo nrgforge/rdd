@@ -50,7 +50,7 @@ Read the RDD skill files to determine expected artifact structure:
 - `rdd-decide/SKILL.md` — expected ADR template and scenarios format
 - `rdd-architect/SKILL.md` — expected system design template, roadmap
 - `rdd-build/SKILL.md` — expected field guide (when implementation exists)
-- `rdd-synthesis/SKILL.md` — expected synthesis outline structure
+- `rdd-synthesize/SKILL.md` — expected synthesis outline structure
 
 #### Step 2: Read Project Artifacts
 

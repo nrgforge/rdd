@@ -1,5 +1,5 @@
 ---
-name: rdd-synthesis
+name: rdd-synthesize
 description: Synthesis phase of RDD. Mines the artifact trail for novelty signals and conducts a structured conversation (journey review, novelty surfacing, framing) to help the writer find their story. Produces a citation-audited and argument-audited outline as springboard for a publishable essay. Optional terminal phase — use after BUILD or any terminal phase when the writer wants to extract publishable insight from the RDD cycle.
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write, Edit
 ---
