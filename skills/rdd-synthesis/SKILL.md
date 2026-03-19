@@ -224,24 +224,20 @@ The writer should not need to hunt for supporting material — it is already in 
 
 #### Citation Audit
 
-Before finalizing the outline, run `/citation-audit` on all pre-populated references. This verifies:
+Before finalizing the outline, dispatch the **citation-auditor** specialist subagent. Provide it with:
+- The outline file path (with its pre-populated references)
+- An output path for the audit report (e.g., `./docs/audits/citation-audit-synthesis-NNN.md`)
 
-- Cited works exist and are properly attributed
-- Quoted material is accurate
-- No hallucinated sources reach the writer's outline
-
-If the audit finds issues, correct or remove the problematic references before presenting the outline.
+The agent verifies cited works exist, quotes are accurate, and no hallucinated sources reach the writer's outline. After the agent completes, read the audit report. Correct or remove problematic references before proceeding.
 
 #### Argument Audit
 
-After citation audit passes, run `/argument-audit` on the outline itself — treating the narrative structure (central question, turns, threads) as the argument and the pre-populated references as the evidence base. This verifies:
+After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
+- The outline file path (narrative structure as the argument)
+- The pre-populated references (as the evidence base)
+- An output path for the audit report (e.g., `./docs/audits/argument-audit-synthesis-NNN.md`)
 
-- The outline's narrative arc is logically sound — turns follow from evidence, not from narrative convenience
-- Claims in thread descriptions are supported by the cited material
-- The framing does not overreach the evidence (e.g., a discovery framed as a paradigm shift when the evidence supports a refinement)
-- No hidden assumptions smuggled in through narrative structure that weren't surfaced during the RDD cycle
-
-This is the same `/argument-audit` that `/rdd-decide` invokes on ADRs. The synthesis outline is a different genre — narrative, not architectural — but the logical integrity standard is the same. If the audit finds issues, revise the outline's framing before presenting it to the writer.
+The agent treats the narrative structure (central question, turns, threads) as the argument and verifies logical soundness — the same standard as the argument audit on ADRs, applied to the narrative genre. After the agent completes, read the audit report. If it finds overreaching framing or hidden assumptions, revise the outline before presenting it to the writer.
 
 #### Outline Location
 

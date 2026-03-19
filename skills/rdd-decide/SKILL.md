@@ -83,20 +83,17 @@ Present ADRs to the user for approval before proceeding.
 
 ### Step 3: Argument Audit
 
-After ADRs are written, run `/argument-audit` on the essay, the new ADRs, and any prior ADRs they depend on. Treat the essay as the evidence/reasoning layer and the ADRs as the decision/conclusion layer.
+After ADRs are written, dispatch the **argument-auditor** specialist subagent. Provide it with:
+- The essay file path (evidence/reasoning layer)
+- The new ADR file paths and any prior ADRs they depend on (decision/conclusion layer)
+- An output path for the audit report (e.g., `./docs/audits/argument-audit-decide-NNN.md`)
 
-The audit checks:
-- **Logical soundness** — do ADR decisions follow from the essay's analysis?
-- **Internal consistency** — do new documents contradict prior ADRs or the domain model?
-- **Invariant compliance** — does any prior ADR assume something that this new decision's invariants contradict? If so, the prior ADR needs a supersession note.
-- **Hidden assumptions** — are there unstated premises that should be explicit?
-- **Terminology consistency** — does every term match the domain model vocabulary?
-- **Scope accuracy** — are claims stronger than their evidence supports?
+The agent runs on Sonnet in an isolated context, maps inferential chains from essay evidence to ADR decisions, and writes a structured audit report.
 
-After the audit, apply fixes:
-1. **Priority 1 (before accepting ADRs):** Fix logical gaps, soften overreaching claims, resolve contradictions
-2. **Priority 2 (before building):** Make hidden assumptions explicit, address missing counterarguments
-3. **Priority 3 (nice to have):** Clarify justifications, note interactions between mechanisms
+After the agent completes, read the audit report and apply fixes:
+1. **P1 issues (before accepting ADRs):** Fix logical gaps, soften overreaching claims, resolve contradictions
+2. **P2 issues (before building):** Make hidden assumptions explicit, address missing counterarguments
+3. **P3 issues (nice to have):** Clarify justifications, note interactions between mechanisms
 4. **Update prior documents** if the audit reveals inconsistencies in existing ADRs or domain model — evaluate whether the new work or the prior work needs to change
 
 ### Step 3.5: Conformance Audit

@@ -122,29 +122,33 @@ Present the essay to the user. If invariant tensions were found, highlight them 
 
 ### Step 4a: Citation Audit
 
-After the essay is written, run `/citation-audit` on all references and factual claims in the essay. This verifies:
+After the essay is written, dispatch the **citation-auditor** specialist subagent. Provide it with:
+- The essay file path
+- The research log file path (as evidence trail)
+- An output path for the audit report (e.g., `./docs/audits/citation-audit-NNN.md`)
 
-- Cited works exist and are properly attributed
-- Quoted material is accurate
-- Factual claims about libraries, APIs, or technologies match what was found during research
-- No hallucinated sources have crept into the essay
+The agent runs on Sonnet in an isolated context, reads the input files, verifies all references and factual claims, and writes a structured audit report to the output path.
 
-If the audit finds issues, correct or remove the problematic references before proceeding. The essay is the foundation for all downstream phases — bad citations here propagate through the entire pipeline.
+After the agent completes, read the audit report:
+- **P1 issues** — correct or remove the problematic references immediately
+- **P2 issues** — note for the epistemic gate discussion
+- **P3 issues** — note for completeness
+
+The essay is the foundation for all downstream phases — bad citations here propagate through the entire pipeline.
 
 ### Step 4b: Argument Audit
 
-After citation audit passes, run `/argument-audit` on the essay. Treat the research log as the evidence trail and the essay as the argument layer. The audit checks:
+After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
+- The essay file path
+- The research log file path (as evidence trail)
+- An output path for the audit report (e.g., `./docs/audits/argument-audit-NNN.md`)
 
-- **Logical soundness** — do the essay's conclusions follow from the research findings?
-- **Hidden assumptions** — are there unstated premises that should be explicit?
-- **Scope accuracy** — are claims stronger than the evidence supports? (e.g., a finding from one library generalized to all libraries)
-- **Internal consistency** — do different sections of the essay contradict each other?
-- **Terminology consistency** — are terms used consistently throughout?
+The agent runs on Sonnet in an isolated context, maps inferential chains from evidence to conclusions, and writes a structured audit report.
 
-After the audit, apply fixes before presenting to the user at the epistemic gate:
-1. **Priority 1:** Fix logical gaps, soften overreaching claims, resolve contradictions
-2. **Priority 2:** Make hidden assumptions explicit, note where evidence is thin
-3. **Priority 3:** Clarify justifications, tighten language
+After the agent completes, read the audit report and apply fixes before presenting to the user at the epistemic gate:
+1. **P1 issues:** Fix logical gaps, soften overreaching claims, resolve contradictions
+2. **P2 issues:** Make hidden assumptions explicit, note where evidence is thin
+3. **P3 issues:** Clarify justifications, tighten language
 
 The essay that enters the epistemic gate should be citation-audited and argument-audited. Downstream phases inherit whatever the essay asserts — catching problems here is far cheaper than discovering them during DECIDE or BUILD.
 
