@@ -6,7 +6,7 @@ A methodology for building software you understand.
 
 ## Why
 
-Building with AI is fast. Understanding what you built is the hard part.
+Building with AI is fast. Understanding what to build and why — and understanding what you built — is the hard part.
 
 RDD exists because understanding is valuable on its own — not just as a hedge against maintenance costs, but because deep engagement with a problem changes how you think about it. Research reshapes the problem statement. Synthesis surfaces connections you didn't expect. The act of explaining what you've learned reveals what you haven't. This process is slow, deliberate, and genuinely interesting. It's deep work.
 
