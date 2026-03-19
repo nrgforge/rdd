@@ -1,0 +1,32 @@
+{
+  "hooks": [
+    {
+      "type": "PreToolUse",
+      "matcher": "Write|Edit",
+      "description": "Remind agent to check domain model invariants before modifying artifacts in docs/",
+      "command": "hooks/scripts/invariant-reminder.sh \"$INPUT\""
+    },
+    {
+      "type": "Stop",
+      "description": "Remind about epistemic gate if completing an RDD phase without gate conversation",
+      "command": "hooks/scripts/epistemic-gate.sh \"$INPUT\""
+    },
+    {
+      "type": "UserPromptSubmit",
+      "description": "Detect RDD-related prompts, suggest appropriate phase skill, prevent brainstorming override",
+      "command": "node hooks/scripts/skill-activator.js"
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write",
+      "description": "Remind to regenerate ORIENTATION.md after key artifact changes",
+      "command": "hooks/scripts/orientation-trigger.sh \"$INPUT\""
+    },
+    {
+      "type": "PostToolUse",
+      "matcher": "Write",
+      "description": "Flag documents exceeding sizing heuristics after writes to docs/",
+      "command": "hooks/scripts/sizing-check.sh \"$INPUT\""
+    }
+  ]
+}
