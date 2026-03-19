@@ -72,12 +72,12 @@ The orchestrator guides you through the pipeline. At each phase, the skill tells
 | Skill | What you do |
 |-------|-------------|
 | `/rdd-research` | Investigate a problem space, produce an audited essay |
-| `/rdd-product` | Surface stakeholder needs, value tensions, assumption inversions |
+| `/rdd-discover` | Surface stakeholder needs, value tensions, assumption inversions |
 | `/rdd-model` | Extract domain vocabulary from research |
 | `/rdd-decide` | Make architectural decisions and write behavior scenarios |
 | `/rdd-architect` | Decompose the system with provenance chains |
 | `/rdd-build` | Implement scenarios through BDD/TDD |
-| `/rdd-synthesis` | Write about what you built and what you discovered |
+| `/rdd-synthesize` | Write about what you built and what you discovered |
 | `/rdd-conform` | Audit artifact corpus, detect drift, graduate knowledge |
 
 ## Architecture
