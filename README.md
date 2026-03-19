@@ -29,7 +29,7 @@ RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → SYNTHESIZ
 - **Synthesize** — Write about what you built. Not a summary — an act of inquiry. The essay is the final act of discovery. New research questions may emerge here that loop back into a new cycle.
 - **Graduate** — Fold the durable knowledge into your project's native docs. Archive the RDD artifacts. The scaffolding comes down until the next hard problem.
 
-Each gate takes 5-10 minutes. The methodology is a deep work tool — you reach for it when a problem warrants structured thinking and put it away when the knowledge has been absorbed.
+The epistemic gate at each phase transition is a 5-10 minute invitation to reflect and produce something — articulate what you learned, predict what comes next, explain a decision in your own words. A full cycle, though, is deep work: depending on the problem, it can take several hours across multiple sessions. The heuristic for moving between phases is simple: can you articulate what you learned in the last one?
 
 ## When to Use RDD
 
