@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RDD — Research-Driven Development</title>
+  <style>
+    :root {
+      --bg: #fafaf9;
+      --fg: #1c1917;
+      --muted: #78716c;
+      --accent: #b45309;
+      --border: #e7e5e4;
+      --code-bg: #f5f5f4;
+      --max-w: 680px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1917;
+        --fg: #e7e5e4;
+        --muted: #a8a29e;
+        --accent: #fbbf24;
+        --border: #44403c;
+        --code-bg: #292524;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.7;
+      padding: 3rem 1.5rem;
+    }
+
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    p { margin-bottom: 1rem; }
+
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badges img { height: 20px; }
+
+    .pipeline {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    .phase-list {
+      list-style: none;
+      margin: 1.25rem 0;
+    }
+
+    .phase-list li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .phase-list li:last-child { border-bottom: none; }
+
+    .phase-name {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .principles {
+      list-style: none;
+      margin: 1rem 0;
+      counter-reset: principle;
+    }
+
+    .principles li {
+      padding: 0.6rem 0;
+      padding-left: 2rem;
+      position: relative;
+      counter-increment: principle;
+    }
+
+    .principles li::before {
+      content: counter(principle);
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--accent);
+      padding-left: 1.25rem;
+      margin: 1.5rem 0;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    strong { font-weight: 600; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .cta {
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .cta code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Research-Driven Development</h1>
+    <p class="subtitle">Build software you understand.</p>
+
+    <div class="badges">
+      <a href="https://github.com/nrgforge/rdd"><img src="https://img.shields.io/github/stars/nrgforge/rdd?style=flat&color=b45309" alt="GitHub stars"></a>
+      <a href="https://github.com/nrgforge/rdd"><img src="https://img.shields.io/github/license/nrgforge/rdd?style=flat&color=78716c" alt="License"></a>
+    </div>
+
+    <p>
+      RDD is a methodology for working deeply on complex software problems. It wraps
+      BDD and TDD in a research layer that changes what you build — not just how
+      you build it.
+    </p>
+
+    <p>
+      The premise: when you investigate a problem before committing to a solution, you
+      discover that the problem isn't what you assumed. Stakeholders you hadn't
+      considered reshape the requirements. Assumptions you'd never questioned turn out
+      to be wrong. The system you build after research is a different system than the
+      one you would have built without it — and it's better, because it reflects
+      investigated reality rather than the first plausible story you told yourself.
+    </p>
+
+    <p>
+      RDD is slow on purpose. It's deep work. Understanding what you're doing is
+      valuable on its own — not just as a hedge against maintenance costs, but because
+      deep engagement with a problem changes how you think about it. Research reshapes
+      the problem statement. Synthesis surfaces connections you didn't expect. The act
+      of explaining what you've learned reveals what you haven't.
+    </p>
+
+    <h2>The Pipeline</h2>
+
+    <p>
+      RDD moves through phases. Each phase produces an artifact and ends at an
+      <strong>epistemic gate</strong> — a moment where you must generate something
+      (an explanation, a prediction, an articulation) rather than merely approve
+      an output. These gates are where learning happens.
+    </p>
+
+    <div class="pipeline">RESEARCH &rarr; PRODUCT &rarr; MODEL &rarr; DECIDE &rarr; ARCHITECT &rarr; BUILD &rarr; SYNTHESIS</div>
+
+    <ul class="phase-list">
+      <li><span class="phase-name">Research</span> — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.</li>
+      <li><span class="phase-name">Product Discovery</span> — Surface who this is for, what they need, and what you're assuming. Invert every major assumption before it becomes architecture.</li>
+      <li><span class="phase-name">Domain Model</span> — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants that the system must respect.</li>
+      <li><span class="phase-name">Decide</span> — Make architectural decisions and write refutable behavior scenarios. Each decision traces to research; each scenario is testable.</li>
+      <li><span class="phase-name">Architect</span> — Decompose the system into modules with provenance chains linking every design choice back to research and user needs.</li>
+      <li><span class="phase-name">Build</span> — Turn scenarios into working software through BDD and TDD. The architecture prevents surprises; the scenarios prevent ambiguity.</li>
+      <li><span class="phase-name">Synthesis</span> — Extract publishable insight from the work. The essay you write is the final act of discovery — writing toward a conclusion you can't yet state.</li>
+    </ul>
+
+    <h2>Core Principles</h2>
+
+    <ol class="principles">
+      <li><strong>Research before architecture.</strong> The system you build after investigating a problem is different from the one you'd build on assumptions. RDD is grounded in what research finds, not what you assumed going in.</li>
+      <li><strong>Understanding requires generation, not review.</strong> Every gate requires you to produce something — an explanation, prediction, or articulation — not merely assess an output. That's where learning happens.</li>
+      <li><strong>Assumptions are inverted before they harden.</strong> Every major product assumption gets systematically questioned — "what if this were wrong?" — before it's encoded in architecture.</li>
+      <li><strong>Provenance links design to research.</strong> Every module, every responsibility allocation, every architectural decision traces back to a research finding or a user need. When someone asks "why is it this way?", you can follow the chain.</li>
+      <li><strong>Understanding compounds.</strong> Each epistemic act builds on the last. Your response at the research gate enriches domain modeling; your modeling insights sharpen architectural decisions. The quality effect is cumulative.</li>
+      <li><strong>Epistemic cost stays lightweight.</strong> Each gate takes minutes, not hours. The methodology earns its keep or gets out of the way.</li>
+      <li><strong>The scaffolding fades.</strong> RDD is a deep work tool you reach for when a problem warrants it and put away when the knowledge has been absorbed. The project's native documentation is the permanent home; RDD artifacts are the working space.</li>
+    </ol>
+
+    <h2>The Test</h2>
+
+    <blockquote>
+      After completing an RDD cycle, you should be able to explain the system's design
+      rationale, key decisions, domain vocabulary, and the user needs those decisions
+      serve — without assistance. Not because you memorized the output, but because
+      you shaped the process and the result.
+    </blockquote>
+
+    <p>
+      If you can do this, the methodology worked. If you can't, it failed — regardless
+      of whether the software runs.
+    </p>
+
+    <h2>How RDD Differs</h2>
+
+    <p>
+      <strong>From agile:</strong> Agile optimizes for business delivery and discovers
+      user value incidentally. RDD optimizes for understanding through research and
+      discovers business value as a consequence of user alignment.
+    </p>
+
+    <p>
+      <strong>From BDD/TDD alone:</strong> BDD and TDD verify that the system does what
+      was specified. RDD questions whether the specification reflects reality. The
+      research and product discovery phases change <em>what</em> gets specified; BDD/TDD
+      in the build phase ensures it gets built correctly.
+    </p>
+
+    <p>
+      <strong>From vibe coding:</strong> Vibe coding treats AI output as the product.
+      RDD treats output as starting material for human understanding. The gap
+      between generation and explanation is where learning happens.
+    </p>
+
+    <div class="cta">
+      <h2>Get Started</h2>
+      <p>
+        RDD can be practiced with or without tooling — it's a methodology, not a product.
+        But if you use <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>,
+        the <a href="https://github.com/nrgforge/rdd">RDD plugin</a> implements the full
+        pipeline with AI-assisted research, specialist auditing agents, and epistemic
+        gates at every phase transition.
+      </p>
+      <p><code>/plugin marketplace add nrgforge/rdd</code></p>
+      <p><code>/plugin install rdd@nrgforge</code></p>
+      <p><code>/rdd-research</code></p>
+    </div>
+
+    <footer>
+      <a href="https://github.com/nrgforge/rdd">GitHub</a> &middot;
+      MIT License &middot;
+      Built with RDD
+    </footer>
+  </main>
+</body>
+</html>
