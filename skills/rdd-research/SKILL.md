@@ -38,15 +38,15 @@ Before researching, clarify with the user:
 - What do they already know or assume?
 - What would change their approach if the answer were different?
 
-Present a research plan (search terms, spike idea, or `/lit-review` invocation) and get approval before proceeding.
+Present a research plan (search terms, lit-reviewer dispatch, or spike-runner dispatch) and get approval before proceeding.
 
 ### Step 2: Research
 
 For each question, choose the appropriate method:
 
 **Web search** — for established technologies, patterns, comparisons, ecosystem state
-**`/lit-review`** — for academic topics requiring systematic literature synthesis
-**Spike** — for technical questions that need hands-on verification
+**Lit-reviewer agent** — for academic topics requiring systematic literature synthesis. Dispatch the **lit-reviewer** specialist subagent with the research question and an output path for the research log entry.
+**Spike-runner agent** — for technical questions that need hands-on verification. Dispatch the **spike-runner** specialist subagent with the spike question and an output path for the research log entry.
 
 ### Spike Rules
 

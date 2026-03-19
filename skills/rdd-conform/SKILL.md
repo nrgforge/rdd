@@ -157,14 +157,21 @@ Compare the project's artifacts against its current implementation to detect pos
 
 ### Process
 
-#### Step 1: Read Artifacts and Code
+#### Step 1: Dispatch Conformance Scanner
 
-Read the project's RDD artifacts (system design, domain model, ADRs, scenarios) and the project's implementation code.
+Dispatch the **conformance-scanner** specialist subagent with:
+- The project's ADR file paths
+- The codebase root path
+- An output path for the conformance report (e.g., `./docs/audits/drift-scan.md`)
 
-Focus the comparison on:
+The agent scans the codebase against ADR declarations and produces a structured conformance debt table. After the agent completes, read its report as input for the broader drift analysis below.
+
+#### Step 2: Read Artifacts and Code
+
+Read the project's remaining RDD artifacts (system design, domain model, scenarios) and compare them against the implementation — supplementing the conformance scanner's ADR-focused report with broader checks:
+
 - **System design vs. code:** Do the module boundaries, responsibility allocations, and dependency directions in the system design match the actual codebase structure?
 - **Domain model vs. code:** Do the code's type names, function names, and variable names use the domain model's vocabulary?
-- **ADR decisions vs. code:** Are the decisions recorded in ADRs reflected in the implementation? Are there code patterns that contradict ADR decisions?
 - **Scenarios vs. tests:** Do the behavior scenarios in `scenarios.md` have corresponding tests? Are there tests that don't trace to scenarios?
 
 #### Step 2: Produce Drift Report

@@ -98,21 +98,14 @@ After the agent completes, read the audit report and apply fixes:
 
 ### Step 3.5: Conformance Audit
 
-After the argument audit passes, scan the existing codebase for violations of the accepted ADRs (both new and prior). Check for:
+After the argument audit passes, dispatch the **conformance-scanner** specialist subagent. Provide it with:
+- The ADR file paths (both new and prior)
+- The codebase root path
+- An output path for the conformance report (e.g., `./docs/audits/conformance-scan-NNN.md`)
 
-1. **Code that exists but shouldn't** — operations, structures, or interfaces the ADR says to remove or collapse
-2. **Code that should exist but doesn't** — operations the ADR prescribes but are missing from the implementation
-3. **Code with wrong structure** — right behavior, wrong path (e.g., bypassing a prescribed pipeline, exposing internals that should be private to a layer)
+The agent runs on Sonnet in an isolated context, scans the codebase against ADR declarations, and writes a structured conformance debt table with file:line references for violations.
 
-Produce a conformance debt table:
-
-```markdown
-| ADR | Violation | Type | Location | Resolution |
-|-----|-----------|------|----------|------------|
-| ADR-NNN | [what contradicts the ADR] | exists/missing/wrong-structure | [file or module] | [what to do] |
-```
-
-This debt informs scenario writing — some scenarios become structural cleanup (`refactor:` commits) rather than new features.
+After the agent completes, read the conformance report. This debt informs scenario writing — some scenarios become structural cleanup (`refactor:` commits) rather than new features.
 
 ### Step 3.7: Backward Propagation
 
