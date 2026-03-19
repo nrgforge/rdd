@@ -14,23 +14,28 @@ It's also fundamentally user-centric. RDD's pipeline is grounded in what researc
 
 At the end of an RDD cycle, you should be able to speak with authority about what you built, who it's for, and why — without AI assistance. Not because you memorized the output, but because you shaped the process and the result. That's the test.
 
-## What RDD Does
-
-RDD structures the collaboration between you and an AI agent through a phased pipeline. Each phase produces an artifact and ends at an epistemic gate — a transition point where you must produce something (an explanation, prediction, reconstruction) rather than merely approve something.
+## The Pipeline
 
 ```
-RESEARCH → PRODUCT → MODEL → DECIDE → ARCHITECT → BUILD → [SYNTHESIS]
+RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → SYNTHESIZE → GRADUATE
 ```
 
-- **Research** — investigate the problem space; produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.
-- **Product Discovery** — surface who this is for, what they need, and what you're assuming. Invert every major assumption before it becomes architecture.
-- **Domain Model** — extract the vocabulary. Name the concepts, actions, relationships, and invariants.
-- **Decide** — make architectural decisions (ADRs) and write refutable behavior scenarios.
-- **Architect** — decompose the system into modules with provenance chains linking every design choice back to research and user needs.
-- **Build** — turn scenarios into working software through BDD/TDD.
-- **Synthesis** — (optional) extract publishable insight from the artifact trail. The essay you write is the final act of discovery — writing toward a conclusion you can't yet state.
+- **Research** — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.
+- **Discover** — Surface who this is for, what they need, and what you're assuming. Invert every major assumption before it becomes architecture.
+- **Model** — Extract the vocabulary. Define the concepts, actions, relationships, and invariants the system must respect.
+- **Decide** — Make architectural decisions (ADRs) and write refutable behavior scenarios. Each decision traces to research; each scenario is testable.
+- **Architect** — Decompose the system into modules with provenance chains linking every design choice back to research and user needs.
+- **Build** — Turn scenarios into working software through BDD and TDD. The architecture prevents surprises; the scenarios prevent ambiguity.
+- **Synthesize** — Write about what you built. Not a summary — an act of inquiry. The essay is the final act of discovery.
+- **Graduate** — Fold the durable knowledge into your project's native docs. Archive the RDD artifacts. The scaffolding comes down until the next hard problem.
 
 Each gate takes 5-10 minutes. The methodology is a deep work tool — you reach for it when a problem warrants structured thinking and put it away when the knowledge has been absorbed.
+
+## When to Use RDD
+
+Use it when the problem rewards depth: unfamiliar domains, ambiguous requirements, expensive-to-reverse architectural decisions, conflicting stakeholder needs, or when you just want to think carefully about something interesting.
+
+Don't use it for bug fixes, routine features, or work where the problem is already well-understood. RDD is a deep work tool, not a process tax on every commit.
 
 ## The Key Insight
 
@@ -64,24 +69,16 @@ Start a research cycle:
 
 The orchestrator guides you through the pipeline. At each phase, the skill tells you what to do and presents the epistemic gate when it's time for your input. You can run the full pipeline or pick individual phases:
 
-| Skill | Purpose |
-|-------|---------|
+| Skill | What you do |
+|-------|-------------|
 | `/rdd-research` | Investigate a problem space, produce an audited essay |
 | `/rdd-product` | Surface stakeholder needs, value tensions, assumption inversions |
 | `/rdd-model` | Extract domain vocabulary from research |
-| `/rdd-decide` | Architectural decisions and behavior scenarios |
-| `/rdd-architect` | System decomposition with provenance chains |
-| `/rdd-build` | BDD/TDD implementation from scenarios |
-| `/rdd-synthesis` | Extract publishable insight from the artifact trail |
+| `/rdd-decide` | Make architectural decisions and write behavior scenarios |
+| `/rdd-architect` | Decompose the system with provenance chains |
+| `/rdd-build` | Implement scenarios through BDD/TDD |
+| `/rdd-synthesis` | Write about what you built and what you discovered |
 | `/rdd-conform` | Audit artifact corpus, detect drift, graduate knowledge |
-
-## How RDD Differs
-
-**From agile:** Agile optimizes for business delivery and discovers user value incidentally. RDD optimizes for understanding through research and discovers business value as a consequence of user alignment.
-
-**From vibe coding:** Vibe coding treats AI output as the product. RDD treats AI output as starting material for human understanding. The gap between generation and explanation is where learning happens.
-
-**From waterfall:** RDD's phases aren't sequential gates that block progress. They're epistemic checkpoints that build compounding understanding. You can run any subset, scope cycles to subsystems, and graduate the scaffolding when the knowledge has been absorbed.
 
 ## Architecture
 
