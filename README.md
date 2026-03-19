@@ -2,6 +2,8 @@
 
 A methodology for building software you understand.
 
+**[Read the manifesto](https://nrgforge.github.io/rdd/)**
+
 ## Why
 
 Building with AI is fast. Understanding what you built is the hard part.
