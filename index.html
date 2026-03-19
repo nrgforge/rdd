@@ -225,8 +225,8 @@
       <li><span class="phase-name">Discover</span> — Surface who this is for, what they need, and what you're assuming. Donna Haraway calls it "staying with the trouble" — sitting with value tensions rather than resolving them prematurely. RDD's inversion principle systematically asks "what if this assumption were wrong?" before it hardens into architecture.</li>
       <li><span class="phase-name">Model</span> — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants that the system must respect.</li>
       <li><span class="phase-name">Decide</span> — Make architectural decisions and write refutable behavior scenarios. Each decision traces to research; each scenario is testable.</li>
-      <li><span class="phase-name">Architect</span> — Decompose the system into modules with provenance chains linking every design choice back to research and user needs.</li>
-      <li><span class="phase-name">Build</span> — Turn scenarios into working software through BDD and TDD. The architecture prevents surprises; the scenarios prevent ambiguity.</li>
+      <li><span class="phase-name">Architect</span> — Decompose the system into modules. Every boundary should answer the question: why here and not somewhere else? Provenance chains link each design choice back through a decision to a research finding to a user need. If you can't follow the chain, the boundary is arbitrary.</li>
+      <li><span class="phase-name">Build</span> — Scenarios become tests. Tests become software. BDD and TDD.</li>
       <li><span class="phase-name">Synthesize</span> — Don't let your discoveries die in the artifacts that produced them. Write about what you built — not a summary, but an act of inquiry. Laurel Richardson called writing "a method of discovery": you write to find out what you think, not to report what you already know. Find the form your story demands — an essay, a talk, a hermit crab form that borrows the shell of another genre, an arrangement closer to an exhibition where meaning emerges from juxtaposition and the spaces between. Sometimes the act of synthesis surfaces new questions the pipeline hasn't addressed — when that happens, loop back into research. The pipeline isn't strictly linear; understanding generates new questions.</li>
       <li><span class="phase-name">Graduate</span> — Fold the durable knowledge — architectural decisions, domain vocabulary, product context, key rationale — into your project's native documentation. Archive the RDD artifacts. The scaffolding has done its job; the understanding lives in you and in the project's own docs now. RDD comes down until the next problem warrants it.</li>
     </ul>
@@ -362,22 +362,16 @@
     <h2>How RDD Differs</h2>
 
     <p>
-      <strong>From agile:</strong> Agile optimizes for business delivery and discovers
-      user value incidentally. RDD optimizes for understanding through research and
-      discovers business value as a consequence of user alignment.
-    </p>
-
-    <p>
-      <strong>From BDD/TDD alone:</strong> BDD and TDD verify that the system does what
-      was specified. RDD questions whether the specification reflects reality. The
-      research and product discovery phases change <em>what</em> gets specified; BDD/TDD
-      in the build phase ensures it gets built correctly.
-    </p>
-
-    <p>
-      <strong>From vibe coding:</strong> Vibe coding treats AI output as the product.
-      RDD treats output as starting material for human understanding. The gap
-      between generation and explanation is where learning happens.
+      Agile optimizes for business delivery and discovers user value incidentally.
+      RDD inverts this: it optimizes for understanding through research and discovers
+      business value as a consequence of user alignment. Where BDD and TDD verify
+      that the system does what was specified, RDD questions whether the specification
+      reflects reality — the research and discovery phases change <em>what</em> gets
+      specified before BDD/TDD ensures it gets built correctly. You may still end up
+      with AI-generated code, but the specifications it builds from are grounded in
+      research and discovery rather than assumptions. Vibe coding skips that grounding
+      entirely — the gap between "plausible" and "investigated" is where the
+      interesting mistakes hide.
     </p>
 
     <div class="cta">

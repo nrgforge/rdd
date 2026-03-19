@@ -10,7 +10,7 @@ Building with AI is fast. Understanding what you built is the hard part.
 
 RDD exists because understanding is valuable on its own — not just as a hedge against maintenance costs, but because deep engagement with a problem changes how you think about it. Research reshapes the problem statement. Synthesis surfaces connections you didn't expect. The act of explaining what you've learned reveals what you haven't. This process is slow, deliberate, and genuinely interesting. It's deep work.
 
-It's also fundamentally user-centric. RDD's pipeline is grounded in what research finds, not what you assume going in. Product discovery happens before domain modeling. Assumptions get inverted before they harden into architecture. The system you build reflects investigated reality, not the first plausible story you told yourself.
+It's also user-centric. RDD's pipeline is grounded in what research finds, not what you assume going in. Product discovery happens before domain modeling. Assumptions get inverted before they harden into architecture. The system you build reflects investigated reality, not the first plausible story you told yourself.
 
 At the end of an RDD cycle, you should be able to speak with authority about what you built, who it's for, and why — without AI assistance. Not because you memorized the output, but because you shaped the process and the result. That's the test.
 
