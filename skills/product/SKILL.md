@@ -257,4 +257,4 @@ Then ask whether to proceed to the next phase, revise the artifact, or loop back
 
 ## NEXT PHASE
 
-When product discovery is complete and the user is ready to proceed, advance to **`/rdd:model`**. The domain model draws on both the research essay and the product discovery artifact — user-facing vocabulary from the Product Vocabulary table feeds the glossary's Product Origin column, and value tensions propagate as Open Questions.
+When product discovery is complete and the user is ready to proceed, advance to **`/rdd-model`**. The domain model draws on both the research essay and the product discovery artifact — user-facing vocabulary from the Product Vocabulary table feeds the glossary's Product Origin column, and value tensions propagate as Open Questions.

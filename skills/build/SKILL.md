@@ -27,7 +27,7 @@ research → product → model → decide → architect → BUILD → synthesis
 Read in this order:
 
 1. **Domain model invariants** (`./docs/domain-model.md`, § Invariants) — constitutional authority. These are the highest-precedence statements in the entire artifact set.
-2. **System design** (`./docs/system-design.md`) — PRIMARY context document. Contains the module decomposition, responsibility allocation, dependency graph, and provenance chains. This is the compiled rollup of all upstream artifacts. **If this file does not exist** (e.g., the user skipped `/rdd:architect`), note that stewardship checkpoints will not be available during build. Prompt the user: run `/rdd:architect` first, or proceed without architectural guardrails.
+2. **System design** (`./docs/system-design.md`) — PRIMARY context document. Contains the module decomposition, responsibility allocation, dependency graph, and provenance chains. This is the compiled rollup of all upstream artifacts. **If this file does not exist** (e.g., the user skipped `/rdd-architect`), note that stewardship checkpoints will not be available during build. Prompt the user: run `/rdd-architect` first, or proceed without architectural guardrails.
 3. **Behavior scenarios** (`./docs/scenarios.md`) — your acceptance criteria.
 4. **Existing project code** — understand what's already there before writing anything.
 
@@ -204,7 +204,7 @@ After all scenarios pass, integration is verified, and the field guide is genera
 
 1. **Regenerate ORIENTATION.md** — the BUILD milestone reflects the completed implementation (ADR-021). Update the current state section with what was built.
 
-2. **Consider `/rdd:conform` audit** — the RDD skills may have evolved since the project's artifacts were last produced. A post-build conformance audit verifies the full artifact corpus still aligns with current skill expectations.
+2. **Consider `/rdd-conform` audit** — the RDD skills may have evolved since the project's artifacts were last produced. A post-build conformance audit verifies the full artifact corpus still aligns with current skill expectations.
 
 3. **Archive completed work packages in the roadmap** — if `./docs/roadmap.md` exists, move completed work packages from the active section to a **Completed Work Log** at the end of the document. Record commit references and completion status for each. The active section should reflect only upcoming or in-progress work. This prevents the roadmap from accumulating indefinitely and keeps it useful as a forward-looking document.
 
@@ -318,9 +318,9 @@ Most software design decisions are easily reversible. Therefore:
 
 If implementation reveals that:
 - A **scenario is ambiguous** — stop and clarify with the user before continuing
-- A **decision was wrong** — flag it. The user may need to go back to `/rdd:decide` and update the ADR
-- A **concept is missing from the domain model** — flag it. The glossary needs updating via `/rdd:model`
-- An **assumption from research was incorrect** — flag it. The user may need to revisit `/rdd:research`
+- A **decision was wrong** — flag it. The user may need to go back to `/rdd-decide` and update the ADR
+- A **concept is missing from the domain model** — flag it. The glossary needs updating via `/rdd-model`
+- An **assumption from research was incorrect** — flag it. The user may need to revisit `/rdd-research`
 - A **document contradicts current invariants** — flag it. The document needs a supersession note. Do NOT follow the document's guidance if it contradicts an invariant. This is the most insidious failure mode: old documents re-propagating dead ideas into new code.
 
 Building is the ultimate test of understanding. Discovering flaws here is expected, not a failure.
@@ -405,14 +405,14 @@ build scenario group
 
 ## DESIGN AMENDMENTS
 
-When building reveals that the system design needs to change — not the code, but the architectural design itself — use this process. Never silently modify the system design. This process mirrors the amendment process defined in `/rdd:architect`; if one is updated, both should be kept consistent.
+When building reveals that the system design needs to change — not the code, but the architectural design itself — use this process. Never silently modify the system design. This process mirrors the amendment process defined in `/rdd-architect`; if one is updated, both should be kept consistent.
 
 ### When to Amend
 
 - Tier 2 review reveals the design was wrong (not just the code)
 - A scenario requires capability that doesn't fit the current module decomposition
 - A dependency that the design prohibits turns out to be necessary
-- An invariant has changed (triggers backward propagation via `/rdd:model`)
+- An invariant has changed (triggers backward propagation via `/rdd-model`)
 
 ### Amendment Process
 
@@ -434,7 +434,7 @@ When building reveals that the system design needs to change — not the code, b
 
 When a design constraint feels wrong, follow the provenance chain in the system design:
 
-- **Traces to a researched invariant** → load-bearing. Do not amend without revisiting `/rdd:research`. The constraint exists because research established it.
+- **Traces to a researched invariant** → load-bearing. Do not amend without revisiting `/rdd-research`. The constraint exists because research established it.
 - **Traces to an ADR judgment call** → changeable. Propose a Design Amendment with a rationale that supersedes the original ADR reasoning.
 - **Traces to a design-phase allocation** → freely changeable. Propose a Design Amendment. These are architectural judgment calls, not research-backed constraints.
 - **No provenance** → accidental. Change freely and add provenance to the replacement to prevent future confusion.
@@ -455,4 +455,4 @@ When a design constraint feels wrong, follow the provenance chain in the system 
 
 ## NEXT PHASE
 
-When all scenarios are implemented and the user is ready to proceed, **`/rdd:synthesis`** is available as an optional terminal phase. Use it when the writer wants to extract publishable insight from the RDD cycle. If the user does not want synthesis, the build phase is the terminal phase — the pipeline is complete.
+When all scenarios are implemented and the user is ready to proceed, **`/rdd-synthesis`** is available as an optional terminal phase. Use it when the writer wants to extract publishable insight from the RDD cycle. If the user does not want synthesis, the build phase is the terminal phase — the pipeline is complete.

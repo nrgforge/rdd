@@ -17,15 +17,15 @@ $ARGUMENTS
 
 | Skill | Purpose | Invoke with |
 |-------|---------|-------------|
-| `/rdd:research` | Ideation → research/spike loop → citation-audited and argument-audited essay | Topic or question |
-| `/rdd:product` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay |
-| `/rdd:model` | Extract domain vocabulary from essay + product discovery | Essay + product discovery artifact |
-| `/rdd:decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
-| `/rdd:architect` | System design with responsibility allocation + provenance | Domain model + ADRs + scenarios |
-| `/rdd:build` | BDD scenarios → TDD loop → working software | Scenarios + domain model |
-| `/rdd:synthesis` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build) |
-| `/rdd:conform` | Conformance audit — artifact template alignment, drift detection, remediation, graduation | Artifact corpus + skill files (utility, invoked as needed) |
-| `/rdd:lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd:research`) |
+| `/rdd-research` | Ideation → research/spike loop → citation-audited and argument-audited essay | Topic or question |
+| `/rdd-product` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay |
+| `/rdd-model` | Extract domain vocabulary from essay + product discovery | Essay + product discovery artifact |
+| `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
+| `/rdd-architect` | System design with responsibility allocation + provenance | Domain model + ADRs + scenarios |
+| `/rdd-build` | BDD scenarios → TDD loop → working software | Scenarios + domain model |
+| `/rdd-synthesis` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build) |
+| `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation, graduation | Artifact corpus + skill files (utility, invoked as needed) |
+| `/rdd-lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd-research`) |
 
 ---
 
@@ -122,7 +122,7 @@ User picks which skills to run and in what order.
 
 ### Skill Version Conformance Check
 
-Before starting a new cycle or resuming an existing one, check whether the project has an existing artifact corpus (essays, domain model, ADRs, system design, etc.). If artifacts exist, the RDD skill files may have evolved since those artifacts were produced — new template sections, new artifact types, or changed structures. Offer to run `/rdd:conform` audit so the user can see whether their corpus still aligns with the current skill version before investing in a new cycle.
+Before starting a new cycle or resuming an existing one, check whether the project has an existing artifact corpus (essays, domain model, ADRs, system design, etc.). If artifacts exist, the RDD skill files may have evolved since those artifacts were produced — new template sections, new artifact types, or changed structures. Offer to run `/rdd-conform` audit so the user can see whether their corpus still aligns with the current skill version before investing in a new cycle.
 
 This check is lightweight: scan for artifact existence, note the suggestion, and let the user decide. Do not auto-run the audit or block the pipeline on it.
 
@@ -165,38 +165,38 @@ When generating artifacts in any phase, attend to the user's stated understandin
 
 ### Product Discovery Is Not Optional
 
-**Always run `/rdd:product`** in every pipeline cycle that proceeds past RESEARCH — even when `product-discovery.md` already exists. An existing artifact does not mean product thinking is current. Each new research cycle may shift stakeholder needs, surface new assumptions, or invalidate prior value tensions. When `product-discovery.md` exists, `/rdd:product` runs in update mode (Step 2c) — a section-by-section review against new research with downstream consistency checks. When no product discovery has ever been done on an existing system, backward mode (Step 2b) audits implicit assumptions first. Skipping the phase because the file exists defeats the purpose: product assumptions harden silently, and downstream phases inherit stale context.
+**Always run `/rdd-product`** in every pipeline cycle that proceeds past RESEARCH — even when `product-discovery.md` already exists. An existing artifact does not mean product thinking is current. Each new research cycle may shift stakeholder needs, surface new assumptions, or invalidate prior value tensions. When `product-discovery.md` exists, `/rdd-product` runs in update mode (Step 2c) — a section-by-section review against new research with downstream consistency checks. When no product discovery has ever been done on an existing system, backward mode (Step 2b) audits implicit assumptions first. Skipping the phase because the file exists defeats the purpose: product assumptions harden silently, and downstream phases inherit stale context.
 
 The only exception is Mode B (Research Only), which terminates before product discovery.
 
 ### Cross-Phase Integration
 
 Findings from earlier phases inform later ones:
-- `/rdd:research` runs `/rdd:citation-audit` and `/rdd:argument-audit` on the essay before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, and claims don't overreach evidence. The essay that enters downstream phases is audited.
-- `/rdd:research` essay provides context for `/rdd:product` product discovery and `/rdd:model` vocabulary extraction
-- `/rdd:product` stakeholder maps and jobs inform `/rdd:model` vocabulary extraction — the Product Vocabulary Table feeds the Product Origin provenance column in the domain model
-- `/rdd:product` value tensions propagate as open questions into the domain model
-- `/rdd:product` assumption inversions become candidate behavior scenarios in `/rdd:decide`
-- `/rdd:model` vocabulary must be used consistently in `/rdd:decide` ADRs and scenarios
-- `/rdd:decide` checks ADRs against unexamined product assumptions — if an ADR's context references a product assumption, the assumption should be validated through product discovery
-- `/rdd:decide` runs `/rdd:argument-audit` on ADRs + essay + prior ADRs to verify logical consistency before writing scenarios
-- `/rdd:decide` conformance audit checks existing code against accepted ADRs — producing a debt list that informs scenario writing
-- `/rdd:decide` ADR decisions constrain what `/rdd:architect` designs and `/rdd:build` implements
-- `/rdd:decide` behavior scenarios drive `/rdd:build` test-first process
-- `/rdd:architect` checks module boundaries against user mental models — does a boundary serve the user's mental model or just the developer's? Documents the answer in the responsibility matrix provenance
-- `/rdd:architect` provenance chains extend to user needs: Module → Domain Concept → ADR → Product Discovery (stakeholder/job/value)
-- `/rdd:architect` composes ADRs, domain model, and scenarios into a system design with provenance chains linking design to research
-- `/rdd:architect` responsibility matrix prevents god-classes by allocating domain concepts/actions to modules before code is written
-- `/rdd:build` reads the system design as its primary context (compiled rollup), not the full artifact set
-- `/rdd:build` treats ADR violations as architectural tidying — resolve as `refactor:` commits before implementing scenarios
-- `/rdd:build` stewardship checkpoints verify architectural conformance at natural scenario boundaries
-- `/rdd:build` integration verification (Step 5) catches type mismatches, persistence divergence, and missing cross-component contracts that acceptance tests with stubs cannot detect
-- If `/rdd:build` stewardship review reveals a design flaw, a Design Amendment updates the system design (not the ADRs)
-- If `/rdd:build` reveals a flaw in a decision, go back and update the ADR
+- `/rdd-research` runs `/rdd-citation-audit` and `/rdd-argument-audit` on the essay before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, and claims don't overreach evidence. The essay that enters downstream phases is audited.
+- `/rdd-research` essay provides context for `/rdd-product` product discovery and `/rdd-model` vocabulary extraction
+- `/rdd-product` stakeholder maps and jobs inform `/rdd-model` vocabulary extraction — the Product Vocabulary Table feeds the Product Origin provenance column in the domain model
+- `/rdd-product` value tensions propagate as open questions into the domain model
+- `/rdd-product` assumption inversions become candidate behavior scenarios in `/rdd-decide`
+- `/rdd-model` vocabulary must be used consistently in `/rdd-decide` ADRs and scenarios
+- `/rdd-decide` checks ADRs against unexamined product assumptions — if an ADR's context references a product assumption, the assumption should be validated through product discovery
+- `/rdd-decide` runs `/rdd-argument-audit` on ADRs + essay + prior ADRs to verify logical consistency before writing scenarios
+- `/rdd-decide` conformance audit checks existing code against accepted ADRs — producing a debt list that informs scenario writing
+- `/rdd-decide` ADR decisions constrain what `/rdd-architect` designs and `/rdd-build` implements
+- `/rdd-decide` behavior scenarios drive `/rdd-build` test-first process
+- `/rdd-architect` checks module boundaries against user mental models — does a boundary serve the user's mental model or just the developer's? Documents the answer in the responsibility matrix provenance
+- `/rdd-architect` provenance chains extend to user needs: Module → Domain Concept → ADR → Product Discovery (stakeholder/job/value)
+- `/rdd-architect` composes ADRs, domain model, and scenarios into a system design with provenance chains linking design to research
+- `/rdd-architect` responsibility matrix prevents god-classes by allocating domain concepts/actions to modules before code is written
+- `/rdd-build` reads the system design as its primary context (compiled rollup), not the full artifact set
+- `/rdd-build` treats ADR violations as architectural tidying — resolve as `refactor:` commits before implementing scenarios
+- `/rdd-build` stewardship checkpoints verify architectural conformance at natural scenario boundaries
+- `/rdd-build` integration verification (Step 5) catches type mismatches, persistence divergence, and missing cross-component contracts that acceptance tests with stubs cannot detect
+- If `/rdd-build` stewardship review reveals a design flaw, a Design Amendment updates the system design (not the ADRs)
+- If `/rdd-build` reveals a flaw in a decision, go back and update the ADR
 - When any phase changes a domain model invariant, **backward propagation triggers**: all prior documents are swept for contradictions, supersession notes are added, and the amendment is logged in the domain model. This is a cross-cutting event that interrupts normal phase sequence.
-- `/rdd:synthesis` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, and system design. It does not read just the preceding phase's output.
-- `/rdd:synthesis` invokes `/rdd:citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd:research` invoking `/rdd:lit-review`
-- `/rdd:synthesis` invokes `/rdd:argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd:argument-audit` that `/rdd:decide` invokes on ADRs, applied to the narrative genre
+- `/rdd-synthesis` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, and system design. It does not read just the preceding phase's output.
+- `/rdd-synthesis` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
+- `/rdd-synthesis` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
 - The synthesis essay, when written by the user, serves as a **narrative context rollup** — the orchestrator should treat it as a primary context source when bootstrapping new sessions for the project. It answers "what was discovered, and why does it matter?" where structured artifacts answer "what was decided?"
 
 ### Artifacts Summary
@@ -224,7 +224,7 @@ Invariant changes are the highest-impact events in the RDD cycle. They can inval
 
 - **When detected:** pause the current phase, run backward propagation (sweep all prior ADRs and essays for contradictions, add supersession notes, update the domain model's Amendment Log), then resume after propagation is complete.
 - **Cost calculus:** the cost of propagation now is far less than the cost of stale assumptions propagating into code later. A 10-minute sweep prevents hours of debugging dead ideas in future sessions.
-- **Who triggers it:** `/rdd:model` Step 3.5 detects amendments; `/rdd:decide` Step 3.7 executes backward propagation. But any phase that discovers an invariant contradiction should flag it for propagation.
+- **Who triggers it:** `/rdd-model` Step 3.5 detects amendments; `/rdd-decide` Step 3.7 executes backward propagation. But any phase that discovers an invariant contradiction should flag it for propagation.
 
 ### Orientation Document
 
@@ -273,7 +273,7 @@ RDD scales with project maturity. Early on, cycles run at the whole-project leve
 
 2. **Cycle** — run the pipeline phases. The subsystem's domain model, ADRs, and system design use the project-level vocabulary and constraints as given context — they do not duplicate the entire project's domain model or system design. If the scoped cycle's research or modeling surfaces findings that contradict project-level architecture, flag this to the user as a potential project-level concern. The user decides whether to update project-level docs, trigger a project-level cycle, or note it as an open question.
 
-3. **Graduate** — when the work shifts from identity-forming ("we're building and understanding what this is") to feature-extending ("we know what this is, now we're extending it"), the RDD scaffolding at this scope has done its job. Invoke `/rdd:conform` graduation to fold durable knowledge into project-level docs and archive the scoped cycle's artifacts.
+3. **Graduate** — when the work shifts from identity-forming ("we're building and understanding what this is") to feature-extending ("we know what this is, now we're extending it"), the RDD scaffolding at this scope has done its job. Invoke `/rdd-conform` graduation to fold durable knowledge into project-level docs and archive the scoped cycle's artifacts.
 
 **Graduation signals.** Documentation fatigue — experiencing the artifacts as maintenance burden rather than active value — is a design signal, not a failure. The appropriate response is graduation and re-scoping, not abandoning discipline. Declining to graduate is also valid: further cycles can run in the same corpus if the problem space still warrants structured thinking.
 
@@ -298,12 +298,12 @@ This applies to all prose produced by every phase. It is a cross-cutting rule.
 
 - **User controls the workflow**: Always present options and let the user decide. Never auto-advance past a gate without confirmation.
 - **Research produces writing, not just notes**: The essay artifact distinguishes this from typical dev workflows. If you can't write it clearly, you don't understand it.
-- **Domain vocabulary is the connective tissue**: The glossary from `/rdd:model` threads through every later artifact. Inconsistent naming signals incomplete understanding.
-- **Stop at uncertainty**: If a decision or scenario depends on something unknown, go back to `/rdd:research` and investigate. Don't speculate past what's known.
-- **Don't repeat work**: Pass relevant findings forward between skills. If `/rdd:research` already surfaced a tradeoff, `/rdd:decide` should reference it, not rediscover it.
+- **Domain vocabulary is the connective tissue**: The glossary from `/rdd-model` threads through every later artifact. Inconsistent naming signals incomplete understanding.
+- **Stop at uncertainty**: If a decision or scenario depends on something unknown, go back to `/rdd-research` and investigate. Don't speculate past what's known.
+- **Don't repeat work**: Pass relevant findings forward between skills. If `/rdd-research` already surfaced a tradeoff, `/rdd-decide` should reference it, not rediscover it.
 - **ADRs are source of truth**: Code that contradicts accepted ADRs is structural debt. Resolve it before building on top of it.
 - **Invariants decay with distance**: LLMs lose coherence across many documents. The invariants section is the short, authoritative statement that prevents this. Keep it concise. Read it first. Trust it over longer documents when they conflict.
 - **Track state**: The user should always know where they are in the pipeline and what's left.
-- **Inversion Principle — question assumptions before encoding them**: A cross-cutting epistemological practice. Every phase should ask whether its assumptions have been examined. The procedural home is `/rdd:product` (assumption inversions), but the principle applies everywhere: RESEARCH ("right problem?"), PRODUCT DISCOVERY (procedural step), DECIDE ("unexamined product assumption?"), ARCHITECT ("user's mental model or developer's?"), SYNTHESIS (narrative framing — inverting obvious takeaways, process-vs-product assumptions, reader's assumed context).
+- **Inversion Principle — question assumptions before encoding them**: A cross-cutting epistemological practice. Every phase should ask whether its assumptions have been examined. The procedural home is `/rdd-product` (assumption inversions), but the principle applies everywhere: RESEARCH ("right problem?"), PRODUCT DISCOVERY (procedural step), DECIDE ("unexamined product assumption?"), ARCHITECT ("user's mental model or developer's?"), SYNTHESIS (narrative framing — inverting obvious takeaways, process-vs-product assumptions, reader's assumed context).
 - **Document sizing heuristics**: Five cascading heuristics govern artifact structure, applied in priority order: (1) **Purpose Test** — a document serves one purpose for one audience; when purposes diverge, split. (2) **3-5 Concept Rule** — each section requires holding no more than 3-5 concepts simultaneously. (3) **~5,000 Word Guideline** — documents read end-to-end should aim to stay near ~5,000 words; approximate and directional, not a hard ceiling. (4) **Read Contract** — reference material consulted by section can be longer than narrative material read end-to-end; access pattern determines appropriate length. (5) **Position-Sensitive Placement** — critical information at beginning and end of agent-consumed documents; nothing essential in the middle third. The Purpose Test is the strongest signal; the Word Guideline does not override the Read Contract for reference artifacts like domain models and field guides.
 - **Three-tier artifact hierarchy**: `ORIENTATION.md` sits at Tier 1 as the entry point — it routes readers to depth without containing depth. `product-discovery.md`, `system-design.md`, and `roadmap.md` are Tier 2 primary readables for product, technical, and sequencing stakeholders respectively. All other artifacts (domain model, essays, ADRs, scenarios, field guide) are Tier 3 supporting material for provenance and reference. New readers — human or agent — start at ORIENTATION.md and navigate from there.

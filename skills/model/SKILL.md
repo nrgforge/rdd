@@ -131,4 +131,4 @@ Then ask whether to proceed to the next phase or revise the model.
 
 ## NEXT PHASE
 
-When the domain model is approved and the user is ready to proceed, advance to **`/rdd:decide`**. The decision phase uses the glossary as binding vocabulary for ADRs and behavior scenarios.
+When the domain model is approved and the user is ready to proceed, advance to **`/rdd-decide`**. The decision phase uses the glossary as binding vocabulary for ADRs and behavior scenarios.
