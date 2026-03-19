@@ -63,7 +63,7 @@ Before running a spike, present the question and plan to the user. After the spi
 
 ### Step 3: Synthesize into Research Log
 
-**Archive previous logs.** If `./docs/essays/research-logs/research-log.md` already exists from a prior research cycle, move it to `./docs/essays/research-logs/<matching-essay-name>.md` before starting the new log. For example, if the previous cycle produced essay `docs/essays/event-sourcing-tradeoffs.md`, archive the log to `docs/essays/research-logs/event-sourcing-tradeoffs.md`. Create the `./docs/essays/research-logs/` directory if it doesn't exist. The essay is the durable artifact; the log preserves the process for posterity.
+**Handle stale logs.** If `./docs/essays/research-logs/research-log.md` already exists when starting a new cycle, it is likely from a prior interrupted session. Archive it to `./docs/essays/research-logs/<best-guess-name>.md` before starting the new log. Create the `./docs/essays/research-logs/` directory if it doesn't exist.
 
 After each research iteration, update the running log:
 
@@ -177,6 +177,15 @@ Write reflections to `./docs/essays/reflections/NNN-descriptive-name.md`, using 
 - **Open question without a clear research path** — note it for the domain model. When `/rdd-model` runs, these open questions should appear in a dedicated **Open Questions** section of the domain model, so they are visible to downstream phases rather than lost between sessions.
 
 Then ask whether to proceed to the next phase, revise the essay, or loop back to research.
+
+### Step 6: Archive Research Log
+
+After reflections are recorded and the user is ready to proceed, archive the research log as part of the cycle that produced it (ADR-036):
+
+1. Move `./docs/essays/research-logs/research-log.md` to `./docs/essays/research-logs/NNN-descriptive-name.md`, matching the essay number (e.g., essay `007-rdd-as-plugin-architecture.md` → log `007-rdd-as-plugin-architecture.md`)
+2. The next cycle starts with no `research-log.md`, creating a fresh one
+
+This ensures each log is explicitly associated with its essay and the archival happens deterministically at cycle end — not contingently at the start of the next cycle.
 
 ---
 
