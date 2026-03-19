@@ -18,7 +18,7 @@ $ARGUMENTS
 | Skill | Purpose | Invoke with |
 |-------|---------|-------------|
 | `/rdd-research` | Ideation → research/spike loop → citation-audited and argument-audited essay | Topic or question |
-| `/rdd-product` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay |
+| `/rdd-discover` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay |
 | `/rdd-model` | Extract domain vocabulary from essay + product discovery | Essay + product discovery artifact |
 | `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
 | `/rdd-architect` | System design with responsibility allocation + provenance | Domain model + ADRs + scenarios |
@@ -54,7 +54,7 @@ Phase 1: UNDERSTAND
     [Epistemic gate: User explains key findings and how their thinking shifted.]
 
 Phase 2: PRODUCT DISCOVERY
-└── /rdd-product — Stakeholder maps, jobs, value tensions, assumption inversions
+└── /rdd-discover — Stakeholder maps, jobs, value tensions, assumption inversions
     [Epistemic gate: User surfaces tacit product knowledge.]
 
 Bridge: MODEL
@@ -97,7 +97,7 @@ User already has research/essay. Start at the domain model bridge.
 
 ```
 Phase 2: PRODUCT DISCOVERY
-└── /rdd-product — Stakeholder maps, jobs, value tensions, assumption inversions
+└── /rdd-discover — Stakeholder maps, jobs, value tensions, assumption inversions
 
 Bridge: MODEL
 └── /rdd-model — Extract vocabulary from existing research
@@ -146,7 +146,7 @@ Maintain a running status table:
 | Phase | Skill | Status | Artifact | Key Epistemic Response | Notes |
 |-------|-------|--------|----------|----------------------|-------|
 | UNDERSTAND | /rdd-research | ▶ In Progress | Research loop #3 | — | Investigating caching strategies |
-| PRODUCT DISCOVERY | /rdd-product | ☐ Pending | — | — | — |
+| PRODUCT DISCOVERY | /rdd-discover | ☐ Pending | — | — | — |
 | MODEL | /rdd-model | ☐ Pending | — | — | — |
 | DECIDE | /rdd-decide | ☐ Pending | — | — | — |
 | ARCHITECT | /rdd-architect | ☐ Pending | — | — | — |
@@ -165,7 +165,7 @@ When generating artifacts in any phase, attend to the user's stated understandin
 
 ### Product Discovery Is Not Optional
 
-**Always run `/rdd-product`** in every pipeline cycle that proceeds past RESEARCH — even when `product-discovery.md` already exists. An existing artifact does not mean product thinking is current. Each new research cycle may shift stakeholder needs, surface new assumptions, or invalidate prior value tensions. When `product-discovery.md` exists, `/rdd-product` runs in update mode (Step 2c) — a section-by-section review against new research with downstream consistency checks. When no product discovery has ever been done on an existing system, backward mode (Step 2b) audits implicit assumptions first. Skipping the phase because the file exists defeats the purpose: product assumptions harden silently, and downstream phases inherit stale context.
+**Always run `/rdd-discover`** in every pipeline cycle that proceeds past RESEARCH — even when `product-discovery.md` already exists. An existing artifact does not mean product thinking is current. Each new research cycle may shift stakeholder needs, surface new assumptions, or invalidate prior value tensions. When `product-discovery.md` exists, `/rdd-discover` runs in update mode (Step 2c) — a section-by-section review against new research with downstream consistency checks. When no product discovery has ever been done on an existing system, backward mode (Step 2b) audits implicit assumptions first. Skipping the phase because the file exists defeats the purpose: product assumptions harden silently, and downstream phases inherit stale context.
 
 The only exception is Mode B (Research Only), which terminates before product discovery.
 
@@ -173,10 +173,10 @@ The only exception is Mode B (Research Only), which terminates before product di
 
 Findings from earlier phases inform later ones:
 - `/rdd-research` runs `/rdd-citation-audit` and `/rdd-argument-audit` on the essay before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, and claims don't overreach evidence. The essay that enters downstream phases is audited.
-- `/rdd-research` essay provides context for `/rdd-product` product discovery and `/rdd-model` vocabulary extraction
-- `/rdd-product` stakeholder maps and jobs inform `/rdd-model` vocabulary extraction — the Product Vocabulary Table feeds the Product Origin provenance column in the domain model
-- `/rdd-product` value tensions propagate as open questions into the domain model
-- `/rdd-product` assumption inversions become candidate behavior scenarios in `/rdd-decide`
+- `/rdd-research` essay provides context for `/rdd-discover` product discovery and `/rdd-model` vocabulary extraction
+- `/rdd-discover` stakeholder maps and jobs inform `/rdd-model` vocabulary extraction — the Product Vocabulary Table feeds the Product Origin provenance column in the domain model
+- `/rdd-discover` value tensions propagate as open questions into the domain model
+- `/rdd-discover` assumption inversions become candidate behavior scenarios in `/rdd-decide`
 - `/rdd-model` vocabulary must be used consistently in `/rdd-decide` ADRs and scenarios
 - `/rdd-decide` checks ADRs against unexamined product assumptions — if an ADR's context references a product assumption, the assumption should be validated through product discovery
 - `/rdd-decide` runs `/rdd-argument-audit` on ADRs + essay + prior ADRs to verify logical consistency before writing scenarios
@@ -304,6 +304,6 @@ This applies to all prose produced by every phase. It is a cross-cutting rule.
 - **ADRs are source of truth**: Code that contradicts accepted ADRs is structural debt. Resolve it before building on top of it.
 - **Invariants decay with distance**: LLMs lose coherence across many documents. The invariants section is the short, authoritative statement that prevents this. Keep it concise. Read it first. Trust it over longer documents when they conflict.
 - **Track state**: The user should always know where they are in the pipeline and what's left.
-- **Inversion Principle — question assumptions before encoding them**: A cross-cutting epistemological practice. Every phase should ask whether its assumptions have been examined. The procedural home is `/rdd-product` (assumption inversions), but the principle applies everywhere: RESEARCH ("right problem?"), PRODUCT DISCOVERY (procedural step), DECIDE ("unexamined product assumption?"), ARCHITECT ("user's mental model or developer's?"), SYNTHESIS (narrative framing — inverting obvious takeaways, process-vs-product assumptions, reader's assumed context).
+- **Inversion Principle — question assumptions before encoding them**: A cross-cutting epistemological practice. Every phase should ask whether its assumptions have been examined. The procedural home is `/rdd-discover` (assumption inversions), but the principle applies everywhere: RESEARCH ("right problem?"), PRODUCT DISCOVERY (procedural step), DECIDE ("unexamined product assumption?"), ARCHITECT ("user's mental model or developer's?"), SYNTHESIS (narrative framing — inverting obvious takeaways, process-vs-product assumptions, reader's assumed context).
 - **Document sizing heuristics**: Five cascading heuristics govern artifact structure, applied in priority order: (1) **Purpose Test** — a document serves one purpose for one audience; when purposes diverge, split. (2) **3-5 Concept Rule** — each section requires holding no more than 3-5 concepts simultaneously. (3) **~5,000 Word Guideline** — documents read end-to-end should aim to stay near ~5,000 words; approximate and directional, not a hard ceiling. (4) **Read Contract** — reference material consulted by section can be longer than narrative material read end-to-end; access pattern determines appropriate length. (5) **Position-Sensitive Placement** — critical information at beginning and end of agent-consumed documents; nothing essential in the middle third. The Purpose Test is the strongest signal; the Word Guideline does not override the Read Contract for reference artifacts like domain models and field guides.
 - **Three-tier artifact hierarchy**: `ORIENTATION.md` sits at Tier 1 as the entry point — it routes readers to depth without containing depth. `product-discovery.md`, `system-design.md`, and `roadmap.md` are Tier 2 primary readables for product, technical, and sequencing stakeholders respectively. All other artifacts (domain model, essays, ADRs, scenarios, field guide) are Tier 3 supporting material for provenance and reference. New readers — human or agent — start at ORIENTATION.md and navigate from there.

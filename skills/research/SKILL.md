@@ -201,4 +201,4 @@ This ensures each log is explicitly associated with its essay and the archival h
 
 ## NEXT PHASE
 
-When research is complete and the user is ready to proceed, **always advance to `/rdd-product`** — not `/rdd-model`. Product discovery must run in every pipeline cycle that proceeds past RESEARCH, even when `product-discovery.md` already exists. The product phase updates stakeholder needs, value tensions, and assumption inversions against the new research before domain modeling begins.
+When research is complete and the user is ready to proceed, **always advance to `/rdd-discover`** — not `/rdd-model`. Product discovery must run in every pipeline cycle that proceeds past RESEARCH, even when `product-discovery.md` already exists. The product phase updates stakeholder needs, value tensions, and assumption inversions against the new research before domain modeling begins.

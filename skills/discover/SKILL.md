@@ -1,6 +1,6 @@
 ---
-name: rdd-product
-description: Product discovery phase of RDD. Surfaces user needs, stakeholder maps, value tensions, and assumption inversions between RESEARCH and MODEL. Use after /rdd-research to ensure product thinking before domain modeling.
+name: rdd-discover
+description: Discovery phase of RDD. Surfaces user needs, stakeholder maps, value tensions, and assumption inversions between RESEARCH and MODEL. Use after /rdd-research to ensure product thinking before domain modeling.
 allowed-tools: Read, Grep, Glob, Write, Edit
 ---
 
