@@ -63,7 +63,7 @@ Present the gap analysis to the user before proceeding to module decomposition.
 
 After reconnaissance and gap analysis, present the divergences to the user. For each divergence, the user decides:
 - **Bug** — the code is wrong, the ADR is right. Fix during build.
-- **ADR is wrong** — the code reflects a better decision. Update the ADR via `/rdd-decide`.
+- **ADR is wrong** — the code reflects a better decision. Update the ADR via `/rdd:decide`.
 - **Deferred** — known divergence, not worth fixing now. Document it.
 
 Do not proceed past triage until the user has classified every divergence.
@@ -267,7 +267,7 @@ Present the complete design to the user. Highlight:
 - Fitness criteria that will be enforced during build
 - Any points where you stopped due to uncertainty
 
-**The user must engage with the system design before `/rdd-build` proceeds.** This is the gate between architectural design and implementation. Do not advance past this step without completing the epistemic gate below.
+**The user must engage with the system design before `/rdd:build` proceeds.** This is the gate between architectural design and implementation. Do not advance past this step without completing the epistemic gate below.
 
 ### EPISTEMIC GATE
 
@@ -291,7 +291,7 @@ After the user approves the system design (or after any design amendment):
 
 1. **Regenerate ORIENTATION.md** — the ARCHITECT milestone populates all five sections (ADR-021). In multi-cycle composition — where several research → decide → architect cycles run before BUILD — each cycle's system design and roadmap should be reflected in the orientation document so the growing artifact corpus stays navigable.
 
-2. **Consider `/rdd-conform` audit** — the RDD skills may have evolved since the project's artifacts were last produced. A conformance audit checks whether the existing corpus still matches what the current skill versions expect (new template sections, new artifact types, changed structures). This is especially relevant after multi-cycle composition, where artifacts from earlier cycles may predate skill updates.
+2. **Consider `/rdd:conform` audit** — the RDD skills may have evolved since the project's artifacts were last produced. A conformance audit checks whether the existing corpus still matches what the current skill versions expect (new template sections, new artifact types, changed structures). This is especially relevant after multi-cycle composition, where artifacts from earlier cycles may predate skill updates.
 
 ---
 
@@ -386,7 +386,7 @@ Each module entry, responsibility allocation, and fitness criterion includes pro
 
 When someone wants to change a design element, trace its provenance:
 
-1. **Traces to a researched invariant** → Load-bearing. Changing this means revisiting `/rdd-research` to re-examine the underlying finding. Do not change casually.
+1. **Traces to a researched invariant** → Load-bearing. Changing this means revisiting `/rdd:research` to re-examine the underlying finding. Do not change casually.
 2. **Traces to an ADR judgment call** → Changeable with a Design Amendment. The ADR captured a tradeoff; new information may shift the balance. Propose an amendment.
 3. **Traces to design-phase allocation only** → Freely changeable. This was an organizational choice made during architecture, not rooted in research. Amend the system design directly.
 4. **No provenance** → Accidental. Change freely, and add provenance to whatever replaces it.
@@ -416,13 +416,13 @@ Each entry records: what changed, what triggered the change (a build discovery, 
 - **Responsibility allocation is the central artifact**: It prevents god-classes by making ownership explicit before code exists. If you skip this, the TDD build loop will rediscover module boundaries through pain.
 - **One sentence per module purpose**: If the purpose takes two sentences, the boundary is wrong. Split the module until each purpose is crisp.
 - **Provenance enables change confidence**: Knowing whether a design choice is load-bearing (research-backed) or incidental (allocation convenience) determines how carefully you must change it.
-- **The system design is the compiled rollup**: `/rdd-build` reads this document, not the full artifact set. It must be self-contained enough that a builder can work from it plus the domain model.
+- **The system design is the compiled rollup**: `/rdd:build` reads this document, not the full artifact set. It must be self-contained enough that a builder can work from it plus the domain model.
 - **Stop designing when modules are clear**: Do not design internal module implementation. That is the build phase's job via TDD. Architecture defines boundaries; implementation fills them.
-- **Domain vocabulary is mandatory**: Every module name, concept, and action must come from the glossary. If you need a new term, the domain model needs updating first via `/rdd-model`.
+- **Domain vocabulary is mandatory**: Every module name, concept, and action must come from the glossary. If you need a new term, the domain model needs updating first via `/rdd:model`.
 - **No cycles, no exceptions**: A dependency cycle means the decomposition is wrong. Fix the decomposition, do not work around the cycle.
 
 ---
 
 ## NEXT PHASE
 
-When the system design is approved and the user is ready to proceed, advance to **`/rdd-build`**. The build phase reads the system design as its primary context document and implements scenarios through BDD acceptance tests and TDD inner loops.
+When the system design is approved and the user is ready to proceed, advance to **`/rdd:build`**. The build phase reads the system design as its primary context document and implements scenarios through BDD acceptance tests and TDD inner loops.

@@ -73,7 +73,7 @@ Write ADRs to `./docs/decisions/adr-NNN-<slug>.md`.
 ### ADR Principles
 
 - **One decision per ADR** — don't bundle unrelated decisions
-- **Stop at the first point of uncertainty** — if a decision depends on something you haven't learned yet, flag it. The user may need to go back to `/rdd-research`
+- **Stop at the first point of uncertainty** — if a decision depends on something you haven't learned yet, flag it. The user may need to go back to `/rdd:research`
 - **Context comes from the essay** — don't introduce new framing; reference what was already learned
 - **Thin, not exhaustive** — capture the decision and key consequences, not every possible consideration
 - **Use domain vocabulary** — every noun and verb should come from the glossary
@@ -185,11 +185,11 @@ Then ask whether to proceed to the next phase, revise the ADRs, or revisit resea
 
 - **Decisions are cheap to record, expensive to discover late**: Write the ADR even if the decision seems obvious. It costs a minute now and saves an argument later.
 - **Stop at uncertainty**: If a decision or scenario depends on something unknown, surface it. Don't speculate past what the research established.
-- **Scenarios are a contract**: They define what `/rdd-build` will implement. Be precise enough that someone could write a test from each scenario without ambiguity.
+- **Scenarios are a contract**: They define what `/rdd:build` will implement. Be precise enough that someone could write a test from each scenario without ambiguity.
 - **Domain vocabulary is mandatory**: Every term in scenarios and ADR context must come from the glossary. If you need a new term, the domain model needs updating first.
 
 ---
 
 ## NEXT PHASE
 
-When ADRs and scenarios are approved and the user is ready to proceed, advance to **`/rdd-architect`**. The architecture phase decomposes the system into modules using the ADRs as constraints and scenarios as behavioral requirements.
+When ADRs and scenarios are approved and the user is ready to proceed, advance to **`/rdd:architect`**. The architecture phase decomposes the system into modules using the ADRs as constraints and scenarios as behavioral requirements.

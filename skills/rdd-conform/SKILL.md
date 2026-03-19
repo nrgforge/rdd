@@ -10,7 +10,7 @@ All four operations in this skill are **pragmatic actions** (Invariant 3). You p
 
 > **This skill is not a pipeline phase.** It has no cycle position, no epistemic gate, and no place in the `research → product → model → decide → architect → build → synthesis` sequence. It is a utility invoked by the user when needed.
 
-> **This skill is not Product Conformance.** Product conformance (ADR-008, `/rdd-product` backward mode) checks product assumptions against actual user needs. Conformance audit checks artifact template and format alignment against the current skill version. The two are complementary, not overlapping.
+> **This skill is not Product Conformance.** Product conformance (ADR-008, `/rdd:product` backward mode) checks product assumptions against actual user needs. Conformance audit checks artifact template and format alignment against the current skill version. The two are complementary, not overlapping.
 
 $ARGUMENTS
 

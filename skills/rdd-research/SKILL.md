@@ -25,7 +25,7 @@ YOU ARE HERE
 ### Loop Mechanics
 
 1. **User poses a question or hypothesis** — what needs to be learned?
-2. **Research** — via web search, `/lit-review` (for academic topics), or a spike (for technical questions)
+2. **Research** — via web search, `/rdd:lit-review` (for academic topics), or a spike (for technical questions)
 3. **Synthesize** — record findings in the research log
 4. **User decides** — loop again with a new question, or proceed to the essay
 
@@ -92,7 +92,7 @@ The essay must begin with an **Abstract** — a concise summary (3-5 sentences) 
 - The research process used (web search, literature review, spikes)
 - The key conclusions and their implications
 
-The abstract serves as a context rollup for downstream phases (`/rdd-model`, `/rdd-architect`, `/rdd-build`). A reader should be able to decide whether to read the full essay from the abstract alone.
+The abstract serves as a context rollup for downstream phases (`/rdd:model`, `/rdd:architect`, `/rdd:build`). A reader should be able to decide whether to read the full essay from the abstract alone.
 
 The essay body should:
 - Explain the problem space and why it matters
@@ -102,7 +102,7 @@ The essay body should:
 - Be written for a technical audience unfamiliar with the project
 - Use third person or impersonal voice — never "we", "our", or "us"
 
-If a domain model with invariants already exists (`./docs/domain-model.md`), read its invariants before writing the essay. If the essay's findings contradict existing invariants, explicitly surface this tension. The user needs to decide: does the invariant change (amendment, handled in `/rdd-model`), or does the research finding need qualification? Never silently proceed past a contradiction between new research and existing invariants.
+If a domain model with invariants already exists (`./docs/domain-model.md`), read its invariants before writing the essay. If the essay's findings contradict existing invariants, explicitly surface this tension. The user needs to decide: does the invariant change (amendment, handled in `/rdd:model`), or does the research finding need qualification? Never silently proceed past a contradiction between new research and existing invariants.
 
 Write the essay to `./docs/essays/NNN-descriptive-name.md`, where NNN is a zero-padded sequential number (check existing essays to determine the next number) and the descriptive name is a short, kebab-case topic (e.g., `001-codebase-analysis-multi-lens-approach.md`). The essay header format:
 
@@ -174,7 +174,7 @@ Write reflections to `./docs/essays/reflections/NNN-descriptive-name.md`, using 
 
 **Feed-back from reflections.** If a reflection surfaces a new insight or unanswered question:
 - **New research question** — offer to loop back into the research cycle (Step 1–3) before proceeding. The reflection becomes the next question.
-- **Open question without a clear research path** — note it for the domain model. When `/rdd-model` runs, these open questions should appear in a dedicated **Open Questions** section of the domain model, so they are visible to downstream phases rather than lost between sessions.
+- **Open question without a clear research path** — note it for the domain model. When `/rdd:model` runs, these open questions should appear in a dedicated **Open Questions** section of the domain model, so they are visible to downstream phases rather than lost between sessions.
 
 Then ask whether to proceed to the next phase, revise the essay, or loop back to research.
 
@@ -201,4 +201,4 @@ This ensures each log is explicitly associated with its essay and the archival h
 
 ## NEXT PHASE
 
-When research is complete and the user is ready to proceed, **always advance to `/rdd-product`** — not `/rdd-model`. Product discovery must run in every pipeline cycle that proceeds past RESEARCH, even when `product-discovery.md` already exists. The product phase updates stakeholder needs, value tensions, and assumption inversions against the new research before domain modeling begins.
+When research is complete and the user is ready to proceed, **always advance to `/rdd:product`** — not `/rdd:model`. Product discovery must run in every pipeline cycle that proceeds past RESEARCH, even when `product-discovery.md` already exists. The product phase updates stakeholder needs, value tensions, and assumption inversions against the new research before domain modeling begins.
