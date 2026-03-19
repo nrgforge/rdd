@@ -203,7 +203,7 @@
       an output. These gates are where learning happens.
     </p>
 
-    <div class="pipeline">RESEARCH &rarr; PRODUCT &rarr; MODEL &rarr; DECIDE &rarr; ARCHITECT &rarr; BUILD &rarr; SYNTHESIS</div>
+    <div class="pipeline">RESEARCH &rarr; PRODUCT &rarr; MODEL &rarr; DECIDE &rarr; ARCHITECT &rarr; BUILD &rarr; SYNTHESIS &rarr; GRADUATE</div>
 
     <ul class="phase-list">
       <li><span class="phase-name">Research</span> — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.</li>
@@ -213,6 +213,7 @@
       <li><span class="phase-name">Architect</span> — Decompose the system into modules with provenance chains linking every design choice back to research and user needs.</li>
       <li><span class="phase-name">Build</span> — Turn scenarios into working software through BDD and TDD. The architecture prevents surprises; the scenarios prevent ambiguity.</li>
       <li><span class="phase-name">Synthesis</span> — Don't let your discoveries die in the artifacts that produced them. Write about what you built — not a summary, but an act of inquiry. Laurel Richardson called writing "a method of discovery": you write to find out what you think, not to report what you already know. Find the form your story demands — an essay, a talk, a hermit crab form that borrows the shell of another genre, an arrangement closer to an exhibition where meaning emerges from juxtaposition and the spaces between.</li>
+      <li><span class="phase-name">Graduate</span> — Fold the durable knowledge — architectural decisions, domain vocabulary, product context, key rationale — into your project's native documentation. Archive the RDD artifacts. The scaffolding has done its job; the understanding lives in you and in the project's own docs now. RDD comes down until the next problem warrants it.</li>
     </ul>
 
     <h2>Core Principles</h2>
@@ -284,6 +285,62 @@
     <p>
       If you can do this, the methodology worked. If you can't, it failed — regardless
       of whether the software runs.
+    </p>
+
+    <h2>When to Use RDD</h2>
+
+    <p>
+      RDD is not for everything. It's for the problems that reward depth — the ones
+      where building the wrong thing is more expensive than taking time to understand
+      the right thing. Use it when:
+    </p>
+
+    <ul class="phase-list">
+      <li>You're entering an unfamiliar domain and need to build real understanding, not just working code</li>
+      <li>The problem space is ambiguous — you're not sure what to build, not just how to build it</li>
+      <li>You're making architectural decisions that will be expensive to reverse</li>
+      <li>Multiple stakeholders have conflicting needs and you need to surface the tensions before encoding assumptions</li>
+      <li>You want to write about what you built — a paper, a talk, a post — and need the artifact trail to draw from</li>
+      <li>You just want to think carefully about something interesting</li>
+    </ul>
+
+    <p>
+      Don't use it for bug fixes, routine features, or work where the problem is
+      already well-understood. RDD is a deep work tool, not a process tax on every
+      commit.
+    </p>
+
+    <h2>Graduation: The Scaffolding Comes Down</h2>
+
+    <p>
+      RDD artifacts are working documents, not permanent infrastructure. They exist to
+      build understanding. Once the understanding is built, the artifacts have done
+      their job.
+    </p>
+
+    <p>
+      <strong>Graduation</strong> is the process of folding what you learned into your
+      project's native documentation and archiving the RDD-specific artifacts. The
+      architectural decisions become part of your project's ADR log. The domain
+      vocabulary becomes your code's naming conventions. The product context becomes
+      your team's shared understanding. The RDD structure — phases, gates, invariant
+      tables — doesn't carry over. The knowledge does.
+    </p>
+
+    <p>
+      The signal that it's time to graduate: when the nature of the work shifts from
+      <em>identity-forming</em> ("we're figuring out what this is") to
+      <em>feature-extending</em> ("we know what this is, now we're adding to it").
+      If the RDD artifacts feel like maintenance burden rather than active value,
+      that's not a failure of discipline — it's a signal that the scaffolding has
+      served its purpose. Take it down. You can always run another cycle when the
+      next hard problem arrives.
+    </p>
+
+    <p>
+      Archived artifacts remain available. If a future cycle needs the research trail
+      from a prior one, it's there. Graduation isn't deletion — it's the natural
+      lifecycle of a deep work tool.
     </p>
 
     <h2>How RDD Differs</h2>
