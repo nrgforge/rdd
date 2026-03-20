@@ -244,7 +244,7 @@
       RDD moves through phases. Each phase produces an artifact and ends with
       a challenge: can you explain what you just learned? Not approve it — explain
       it, in your own words. Predict what comes next. Articulate why a decision
-      was made. These <strong>epistemic gates</strong> are where learning
+      was made. These moments of honest self-assessment are where learning
       happens — grounded in
       research on the <a href="https://en.wikipedia.org/wiki/Generation_effect">generation effect</a> (Slamecka &amp; Graf),
       <a href="https://bjorklab.psych.ucla.edu/research/">desirable difficulties</a> (Bjork),
@@ -256,25 +256,25 @@
     <div class="pipeline">RESEARCH &rarr; DISCOVER &rarr; MODEL &rarr; DECIDE &rarr; ARCHITECT &rarr; BUILD &rarr; SYNTHESIZE &rarr; GRADUATE</div>
 
     <ul class="phase-list">
-      <li><span class="phase-name">Research</span> — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build. <em>Gate: What surprised you? What do you understand differently now than when you started?</em></li>
-      <li><span class="phase-name">Discover</span> — Surface who this is for, what they need, and what you're assuming. Donna Haraway calls it "staying with the trouble" — sitting with value tensions rather than resolving them prematurely. RDD's inversion principle systematically asks "what if this assumption were wrong?" before it hardens into architecture. <em>Gate: Who is this actually for, and which assumption are you most nervous about?</em></li>
-      <li><span class="phase-name">Model</span> — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants that the system must respect. <em>Gate: What did naming things precisely reveal that was hidden before?</em></li>
-      <li><span class="phase-name">Decide</span> — Make architectural decisions and write refutable behavior scenarios. Each decision traces to research; each scenario is testable. <em>Gate: Why this approach and not the alternatives? What would change your mind?</em></li>
-      <li><span class="phase-name">Architect</span> — Decompose the system into modules. Every boundary should answer the question: why here and not somewhere else? Provenance chains link each design choice back through a decision to a research finding to a user need. If you can't follow the chain, the boundary is arbitrary. <em>Gate: Pick a module boundary — what user need does it trace back to?</em></li>
-      <li><span class="phase-name">Build</span> — Scenarios become tests. Tests become software. <a href="https://dannorth.net/introducing-bdd/">BDD</a> and <a href="https://www.agilealliance.org/glossary/tdd/">TDD</a>. <em>Gate: What did the tests reveal that the design didn't anticipate?</em></li>
-      <li><span class="phase-name">Synthesize</span> — Don't let your discoveries die in the artifacts that produced them. Write about what you built — not a summary, but an act of inquiry. <a href="https://en.wikipedia.org/wiki/Laurel_Richardson">Laurel Richardson</a> called writing "a method of discovery": you write to find out what you think, not to report what you already know. Find the form your story demands — an essay, a talk, a <a href="https://en.wikipedia.org/wiki/Hermit_crab_essay">hermit crab form</a> that borrows the shell of another genre, an arrangement closer to an exhibition where meaning emerges from juxtaposition and the spaces between. Sometimes the act of synthesis surfaces new questions the pipeline hasn't addressed — when that happens, loop back into research. The pipeline isn't strictly linear; understanding generates new questions. <em>Gate: What was the real discovery — the thing you didn't expect when you started?</em></li>
-      <li><span class="phase-name">Graduate</span> — Fold the durable knowledge — architectural decisions, domain vocabulary, product context, key rationale — into your project's native documentation. Archive the RDD artifacts. The scaffolding has done its job; the understanding lives in you and in the project's own docs now. RDD comes down until the next problem warrants it. <em>Gate: Can you explain this system to someone new without reaching for the RDD artifacts?</em></li>
+      <li><span class="phase-name">Research</span> — Investigate the problem space. Read the literature, run spikes, search for prior art. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build. <em>Ask yourself: What surprised you? What do you understand differently now than when you started?</em></li>
+      <li><span class="phase-name">Discover</span> — Surface who this is for, what they need, and what you're assuming. Donna Haraway calls it "staying with the trouble" — sitting with value tensions rather than resolving them prematurely. RDD's inversion principle systematically asks "what if this assumption were wrong?" before it hardens into architecture. <em>Ask yourself: Who is this actually for, and which assumption are you most nervous about?</em></li>
+      <li><span class="phase-name">Model</span> — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants that the system must respect. <em>Ask yourself: What did naming things precisely reveal that was hidden before?</em></li>
+      <li><span class="phase-name">Decide</span> — Make architectural decisions and write refutable behavior scenarios. Each decision traces to research; each scenario is testable. <em>Ask yourself: Why this approach and not the alternatives? What would change your mind?</em></li>
+      <li><span class="phase-name">Architect</span> — Decompose the system into modules. Every boundary should answer the question: why here and not somewhere else? Provenance chains link each design choice back through a decision to a research finding to a user need. If you can't follow the chain, the boundary is arbitrary. <em>Ask yourself: Pick a module boundary — what user need does it trace back to?</em></li>
+      <li><span class="phase-name">Build</span> — Scenarios become tests. Tests become software. <a href="https://dannorth.net/introducing-bdd/">BDD</a> and <a href="https://www.agilealliance.org/glossary/tdd/">TDD</a>. <em>Ask yourself: What did the tests reveal that the design didn't anticipate?</em></li>
+      <li><span class="phase-name">Synthesize</span> — Don't let your discoveries die in the artifacts that produced them. Write about what you built — not a summary, but an act of inquiry. <a href="https://en.wikipedia.org/wiki/Laurel_Richardson">Laurel Richardson</a> called writing "a method of discovery": you write to find out what you think, not to report what you already know. Find the form your story demands — an essay, a talk, a <a href="https://en.wikipedia.org/wiki/Hermit_crab_essay">hermit crab form</a> that borrows the shell of another genre, an arrangement closer to an exhibition where meaning emerges from juxtaposition and the spaces between. Sometimes the act of synthesis surfaces new questions the pipeline hasn't addressed — when that happens, loop back into research. The pipeline isn't strictly linear; understanding generates new questions. <em>Ask yourself: What was the real discovery — the thing you didn't expect when you started?</em></li>
+      <li><span class="phase-name">Graduate</span> — Fold the durable knowledge — architectural decisions, domain vocabulary, product context, key rationale — into your project's native documentation. Archive the RDD artifacts. The scaffolding has done its job; the understanding lives in you and in the project's own docs now. RDD comes down until the next problem warrants it. <em>Ask yourself: Can you explain this system to someone new without reaching for the RDD artifacts?</em></li>
     </ul>
 
     <h2>Core Principles</h2>
 
     <ol class="principles">
       <li><strong>Research before architecture.</strong> The system you build after investigating a problem is different from the one you'd build on assumptions. RDD is grounded in what research finds, not what you assumed going in.</li>
-      <li><strong>Understanding requires generation, not review.</strong> Every gate requires you to produce something — an explanation, prediction, or articulation — not merely assess an output. That's where learning happens.</li>
+      <li><strong>Understanding requires generation, not review.</strong> At each phase transition, produce something — an explanation, prediction, or articulation — rather than merely assessing an output. That's where learning happens.</li>
       <li><strong>Assumptions are inverted before they harden.</strong> Every major product assumption gets systematically questioned — "what if this were wrong?" — before it's encoded in architecture.</li>
       <li><strong>Provenance links design to research.</strong> Every module, every responsibility allocation, every architectural decision traces back to a research finding or a user need. When someone asks "why is it this way?", you can follow the chain.</li>
-      <li><strong>Understanding compounds.</strong> Each epistemic act builds on the last. Your response at the research gate enriches domain modeling; your modeling insights sharpen architectural decisions. The quality effect is cumulative — and it's the difference between software you own and software that owns you.</li>
-      <li><strong>Epistemic cost stays lightweight.</strong> Each gate takes minutes, not hours. The methodology earns its keep or gets out of the way.</li>
+      <li><strong>Understanding compounds.</strong> What you articulate after research enriches domain modeling; your modeling insights sharpen architectural decisions. Each reflection builds on the last. The quality effect is cumulative — and it's the difference between software you own and software that owns you.</li>
+      <li><strong>Reflection stays lightweight.</strong> Each pause for articulation takes minutes, not hours. The methodology earns its keep or gets out of the way.</li>
       <li><strong>The scaffolding fades.</strong> RDD is a deep work tool you reach for when a problem warrants it and put away when the knowledge has been absorbed. The project's native documentation is the permanent home; RDD artifacts are the working space.</li>
     </ol>
 
@@ -304,7 +304,7 @@
       sociology of knowledge — that interesting ideas deny something the audience
       assumes to be true — shapes what's worth writing about. Schon's
       <a href="https://en.wikipedia.org/wiki/Reflective_practice">reflective practice</a>
-      informs the epistemic gates.
+      informs the practice of reflection between phases.
     </p>
 
     <p>
@@ -375,8 +375,8 @@
       project's native documentation and archiving the RDD-specific artifacts. The
       architectural decisions become part of your project's ADR log. The domain
       vocabulary becomes your code's naming conventions. The product context becomes
-      your team's shared understanding. The RDD structure — phases, gates, invariant
-      tables — doesn't carry over. The knowledge does.
+      your team's shared understanding. The RDD structure — phases, reflection
+      points, invariant tables — doesn't carry over. The knowledge does.
     </p>
 
     <p>
