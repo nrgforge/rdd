@@ -232,24 +232,15 @@
     </p>
 
     <p>
-      The premise: when you investigate a problem before committing to a solution, you
-      discover that the problem isn't what you assumed. Stakeholders you hadn't
-      considered reshape the requirements. Assumptions you'd never questioned turn out
-      to be wrong. The system you build after research is a different system than the
-      one you would have built without it — and it's better, because it reflects
-      investigated reality rather than the first plausible story you told yourself.
-    </p>
-
-    <p>
-      RDD is slow on purpose. It's a mindful process of making. Understanding what you're doing is
-      fun and good for your brain — not just a hedge against maintenance costs, but
-      a genuinely engaging way to spend your time in an era that increasingly
-      optimizes it away. Research reshapes the problem statement. Synthesis surfaces
-      connections you didn't expect. The act of explaining what you've learned reveals
-      what you haven't. This is thinking as craft — and as AI coding becomes the norm,
-      it's the process that matters. Code is cheap. Software is fast becoming a commodity.
-      What's scarce is knowing what to build and why. The ideas are the hard part now,
-      and ideas come from figuring out how to ask the right questions.
+      RDD is slow on purpose. It's a mindful process of making. When you investigate
+      a problem before committing to a solution, you discover that the problem isn't
+      what you assumed — stakeholders you hadn't considered reshape the requirements,
+      assumptions you'd never questioned turn out to be wrong. The system you build
+      after research is a different system than the one you would have built without
+      it. This is thinking as craft — and as AI coding becomes the norm, it's the
+      process that matters. Code is cheap. Software is fast becoming a commodity.
+      What's scarce is knowing what to build and why. The ideas are the hard part
+      now, and ideas come from figuring out how to ask the right questions.
     </p>
 
     <h2>The Pipeline</h2>
@@ -292,28 +283,14 @@
       <li><strong>The scaffolding fades.</strong> RDD is a deep work tool you reach for when a problem warrants it and put away when the knowledge has been absorbed. The project's native documentation is the permanent home; RDD artifacts are the working space.</li>
     </ol>
 
-    <h2>The Intellectual Commitment</h2>
-
     <p>
-      RDD emerged from practical experience across research settings, devised
-      theater, and writing — domains where you can't separate the process of
-      making from the process of understanding. In devised theater, you try
-      forms on to see what they reveal. In synthesis, you don't discuss what
-      form your writing should take — you draft an opening as pseudocode or
-      arrange your artifacts as exhibition stops and see what happens.
-      <a href="https://en.wikipedia.org/wiki/Murray_S._Davis">Murray Davis</a>'s
-      sociology of knowledge — that interesting ideas deny something the audience
-      assumes to be true — shapes what's worth writing about. The synthesis
-      instinct is curatorial: treat your artifact trail the way a curator treats
-      a collection. The aim isn't a tidy summary. It's an arrangement that makes
-      you see the work differently.
-    </p>
-
-    <p>
-      None of this is decorative. The developer who understands <em>why</em> a
-      boundary exists — who can trace a module back through a decision to a
-      research finding to a user need — produces software they can explain,
-      defend, and extend.
+      These principles emerged from practical experience across research settings,
+      <a href="https://en.wikipedia.org/wiki/Devised_theatre">devised theater</a>,
+      and writing — domains where you can't separate the process of making from
+      the process of understanding. None of it is decorative. The developer who
+      understands <em>why</em> a boundary exists — who can trace a module back
+      through a decision to a research finding to a user need — produces software
+      they can explain, defend, and extend.
     </p>
 
     <h2>The Test</h2>
@@ -326,61 +303,24 @@
       worked. If you can't, it failed — regardless of whether the software runs.
     </p>
 
-    <h2>When to Use RDD</h2>
+    <h2>When to Use It — and When to Stop</h2>
 
     <p>
-      RDD is not for everything. It's for the problems that reward depth — the ones
-      where building the wrong thing is more expensive than taking time to understand
-      the right thing. Use it when:
-    </p>
-
-    <ul class="phase-list">
-      <li>You're entering an unfamiliar domain and need to build real understanding, not just working code</li>
-      <li>The problem space is ambiguous — you're not sure what to build, not just how to build it</li>
-      <li>You're making architectural decisions that will be expensive to reverse</li>
-      <li>Multiple stakeholders have conflicting needs and you need to surface the tensions before encoding assumptions</li>
-      <li>You want to write about what you built — a paper, a talk, a post — and need the artifact trail to draw from</li>
-      <li>You just want to think carefully about something interesting</li>
-    </ul>
-
-    <p>
-      Don't use it for bug fixes, routine features, or work where the problem is
-      already well-understood. Most of your work doesn't need this — and shouldn't
-      have it imposed. RDD is for the 20% where understanding determines whether
-      the other 80% goes in the right direction.
-    </p>
-
-    <h2>Graduation: The Scaffolding Comes Down</h2>
-
-    <p>
-      RDD artifacts are working documents, not permanent infrastructure. They exist to
-      build understanding. Once the understanding is built, the artifacts have done
-      their job.
+      RDD is for the problems that reward depth: unfamiliar domains, ambiguous
+      requirements, expensive-to-reverse decisions, conflicting stakeholder needs,
+      or when you just want to think carefully about something interesting. Most of
+      your work doesn't need this — and shouldn't have it imposed. RDD is for the
+      20% where understanding determines whether the other 80% goes in the right
+      direction.
     </p>
 
     <p>
-      <strong>Graduation</strong> is the process of folding what you learned into your
-      project's native documentation and archiving the RDD-specific artifacts. The
-      architectural decisions become part of your project's ADR log. The domain
-      vocabulary becomes your code's naming conventions. The product context becomes
-      your team's shared understanding. The RDD structure — phases, reflection
-      points, invariant tables — doesn't carry over. The knowledge does.
-    </p>
-
-    <p>
-      The signal that it's time to graduate: when the nature of the work shifts from
-      <em>identity-forming</em> ("we're figuring out what this is") to
-      <em>feature-extending</em> ("we know what this is, now we're adding to it").
-      If the RDD artifacts feel like maintenance burden rather than active value,
-      that's not a failure of discipline — it's a signal that the scaffolding has
-      served its purpose. Take it down. You can always run another cycle when the
-      next hard problem arrives.
-    </p>
-
-    <p>
-      Archived artifacts remain available. If a future cycle needs the research trail
-      from a prior one, it's there. Graduation isn't deletion — it's the natural
-      lifecycle of a deep work tool.
+      When the work shifts from <em>identity-forming</em> ("we're figuring out what
+      this is") to <em>feature-extending</em> ("we know what this is, now we're
+      adding to it"), the scaffolding has done its job. Fold the durable knowledge
+      into your project's native docs, archive the RDD artifacts, and take it down.
+      The knowledge stays. You can always run another cycle when the next hard
+      problem arrives.
     </p>
 
     <div class="cta">
