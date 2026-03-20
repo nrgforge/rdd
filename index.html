@@ -205,16 +205,30 @@
       are decades old. <a href="https://en.wikipedia.org/wiki/Reflective_practice">Reflective practice</a>,
       <a href="https://www.domainlanguage.com/ddd/">domain modeling</a>,
       <a href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions">architectural decision records</a>
-      — all established.
+      — all established. RDD also draws from places software methodology usually
+      doesn't look: <a href="https://en.wikipedia.org/wiki/Devised_theatre">devised theater</a>
+      (discovery through structural experimentation),
+      <a href="https://en.wikipedia.org/wiki/Oulipo">OuLiPo</a>
+      (formal constraint generates content),
+      <a href="https://vsdesign.org/">Value Sensitive Design</a>
+      (stakeholder mapping that holds tensions rather than resolving them),
+      and <a href="https://www.mjt.org/">curatorial practice</a>
+      (meaning through selection, juxtaposition, and the spaces between).
     </p>
 
     <p>
-      What's new is the need to say it out loud. In an era where AI can generate
-      plausible software faster than you can understand it, the practices that
-      produce understanding need a deliberate structure — or they get optimized away.
-      RDD is that structure: a methodology for working deeply on complex software
-      problems, wrapping BDD and TDD in a research layer that changes what you
-      build — not just how you build it.
+      What's new is the need to say it out loud. AI changed what's easy and what's
+      hard. Generation is now trivial — essays, code, architecture, all produced in
+      seconds. But understanding didn't get easier. It got harder, because the
+      volume of plausible output you can produce without understanding has exploded.
+      A citation-audited essay matters now because AI makes it trivially easy to
+      produce one full of plausible-sounding references that don't check out.
+      A provenance chain from module to decision to research finding matters because
+      no one carries that chain in their head when AI generated the architecture.
+      RDD exists because of this shift: it uses AI for what AI is good at while
+      structuring the practices that create the understanding AI can't give you.
+      It wraps BDD and TDD in a research layer that changes what you build — not
+      just how you build it.
     </p>
 
     <p>
@@ -281,47 +295,25 @@
     <h2>The Intellectual Commitment</h2>
 
     <p>
-      RDD draws from traditions that don't usually show up in software methodology.
-      It emerged from practical experience across research settings, devised theater,
-      and writing — domains where you can't separate the process of making from the
-      process of understanding.
-    </p>
-
-    <p>
-      In <a href="https://en.wikipedia.org/wiki/Devised_theatre">devised theater</a>, discovery comes from the outside — from externalized
-      structural experimentation, not from thinking about structure. You try forms
-      on to see what they reveal. The <a href="https://en.wikipedia.org/wiki/Oulipo">OuLiPo</a> writers made the same discovery:
-      formal constraint generates content, it doesn't merely contain it. RDD's
-      synthesis phase applies this directly — you don't discuss what form your
-      writing should take, you draft an opening as pseudocode or arrange your
-      artifacts as exhibition stops and see what happens.
-    </p>
-
-    <p>
-      Product discovery borrows from <a href="https://vsdesign.org/">Value Sensitive Design</a>'s stakeholder mapping
-      and Haraway's insistence that tensions are features, not bugs — you stay
-      with the trouble rather than resolving it prematurely. <a href="https://en.wikipedia.org/wiki/Murray_S._Davis">Murray Davis</a>'s
+      RDD emerged from practical experience across research settings, devised
+      theater, and writing — domains where you can't separate the process of
+      making from the process of understanding. In devised theater, you try
+      forms on to see what they reveal. In synthesis, you don't discuss what
+      form your writing should take — you draft an opening as pseudocode or
+      arrange your artifacts as exhibition stops and see what happens.
+      <a href="https://en.wikipedia.org/wiki/Murray_S._Davis">Murray Davis</a>'s
       sociology of knowledge — that interesting ideas deny something the audience
-      assumes to be true — shapes what's worth writing about. Schon's
-      <a href="https://en.wikipedia.org/wiki/Reflective_practice">reflective practice</a>
-      informs the practice of reflection between phases.
+      assumes to be true — shapes what's worth writing about. The synthesis
+      instinct is curatorial: treat your artifact trail the way a curator treats
+      a collection. The aim isn't a tidy summary. It's an arrangement that makes
+      you see the work differently.
     </p>
 
     <p>
-      The synthesis instinct is curatorial: selection, juxtaposition, scale shifts,
-      negative space. Treat your artifact trail the way a curator treats a collection.
-      The aim isn't a tidy summary. It's an arrangement that makes you see the work
-      differently — something closer to the <a href="https://www.mjt.org/">Museum of Jurassic Technology</a>'s productive
-      shimmer between wonder and doubt than to a technical postmortem.
-    </p>
-
-    <p>
-      None of this is decorative. Software is an intellectual practice. The developer
-      who understands <em>why</em> a boundary exists — who can trace a module back
-      through a decision to a research finding to a user need — produces software
-      they can explain, defend, and extend. The methodology exists to make that depth
-      of understanding the natural byproduct of the work, not a luxury you opt into
-      when there's time.
+      None of this is decorative. The developer who understands <em>why</em> a
+      boundary exists — who can trace a module back through a decision to a
+      research finding to a user need — produces software they can explain,
+      defend, and extend.
     </p>
 
     <h2>The Test</h2>
@@ -400,24 +392,24 @@
     <p>
       Agile optimizes for business delivery and discovers user value incidentally.
       RDD inverts this: it optimizes for understanding through research and discovers
-      business value as a consequence of user alignment. Where BDD and TDD verify
+      business value as a consequence of user alignment. Where
+      <a href="https://dannorth.net/introducing-bdd/">BDD</a> and
+      <a href="https://www.agilealliance.org/glossary/tdd/">TDD</a> verify
       that the system does what was specified, RDD questions whether the specification
       reflects reality — the research and discovery phases change <em>what</em> gets
-      specified before <a href="https://dannorth.net/introducing-bdd/">BDD</a>/<a href="https://www.agilealliance.org/glossary/tdd/">TDD</a> ensures it gets built correctly. You may still end up
+      specified before BDD/TDD ensures it gets built correctly. You may still end up
       with AI-generated code, but the specifications it builds from are grounded in
-      research and discovery rather than assumptions. Vibe coding skips that grounding
-      entirely — the gap between "plausible" and "investigated" is where the
-      interesting mistakes hide.
+      research and discovery rather than assumptions.
     </p>
 
     <div class="cta">
       <h2>Get Started</h2>
       <p>
-        RDD can be practiced with or without tooling — it's a methodology, not a product.
-        But if you use <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>,
-        the <a href="https://github.com/nrgforge/rdd">RDD plugin</a> implements the full
-        pipeline with AI-assisted research, specialist auditing agents, and epistemic
-        gates at every phase transition.
+        The principles above are the methodology. The
+        <a href="https://github.com/nrgforge/rdd">RDD plugin</a> for
+        <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>
+        implements them — AI-assisted research, specialist auditing agents, and
+        structured reflection at every phase transition.
       </p>
       <p><code>/plugin marketplace add nrgforge/rdd</code></p>
       <p><code>/plugin install rdd@nrgforge</code></p>
