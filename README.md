@@ -8,7 +8,7 @@ A methodology for building software you understand.
 
 Building with AI is fast. Understanding what to build and why — and understanding what you built — is the hard part.
 
-AI is a powerful tool for understanding code. But the forcing function that used to produce understanding — doing the work yourself — has been removed. Code is cheap. Software is becoming a commodity. What's scarce is knowing what to build and why, and that comes from figuring out how to ask the right questions.
+AI is a powerful tool for understanding code. But when generation is trivial, the practices that produce understanding need deliberate structure — or they get optimized away. Code is cheap. Software is becoming a commodity. What's scarce is knowing what to build and why, and that comes from figuring out how to ask the right questions.
 
 RDD exists because of this shift. It uses AI for what AI is good at while structuring the practices that produce the understanding. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it.
 
