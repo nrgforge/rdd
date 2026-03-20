@@ -104,7 +104,7 @@
 **Then** the Stage Gates section describes the 5-step epistemic gate protocol
 **And** the workflow mode descriptions use epistemic gate language
 
-### Scenario: rdd-product SKILL.md contains an epistemic gate section
+### Scenario: rdd-discover SKILL.md contains an epistemic gate section
 **Given** the `/rdd-discover` skill file exists
 **When** the file is read
 **Then** it contains an EPISTEMIC GATE section with 2-3 exploratory prompts specific to product discovery artifacts
@@ -460,7 +460,7 @@
 
 ## Feature: Conformance — Synthesis Phase in Orchestrator
 
-### Scenario: rdd-synthesis SKILL.md exists
+### Scenario: rdd-synthesize SKILL.md exists
 **Given** the synthesis phase has been built
 **When** the skill file is read
 **Then** it contains the three-phase conversation structure (journey review, novelty surfacing, framing)
