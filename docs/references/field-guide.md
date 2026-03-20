@@ -45,7 +45,7 @@ The "compiled rollup" principle means the system design absorbs upstream context
 ## Module: Research Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-research/SKILL.md`
+**Code location:** `skills/research/SKILL.md`
 **Stability:** Settled — core research loop stable; citation and argument audit steps added in Essay 005 cycle
 
 ### Domain Concepts in Code
@@ -105,7 +105,7 @@ The skill runs in every pipeline cycle past RESEARCH — even when `product-disc
 ## Module: Model Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-model/SKILL.md`
+**Code location:** `skills/model/SKILL.md`
 **Stability:** Settled
 
 ### Domain Concepts in Code
@@ -131,7 +131,7 @@ Invariants are the highest-authority artifact. The Constitutional Authority step
 ## Module: Decide Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-decide/SKILL.md`
+**Code location:** `skills/decide/SKILL.md`
 **Stability:** Settled
 
 ### Domain Concepts in Code
@@ -159,7 +159,7 @@ ADRs capture the "why" behind decisions; scenarios capture the "what" the system
 ## Module: Architect Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-architect/SKILL.md`
+**Code location:** `skills/architect/SKILL.md`
 **Stability:** In flux — roadmap generation (Step 11) added in Essay 005 cycle
 
 ### Domain Concepts in Code
@@ -190,7 +190,7 @@ The responsibility matrix is the central artifact — it prevents god-classes by
 ## Module: Build Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-build/SKILL.md`
+**Code location:** `skills/build/SKILL.md`
 **Stability:** In flux — field guide generation (Step 6) and stewardship checkpoints added in Essay 005 cycle
 
 ### Domain Concepts in Code
@@ -250,7 +250,7 @@ Unique architectural property: the three-phase conversation subsumes the epistem
 ## Module: Conformance Audit Skill
 
 **Implementation state:** Complete
-**Code location:** `skills/rdd-conform/SKILL.md`
+**Code location:** `skills/conform/SKILL.md`
 **Stability:** In flux — first implementation; graduation operation is "open design territory" per the skill text
 
 ### Domain Concepts in Code

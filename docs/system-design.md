@@ -58,7 +58,7 @@
 **Depended on by:** All phase skills (they follow its protocol); all hooks (they supplement its cross-cutting principles)
 **Note:** In the plugin architecture, the orchestrator's cross-cutting principles are additionally enforced by hooks — the hooks supplement skill-level instructions with passive event-driven reminders. The orchestrator dispatches the orientation-writer agent at milestones rather than generating ORIENTATION.md inline.
 
-### Module: Research Skill (`skills/rdd-research/SKILL.md`)
+### Module: Research Skill (`skills/research/SKILL.md`)
 **Purpose:** Runs an iterative research loop and produces a citation-audited and argument-audited essay, with an epistemic gate tailored to essay artifacts.
 **Provenance:** ADR-002 (skill owns gate); ADR-003 (research gate assignments); ADR-032 (agent dispatch for audits and research helpers); ADR-036 (research log archival at cycle end); Essay 001 §6
 **Owns:** Research-phase process, epistemic gate prompts, essay presentation step, research log archival at cycle end (ADR-036)
@@ -72,28 +72,28 @@
 **Depends on:** Orchestrator (protocol)
 **Depended on by:** None directly (produces product discovery artifact consumed by Model Skill, Decide Skill, and Architect Skill via file)
 
-### Module: Model Skill (`rdd-model/SKILL.md`)
+### Module: Model Skill (`skills/model/SKILL.md`)
 **Purpose:** Extracts domain vocabulary from essay and product discovery artifact, with Product Origin provenance column and an epistemic gate tailored to domain model artifacts.
 **Provenance:** ADR-002; ADR-003 (model gate assignments); ADR-009 (product vocabulary provenance); Essay 001 §6
 **Owns:** Model-phase process, Product Origin column, epistemic gate prompts, domain model presentation step
 **Depends on:** Orchestrator (protocol)
 **Depended on by:** None directly (produces domain model artifact consumed by Decide Skill via file)
 
-### Module: Decide Skill (`skills/rdd-decide/SKILL.md`)
+### Module: Decide Skill (`skills/decide/SKILL.md`)
 **Purpose:** Produces ADRs and behavior scenarios with product context alongside technical context, including inversion principle check on ADR assumptions, with an epistemic gate tailored to ADR artifacts.
 **Provenance:** ADR-002; ADR-003 (decide gate assignments); ADR-010 (inversion principle at DECIDE); ADR-032 (agent dispatch for argument audit and conformance scan); Essay 001 §6; Essay 002 §7.2
 **Owns:** Decide-phase process, inversion principle check (at DECIDE), epistemic gate prompts, ADR/scenario presentation step
 **Depends on:** Orchestrator (protocol); Argument Auditor Agent (dispatched after ADRs written); Conformance Scanner Agent (dispatched at Step 3.5)
 **Depended on by:** None directly (produces ADR + scenario artifacts consumed by Architect Skill via file)
 
-### Module: Architect Skill (`rdd-architect/SKILL.md`)
+### Module: Architect Skill (`skills/architect/SKILL.md`)
 **Purpose:** Decomposes the system into modules with provenance chains extending to user needs, including inversion principle check on module boundaries, with an epistemic gate tailored to system design artifacts; generates roadmap as separate artifact.
 **Provenance:** ADR-002; ADR-003 (architect gate assignments); ADR-010 (inversion principle at ARCHITECT); ADR-022 (roadmap generation); Essay 001 §6; Essay 002 §7.3; Essay 005 §1
 **Owns:** Architect-phase process, inversion principle check (at ARCHITECT), extended provenance chains, epistemic gate prompts, system design presentation step, roadmap generation (work packages, dependency classification, transition states)
 **Depends on:** Orchestrator (protocol)
 **Depended on by:** None directly (produces system design and roadmap artifacts consumed by Build Skill via file)
 
-### Module: Build Skill (`rdd-build/SKILL.md`)
+### Module: Build Skill (`skills/build/SKILL.md`)
 **Purpose:** Turns scenarios into working software through BDD/TDD, with epistemic prompts at scenario group boundaries; generates field guide when implementation exists.
 **Provenance:** ADR-002; ADR-003 (build gate assignments); ADR-023 (field guide generation); Essay 001 §6; Essay 005 §3
 **Owns:** Build-phase process, epistemic gate prompts, scenario completion presentation step, field guide generation (module-to-implementation mapping, design rationale, settled vs. in-flux marking)
@@ -107,7 +107,7 @@
 **Depends on:** Orchestrator (protocol); Citation Auditor Agent (dispatched during outline finalization); Argument Auditor Agent (dispatched during outline finalization, after citation audit)
 **Depended on by:** None directly (usually terminal; can re-enter Research when structural experimentation surfaces new questions — re-entry is writer's decision)
 
-### Module: Conformance Audit Skill (`skills/rdd-conform/SKILL.md`)
+### Module: Conformance Audit Skill (`skills/conform/SKILL.md`)
 **Purpose:** Scans artifact corpus against current skill version, producing gap analysis with prioritized remediation, drift detection against implementation, and graduation into native project docs.
 **Provenance:** ADR-025 (four operations: audit, remediation, drift detection, graduation); ADR-026 (graduation as scoped cycle endpoint); ADR-032 (agent dispatch for conformance scanning); Essay 005 §5
 **Owns:** Audit template conformance process, remediation (structural and format gaps), graduation process (knowledge migration plan, archival), conformance report production
