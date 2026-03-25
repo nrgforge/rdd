@@ -162,7 +162,7 @@ Compare the project's artifacts against its current implementation to detect pos
 Dispatch the **conformance-scanner** specialist subagent with:
 - The project's ADR file paths
 - The codebase root path
-- An output path for the conformance report (e.g., `./docs/audits/drift-scan.md`)
+- An output path for the conformance report (e.g., `./docs/essays/audits/drift-scan.md`)
 
 The agent scans the codebase against ADR declarations and produces a structured conformance debt table. After the agent completes, read its report as input for the broader drift analysis below.
 

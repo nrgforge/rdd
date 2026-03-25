@@ -22,7 +22,7 @@
 
 ## Open Decision Points
 
-- **Agent audit artifact path convention:** Where should audit artifacts live? `docs/audits/citation-audit-NNN.md` (separate directory) vs. alongside the audited artifact. Not prescribed by system design.
+- **Agent audit artifact path convention:** Where should audit artifacts live? `docs/essays/audits/citation-audit-NNN.md` (co-located under essays). Audits are artifacts of the essay production process.
 - **Standalone skill retirement:** Users with standalone skills in `~/.claude/skills/rdd-*` need to remove them after plugin install to avoid conflicts.
 
 ---

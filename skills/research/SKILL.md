@@ -125,7 +125,7 @@ Present the essay to the user. If invariant tensions were found, highlight them 
 After the essay is written, dispatch the **citation-auditor** specialist subagent. Provide it with:
 - The essay file path
 - The research log file path (as evidence trail)
-- An output path for the audit report (e.g., `./docs/audits/citation-audit-NNN.md`)
+- An output path for the audit report (e.g., `./docs/essays/audits/citation-audit-NNN.md`)
 
 The agent runs on Sonnet in an isolated context, reads the input files, verifies all references and factual claims, and writes a structured audit report to the output path.
 
@@ -141,7 +141,7 @@ The essay is the foundation for all downstream phases — bad citations here pro
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The essay file path
 - The research log file path (as evidence trail)
-- An output path for the audit report (e.g., `./docs/audits/argument-audit-NNN.md`)
+- An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-NNN.md`)
 
 The agent runs on Sonnet in an isolated context, maps inferential chains from evidence to conclusions, and writes a structured audit report.
 

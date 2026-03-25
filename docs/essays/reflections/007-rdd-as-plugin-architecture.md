@@ -8,7 +8,7 @@ The essay frames agent extraction primarily as a context management strategy —
 The more compelling argument, surfaced during the epistemic gate, is that **artifacts are a better communication medium than context passing**. RDD already communicates between phases via artifacts (essays, domain models, ADRs, scenarios) — not by passing conversation context. Agent extraction should follow the same principle: agents read artifact files, produce artifact files, and the phase skill reads those artifacts.
 
 This reframe matters because:
-- **Artifacts are inspectable.** A citation audit report written to `docs/audits/citation-audit-007.md` can be read by the user, the skill, and future sessions. Context passed as a dispatch prompt is ephemeral.
+- **Artifacts are inspectable.** A citation audit report written to `docs/essays/audits/citation-audit-007.md` can be read by the user, the skill, and future sessions. Context passed as a dispatch prompt is ephemeral.
 - **Artifacts are durable.** They persist beyond the conversation. A future RDD cycle can reference the previous citation audit without re-running it.
 - **Artifacts resist brittleness.** Context passing requires careful prompt engineering to include "just enough" — too little loses fidelity, too much wastes tokens. An artifact file is self-contained.
 - **Artifacts align with RDD's existing philosophy.** The system already treats artifacts as the durable interface between phases. Making agents communicate via artifacts is not a new pattern — it's extending the existing one.

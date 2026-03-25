@@ -226,7 +226,7 @@ The writer should not need to hunt for supporting material — it is already in 
 
 Before finalizing the outline, dispatch the **citation-auditor** specialist subagent. Provide it with:
 - The outline file path (with its pre-populated references)
-- An output path for the audit report (e.g., `./docs/audits/citation-audit-synthesis-NNN.md`)
+- An output path for the audit report (e.g., `./docs/essays/audits/citation-audit-synthesis-NNN.md`)
 
 The agent verifies cited works exist, quotes are accurate, and no hallucinated sources reach the writer's outline. After the agent completes, read the audit report. Correct or remove problematic references before proceeding.
 
@@ -235,7 +235,7 @@ The agent verifies cited works exist, quotes are accurate, and no hallucinated s
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The outline file path (narrative structure as the argument)
 - The pre-populated references (as the evidence base)
-- An output path for the audit report (e.g., `./docs/audits/argument-audit-synthesis-NNN.md`)
+- An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-synthesis-NNN.md`)
 
 The agent treats the narrative structure (central question, turns, threads) as the argument and verifies logical soundness — the same standard as the argument audit on ADRs, applied to the narrative genre. After the agent completes, read the audit report. If it finds overreaching framing or hidden assumptions, revise the outline before presenting it to the writer.
 

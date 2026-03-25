@@ -86,7 +86,7 @@ Present ADRs to the user for approval before proceeding.
 After ADRs are written, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The essay file path (evidence/reasoning layer)
 - The new ADR file paths and any prior ADRs they depend on (decision/conclusion layer)
-- An output path for the audit report (e.g., `./docs/audits/argument-audit-decide-NNN.md`)
+- An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-decide-NNN.md`)
 
 The agent runs on Sonnet in an isolated context, maps inferential chains from essay evidence to ADR decisions, and writes a structured audit report.
 
@@ -101,7 +101,7 @@ After the agent completes, read the audit report and apply fixes:
 After the argument audit passes, dispatch the **conformance-scanner** specialist subagent. Provide it with:
 - The ADR file paths (both new and prior)
 - The codebase root path
-- An output path for the conformance report (e.g., `./docs/audits/conformance-scan-NNN.md`)
+- An output path for the conformance report (e.g., `./docs/essays/audits/conformance-scan-NNN.md`)
 
 The agent runs on Sonnet in an isolated context, scans the codebase against ADR declarations, and writes a structured conformance debt table with file:line references for violations.
 
