@@ -20,6 +20,18 @@ YOU ARE HERE
 
 ---
 
+## ARTIFACT LOCATION
+
+When invoked standalone (not via the orchestrator), determine the artifact base before starting:
+
+1. **Scan** for existing RDD artifacts (`ORIENTATION.md`, `essays/`, `decisions/`) in `./docs/`, `./docs/features/*/`, `./docs/subsystems/*/`, and the project root.
+2. **If found**, report what exists and offer to use that location.
+3. **If not found**, ask the user where artifacts should live (default: `./docs/`).
+
+All paths below use `./docs/` as the default base. Replace with the chosen base if different.
+
+---
+
 ## PROCESS
 
 ### Loop Mechanics

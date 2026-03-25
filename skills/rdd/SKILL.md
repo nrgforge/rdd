@@ -31,10 +31,34 @@ $ARGUMENTS
 
 ## ARTIFACT LOCATION
 
-Before presenting workflow modes, ask the user where RDD artifacts should be stored. Provide two common options:
+Before presenting workflow modes, determine the artifact base directory:
 
-1. **In the project repo** — `./docs/` (default). Appropriate when RDD artifacts should be versioned with the project.
-2. **In a personal notes folder** — the user specifies a path (e.g., `~/notes/project-name/`). Appropriate when RDD is a personal methodology and artifacts should not be committed to a shared repo.
+### Step 1: Scan for existing artifacts
+
+Search for `ORIENTATION.md` and RDD artifacts (essays, domain model, ADRs) in common locations:
+- `./docs/`
+- `./docs/features/*/`, `./docs/subsystems/*/`
+- The project root
+
+Also check for any `ORIENTATION.md` files that might indicate a scoped cycle location.
+
+### Step 2: If artifacts found
+
+Report what was found and where. Offer to continue from that location:
+
+> Found existing RDD artifacts in `./docs/`:
+> - 3 essays, domain model, 12 ADRs, ORIENTATION.md
+>
+> Use `./docs/` as the artifact base? Or specify a different location.
+
+### Step 3: If no artifacts found (or starting fresh)
+
+Ask the user where RDD artifacts should live:
+
+1. **In the project repo** — `./docs/` (default). Appropriate when artifacts should be versioned with the project.
+2. **A custom path** — the user specifies (e.g., `~/notes/project-name/`, `./docs/features/auth/`). Appropriate for personal notes or scoped cycles.
+
+### Step 4: Use consistently
 
 Store the chosen base path and use it as the root for all artifact locations throughout the pipeline. Pass this path to each skill invocation so that all phases write to the same location. If the user chooses a custom path, replace every `./docs/` reference with that path.
 
