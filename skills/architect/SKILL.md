@@ -161,6 +161,20 @@ For each work package:
 - **Scenarios covered** — which behavior scenarios this work package satisfies
 - **Dependencies** — which other work packages must or should come first
 
+#### Verify Scenario-Module Coverage
+
+After drafting work packages, verify that each WP's changes span all modules required by its claimed scenarios. For each scenario listed under a WP's "Scenarios covered":
+
+1. Trace the scenario's Given/When/Then clauses through the responsibility matrix — which modules own the concepts and actions referenced?
+2. Verify each participating module has a corresponding entry in the WP's "Changes" section.
+
+If a participating module has no change listed:
+- **Add it** to this WP's changes, or
+- **Assign it** to a different WP (with a dependency edge), or
+- **Flag it** as a known gap with a rationale
+
+This catches the class of bug where a WP claims scenario coverage at one layer (e.g., backend) while the other layers (e.g., frontend, IPC) fall through the cracks.
+
 #### Classify Dependencies
 
 For each dependency edge between work packages, classify it:
