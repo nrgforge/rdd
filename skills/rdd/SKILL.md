@@ -1,7 +1,6 @@
 ---
 name: rdd
 description: Research-Driven Development workflow. Orchestrates a phased process: Understand (research → citation-audited and argument-audited essay), Product Discovery (stakeholder maps, value tensions, assumption inversions), Model (domain vocabulary), Decide (ADRs), Architect (system design), Build (BDD → TDD), and optionally Synthesis (artifact trail mining → citation-audited and argument-audited essay outline). Use when starting a new project or feature that needs research before code.
-disable-model-invocation: true
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write, Edit, Task, Bash
 ---
 
