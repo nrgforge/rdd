@@ -35,6 +35,8 @@ Read in this order:
 
 If you encounter any document or code that contradicts an invariant, flag it to the user — do not follow the contradicting document's guidance.
 
+**Check for undecided territory.** After reading scenarios and ADRs, walk each scenario in the current work package. For each action in its When/Then clauses, ask: does an ADR justify the structural choice for how this is implemented? If a scenario requires a capability, integration, or structural pattern that no ADR addresses, flag it as undecided territory before starting to build. The user may need to loop back to `/rdd-decide`.
+
 **Read before writing. Always.**
 
 ### Session Management
@@ -330,6 +332,7 @@ If implementation reveals that:
 - A **concept is missing from the domain model** — flag it. The glossary needs updating via `/rdd-model`
 - An **assumption from research was incorrect** — flag it. The user may need to revisit `/rdd-research`
 - A **document contradicts current invariants** — flag it. The document needs a supersession note. Do NOT follow the document's guidance if it contradicts an invariant. This is the most insidious failure mode: old documents re-propagating dead ideas into new code.
+- **You're in undecided territory** — if you find yourself choosing between two reasonable approaches, writing a TODO stub, or making a structural choice that feels like a judgment call, stop. This is an architectural decision, not an implementation detail. Surface it: "This requires a decision not covered by any ADR." The user decides whether to loop back to `/rdd-decide` or make the call inline.
 
 Building is the ultimate test of understanding. Discovering flaws here is expected, not a failure.
 
@@ -357,6 +360,9 @@ A quick structural scan. For each module that received new code in this scenario
    - **Assertion roulette** — does any test contain multiple unrelated assertions without clear messages? Each test should verify one cohesive behavior.
    - **Boundary coverage** — for each module boundary crossed in this scenario group, does an integration test exist that uses real types on both sides (not stubs)? Check against the system design's Test Architecture table.
    - **Wiring verification** — do acceptance tests exercise the real call chain, or are they testing through mocks that could mask integration failures?
+
+7. **Decision coverage** — were any implicit decisions made during this scenario group? The heuristic: TODO stubs, approach choices between reasonable alternatives, or structural patterns not traceable to an ADR are likely undecided territory. Flag them.
+8. **Scenario completeness** — for each scenario claimed by the current work package, can it be verified in the running software? If not, is the gap a missing implementation or a missing decision?
 
 Present a brief conformance summary:
 
