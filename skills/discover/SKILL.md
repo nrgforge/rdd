@@ -226,12 +226,15 @@ After presenting the product discovery artifact, run the epistemic gate protocol
 
 This gate has a unique property: the user likely knows more about their stakeholders and users than the AI does. The primary function is making the user's tacit product knowledge explicit so it can inform downstream phases.
 
-Present 2 of the following prompts, filling in the bracketed references with specific stakeholders, jobs, tensions, and inversions from the artifact just produced:
+Present 2-3 of the following prompts, filling in the bracketed references with specific stakeholders, jobs, tensions, and inversions from the artifact just produced:
 
 - **Self-explanation:** "How would you describe [stakeholder X]'s experience with the current system to a colleague?"
 - **Elaborative interrogation:** "Does the tension between [value tension Y] feel right? Is there a tension we missed that matters more?"
 - **Retrieval practice:** "Without looking back — what are the key jobs [stakeholder X] needs the system to do?"
 - **Articulation:** "Which assumption inversion surprised you? Which one did you already suspect?"
+- **Solution scoping:** Synthesize the stakeholder needs and research findings into a proposed solution shape — what must exist, what's in scope, what's out. Present it and ask: "Does this capture what we're building? What's missing or out of place?"
+
+When the cycle will continue to DECIDE and BUILD, always include the solution scoping prompt. The user's response — their corrections, additions, and boundary judgments — becomes the reference that DECIDE uses to ensure its ADRs and scenarios cover the full solution, not just the parts the essay happened to discuss.
 
 Wait for the user to respond to at least one prompt. If the user responds with only non-generative approval ("looks good", "approved"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on the product, not just confirmation that the artifact exists.
 

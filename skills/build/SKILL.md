@@ -37,6 +37,14 @@ If you encounter any document or code that contradicts an invariant, flag it to 
 
 **Read before writing. Always.**
 
+### Session Management
+
+Long build cycles lose context fidelity through compaction. Process adherence degrades not because the rules are forgotten, but because the context carrying them gets compressed away.
+
+- **Scope sessions to one work package** where practical. After completing a WP, commit, update the roadmap's completed work log, and suggest starting a fresh session for the next WP.
+- **Re-read at session start.** When resuming a build across sessions, re-read Step 1 artifacts (invariants, system design, scenarios) before continuing. Don't rely on compacted context from a prior session.
+- **Recognize the signal.** If you notice yourself drifting from scenario-driven BDD to implementation-step thinking, or writing TODO stubs instead of surfacing missing decisions, context loss is likely the cause. Pause and re-read the process artifacts.
+
 ### Step 2: Outer Loop — One Scenario at a Time
 
 For each behavior scenario, in order:
