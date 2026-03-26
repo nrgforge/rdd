@@ -1,18 +1,18 @@
 # Product Discovery: Research-Driven Development (RDD)
 
-*2026-03-18*
+*2026-03-25*
 
 ## Stakeholder Map
 
 ### Direct Stakeholders
 
-- **Solo Developer-Researcher** — A developer who uses RDD with an AI agent to build software projects or new features within existing projects. Interacts with every phase of the pipeline, responds at every gate, and makes all workflow decisions. Currently the primary user.
+- **Solo Developer-Researcher** — A developer who uses RDD with an AI agent to build software projects or new features within existing projects. Interacts with every phase of the pipeline, responds at every gate, and makes all workflow decisions. Currently the primary user. In the play phase, this stakeholder becomes a *performer* — inhabiting stakeholder roles with objectives and super-objectives (Stanislavski), not just reviewing artifacts. Play asks something different from this stakeholder than any other phase: genuine encounter with the built system from perspectives other than the builder's own.
 
 - **Research-Engineer** — Someone using RDD primarily for the research and understanding phases, where the goal is deep comprehension of a problem space rather than (or before) building software. The pipeline's research phase, product discovery, and domain modeling serve as a structured methodology for investigating technical or domain questions — closer to research engineering than traditional software development.
 
 - **Team Lead (using RDD for scoping)** — A technical leader who runs RDD through RESEARCH → ARCHITECT to build deep understanding of a problem space, then hands off artifacts to their team for building. Uses RDD as a leadership thinking tool. Shares artifacts with architecture and product specialists for validation before team handoff. Does not necessarily advocate that the team adopt RDD — the artifacts stand on their own.
 
-- **AI Agent** — The agent executing the skill files. In the plugin architecture, this role splits: an **orchestrating agent** runs phase skills, manages epistemic gates, and interacts with the user; **specialist subagents** (citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner) perform focused work in isolated contexts, reading input artifacts and writing output artifacts with no user interaction. The skill files are instructions to the orchestrating agent. Specialist subagents receive task-specific system prompts and may run on different models than the orchestrator.
+- **AI Agent** — The agent executing the skill files. In the plugin architecture, this role has three modes: an **orchestrating agent** runs phase skills, manages epistemic gates, and interacts with the user; **specialist subagents** (citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner) perform focused work in isolated contexts, reading input artifacts and writing output artifacts with no user interaction; and during the play phase, the orchestrating agent takes on a **gamemaster** role — active facilitation that proposes stakeholder roles and points of concentration, introduces complications and inversions, reacts to player discoveries, and creates conditions for genuine encounter without directing the outcome. The gamemaster role is epistemic in character: the agent shapes what the practitioner attends to and encounters, not just what artifacts are produced. The skill files are instructions to the orchestrating agent. Specialist subagents receive task-specific system prompts and may run on different models than the orchestrator.
 
 ### Indirect Stakeholders (Direct for BUILD)
 
@@ -35,9 +35,10 @@
 - "I want to build the right thing, not just build a thing right"
 - "I want to use this for new features too, not just whole new projects — any work that's complex enough to benefit from thinking before building"
 - "I need enough context to make my own sequencing decisions during build, not be told what order to do things"
+- "I need to experience the system as my stakeholders would — not just verify it meets specs, but discover what the specifications couldn't capture"
 
 **Mental Model:**
-"I describe what I want to explore, and the pipeline walks me through understanding it — research first, then figure out who it's for, then nail down the vocabulary, make decisions, design the system, and build it. At each step I have to engage with what was produced, not just approve it. The artifacts are my long-term memory for the project. When the project stabilizes, I scope RDD to new features rather than maintaining it across the whole project."
+"I describe what I want to explore, and the pipeline walks me through understanding it — research first, then figure out who it's for, then nail down the vocabulary, make decisions, design the system, and build it. At each step I have to engage with what was produced, not just approve it. After building, I play with the system as each stakeholder — pursuing their objectives, encountering the system the way they would — to discover what the specs missed. The artifacts are my long-term memory for the project. When the project stabilizes, I scope RDD to new features rather than maintaining it across the whole project."
 
 ### Research-Engineer
 
@@ -84,9 +85,10 @@
 - "Dispatch specialist subagents for focused work (auditing, scanning, synthesizing) and consume their output artifacts"
 - "Maintain a current-state orientation document that lets new readers (human or agent) bootstrap into the system without reading everything"
 - "Generate and maintain the roadmap and field guide as reflexive artifacts"
+- "Facilitate play as gamemaster — propose stakeholder roles and points of concentration, introduce complications and inversions, surface what the practitioner might miss, without directing the outcome"
 
 **Mental Model:**
-"Each skill file is my instruction set for one phase. I read prior artifacts, produce the phase artifact, present it with prompts, and wait for the user to engage before moving on. The orchestrator tells me the sequence and the rules. For specialist work — citation audits, argument audits, literature reviews, conformance scans — I dispatch subagents that read and write artifact files rather than doing the work inline. I also maintain reflexive artifacts — orientation, roadmap, field guide — keeping them current as the system evolves."
+"Each skill file is my instruction set for one phase. I read prior artifacts, produce the phase artifact, present it with prompts, and wait for the user to engage before moving on. The orchestrator tells me the sequence and the rules. For specialist work — citation audits, argument audits, literature reviews, conformance scans — I dispatch subagents that read and write artifact files rather than doing the work inline. I also maintain reflexive artifacts — orientation, roadmap, field guide — keeping them current as the system evolves. During play, I shift from executing skills and presenting artifacts to actively facilitating the practitioner's encounter with the system — side-coaching from outside the magic circle."
 
 ### AI Agent (Specialist Subagents)
 
@@ -126,6 +128,14 @@
 
 - **Artifact durability vs. dispatch overhead:** Agents produce durable, inspectable artifacts — audit reports that persist, can be referenced by future cycles, and exist independently of the conversation that produced them. But agent dispatch adds latency: spinning up a new context, loading the system prompt, performing the work, and writing the result takes longer than inline execution. The durability benefit is architectural; the cost is operational. When is the durability worth the overhead?
 
+- **Specification completeness vs. experiential discovery:** Interaction specs aim for completeness — filling the missing workflow layer between scenarios and implementation to create a playable surface. But play's premise is that specification can never fully capture lived experience (Suchman's constitutive gap between plan and situated action). The goal is specification as complete as possible, knowing play will still surface what completeness could not reach. The two are sequential, not in opposition: specify thoroughly, then discover what specification missed.
+
+- **Epistemic distance — builder as player:** The person who built the system is the person inhabiting stakeholder roles during play. Deterding's critique applies: can a developer truly subvert their own design? The working mitigation is threefold — the play frame itself makes the familiar strange (Bateson), discover's stakeholder profiles provide anchoring material for inhabitation, and the gamemaster introduces complications the builder would not self-generate. This reduces but does not eliminate the distance problem. Carry forward as a genuine open tension.
+
+- **Play bounding vs. unbounded discovery:** Play could be unbounded — there is always another stakeholder to inhabit, another angle to explore. The resolution is that play's termination condition is the same as the methodology's overarching goal: the practitioner's felt sense that their understanding has shifted enough. No timebox, no stakeholder-count limit — play is praxis toward Invariant 0, and it continues until understanding plateaus. This aligns play with how synthesis bounds itself (felt saturation) and with how RDD bounds itself as a whole (understanding, not velocity).
+
+- **Gamemaster on the Invariant 3 boundary:** The agent-as-gamemaster is epistemic in character — it shapes what the practitioner attends to and encounters during play. It is not generation (pragmatic) and not gate management (procedural) but active facilitation during the practitioner's epistemic act. The practical byproducts (surfacing bugs, generating new questions for RESEARCH or DECIDE) are valuable, but the role serves understanding first. This sits in a nuanced position: pragmatic in form (the agent performs it), epistemic in function (it shapes the encounter).
+
 ## Assumption Inversions
 
 *Note: The inversions below serve a dual purpose. As a critical design exercise, they surface hidden assumptions. But they also function as epistemic acts in their own right — working through "what if this were wrong?" builds the user's understanding of the system. The inversions at the product discovery gate do double duty: questioning assumptions and producing comprehension. This was surfaced during the epistemic gate conversation and confirmed by the user: "They all got me thinking, which is the point."*
@@ -149,6 +159,10 @@
 | Context passing is the right way to feed agents | What if artifacts are a more reliable interface than context blobs? | Context passing is brittle — too little loses fidelity, too much wastes tokens. Agents have no conversation history, making file-based communication not just preferable but necessary. Artifacts are self-contained and inspectable. |
 | RDD's skills need to be distributed as standalone files in ~/.claude/skills/ | What if packaging as a plugin enables adoption without manual setup? | Plugin distribution solves "works on my machine." One install provides identical tooling. But it imposes constraints: namespacing (/rdd-research), security restrictions on plugin agents, and the full artifact corpus shipping with every installation. |
 | The brainstorming skill should always fire before creative work | What if the user's explicit request for a specific workflow should override default process? | Not RDD-specific. Any plugin with its own exploration phase faces this. User intent should override default process — consistent with the superpowers priority hierarchy. |
+| Play requires the practitioner to inhabit unfamiliar stakeholder roles | What if the practitioner playing as themselves is equally productive? | If the practitioner is the primary stakeholder, self-play is natural and valid — the play frame itself (Bateson's metacommunicative shift) makes the familiar strange regardless of whose role is inhabited. Playing as oneself eliminates epistemic distance concerns entirely. Role selection during play is contextual: inhabit whoever the system serves, including yourself if you are the user. Equally valid, not more valid than other stakeholders. |
+| Interaction specs must be written before play | What if play should come first, and interaction specs are derived from play discoveries? | The user's response: this would be frustrating. Interaction specs create the "playable surface" — without them, there is nothing structured to play with. The inversion confirms the assumption: interaction specs are a precondition for productive play. The ordering (discover → interaction specs → build → play) holds. |
+| Play is exclusively a post-build activity | What if play at the prototype/spike stage would also be valuable? | Spike-play is a valid but distinct function — exploring feasibility, not discovering what specs missed. Post-build play is experiential discovery against a complete system. Both are play but serve different purposes and sit at different pipeline positions. Play during spikes does not replace post-build play. |
+| The gamemaster role belongs to the AI agent | What if another human is a better gamemaster? | A human gamemaster (colleague, UX researcher, domain expert) brings genuine outside perspective, not simulated perspective — potentially eliminating rather than just mitigating epistemic distance. RDD the method could support either. RDD the plugin implements the agent in this role because the plugin is the agent's instruction set. The distinction matters: the method is broader than the implementation. |
 
 ## Product Vocabulary
 
@@ -164,7 +178,7 @@
 | "Handing off" | Team Lead | Giving artifacts to team or specialists | Real workflow, no formal pipeline concept |
 | "Getting feedback" | Team Lead | Sharing artifacts with specialists before team handoff | External review loop — real but not formalized |
 | "Speaking to it" | Team Lead | Being able to explain and defend decisions | Direct expression of Invariant 0 |
-| "Pair-RDD" | (Potential) | Two collaborators running a cycle together | Emerged during this discovery — not yet in the system |
+| "Pair-RDD" | (Potential) | Two collaborators running a cycle together | Emerged during product discovery — not yet in the system |
 | "Running a cycle on a feature" | Solo Developer | Using RDD for a new feature within an existing project, not just greenfield | Broadens scope beyond "new project" |
 | "Research engineering" | Research-Engineer | Using RDD's research and modeling phases as a structured investigation methodology | The pipeline serves research, not just development |
 | "Entry point" | Teammates, AI Agent | "Where do I start with these artifacts?" | The orientation document's primary function — routes readers into the corpus |
@@ -186,6 +200,16 @@
 | "Audit report" / "audit artifact" | Solo Developer / AI Agent | Output from citation-auditor or argument-auditor agents | Durable, inspectable file rather than ephemeral conversation output — part of the artifact trail |
 | "Dispatch" | AI Agent (orchestrator) | Sending work to a specialist subagent | "Dispatch the citation auditor" — the orchestrator delegates specialist work |
 | "Skill activator" | AI Agent | The UserPromptSubmit hook that detects RDD-related prompts | Prevents brainstorming override, suggests appropriate phase skill |
+| "Play" / "playing with it" | Solo Developer | Post-build experiential discovery of the system | Not testing, not verification — encountering the system in Bateson's play frame. "Like a game you've never played" |
+| "The playground" | Solo Developer | The play phase environment | Bounded, safe, genuinely exploratory — Winnicott's potential space. The simplest description of what the phase is for |
+| "Gamemaster" | AI Agent (orchestrator) | Agent's role during play | Active facilitation — proposing roles, introducing complications, surfacing what the player might miss. From tabletop RPG and Spolin's side-coaching |
+| "Inhabiting a stakeholder" | Solo Developer | What the practitioner does during play | Stanislavski-style: pursuing objectives within a role, not generic persona impersonation |
+| "Objectives" / "super-objectives" | Solo Developer | Play's internal structure | Super-objective = stakeholder's overarching need (from discover); objective = what they want in a given interaction; obstacles = discovered through play |
+| "Interaction specs" / "interaction patterns" | Solo Developer / Team Lead | The specification layer between scenarios and implementation | How stakeholders work with the system — the mechanics of interaction at the workflow level |
+| "Playable surface" | Solo Developer | What interaction specs create | The structured interface that play encounters — without it, play is frustrating because there is nothing structured to play with |
+| "Side-coaching" | Solo Developer (theater background) | How the gamemaster facilitates | From Spolin — coaching from the side without directing the outcome |
+| "Field notes" | Solo Developer | Play's discovery artifact | Not a "play log" — field notes are observational, in-the-moment, naturalistic. The researcher-in-the-field framing. Complements the field guide: the field guide is the map, the field notes are the journal |
+| "Discovery from research" / "discovery from play" | Solo Developer | The discover-play symmetry | Discover inverts assumptions about what to build; play inverts assumptions about what was built. Epistemic bookends around the pragmatic center. Novel framing in software context |
 
 ## Product Debt
 
@@ -204,3 +228,8 @@
 | No graduation path from RDD to native docs | RDD artifacts are implicitly permanent | Subsystem-scoped RDD cycles should graduate into project-level docs when stable; whole-project RDD should be archivable when the methodology has served its purpose | Missing workflow | ~~Add graduation~~ **RESOLVED** — graduation implemented as conformance audit operation (ADR-025) |
 | system-design.md serves one purpose | system-design.md | Serves 5+ distinct purposes (architectural specification, responsibility reference, integration contracts, test architecture, build sequence); exceeds document sizing heuristics for end-to-end reading | Over-scoped document | Evaluate decomposition per Purpose Test heuristic |
 | RDD always scopes to the whole project | Pipeline and orchestrator assume whole-project context | Subsystem-scoped cycles within a stable project are a primary use case — RDD on a feature folder, graduating into project-level docs when done | Missing workflow pattern | Formalize scoped cycles and the graduation lifecycle |
+| No specification layer between scenarios and implementation | Scenarios specify business rules; code implements them; the workflow mechanics in between are unwritten | Practitioners need interaction specs — how each stakeholder works with the system at the workflow level — to create a playable surface and catch interaction-level bugs that scenarios miss | Missing artifact layer | Add interaction specification layer (placement decision needed: DECIDE vs. ARCHITECT) |
+| No post-build experiential discovery | Pipeline ends at BUILD (tests pass = done) | The practitioner needs to inhabit stakeholder roles and encounter the built system to discover what specifications could not capture — the constitutive gap between plan and situated action | Missing phase | Add play phase after BUILD, before SYNTHESIS |
+| Agent's role during epistemic phases is passive (present artifact, wait for response) | All epistemic gate sections in skill files | During play, the agent needs to actively facilitate — propose roles, introduce complications, react to discoveries — not just present and wait | Role gap | Formalize gamemaster as a third agent mode alongside orchestrator and specialist subagent |
+| Play's discovery record is a structured log with categories | Essay 008 "play log" with categories (missing scenario, usability friction, etc.) | Field notes — observational, in-the-moment, naturalistic. The researcher-in-the-field framing. Pairs with the field guide: the guide is the map, the notes are the journal | Wrong artifact character | Design field notes as play's artifact, complementing the field guide |
+| Play has no preparatory conversation | Essay 008 three-movement structure (inhabit → explore → reflect) begins at inhabitation | Play needs a meta-framing conversation — like synthesis but more structured. Q&A around stakeholder roles, available artifacts, where the cycle began, the journey so far, what got built. The field guide serves as the practitioner's reference during this setup | Missing structure | Design play's meta-framing conversation as a preparatory step before inhabitation |
