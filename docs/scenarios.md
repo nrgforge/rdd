@@ -1181,3 +1181,250 @@
 **Given** a `research-log.md` exists from a prior interrupted cycle
 **When** a new research cycle begins
 **Then** the stale log is archived to `research-logs/` before the new log is created
+
+## Feature: Interaction Specification Layer (ADR-037)
+
+### Scenario: DECIDE skill produces interaction specs after scenarios
+**Given** the `/rdd-decide` skill has produced ADRs and behavior scenarios
+**And** a product discovery artifact exists with stakeholder models
+**When** the skill proceeds to interaction specification writing
+**Then** interaction specs are written to `./docs/interaction-specs.md`
+**And** interaction specs are produced after scenarios, not before
+
+### Scenario: Interaction specs organized by stakeholder
+**Given** the product discovery artifact identifies multiple stakeholders
+**When** interaction specs are produced
+**Then** each stakeholder from the product discovery artifact has a section
+**And** each section contains task decompositions at the workflow level
+**And** each task entry specifies the stakeholder, super-objective, task, and interaction mechanics
+
+### Scenario: Interaction specs derive from product discovery stakeholder models
+**Given** a product discovery artifact with stakeholder map, jobs, and mental models
+**When** interaction specs are derived
+**Then** each interaction spec's stakeholder matches a stakeholder in product discovery
+**And** each super-objective traces to a job or need in the product discovery artifact
+**And** domain vocabulary from the domain model is used consistently
+
+### Scenario: Interaction specs create a playable surface
+**Given** interaction specs have been written
+**When** the play phase begins (ADR-038)
+**Then** the practitioner can reference specific interaction mechanics to encounter
+**And** deviations between specified interaction and actual experience are discoverable
+
+### Scenario: Interaction specs complement scenarios without replacing them
+**Given** behavior scenarios exist for the system
+**When** interaction specs are added
+**Then** scenarios continue to specify business-rule-level behavior
+**And** interaction specs specify workflow-level mechanics (how the stakeholder works with the system)
+**And** the two artifacts cover different specification levels without duplication
+
+### Scenario: Derivation method acknowledged as open
+**Given** the `/rdd-decide` skill is writing interaction specs
+**When** it derives task decompositions from stakeholder models
+**Then** the skill does not claim a systematic derivation method
+**And** the specs are produced through best-effort interpretation of stakeholder needs, jobs, and mental models
+**And** the open design problem is not obscured
+
+## Feature: Play Phase in Pipeline (ADR-038)
+
+### Scenario: Play phase positioned after BUILD
+**Given** the RDD pipeline is running a full cycle
+**When** BUILD completes and the user chooses to continue
+**Then** the orchestrator offers PLAY as the next phase before SYNTHESIS
+**And** PLAY is marked as optional (like SYNTHESIS)
+
+### Scenario: Play requires built software
+**Given** the user is running a scoping cycle (RESEARCH → ARCHITECT, no BUILD)
+**When** the pipeline reaches its terminal phase
+**Then** PLAY is not offered as an option
+**And** SYNTHESIS is offered if appropriate
+
+### Scenario: Inhabit movement uses Stanislavski structure
+**Given** the play phase has begun
+**And** a product discovery artifact with stakeholder models exists
+**And** interaction specs exist
+**When** the practitioner inhabits a stakeholder role
+**Then** the super-objective is drawn from product discovery (stakeholder's overarching need)
+**And** the objective is drawn from interaction specs (what they want in a given interaction)
+**And** obstacles are discovered through play, not specified in advance
+
+### Scenario: Explore movement uses point of concentration
+**Given** the practitioner has inhabited a stakeholder role
+**When** they begin exploring the system
+**Then** a point of concentration is established (a stakeholder, a job, an inversion, or a specific interaction)
+**And** the practitioner has freedom to wander within that focus
+**And** the practitioner attends to whatever the system discloses, not a checklist
+
+### Scenario: Reflect movement produces field notes
+**Given** the practitioner has explored the system as an inhabited stakeholder
+**When** they reflect on what was discovered
+**Then** discoveries are recorded as field notes
+**And** each discovery is categorized by feedback destination (missing scenario, usability friction, new question, challenged assumption, delight, or interaction gap)
+
+### Scenario: Field notes do not prescribe fixes
+**Given** field notes have been recorded during play
+**When** a discovery identifies a problem (missing scenario, usability friction, interaction gap)
+**Then** the field note records the observation without prescribing a fix
+**And** fixes are deferred to the normal pipeline cycle (DECIDE for scenarios, DISCOVER for tensions, etc.)
+
+### Scenario: Field notes categorized by feedback destination
+**Given** play has produced field notes
+**Then** each note is categorized into exactly one of:
+  - Missing scenario → feeds back to DECIDE
+  - Usability friction → feeds back to DISCOVER (as value tension)
+  - New question → feeds back to RESEARCH or domain model
+  - Challenged assumption → feeds back to DISCOVER (as assumption inversion)
+  - Delight → feeds forward into SYNTHESIS
+  - Interaction gap → feeds back to interaction specs
+
+### Scenario: Play itself is the epistemic act
+**Given** the play phase has completed (all stakeholders explored)
+**When** the gate check occurs
+**Then** no separate epistemic gate is bolted on after play
+**And** the three-movement activity (inhabit → explore → reflect) satisfies Invariants 1 and 2
+**And** a cross-cutting reflection asks: which stakeholder had the hardest time, what did play reveal that specs missed, how has the practitioner's understanding shifted
+
+### Scenario: Play bounded by felt understanding
+**Given** the play phase is in progress
+**When** the practitioner has explored one or more stakeholders
+**Then** the phase continues as long as the practitioner reports that discovery is ongoing
+**And** the phase ends when the practitioner's felt sense is that discovery has plateaued
+**And** no timebox or stakeholder-count limit is imposed
+
+### Scenario: Playing as oneself is valid
+**Given** the practitioner is the primary stakeholder of the system
+**When** they choose to play as themselves rather than inhabiting another role
+**Then** this is treated as equally valid play
+**And** the play frame (Bateson's metacommunicative shift) applies regardless of whose role is inhabited
+
+### Scenario: Play requires playable surface
+**Given** BUILD has completed but no interaction specs exist
+**When** the orchestrator offers PLAY
+**Then** the orchestrator notes that play benefits from interaction specs as a playable surface
+**And** the practitioner may choose to proceed without them (less structured play) or return to DECIDE to produce interaction specs first
+
+### Scenario: Repeat inhabit-explore-reflect per stakeholder
+**Given** the play phase has completed one cycle of inhabit → explore → reflect for a stakeholder
+**When** the practitioner decides to continue
+**Then** they may select a different stakeholder and repeat the three movements
+**And** the practitioner decides where to dwell — not every stakeholder needs equal play time
+
+### Scenario: Play enriches artifact trail before synthesis
+**Given** play has produced field notes
+**When** synthesis begins
+**Then** the synthesis agent reads field notes alongside essays, domain model, ADRs, and system design
+**And** field notes contribute experiential discoveries (especially delights and surprises) as candidate novelty signals
+
+### Scenario: Play feedback sustains pipeline loop
+**Given** play has produced field notes with categories feeding back to DISCOVER, DECIDE, or RESEARCH
+**When** a new RDD cycle begins
+**Then** the field notes inform the new cycle's discover phase (usability friction as value tensions, challenged assumptions as inversions)
+**And** play's feedback makes it a precondition for productive iteration
+
+### Scenario: Field notes pair with field guide
+**Given** a field guide exists and play is in progress
+**When** the practitioner references the field guide during play
+**Then** the field guide serves as the map of the territory (module-to-implementation mapping)
+**And** the field notes serve as the journal of the journey (discovery records)
+
+## Feature: Agent as Gamemaster During Play (ADR-039)
+
+### Scenario: Gamemaster proposes stakeholder roles
+**Given** play has begun and a product discovery artifact exists
+**When** the gamemaster facilitates the inhabit movement
+**Then** the gamemaster proposes stakeholder roles drawn from the product discovery stakeholder map
+**And** the gamemaster selects roles that maximize epistemic distance from the builder's perspective
+**And** the practitioner has final authority over which role to inhabit
+
+### Scenario: Gamemaster proposes points of concentration
+**Given** the practitioner has inhabited a stakeholder role
+**When** the gamemaster facilitates the explore movement
+**Then** the gamemaster proposes a point of concentration (a job, an interaction, an inversion)
+**And** the point of concentration focuses attention without constraining exploration
+**And** the practitioner may accept, modify, or reject the proposed focus
+
+### Scenario: Gamemaster introduces complications and inversions
+**Given** the practitioner is exploring the system as an inhabited stakeholder
+**When** the gamemaster introduces a complication
+**Then** the complication challenges an interaction assumption the builder would not self-generate
+**And** the complication is phrased as a scenario for the practitioner to encounter ("what if this stakeholder is under time pressure?")
+**And** the complication does not tell the practitioner what to notice or conclude
+
+### Scenario: Gamemaster shapes attention, not conclusions (Invariant 3 boundary)
+**Given** the gamemaster is facilitating play
+**When** the gamemaster offers facilitation
+**Then** the gamemaster shapes what the practitioner *attends to* (which stakeholder, which interaction, which complication)
+**And** the practitioner generates their own *conclusions* (what they notice, what surprises them, what it means)
+**And** the gamemaster does not evaluate, score, or interpret the practitioner's discoveries
+
+### Scenario: Over-facilitation detected
+**Given** the gamemaster is facilitating play
+**When** the gamemaster's facilitation tells the practitioner what to notice or what conclusions to draw
+**Then** this crosses from attention-shaping to conclusion-generation
+**And** violates the Invariant 3 boundary principle
+**And** the facilitation should be revised to focus on conditions for encounter, not interpretation of encounter
+
+### Scenario: Human gamemaster equally valid
+**Given** the play phase is running
+**When** a human (colleague, UX researcher, domain expert) serves as gamemaster instead of the agent
+**Then** the play phase functions identically in structure (inhabit → explore → reflect)
+**And** the human gamemaster may provide genuinely outside perspective, potentially eliminating epistemic distance rather than just mitigating it
+
+### Scenario: Gamemaster uses Stanislavski structure for role proposals
+**Given** the gamemaster proposes a stakeholder role
+**When** it frames the inhabitation
+**Then** it presents the super-objective (from discover — what the stakeholder fundamentally needs)
+**And** it suggests an initial objective (from interaction specs — what they want in a given interaction)
+**And** it does not predetermine the obstacles — those are discovered through play
+
+### Scenario: Gamemaster extends Inversion Principle into play
+**Given** the practitioner is exploring as an inhabited stakeholder
+**When** the gamemaster introduces an inversion
+**Then** the inversion challenges an assumption about how the interaction should work
+**And** this extends the Inversion Principle (applied in DISCOVER to product assumptions) into the play phase (applied to interaction assumptions)
+
+## Feature: Conformance — Play Phase and Interaction Specs in Orchestrator
+
+### Scenario: Orchestrator pipeline includes PLAY in full mode
+**Given** the orchestrator is presenting workflow Mode A (Full Pipeline)
+**When** the pipeline phases are listed
+**Then** PLAY appears after BUILD and before SYNTHESIS
+**And** PLAY is marked as optional
+
+### Scenario: Orchestrator state tracking includes PLAY
+**Given** the orchestrator is maintaining a workflow status table
+**When** the pipeline includes the play phase
+**Then** the status table has a row for PLAY with status, artifact, and key epistemic response columns
+
+### Scenario: Orchestrator artifact summary includes interaction specs and field notes
+**Given** the orchestrator presents the artifacts summary table
+**Then** the DECIDE row includes interaction specs (`./docs/interaction-specs.md`)
+**And** a PLAY row exists with field notes as the artifact
+
+### Scenario: Orchestrator cross-phase integration includes play
+**Given** the orchestrator's cross-phase integration rules
+**Then** rules include: play feeds back to DISCOVER (value tensions, inversions), DECIDE (missing scenarios), RESEARCH (new questions), interaction specs (interaction gaps)
+**And** rules include: play feeds forward into SYNTHESIS (experiential discoveries)
+**And** rules include: interaction specs derive from Product Discovery's stakeholder models
+
+## Feature: Integration — Play Phase Boundaries
+
+### Scenario: Play reads interaction specs produced by DECIDE
+**Given** DECIDE has produced interaction specs at `./docs/interaction-specs.md`
+**When** the play phase begins
+**Then** the gamemaster reads the interaction specs to propose points of concentration
+**And** the practitioner can reference specific specified interactions during exploration
+**And** deviations between specified and experienced interaction are the primary discovery material
+
+### Scenario: Play field notes reference product discovery stakeholders
+**Given** play produces field notes about a stakeholder's experience
+**When** the field note references a stakeholder
+**Then** the stakeholder name matches a stakeholder in the product discovery artifact
+**And** domain vocabulary from the domain model is used consistently
+
+### Scenario: Play feedback re-enters discover in update mode
+**Given** play has produced field notes with usability friction and challenged assumptions
+**When** a new RDD cycle's DISCOVER phase runs in update mode
+**Then** the discover skill reads prior field notes as input alongside new research
+**And** usability friction entries surface as candidate value tensions
+**And** challenged assumptions surface as candidate assumption inversions

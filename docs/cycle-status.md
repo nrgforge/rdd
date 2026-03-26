@@ -11,9 +11,9 @@
 |-------|--------|----------|----------------------|
 | RESEARCH | ✅ Complete | Essay 008, 2 lit reviews, 2 audit reports | Agent-as-gamemaster; "a game you've never played" reframes epistemic distance; Stanislavski objectives structure |
 | DISCOVER | ✅ Complete | product-discovery.md updated | "Discovery from research" vs. "discovery from play" — novel framing; field notes as play's artifact (map/journal pairing with field guide); play needs meta-framing conversation like synthesis; play bounded by felt understanding not timebox |
-| MODEL | ☐ Next | — | — |
-| DECIDE | ☐ Pending | — | — |
-| ARCHITECT | ☐ Pending | — | — |
+| MODEL | ✅ Complete | domain-model.md (Amendment 12) | Heart of the model: interaction specs define the playable surface, play explores it. Productive friction vs. genuine obstruction — the distinction you can only feel by inhabiting the stakeholder. Trellis example: "I have to write" is the mission, "meaningless connections" is the obstacle. |
+| DECIDE | ✅ Complete | ADRs 037-039, 36 scenarios, argument audit | "Facilitated epistemic phase" as a category — play and synthesis are both facilitated by the agent (shapes attention) while the practitioner generates understanding. Invariant 3 boundary principle confirmed. |
+| ARCHITECT | ☐ Next | — | — |
 | BUILD | ☐ Pending | — | — |
 | SYNTHESIS | ☐ Optional | — | — |
 
@@ -38,6 +38,12 @@
 14. **Playing as yourself is equally valid** — if the practitioner is the primary stakeholder, self-play is natural. The play frame does the distancing regardless. Role selection is contextual.
 15. **Spike-play is distinct from post-build play** — both valid, different purposes. Spike-play explores feasibility; post-build play discovers what specs missed.
 16. **Method vs. plugin distinction for gamemaster** — RDD the method could support a human gamemaster; RDD the plugin implements the agent in this role.
+
+### From MODEL
+17. **Productive friction vs. genuine obstruction** — the Obstacle concept needs a distinction play can surface: friction that IS the mission (Trellis: "you have to write") vs. friction that undermines it ("meaningless surfaced connections"). Scenarios in DECIDE should attend to this — designed resistance and unintended friction are different.
+18. **Theoretical foundations as illustration, not vocabulary** — Suchman, Winnicott, Sutton-Smith, de Certeau, Boal are load-bearing in the essay but deliberately excluded from domain vocabulary. They inform but don't bind. Theater framing is illustrative.
+19. **Phenomenological bounding confirmed** — felt understanding as play's termination condition is the right lens. Consistent with synthesis bounding.
+20. **"Scenario" is less relevant for play** — play operates at the confluence of scenarios, not within individual ones. Semi-structured/unstructured exploration, not scenario verification.
 
 ## Context for Resumption
 

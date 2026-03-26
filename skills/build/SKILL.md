@@ -1,6 +1,6 @@
 ---
 name: rdd-build
-description: Build phase of RDD. Turns behavior scenarios into executable BDD specs, then implements via TDD (red/green/refactor). Enforces structure-vs-behavior separation, composable tests, and small reversible steps. Use after /rdd-decide when scenarios and domain model are approved.
+description: Build phase of RDD. Turns behavior scenarios into executable BDD specs, then implements via TDD (red/green/refactor). Enforces structure-vs-behavior separation, composable tests, and small reversible steps. Use after /rdd-decide (with /rdd-architect recommended) when scenarios and domain model are approved.
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash, Task
 ---
 
