@@ -55,11 +55,15 @@ claude --plugin-dir ./rdd
 
 ## Usage
 
-Start a research cycle:
+Start an RDD cycle with the orchestrator:
 
 ```
-/rdd-research
+/rdd
 ```
+
+The orchestrator scans for existing artifacts, asks where to store new ones, and guides you through the pipeline — invoking each phase skill in order with epistemic gates between them.
+
+You can also invoke phases directly:
 
 | Skill | What you do |
 |-------|-------------|
