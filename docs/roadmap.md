@@ -1,29 +1,113 @@
 # Roadmap: Pedagogical RDD
 
-**Generated:** 2026-03-19
-**Derived from:** System Design v6.0, ADRs 031-036
+**Generated:** 2026-03-26
+**Derived from:** System Design v7.0, ADRs 037-039
 
 ## Work Packages
 
-### WP-A: Plugin Verification
+### WP-A: Interaction Specification Layer (Decide Skill)
 
-**Objective:** End-to-end verification that the plugin works as a complete system.
+**Objective:** Enable the Decide Skill to produce interaction specifications — the missing middle layer between business-rule scenarios and technical implementation — derived from Product Discovery's stakeholder models.
 
 **Changes:**
-- Install via `claude --plugin-dir ./rdd` and verify all components load
-- Run sample RDD phase invocations through the plugin
-- Verify all 192 scenarios (164 existing + 28 plugin architecture)
-- Verify all fitness criteria including 9 new plugin criteria
-- Verify all boundary integration tests including 14 new plugin tests
+- Amend `skills/decide/SKILL.md` to add interaction spec generation step after scenario writing
+- Add interaction spec artifact template (stakeholder sections with super-objective, task, interaction mechanics)
+- Artifact written to `./docs/interaction-specs.md`
 
-**Dependencies:** None (all prerequisite WPs complete)
+**Scenarios covered:** ADR-037 scenarios (6): DECIDE produces interaction specs, organized by stakeholder, derived from product discovery, creates playable surface, complements scenarios, derivation method acknowledged as open
+
+**Dependencies:** None
 
 ---
 
+### WP-B: Play Skill
+
+**Objective:** Create the Play Skill — post-build experiential discovery through stakeholder inhabitation, with the orchestrating agent as gamemaster.
+
+**Changes:**
+- Create `skills/play/SKILL.md` with three-movement structure (inhabit → explore → reflect)
+- Implement gamemaster behavior: role proposals, points of concentration, complications, inversions
+- Implement Stanislavski inhabitation structure (super-objective from discover, objective from interaction specs, obstacle discovered through play)
+- Define field notes artifact template with 6 feedback-destination categories
+- Implement felt-understanding bounding (no timebox, no stakeholder-count limit)
+- No separate EPISTEMIC GATE section (activity subsumes gate — ADR-016 pattern)
+- Field notes written to `./docs/field-notes.md`
+
+**Scenarios covered:** ADR-038 scenarios (16): play positioned after BUILD, requires built software, inhabit/explore/reflect movements, field notes production and categorization, play itself is epistemic act, felt-understanding bounding, playing as oneself valid, playable surface requirement, repeat per stakeholder, enriches artifact trail, feedback sustains loop, field notes pair with field guide. ADR-039 scenarios (8): gamemaster proposes roles, proposes points of concentration, introduces complications/inversions, shapes attention not conclusions, over-facilitation detection, human gamemaster equally valid, Stanislavski structure, extends Inversion Principle.
+
+**Dependencies:** None (WP-A implied logic — play reads interaction specs, but skill can be written to reference the artifact path before it exists)
+
+---
+
+### WP-C: Orchestrator and Downstream Integration
+
+**Objective:** Wire play and interaction specs into the pipeline — update the orchestrator, synthesis, discover, and hook infrastructure.
+
+**Changes:**
+- Amend `skills/rdd/SKILL.md`: pipeline sequence (PLAY after BUILD, before SYNTHESIS), state tracking table (PLAY row), artifact summary (interaction specs in DECIDE, field notes in PLAY), cross-phase integration rules (play feedback loops), Available Skills table (`/rdd-play`), Mode A pipeline listing
+- Amend `skills/synthesize/SKILL.md`: read field notes in artifact trail mining (delight entries as candidate novelty signals)
+- Amend `skills/discover/SKILL.md`: update mode reads prior field notes (usability friction → value tensions, challenged assumptions → inversions)
+- Update `hooks/scripts/epistemic-gate`: recognize play subsumes its gate (like synthesis)
+
+**Scenarios covered:** Conformance scenarios (4): orchestrator pipeline includes PLAY, state tracking includes PLAY, artifact summary includes interaction specs and field notes, cross-phase integration includes play. Integration boundary scenarios (3): play reads interaction specs, field notes reference product discovery stakeholders, play feedback re-enters discover in update mode.
+
+**Dependencies:** WP-A (implied logic — orchestrator references interaction-specs.md), WP-B (implied logic — orchestrator references play skill and field-notes.md)
+
+---
+
+### WP-D: Verification Pass
+
+**Objective:** Verify all 36 new scenarios, 14 new fitness criteria, and 12 new boundary integration tests.
+
+**Changes:**
+- Verify all ADR-037 scenarios (6) against Decide Skill
+- Verify all ADR-038 scenarios (16) against Play Skill
+- Verify all ADR-039 scenarios (8) against Play Skill
+- Verify conformance scenarios (4) against Orchestrator
+- Verify integration boundary scenarios (3) against cross-skill artifact flow
+- Verify all 14 new fitness criteria
+- Verify all 12 new boundary integration tests
+- Verify plugin discovers 10 skills (was 9)
+
+**Scenarios covered:** All 36 new scenarios (verification)
+
+**Dependencies:** WP-A (hard), WP-B (hard), WP-C (hard)
+
+## Dependency Graph
+
+```
+WP-A (Interaction Specs)     WP-B (Play Skill)
+       open choice                open choice
+              │                        │
+              └──── implied logic ──────┘
+                         │
+                  WP-C (Orchestrator + Downstream)
+                         │
+                    hard dependency
+                         │
+                  WP-D (Verification)
+```
+
+**Classification key:**
+- **Hard dependency:** WP-D cannot run until A, B, and C are complete — verification requires all components
+- **Implied logic:** WP-C references artifacts from A and B, simpler to build after them, but a builder could stub the references
+- **Open choice:** WP-A and WP-B are genuinely independent — build either first
+
+## Transition States
+
+### TS-1: Richer Specification Layer (after WP-A)
+
+The Decide Skill produces interaction specifications alongside scenarios. The pipeline is usable without play — interaction specs enrich the specification layer and can inform BUILD directly. This is a coherent intermediate architecture: DECIDE produces three artifacts (ADRs, scenarios, interaction specs) where it previously produced two.
+
+### TS-2: Full Play Pipeline (after WP-A + WP-B + WP-C)
+
+The complete play/interaction-spec cycle is wired. The pipeline offers PLAY after BUILD. The discover skill reads field notes in update mode. Synthesis reads field notes. The system is ready for end-to-end play sessions, pending verification.
+
 ## Open Decision Points
 
-- **Agent audit artifact path convention:** Where should audit artifacts live? `docs/essays/audits/citation-audit-NNN.md` (co-located under essays). Audits are artifacts of the essay production process.
-- **Standalone skill retirement:** Users with standalone skills in `~/.claude/skills/rdd-*` need to remove them after plugin install to avoid conflicts.
+- **Interaction spec format evolution:** ADR-037 acknowledges the derivation method from stakeholder model to task decomposition is an open design problem. The format will evolve through use. The builder should start with the simplest structure that creates a playable surface.
+- **Field notes artifact structure:** The scenarios specify 6 feedback-destination categories but not the artifact's exact markdown structure. The builder designs this during WP-B, keeping it naturalistic (field notes, not structured log — per discover gate feed-forward signal 8).
+- **Epistemic-gate-enforcer hook update:** The hook needs to recognize play (like synthesis) subsumes its gate. The simplest approach: add "play" to the same check that already recognizes synthesis. The builder decides the implementation detail.
 
 ---
 

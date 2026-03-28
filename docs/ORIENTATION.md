@@ -1,10 +1,10 @@
 # Orientation: Research-Driven Development (RDD)
 
-*Generated 2026-03-19*
+*Generated 2026-03-27*
 
 ## What This System Is
 
-RDD is a methodology for building software you understand. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it. AI changed what's easy (generation) and what's hard (understanding); RDD uses AI for what it's good at while structuring the practices that produce the understanding AI can't give you. The pipeline runs: RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → SYNTHESIZE → GRADUATE. RDD composes with existing workflows — you reach for it when a problem warrants structured thinking, and graduate the artifacts when the knowledge has been absorbed.
+RDD is a methodology for building software you understand. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it. AI changed what's easy (generation) and what's hard (understanding); RDD uses AI for what it's good at while structuring the practices that produce the understanding AI can't give you. The pipeline runs: RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. RDD composes with existing workflows — you reach for it when a problem warrants structured thinking, and graduate the artifacts when the knowledge has been absorbed.
 
 Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforge/rdd). Manifesto at [nrgforge.github.io/rdd](https://nrgforge.github.io/rdd/).
 
@@ -30,7 +30,7 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
   - Then: [decisions/](decisions/) (ADRs — the "why" behind each choice)
   - Handoff artifact: [scenarios.md](scenarios.md) (what the team builds against)
 
-- **AI Agent** — executes the skill files. The pipeline's instructions are literally written for this stakeholder. Specialist subagents handle focused work (citation auditing, argument auditing, literature review, conformance scanning, orientation writing, code spikes).
+- **AI Agent** — executes the skill files. The pipeline's instructions are literally written for this stakeholder. Specialist subagents handle focused work (citation auditing, argument auditing, literature review, conformance scanning, orientation writing, code spikes). During play, the orchestrating agent takes on the gamemaster role — active facilitation rather than skill execution or artifact production.
   - Start: [orchestrator SKILL.md](../skills/rdd/SKILL.md) (phase sequence, gate protocol, cross-phase rules)
   - Reference: [domain-model.md](domain-model.md) § Invariants (constitutional authority)
   - Reference: [system-design.md](system-design.md) (module ownership, fitness criteria)
@@ -61,18 +61,20 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 
 **Tier 3 — Supporting Material (consulted for provenance and depth)**
 - `domain-model.md` — concepts, actions, relationships, invariants. The vocabulary authority.
-- `essays/` — research findings (7 essays: pedagogical epistemology, product discovery, synthesis, orientation document, roadmap/field guide/sizing, outline as exhibition, plugin architecture)
-- `decisions/` — ADRs (36 decisions, from epistemic gates through plugin architecture)
-- `scenarios.md` — refutable behavior specifications (192 scenarios)
+- `essays/` — research findings (8 essays: pedagogical epistemology, product discovery, synthesis, orientation document, roadmap/field guide/sizing, outline as exhibition, plugin architecture, play and interaction specification)
+- `decisions/` — ADRs (39 decisions, from epistemic gates through play/interaction specs)
+- `scenarios.md` — refutable behavior specifications (228 scenarios)
+- `interaction-specs.md` — workflow-level specification of how each stakeholder works with the system. Creates the playable surface.
 - `references/field-guide.md` — maps system design modules to implementation state. Developer reference.
+- `field-notes.md` — observational discovery records from play, categorized by feedback destination. Pairs with the field guide: the guide is the map, the notes are the journal.
 - `essays/reflections/` — meta-observations from epistemic gate conversations
 - `essays/research-logs/` — process records from research phases
 
 ## Current State
 
-**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 9 skills (orchestration), 6 specialist subagents (focused work), 5 cross-cutting hooks (passive enforcement), and the self-referential artifact corpus.
+**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 10 skills (orchestration), 6 specialist subagents (focused work), 5 cross-cutting hooks (passive enforcement), and the self-referential artifact corpus.
 
-**Pipeline:** RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → SYNTHESIZE → GRADUATE. A conformance audit utility (`/rdd-conform`) operates outside the pipeline for artifact template alignment, drift detection, remediation, and graduation.
+**Pipeline:** RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. A conformance audit utility (`/rdd-conform`) operates outside the pipeline for artifact template alignment, drift detection, remediation, and graduation.
 
 **What's settled:**
 - Epistemic gate protocol (ADRs 001-005) — implemented in all skill files
@@ -86,6 +88,9 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 - Scoped cycles (ADR-026) — first-class workflow pattern: scope → cycle → graduate
 - Synthesis enrichment (ADRs 027-030) — four-dimension framing, structural experiments, two-register outline, re-entry
 - Plugin architecture (ADRs 031-036) — specialist subagent extraction, cross-cutting hooks, plugin packaging, skill activator, research log archival
+- Interaction specification layer (ADR-037) — `/rdd-decide` produces workflow-level interaction specs after scenarios, creating the playable surface
+- Play phase (ADR-038) — `/rdd-play` facilitates post-build experiential discovery through stakeholder inhabitation; three movements (inhabit → explore → reflect); bounded by felt understanding; produces field notes
+- Gamemaster role (ADR-039) — orchestrating agent serves as active facilitator during play, shaping attention (not conclusions) within the Invariant 3 boundary
 
 **Open questions (selected):**
 - How would Pair-RDD work at epistemic gates?
@@ -93,3 +98,6 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 - Cross-project synthesis (portfolio mode) is described but not operationalized
 - Fading implementation (Invariant 6) is deferred — tracked as design debt (ADR-005)
 - Should graduation surface lingering open questions as a distinct category?
+- What is the systematic derivation method from stakeholder model to interaction specification? (ADR-037 open problem)
+- Does play change across RDD cycles? Fading (Invariant 6) suggests early cycles involve deep play. (Essay 008 §6)
+- Spike-play vs. post-build play — should spike-play be formalized? (Essay 008 §7)

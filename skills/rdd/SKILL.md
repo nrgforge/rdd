@@ -22,7 +22,8 @@ $ARGUMENTS
 | `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
 | `/rdd-architect` | System design with responsibility allocation + provenance | Domain model + ADRs + scenarios |
 | `/rdd-build` | BDD scenarios → TDD loop → working software | Scenarios + domain model |
-| `/rdd-synthesize` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build) |
+| `/rdd-play` | Post-build experiential discovery — stakeholder inhabitation with gamemaster facilitation → field notes | Built software + interaction specs + product discovery (optional, post-build) |
+| `/rdd-synthesize` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build/play) |
 | `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation, graduation | Artifact corpus + skill files (utility, invoked as needed) |
 | `/rdd-lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd-research`) |
 
@@ -100,7 +101,11 @@ Phase 6: INTEGRATE
 └── /rdd-build Step 5 — Integration verification
     [Gate: New components verified against real neighbors, not just stubs.]
 
-Phase 7: SYNTHESIS (optional)
+Phase 7: PLAY (optional)
+└── /rdd-play — Stakeholder inhabitation → gamemaster-facilitated exploration → field notes
+    [No separate gate: the three-movement activity (inhabit → explore → reflect) IS the epistemic act. Practitioner generates at every step.]
+
+Phase 8: SYNTHESIS (optional)
 └── /rdd-synthesize — Artifact trail mining → synthesis conversation → essay outline
     [No separate gate: the three-phase conversation (journey review, novelty surfacing, framing) IS the epistemic gate. Writer generates at every step.]
 ```
@@ -133,6 +138,12 @@ Phase 4: ARCHITECT
 
 Phase 5: BUILD
 └── /rdd-build — BDD → TDD → working software
+
+Phase 6: PLAY (optional)
+└── /rdd-play — Stakeholder inhabitation → field notes
+
+Phase 7: SYNTHESIS (optional)
+└── /rdd-synthesize — Artifact trail mining → essay outline
 ```
 
 ### Mode D: Custom
@@ -175,6 +186,7 @@ Maintain a running status table:
 | ARCHITECT | /rdd-architect | ☐ Pending | — | — | — |
 | BUILD | /rdd-build | ☐ Pending | — | — | — |
 | INTEGRATE | /rdd-build Step 5 | ☐ Pending | — | — | — |
+| PLAY | /rdd-play | ☐ Optional | — | — | — |
 | SYNTHESIS | /rdd-synthesize | ☐ Optional | — | — | — |
 ```
 
@@ -217,7 +229,12 @@ Findings from earlier phases inform later ones:
 - If `/rdd-build` stewardship review reveals a design flaw, a Design Amendment updates the system design (not the ADRs)
 - If `/rdd-build` reveals a flaw in a decision, go back and update the ADR
 - When any phase changes a domain model invariant, **backward propagation triggers**: all prior documents are swept for contradictions, supersession notes are added, and the amendment is logged in the domain model. This is a cross-cutting event that interrupts normal phase sequence.
-- `/rdd-synthesize` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, and system design. It does not read just the preceding phase's output.
+- `/rdd-decide` produces interaction specifications after scenarios — the workflow-level specification of how each stakeholder works with the system, derived from product discovery's stakeholder models. Interaction specifications create the playable surface that `/rdd-play` requires.
+- `/rdd-play` reads interaction specifications, product discovery (stakeholder models and super-objectives), and the field guide (map of the territory). Play produces field notes categorized by feedback destination.
+- `/rdd-play` field notes feed back to prior phases: missing scenarios → DECIDE, usability friction → DISCOVER (as value tensions), new questions → RESEARCH, challenged assumptions → DISCOVER (as assumption inversions), interaction gaps → interaction specifications. Play's feedback sustains the pipeline's iterative character.
+- `/rdd-play` field notes feed forward to SYNTHESIS: delight entries and surprising discoveries contribute experiential findings as candidate novelty signals.
+- `/rdd-discover` in update mode reads prior field notes alongside new research — usability friction surfaces as candidate value tensions, challenged assumptions surface as candidate assumption inversions.
+- `/rdd-synthesize` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, system design, and field notes from play. It does not read just the preceding phase's output.
 - `/rdd-synthesize` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
 - `/rdd-synthesize` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
 - The synthesis essay, when written by the user, serves as a **narrative context rollup** — the orchestrator should treat it as a primary context source when bootstrapping new sessions for the project. It answers "what was discovered, and why does it matter?" where structured artifacts answer "what was decided?"
@@ -233,10 +250,12 @@ Findings from earlier phases inform later ones:
 | MODEL | Domain model/glossary | `./docs/domain-model.md` |
 | DECIDE | ADRs | `./docs/decisions/adr-NNN-*.md` |
 | DECIDE | Behavior scenarios | `./docs/scenarios.md` |
+| DECIDE | Interaction specifications | `./docs/interaction-specs.md` |
 | ARCHITECT | System design | `./docs/system-design.md` |
 | ARCHITECT | Roadmap (generated reflexively alongside system design) | `./docs/roadmap.md` |
 | BUILD | Tests + code | Project source |
 | BUILD | Field guide (generated when implementation exists, reflexively maintained) | `./docs/references/field-guide.md` |
+| PLAY | Field notes (observational discovery records, categorized by feedback destination) | `./docs/field-notes.md` |
 | SYNTHESIS | Synthesis outline (agent + user co-produced) | `./docs/synthesis/NNN-descriptive-name-outline.md` |
 | SYNTHESIS | Synthesis essay (user-written, outside pipeline) | `./docs/synthesis/NNN-descriptive-name.md` |
 | Cross-phase | Orientation document (agent-maintained, user-validated) | `./docs/ORIENTATION.md` |
@@ -327,6 +346,6 @@ This applies to all prose produced by every phase. It is a cross-cutting rule.
 - **ADRs are source of truth**: Code that contradicts accepted ADRs is structural debt. Resolve it before building on top of it.
 - **Invariants decay with distance**: LLMs lose coherence across many documents. The invariants section is the short, authoritative statement that prevents this. Keep it concise. Read it first. Trust it over longer documents when they conflict.
 - **Track state**: The user should always know where they are in the pipeline and what's left.
-- **Inversion Principle — question assumptions before encoding them**: A cross-cutting epistemological practice. Every phase should ask whether its assumptions have been examined. The procedural home is `/rdd-discover` (assumption inversions), but the principle applies everywhere: RESEARCH ("right problem?"), PRODUCT DISCOVERY (procedural step), DECIDE ("unexamined product assumption?"), ARCHITECT ("user's mental model or developer's?"), SYNTHESIS (narrative framing — inverting obvious takeaways, process-vs-product assumptions, reader's assumed context).
+- **Inversion Principle — question assumptions before encoding them**: A cross-cutting epistemological practice. Every phase should ask whether its assumptions have been examined. The procedural home is `/rdd-discover` (assumption inversions), but the principle applies everywhere: RESEARCH ("right problem?"), PRODUCT DISCOVERY (procedural step), DECIDE ("unexamined product assumption?"), ARCHITECT ("user's mental model or developer's?"), PLAY (gamemaster introduces inversions to challenge interaction assumptions), SYNTHESIS (narrative framing — inverting obvious takeaways, process-vs-product assumptions, reader's assumed context).
 - **Document sizing heuristics**: Five cascading heuristics govern artifact structure, applied in priority order: (1) **Purpose Test** — a document serves one purpose for one audience; when purposes diverge, split. (2) **3-5 Concept Rule** — each section requires holding no more than 3-5 concepts simultaneously. (3) **~5,000 Word Guideline** — documents read end-to-end should aim to stay near ~5,000 words; approximate and directional, not a hard ceiling. (4) **Read Contract** — reference material consulted by section can be longer than narrative material read end-to-end; access pattern determines appropriate length. (5) **Position-Sensitive Placement** — critical information at beginning and end of agent-consumed documents; nothing essential in the middle third. The Purpose Test is the strongest signal; the Word Guideline does not override the Read Contract for reference artifacts like domain models and field guides.
 - **Three-tier artifact hierarchy**: `ORIENTATION.md` sits at Tier 1 as the entry point — it routes readers to depth without containing depth. `product-discovery.md`, `system-design.md`, and `roadmap.md` are Tier 2 primary readables for product, technical, and sequencing stakeholders respectively. All other artifacts (domain model, essays, ADRs, scenarios, field guide) are Tier 3 supporting material for provenance and reference. New readers — human or agent — start at ORIENTATION.md and navigate from there.

@@ -1,8 +1,8 @@
 # System Design: Pedagogical RDD
 
-**Version:** 6.0
+**Version:** 7.0
 **Status:** Current
-**Last amended:** 2026-03-19
+**Last amended:** 2026-03-26
 
 ## Architectural Drivers
 
@@ -47,13 +47,19 @@
 | Explicit user requests for RDD override brainstorming mandate | Quality Attribute | ADR-035; Essay 007 §7 |
 | Research log archived at cycle end, not next cycle start | Quality Attribute | ADR-036 |
 | Model selection per specialist task: mechanical analysis on Sonnet, exploratory spikes at parent model | Quality Attribute | ADR-032; Essay 007 §3 |
+| Interaction specs derive from Product Discovery stakeholder models and complement scenarios as workflow-level specifications | Quality Attribute | ADR-037; Essay 008 §2 |
+| Play itself is the epistemic act — no separate gate section (ADR-016 pattern extends) | Quality Attribute | ADR-038; ADR-016 |
+| Gamemaster shapes attention, not conclusions (Invariant 3 boundary principle) | Constraint | ADR-039; Invariant 3 |
+| Play bounded by felt understanding, not timebox | Constraint | ADR-038; Invariant 0, 4 |
+| Field notes categorized by feedback destination, do not prescribe fixes | Quality Attribute | ADR-038 |
+| Inversion Principle operates at play level (gamemaster introduces inversions to challenge interaction assumptions) | Quality Attribute | ADR-039; ADR-010 |
 
 ## Module Decomposition
 
 ### Module: Orchestrator (`skills/rdd/SKILL.md`)
 **Purpose:** Defines the pipeline sequence, epistemic gate protocol, three-tier artifact hierarchy, cross-cutting principles, scoped cycle workflow pattern, agent dispatch protocol, and ensures no phase transition consists solely of approval.
-**Provenance:** ADR-001 (gate pattern); ADR-002 (orchestrator defines protocol); ADR-004 (feed-forward instruction); ADR-006 (pipeline includes PRODUCT DISCOVERY); ADR-010 (inversion principle cross-cutting); ADR-019 (three-tier artifact hierarchy); ADR-022 (roadmap at Tier 2); ADR-023 (field guide at Tier 3); ADR-024 (document sizing heuristics); ADR-026 (scoped cycles, deep work tool framing); ADR-031 (artifact-mediated communication as cross-cutting principle); ADR-032 (agent dispatch protocol); ADR-034 (plugin packaging); Invariant 0, 2
-**Owns:** Gate protocol definition, pipeline sequence (including PRODUCT DISCOVERY phase), state tracking, feed-forward instruction, cross-cutting principles (inversion principle, document sizing heuristics, artifact-mediated communication), Available Skills table, Artifacts Summary, three-tier artifact hierarchy principle (with roadmap at Tier 2 and field guide at Tier 3), orientation document regeneration instruction (dispatches orientation-writer agent), scoped cycle workflow pattern, deep work tool framing, agent dispatch protocol (how phase skills delegate specialist work to subagents)
+**Provenance:** ADR-001 (gate pattern); ADR-002 (orchestrator defines protocol); ADR-004 (feed-forward instruction); ADR-006 (pipeline includes PRODUCT DISCOVERY); ADR-010 (inversion principle cross-cutting); ADR-019 (three-tier artifact hierarchy); ADR-022 (roadmap at Tier 2); ADR-023 (field guide at Tier 3); ADR-024 (document sizing heuristics); ADR-026 (scoped cycles, deep work tool framing); ADR-031 (artifact-mediated communication as cross-cutting principle); ADR-032 (agent dispatch protocol); ADR-034 (plugin packaging); ADR-037 (interaction specs in artifact summary); ADR-038 (PLAY in pipeline and state tracking); Invariant 0, 2
+**Owns:** Gate protocol definition, pipeline sequence (including PRODUCT DISCOVERY and optional PLAY phases), state tracking, feed-forward instruction, cross-cutting principles (inversion principle, document sizing heuristics, artifact-mediated communication), Available Skills table, Artifacts Summary (including interaction specs and field notes), three-tier artifact hierarchy principle (with roadmap at Tier 2 and field guide at Tier 3), orientation document regeneration instruction (dispatches orientation-writer agent), scoped cycle workflow pattern, deep work tool framing, agent dispatch protocol (how phase skills delegate specialist work to subagents), cross-phase integration rules for play feedback (field notes → DISCOVER, DECIDE, RESEARCH, interaction specs, SYNTHESIS)
 **Depends on:** None (top-level coordinator)
 **Depended on by:** All phase skills (they follow its protocol); all hooks (they supplement its cross-cutting principles)
 **Note:** In the plugin architecture, the orchestrator's cross-cutting principles are additionally enforced by hooks — the hooks supplement skill-level instructions with passive event-driven reminders. The orchestrator dispatches the orientation-writer agent at milestones rather than generating ORIENTATION.md inline.
@@ -65,12 +71,12 @@
 **Depends on:** Orchestrator (protocol); Citation Auditor Agent (dispatched during essay finalization); Argument Auditor Agent (dispatched after citation audit); Lit Reviewer Agent (dispatched as user-selected research method); Spike Runner Agent (dispatched as user-selected research method)
 **Depended on by:** None directly (produces essay artifact consumed by Product Discovery Skill and Model Skill via file)
 
-### Module: Product Discovery Skill (`rdd-discover/SKILL.md`) — NEW
-**Purpose:** Surfaces user needs, stakeholder maps, value tensions, and assumption inversions, producing a product discovery artifact in user language that feeds forward into MODEL, DECIDE, and ARCHITECT.
-**Provenance:** ADR-006 (phase placement); ADR-007 (artifact structure); ADR-008 (forward/backward modes); ADR-010 (inversion principle procedural home); ADR-011 (epistemic gate); Invariant 0 (product dimension of authority)
-**Owns:** Product discovery process (forward and backward modes), five-section artifact template, assumption inversion procedural step, product debt table (backward mode), epistemic gate prompts
+### Module: Product Discovery Skill (`skills/discover/SKILL.md`)
+**Purpose:** Surfaces user needs, stakeholder maps, value tensions, and assumption inversions, producing a product discovery artifact in user language that feeds forward into MODEL, DECIDE, ARCHITECT, and PLAY.
+**Provenance:** ADR-006 (phase placement); ADR-007 (artifact structure); ADR-008 (forward/backward/update modes); ADR-010 (inversion principle procedural home); ADR-011 (epistemic gate); ADR-038 (play feedback re-enters discover in update mode); Invariant 0 (product dimension of authority)
+**Owns:** Product discovery process (forward, backward, and update modes — update mode reads prior field notes from play as input alongside new research), five-section artifact template, assumption inversion procedural step, product debt table (backward mode), epistemic gate prompts
 **Depends on:** Orchestrator (protocol)
-**Depended on by:** None directly (produces product discovery artifact consumed by Model Skill, Decide Skill, and Architect Skill via file)
+**Depended on by:** None directly (produces product discovery artifact consumed by Model Skill, Decide Skill, Architect Skill, and Play Skill via file)
 
 ### Module: Model Skill (`skills/model/SKILL.md`)
 **Purpose:** Extracts domain vocabulary from essay and product discovery artifact, with Product Origin provenance column and an epistemic gate tailored to domain model artifacts.
@@ -80,11 +86,11 @@
 **Depended on by:** None directly (produces domain model artifact consumed by Decide Skill via file)
 
 ### Module: Decide Skill (`skills/decide/SKILL.md`)
-**Purpose:** Produces ADRs and behavior scenarios with product context alongside technical context, including inversion principle check on ADR assumptions, with an epistemic gate tailored to ADR artifacts.
-**Provenance:** ADR-002; ADR-003 (decide gate assignments); ADR-010 (inversion principle at DECIDE); ADR-032 (agent dispatch for argument audit and conformance scan); Essay 001 §6; Essay 002 §7.2
-**Owns:** Decide-phase process, inversion principle check (at DECIDE), epistemic gate prompts, ADR/scenario presentation step
+**Purpose:** Produces ADRs, behavior scenarios, and interaction specifications with product context alongside technical context, including inversion principle check on ADR assumptions, with an epistemic gate tailored to ADR artifacts.
+**Provenance:** ADR-002; ADR-003 (decide gate assignments); ADR-010 (inversion principle at DECIDE); ADR-032 (agent dispatch for argument audit and conformance scan); ADR-037 (interaction specification layer); Essay 001 §6; Essay 002 §7.2; Essay 008 §2
+**Owns:** Decide-phase process, inversion principle check (at DECIDE), epistemic gate prompts, ADR/scenario presentation step, interaction specification production (stakeholder-organized task decompositions with super-objectives, tasks, and interaction mechanics — written after scenarios, derived from Product Discovery's stakeholder models)
 **Depends on:** Orchestrator (protocol); Argument Auditor Agent (dispatched after ADRs written); Conformance Scanner Agent (dispatched at Step 3.5)
-**Depended on by:** None directly (produces ADR + scenario artifacts consumed by Architect Skill via file)
+**Depended on by:** None directly (produces ADR + scenario + interaction spec artifacts consumed by Architect Skill and Play Skill via file)
 
 ### Module: Architect Skill (`skills/architect/SKILL.md`)
 **Purpose:** Decomposes the system into modules with provenance chains extending to user needs, including inversion principle check on module boundaries, with an epistemic gate tailored to system design artifacts; generates roadmap as separate artifact.
@@ -100,8 +106,16 @@
 **Depends on:** Orchestrator (protocol)
 **Depended on by:** None
 
+### Module: Play Skill (`skills/play/SKILL.md`) — NEW in v7.0
+**Purpose:** Facilitates post-build experiential discovery through stakeholder inhabitation, with the orchestrating agent serving as gamemaster, producing field notes categorized by feedback destination.
+**Provenance:** ADR-038 (phase placement and three-movement structure); ADR-039 (gamemaster role and Invariant 3 boundary); ADR-016 principle (play itself is the epistemic act — no separate gate); ADR-010 (inversion principle extended to play via gamemaster); Invariant 0 (product dimension of authority — inhabiting stakeholders builds authority to speak about stakeholder experience); Essay 008
+**Owns:** Play-phase process (three movements: inhabit → explore → reflect), gamemaster behavior (proposes stakeholder roles and points of concentration, introduces complications and inversions, reacts to player discoveries, creates conditions for encounter without directing outcomes), Stanislavski inhabitation structure (reads super-objectives from discover, objectives from interaction specs; obstacles discovered through play), field notes production and categorization (six categories: missing scenario → DECIDE, usability friction → DISCOVER, new question → RESEARCH, challenged assumption → DISCOVER, delight → SYNTHESIS, interaction gap → interaction specs), cross-cutting reflection, felt-understanding bounding, epistemic distance mitigation (play frame + stakeholder profiles + gamemaster complications)
+**Depends on:** Orchestrator (protocol)
+**Depended on by:** None directly (produces field notes artifact consumed by Discover Skill, Synthesis Skill, and subsequent pipeline cycles via file)
+**Note:** The Gamemaster is a mode of the Orchestrating Agent within this skill, not a separate Specialist Subagent — it requires conversation context and user interaction (ADR-039). Play subsumes its epistemic gate (ADR-016 pattern, like Synthesis) — no separate EPISTEMIC GATE section.
+
 ### Module: Synthesis Skill (`skills/synthesize/SKILL.md`)
-**Purpose:** Mines the artifact trail for novelty signals, conducts a structured conversation (journey review, novelty surfacing, framing with four-dimension navigation via structural experiments) to help the writer find their story, and produces a two-register (argumentative backbone + curatorial arrangement) outline as springboard for the synthesis essay.
+**Purpose:** Mines the artifact trail (including field notes from play when available) for novelty signals, conducts a structured conversation (journey review, novelty surfacing, framing with four-dimension navigation via structural experiments) to help the writer find their story, and produces a two-register (argumentative backbone + curatorial arrangement) outline as springboard for the synthesis essay.
 **Provenance:** ADR-012 (phase placement); ADR-013 (conversation structure + outline); ADR-014 (quality gate); ADR-015 (narrative context rollup); ADR-016 (subsumes gate); ADR-017 (narrative inversions); ADR-018 (cross-project Level 1); ADR-027 (four-dimension framing); ADR-028 (structural experiments); ADR-029 (re-entry); ADR-030 (two-register outline); ADR-032 (agent dispatch for audits); Essay 003; Essay 006; Invariant 0 (public authority dimension)
 **Owns:** Synthesis-phase process, artifact trail mining, novelty signal detection (five signals), three-phase conversation, four-dimension framing model (discovery type, narrative form, audience constraint, epistemic posture), structural experiment mechanism (agent proposes, writer executes externalized trials), worth-the-calories quality tests (Davis/ABT/inversion), two-register outline production (argumentative backbone verified by argument audit + curatorial arrangement with selection/juxtaposition/scale shifts/shimmer/negative space/personal voice), pre-populated references, cross-project conversational prompting (Level 1), narrative inversion lenses, re-entry decision logic (writer-initiated, scoped narrowly)
 **Depends on:** Orchestrator (protocol); Citation Auditor Agent (dispatched during outline finalization); Argument Auditor Agent (dispatched during outline finalization, after citation audit)
@@ -362,6 +376,27 @@ All hooks are configured in `hooks/hooks.json` at the plugin root, with scripts 
 | Scope Cycle (action) | User (initiates); Orchestrator (configures) | ADR-026 |
 | Deep Work Tool (framing) | Orchestrator (describes RDD's role) | ADR-026 |
 
+### Play and Interaction Specification Concepts (from Essay 008 / ADRs 037-039) — NEW in v7.0
+
+| Domain Concept/Action | Owning Module | Provenance |
+|----------------------|---------------|------------|
+| Play (phase + process) | Play Skill (process); Orchestrator (phase in pipeline) | ADR-038 |
+| Interaction Specification (artifact) | Decide Skill (production); Play Skill (consumption as playable surface) | ADR-037 |
+| Gamemaster (agent mode during play) | Play Skill (defines behavior); Orchestrating Agent concept (mode) | ADR-039 |
+| Field Notes (artifact) | Play Skill | ADR-038 |
+| Point of Concentration (focusing mechanism) | Play Skill (gamemaster proposes) | ADR-039; Essay 008 §3 |
+| Epistemic Distance (design tension, mitigated) | Play Skill (mitigates via play frame, stakeholder profiles, gamemaster) | ADR-038; ADR-039; Essay 008 §5 |
+| Playable Surface (precondition for play) | Decide Skill (creates via interaction specs); Play Skill (uses) | ADR-037; ADR-038 |
+| Super-Objective (inhabitation anchor — read from discover) | Product Discovery Skill (produces in stakeholder map); Play Skill (reads) | ADR-038; ADR-039 |
+| Objective (interaction-level — read from interaction specs) | Decide Skill (produces in interaction specs); Play Skill (reads) | ADR-037; ADR-038 |
+| Obstacle (discovered through play) | Play Skill | ADR-038; ADR-039 |
+| Inhabit (action — enter stakeholder perspective) | Play Skill | ADR-038 |
+| Explore (action — play: attend to system disclosure) | Play Skill | ADR-038 |
+| Reflect (action — play: articulate discoveries as field notes) | Play Skill | ADR-038 |
+| Side-Coach (action — gamemaster facilitation) | Play Skill | ADR-039; Essay 008 §3 |
+| Specify Interaction (action — produce interaction specs) | Decide Skill | ADR-037 |
+| Inversion Principle (play level — gamemaster introduces inversions) | Play Skill (gamemaster behavior); Orchestrator (cross-cutting) | ADR-039; ADR-010 |
+
 ### Plugin Architecture Concepts (from Essay 007 / ADRs 031-036)
 
 | Domain Concept/Action | Owning Module | Provenance |
@@ -389,6 +424,7 @@ Plugin Manifest (.claude-plugin/plugin.json)
 │   ├── Decide Skill ──dispatches──→ argument-auditor, conformance-scanner
 │   ├── Architect Skill (also generates roadmap.md)
 │   ├── Build Skill (also generates field-guide.md)
+│   ├── Play Skill (optional; gamemaster mode of orchestrating agent)
 │   ├── Synthesis Skill (usually terminal; conditional re-entry to Research)
 │   │       └──dispatches──→ citation-auditor, argument-auditor
 │   │       └──→ Research Skill (re-entry when structural experimentation surfaces new questions)
@@ -410,10 +446,11 @@ Plugin Manifest (.claude-plugin/plugin.json)
     sizing-check (PostToolUse: Write on docs/) → sizing flag
 ```
 
-**Skill-level edges (unchanged from v5.0):**
-- Orchestrator → all phase skills (invokes, defines protocol)
+**Skill-level edges (updated in v7.0):**
+- Orchestrator → all phase skills including Play Skill (invokes, defines protocol)
 - Synthesis Skill → Research Skill (conditional re-entry — writer-initiated)
 - Orchestrator → Conformance Audit Skill (lists in Available Skills)
+- Play Skill dispatches no specialist subagents (gamemaster requires conversation context)
 
 **Skill-to-agent dispatch edges (NEW in v6.0):**
 - Research Skill → citation-auditor (after essay writing)
@@ -437,11 +474,13 @@ Plugin Manifest (.claude-plugin/plugin.json)
 **Inter-skill communication:** Skills do not depend on each other directly. They communicate through artifact files:
 
 ```
-essay → product-discovery.md → domain-model.md → ADRs + scenarios → system-design.md + roadmap.md → code + field-guide.md
-                                                                                                       ↓
-                                        [full artifact trail] → synthesis outline → synthesis essay (user)
-                                                   ↓
-                                        ORIENTATION.md (derived from full artifact trail at milestones)
+essay → product-discovery.md → domain-model.md → ADRs + scenarios + interaction-specs.md → system-design.md + roadmap.md → code + field-guide.md → field-notes.md
+                                                                                                                                                        ↓
+                                        [full artifact trail including field notes] → synthesis outline → synthesis essay (user)
+                                                            ↓
+                                              ORIENTATION.md (derived from full artifact trail at milestones)
+
+field-notes.md feedback loop: → product-discovery.md (update mode), scenarios (missing), interaction-specs.md (gaps), research (new questions)
 ```
 
 The synthesis skill reads the full artifact trail (all prior artifacts), not just the immediately preceding one. The synthesis essay, when it exists, feeds back into the orchestrator as a context source for future sessions.
@@ -476,6 +515,8 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 - System design: `./docs/system-design.md`
 - Roadmap: `./docs/roadmap.md`
 - Field guide: `./docs/references/field-guide.md`
+- Interaction specs: `./docs/interaction-specs.md`
+- Field notes: `./docs/field-notes.md`
 **Error handling:** If an artifact is missing, the next skill prompts the user (existing behavior).
 **Owned by:** Each skill owns its output artifact format.
 
@@ -505,6 +546,35 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 **Shared types:** Reviewer feedback in natural language. The skill at the re-entry phase interprets and incorporates.
 **Error handling:** Feedback may arrive asynchronously between sessions. The orchestrator's state table should note pending external feedback when resuming. If downstream phases have already completed, the scope of re-propagation must be assessed — a minor vocabulary correction propagates differently than "your stakeholder map is wrong."
 **Owned by:** Orchestrator (defines re-entry as a valid pipeline operation); the receiving skill (interprets and incorporates feedback).
+
+### Orchestrator → Play Skill — NEW in v7.0
+**Protocol:** The orchestrator invokes `/rdd-play` as an optional phase after BUILD. Like the synthesis skill, the play skill does NOT follow the standard 5-step epistemic gate protocol — the three-movement activity (inhabit → explore → reflect) subsumes the gate function (ADR-016 pattern extended via ADR-038). The orchestrating agent enters gamemaster mode during play.
+**Shared types:** The play skill reads:
+- Product discovery: `./docs/product-discovery.md` (stakeholder map, super-objectives)
+- Interaction specs: `./docs/interaction-specs.md` (objectives, playable surface)
+- Field guide: `./docs/references/field-guide.md` (map of the territory)
+The play skill writes:
+- Field notes: `./docs/field-notes.md` (categorized discoveries)
+**Error handling:** If interaction specs do not exist, the skill notes that play benefits from a playable surface but the practitioner may proceed with less structured play or return to DECIDE. If product discovery is missing, the skill cannot propose stakeholder roles — play cannot proceed meaningfully.
+**Owned by:** Orchestrator defines PLAY as optional phase; Play Skill owns the three-movement process and gamemaster behavior.
+
+### Decide Skill → Play Skill (via interaction-specs.md) — NEW in v7.0
+**Protocol:** File-based. Decide Skill writes `./docs/interaction-specs.md` after writing scenarios. Play Skill reads it for the playable surface — stakeholder-organized task decompositions provide objectives for inhabitation and specific interaction mechanics to encounter.
+**Shared types:** Interaction specs organized by stakeholder, each entry containing: stakeholder (from product discovery), super-objective (from discover), task (workflow level), interaction mechanics (how the task is performed).
+**Error handling:** If interaction specs are missing when play begins, the play skill notes the gap and offers the practitioner a choice: proceed with less structured play, or return to DECIDE.
+**Owned by:** Decide Skill owns the artifact format; Play Skill owns the consumption and interpretation.
+
+### Play Skill → Discover/Decide/Research Skills (via field-notes.md) — NEW in v7.0
+**Protocol:** File-based feedback loop. Play Skill writes `./docs/field-notes.md` with discoveries categorized by feedback destination. In subsequent RDD cycles: Discover Skill (update mode) reads field notes alongside new research — usability friction entries surface as candidate value tensions, challenged assumptions surface as candidate assumption inversions. Decide Skill reads missing-scenario entries. Research reads new-question entries. Interaction specs receive interaction-gap entries.
+**Shared types:** Field notes categorized into six types: missing scenario, usability friction, new question, challenged assumption, delight, interaction gap. Each note records the observation without prescribing a fix.
+**Error handling:** If field notes do not exist (play was skipped or hasn't occurred), subsequent cycles proceed without them. Field notes are input to update mode, not a prerequisite.
+**Owned by:** Play Skill owns the artifact; receiving skills own interpretation in their respective phases.
+
+### Play Skill → Synthesis Skill (via field-notes.md) — NEW in v7.0
+**Protocol:** File-based. Synthesis Skill reads field notes alongside the full artifact trail during artifact trail mining. Delight entries and surprising discoveries from play contribute experiential findings as candidate novelty signals — the kind of insight a conformance-only artifact trail cannot contain.
+**Shared types:** Field notes (especially delight and surprise entries) as novelty signal candidates.
+**Error handling:** If field notes do not exist, synthesis proceeds with the existing artifact trail (existing behavior).
+**Owned by:** Play Skill owns the artifact; Synthesis Skill owns the mining and interpretation.
 
 ### Orchestrator → Synthesis Skill — NEW
 **Protocol:** The orchestrator invokes `/rdd-synthesize` as an optional terminal phase. Unlike other phase skills, the synthesis skill does NOT follow the standard 5-step epistemic gate protocol — the three-phase conversation (journey review, novelty surfacing, framing) subsumes the gate function (ADR-016).
@@ -615,7 +685,7 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 | Outline includes pre-populated references | Outline production step extracts citations with full quotes | Reference extraction step present | ADR-013 |
 | Pipeline includes SYNTHESIS as optional terminal | Orchestrator lists SYNTHESIS after BUILD, marked optional | Phase present and marked optional | ADR-012 |
 | Orchestrator includes synthesis essay in context loading | When bootstrapping, orchestrator reads synthesis essay if it exists | Context loading instruction present | ADR-015 |
-| Inversion principle appears in 5 locations | Orchestrator (cross-cutting), Product Discovery (procedural), Decide (check), Architect (check), Synthesis (narrative) | All 5 present | ADR-010; ADR-017 |
+| Inversion principle appears in 6 locations | Orchestrator (cross-cutting), Product Discovery (procedural), Decide (check), Architect (check), Play (gamemaster inversions), Synthesis (narrative) | All 6 present | ADR-010; ADR-017; ADR-039 |
 | Orchestrator references three-tier artifact hierarchy | "Two documents that matter" principle amended to three tiers | Three-tier language present; two-tier language removed | ADR-019 |
 | Orchestrator Artifacts Summary includes ORIENTATION.md | Artifacts Summary table has cross-phase row for ORIENTATION.md | Row present | ADR-019 |
 | Orientation document has five-section structure | Orchestrator or generation instruction specifies: what, who, constraints, artifact map, current state | All 5 sections specified | ADR-020 |
@@ -643,9 +713,22 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 | Every specialist invocation dispatches an agent | Skill files contain agent dispatch instructions, not inline `/citation-audit` or `/argument-audit` invocations | All specialist work dispatched via agents | ADR-032 |
 | Every agent produces a durable artifact file | Agent system prompts specify file output path; no agent communicates findings only through conversation | All 6 agents write output files | ADR-031 |
 | No cross-cutting concern duplicated across skills | Invariant reading, gate enforcement, orientation triggering, and sizing checks are in hooks | All 5 concerns in hooks; not repeated in skill text | ADR-033 |
-| Plugin installs with all components discovered | `claude --plugin-dir ./rdd` loads 9 skills, 6 agents, 5 hooks | All components registered | ADR-034 |
+| Plugin installs with all components discovered | `claude --plugin-dir ./rdd` loads 10 skills, 6 agents, 5 hooks | All components registered | ADR-034; ADR-038 |
 | Skill namespace uses hyphen separator | Skills invoked as `/rdd-research`, `/rdd-decide`, etc. | All skill references use hyphen syntax | ADR-034 |
 | Skill activator prevents brainstorming override | UserPromptSubmit hook fires on RDD-related prompts and injects priority context | Hook registered and functional | ADR-035 |
+| Play Skill has three-movement structure | Presence of inhabit, explore, reflect movements in SKILL.md | All 3 movements present | ADR-038 |
+| Play Skill does NOT have separate EPISTEMIC GATE section | Activity subsumes gate (ADR-016 pattern) | No EPISTEMIC GATE header | ADR-038; ADR-016 |
+| Play Skill includes gamemaster behavior | Presence of role proposals, points of concentration, complications, inversions in SKILL.md | All 4 gamemaster functions present | ADR-039 |
+| Gamemaster shapes attention, not conclusions | Gamemaster instructions describe attention-shaping; no conclusion-generation language | Invariant 3 boundary maintained in skill text | ADR-039; Invariant 3 |
+| Decide Skill produces interaction specs after scenarios | Presence of interaction spec generation step in SKILL.md | Step present, executes after scenario writing | ADR-037 |
+| Interaction specs organized by stakeholder | Template specifies stakeholder sections with super-objective, task, interaction mechanics | Structure present in decide skill template | ADR-037 |
+| Play reads interaction specs as playable surface | Play Skill reads `./docs/interaction-specs.md` | Read instruction present | ADR-037; ADR-038 |
+| Field notes categorized by 6 feedback destinations | Play Skill categorizes into: missing scenario, usability friction, new question, challenged assumption, delight, interaction gap | All 6 categories present | ADR-038 |
+| Pipeline includes PLAY after BUILD | Orchestrator pipeline sequence and state table include PLAY | Phase present between BUILD and SYNTHESIS, marked optional | ADR-038 |
+| Orchestrator artifact summary includes interaction specs and field notes | Artifacts Summary table has DECIDE row with interaction specs and PLAY row with field notes | Both rows present | ADR-037; ADR-038 |
+| Play Skill uses Stanislavski inhabitation structure | Skill references super-objective (from discover), objective (from interaction specs), obstacle (discovered through play) | All 3 levels present | ADR-038; ADR-039 |
+| Discover Skill reads field notes in update mode | Discover Skill update mode includes instruction to read prior field notes | Read instruction present | ADR-038 |
+| Synthesis Skill reads field notes in artifact trail mining | Synthesis Skill includes field notes in artifact trail reading list | Read instruction present | ADR-038 |
 | Research log archived at cycle end | Research skill archives log after reflections, not at start of next cycle | Archival step at cycle end in skill file | ADR-036 |
 | Agents run at model-appropriate level | Auditors, lit-reviewer, conformance-scanner, orientation-writer on Sonnet; spike-runner inherits parent | Model selection in each agent's frontmatter | ADR-032 |
 | Hooks are advisory, not blocking | All hooks use exit code 0 (context injection); none use exit code 2 | Hook scripts return 0 | ADR-033 |
@@ -697,15 +780,26 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 | Epistemic Gate Enforcer → Stop | Agent stops during RDD phase; verify hook injects gate reminder | ADR-033 hook fires on correct event |
 | Skill Activator → UserPromptSubmit | Submit "use RDD"; verify hook injects priority context; submit non-RDD prompt; verify no injection | ADR-035 hook intent matching |
 | Plugin Manifest → Runtime | Install via `--plugin-dir`; verify 9 skills, 6 agents, 5 hooks discovered | ADR-034 plugin discovery |
+| Orchestrator → Play Skill | Read Play SKILL.md; verify three-movement structure (inhabit, explore, reflect); verify NO separate EPISTEMIC GATE section; verify gamemaster behavior present; verify Stanislavski structure; verify field notes categorization | ADR-038, ADR-039 play contract |
+| Decide Skill → interaction-specs.md | Read Decide SKILL.md; verify interaction spec generation step after scenarios; verify stakeholder-organized template with super-objective, task, interaction mechanics | ADR-037 interaction spec contract |
+| Play Skill → interaction-specs.md | Read Play SKILL.md; verify it reads `./docs/interaction-specs.md` for playable surface; verify gamemaster draws objectives from interaction specs | ADR-037, ADR-038 playable surface contract |
+| Play Skill → product-discovery.md | Read Play SKILL.md; verify it reads product discovery for stakeholder roles and super-objectives | ADR-038, ADR-039 inhabitation contract |
+| Play Skill → field-notes.md | Read Play SKILL.md; verify field notes written to `./docs/field-notes.md`; verify 6 categories; verify no-fix-prescription rule | ADR-038 field notes contract |
+| Play Skill → field-guide.md | Read Play SKILL.md; verify it reads field guide as "map of the territory" during play | ADR-038 field guide/notes pairing |
+| Discover Skill ← field-notes.md | Read Discover SKILL.md; verify update mode reads prior field notes; verify usability friction → value tensions, challenged assumptions → inversions | ADR-038 play feedback loop |
+| Synthesis Skill ← field-notes.md | Read Synthesis SKILL.md; verify artifact trail mining includes field notes; verify delight entries as candidate novelty signals | ADR-038 play-synthesis contract |
+| Epistemic Gate Enforcer → Play phase | Verify hook recognizes play subsumes its gate (like synthesis) and does not fire "missing gate" reminder | ADR-038 hook behavioral update |
+| Orchestrator → Play in pipeline | Read Orchestrator SKILL.md; verify PLAY appears after BUILD, before SYNTHESIS in workflow modes; verify state table includes PLAY; verify artifact summary includes interaction-specs.md and field-notes.md; verify cross-phase integration rules include play feedback | ADR-037, ADR-038 orchestrator integration |
+| Plugin Manifest → Runtime (updated) | Install via `--plugin-dir`; verify 10 skills (was 9), 6 agents, 5 hooks discovered | ADR-034 updated plugin discovery |
 
 ### Invariant Enforcement Tests
 
 | Invariant | Enforcement Location | Test |
 |-----------|---------------------|------|
-| 0: User can speak with authority about what was built, who it was built for, and why | Pipeline-wide (cumulative); Product Discovery Skill (product dimension) | Cannot be tested structurally — this is an outcome. Product discovery phase existence + epistemic gate serve the "who" and "why" dimensions |
-| 1: Understanding requires generation | Each skill's gate section | Verify every gate (including Product Discovery) requires user to produce something |
-| 2: Epistemic acts mandatory at every gate | Each skill's gate section + orchestrator protocol | Verify no gate consists solely of approval; verify redirect for non-generative responses |
-| 3: Pragmatic automated, epistemic preserved | Each skill (AI generates, gate requires user engagement) | Verify skills still have AI generation steps AND have epistemic gate sections |
+| 0: User can speak with authority about what was built, who it was built for, and why | Pipeline-wide (cumulative); Product Discovery Skill (product dimension); Play Skill (experiential dimension — inhabiting stakeholders builds authority to speak about stakeholder experience) | Cannot be tested structurally — this is an outcome. Product discovery + play serve the "who" and "why" dimensions from complementary angles |
+| 1: Understanding requires generation | Each skill's gate section; Play Skill (three movements are inherently generative) | Verify every gate requires user to produce something; verify play's inhabit/explore/reflect are generative activities |
+| 2: Epistemic acts mandatory at every gate | Each skill's gate section + orchestrator protocol; Play Skill (activity subsumes gate — ADR-016 pattern) | Verify no gate consists solely of approval; play verified by three-movement presence |
+| 3: Pragmatic automated, epistemic preserved; Gamemaster: shapes attention (pragmatic form), not conclusions (epistemic) | Each skill; Play Skill (gamemaster boundary principle) | Verify skills have AI generation + epistemic gates; verify gamemaster shapes attention not conclusions |
 | 4: Epistemic cost lightweight | Each skill's gate section | Verify 2-3 prompts per gate |
 | 5: Approval is not grounding | Orchestrator protocol | Verify protocol includes epistemic acts, not just approval |
 | 6: Scaffolding must fade | Not enforced in v1 — tracked as debt | ADR-005 revisit trigger |
@@ -713,15 +807,15 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 
 ### Test Layers
 
-- **Unit:** Read each SKILL.md individually. Verify: EPISTEMIC GATE section exists, contains 2-3 prompts, prompts use exploratory framing, redirect for non-generative approval is present, discrepancy noting instruction is present. For Product Discovery Skill: verify forward mode, backward mode, update mode, all 5 artifact sections, assumption inversion step. For Conformance Audit Skill: verify four operations present. For each agent `.md` file: verify YAML frontmatter specifies model, verify system prompt specifies file I/O, verify no conversation history access. For each hook script: verify it reads JSON stdin, verify correct event matching, verify advisory exit code 0.
-- **Integration:** Verify orchestrator protocol matches what skills implement. Verify workflow mode descriptions include PRODUCT DISCOVERY. Verify feed-forward instruction exists. Verify Model/Decide/Architect skills read product discovery artifact. Verify inversion principle appears in Orchestrator, Product Discovery, Decide, Architect, Synthesis. Verify three-tier artifact hierarchy includes roadmap (Tier 2) and field guide (Tier 3). Verify architect skill generates roadmap. Verify build skill generates field guide. Verify orchestrator supports scoped cycles and document sizing heuristics. Verify skill-to-agent dispatch: each phase skill that previously invoked an external skill now dispatches the corresponding agent. Verify hook registration: all 5 hooks present in `hooks/hooks.json` with correct events and matchers. Verify plugin discovery: `--plugin-dir` loads all components.
-- **Acceptance:** The behavior scenarios in `scenarios.md` (164 existing + 28 plugin architecture from ADRs 031-036 = 192 total). Verified by reading the modified files and confirming the described behavior is present in the prompt text.
+- **Unit:** Read each SKILL.md individually. Verify: EPISTEMIC GATE section exists, contains 2-3 prompts, prompts use exploratory framing, redirect for non-generative approval is present, discrepancy noting instruction is present. For Product Discovery Skill: verify forward mode, backward mode, update mode, all 5 artifact sections, assumption inversion step. For Play Skill: verify three-movement structure (no EPISTEMIC GATE section — activity subsumes gate), verify gamemaster behavior (4 functions), verify field notes template (6 categories), verify Stanislavski structure. For Conformance Audit Skill: verify four operations present. For each agent `.md` file: verify YAML frontmatter specifies model, verify system prompt specifies file I/O, verify no conversation history access. For each hook script: verify it reads JSON stdin, verify correct event matching, verify advisory exit code 0.
+- **Integration:** Verify orchestrator protocol matches what skills implement. Verify workflow mode descriptions include PRODUCT DISCOVERY and PLAY. Verify feed-forward instruction exists. Verify Model/Decide/Architect skills read product discovery artifact. Verify Decide Skill produces interaction specs after scenarios. Verify Play Skill reads interaction specs, product discovery, and field guide. Verify Play field notes feed back to Discover (update mode), Decide, Research, and forward to Synthesis. Verify inversion principle appears in Orchestrator, Product Discovery, Decide, Architect, Play, Synthesis (6 locations). Verify three-tier artifact hierarchy includes roadmap (Tier 2) and field guide (Tier 3). Verify architect skill generates roadmap. Verify build skill generates field guide. Verify orchestrator supports scoped cycles and document sizing heuristics. Verify skill-to-agent dispatch: each phase skill that uses specialist work dispatches the corresponding agent (play dispatches none). Verify hook registration: all 5 hooks present in `hooks/hooks.json` with correct events and matchers; epistemic-gate-enforcer recognizes play subsumes its gate. Verify plugin discovery: `--plugin-dir` loads 10 skills, 6 agents, 5 hooks.
+- **Acceptance:** The behavior scenarios in `scenarios.md` (192 existing + 36 play/interaction-spec from ADRs 037-039 = 228 total). Verified by reading the modified files and confirming the described behavior is present in the prompt text.
 
 ## Roadmap
 
 See [`./docs/roadmap.md`](./docs/roadmap.md) for the current roadmap — work packages, classified dependencies, transition states, and open decision points.
 
-Prior build phases (Phase 0: Epistemic Gates, Phase 1: Product Discovery, Phase 2: Synthesis, Phase 3: Orientation Document) are completed. Prior work packages addressed ADRs 022-026 (roadmap, field guide, document sizing, conformance audit, scoped cycles) and ADRs 027-030 (synthesis enrichment). Current work packages address ADRs 031-036 (plugin architecture: agent extraction, hook implementation, plugin packaging, skill activation, research log archival).
+Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, conformance, scoped cycles), Cycle 2 (ADRs 027-030: synthesis enrichment), Cycle 3 (ADRs 031-036: plugin architecture). Current work packages address ADRs 037-039 (interaction specification layer, play phase, gamemaster).
 
 ## Design Amendment Log
 
@@ -735,3 +829,4 @@ Prior build phases (Phase 0: Epistemic Gates, Phase 1: Product Discovery, Phase 
 | 6 | 2026-03-12 | Added: Conformance Audit Skill module, roadmap generation to Architect Skill, field guide generation to Build Skill. Updated: Orchestrator (scoped cycles, document sizing heuristics, artifact hierarchy with roadmap Tier 2 and field guide Tier 3, deep work tool framing). Added: 7 architectural drivers, 17 responsibility matrix rows (2 new sections), 3 integration contracts, 12 fitness criteria, 5 boundary integration tests. Replaced: Build Sequence with link to roadmap. | ADRs 022-026 (essay 005 cycle) | ADR-022 (roadmap), ADR-023 (field guide), ADR-024 (document sizing), ADR-025 (conformance audit + graduation), ADR-026 (scoped cycles + deep work tool) | Approved |
 | 7 | 2026-03-12 | Updated Synthesis Skill module (purpose, provenance, ownership) to incorporate four-dimension framing, structural experiments, two-register outline, and re-entry logic. Updated 2 architectural drivers (synthesis terminal → usually terminal; four-dimension framing + structural experiments). Added 9-row responsibility matrix section (Synthesis Enrichment Concepts from Essay 006 / ADRs 027-030). Updated Frame Narrative action row. Updated dependency graph (synthesis conditional re-entry to Research). Added 1 integration contract (Synthesis Skill → Research Skill re-entry). Added 7 fitness criteria. Added 3 boundary integration tests. Updated acceptance scenario count (133 → 164). | ADRs 027-030 (essay 006 cycle) | ADR-027 (four-dimension framing), ADR-028 (structural experiments), ADR-029 (synthesis re-entry), ADR-030 (two-register outline) | Accepted |
 | 8 | 2026-03-19 | Four-layer plugin architecture. Added 12 new modules: 6 specialist subagent modules (citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner), 5 cross-cutting hook modules (invariant-reminder, epistemic-gate-enforcer, skill-activator, orientation-trigger, sizing-check), 1 plugin manifest. Updated 5 existing modules: Orchestrator (agent dispatch protocol, plugin packaging), Research Skill (dispatches agents instead of invoking external skills; log archival at cycle end), Decide Skill (dispatches argument-auditor and conformance-scanner), Synthesis Skill (dispatches auditor agents), Conform Skill (dispatches conformance-scanner). Added 10 architectural drivers. Added 9-row responsibility matrix section (Plugin Architecture Concepts). Replaced dependency graph with four-layer structure (skills → agents → hooks). Replaced 4 external skill integration contracts with 3 new contracts (skill→agent dispatch, hook→agent context injection, plugin→runtime discovery). Added 9 fitness criteria. Added 14 boundary integration tests. Updated test layers and acceptance scenario count (164 → 192). | ADRs 031-036 (essay 007 plugin architecture cycle) | ADR-031 (artifact-mediated communication), ADR-032 (specialist subagent extraction), ADR-033 (cross-cutting hooks), ADR-034 (plugin packaging), ADR-035 (skill activator), ADR-036 (research log archival) | Proposed |
+| 9 | 2026-03-26 | Play phase and interaction specification layer. Added 1 new module: Play Skill (three-movement experiential discovery with gamemaster mode, field notes production — no specialist subagents, no separate epistemic gate). Updated 4 existing modules: Decide Skill (produces interaction specs after scenarios), Orchestrator (pipeline includes PLAY after BUILD, state tracking, artifact summary, cross-phase integration for play feedback), Product Discovery Skill (update mode reads field notes), Synthesis Skill (reads field notes in artifact trail mining). Added 6 architectural drivers. Added 16-row responsibility matrix section (Play and Interaction Specification Concepts). Updated dependency graph (inter-skill artifact flow includes interaction-specs.md and field-notes.md with feedback loop). Added 4 integration contracts (Orchestrator→Play, Decide→Play via interaction-specs, Play→Discover/Decide/Research via field-notes, Play→Synthesis via field-notes). Added 14 fitness criteria. Added 12 boundary integration tests. Updated invariant enforcement tests (play serves Invariant 0 experiential dimension; gamemaster boundary for Invariant 3). Updated test layers and acceptance scenario count (192 → 228). Updated inversion principle locations from 5 to 6. | ADRs 037-039 (essay 008 play/interaction-spec cycle) | ADR-037 (interaction specification layer), ADR-038 (play phase), ADR-039 (agent as gamemaster); Essay 008; Invariant 0 (experiential authority dimension), Invariant 3 (gamemaster boundary) | Proposed |

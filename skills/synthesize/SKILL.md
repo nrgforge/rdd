@@ -35,7 +35,9 @@ Read the artifact trail from the RDD cycle. The trail includes:
 - Domain model: `./docs/domain-model.md`
 - ADRs: `./docs/decisions/adr-NNN-*.md`
 - Scenarios: `./docs/scenarios.md`
+- Interaction specifications: `./docs/interaction-specs.md`
 - System design: `./docs/system-design.md`
+- Field notes from play: `./docs/field-notes.md` — experiential discoveries from post-build stakeholder inhabitation. Delight entries and surprising discoveries are especially strong candidate novelty signals — they capture what the practitioner encountered that specifications could not predict.
 
 Read what exists. Not every artifact will be present — the user may have run a partial pipeline.
 

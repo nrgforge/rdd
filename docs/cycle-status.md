@@ -1,7 +1,7 @@
 # Active RDD Cycle: Play and Interaction Specification
 
 **Started:** 2026-03-25
-**Current phase:** MODEL (next)
+**Current phase:** BUILD complete (PLAY or SYNTHESIS next)
 **Artifact base:** ./docs/
 **Essay:** 008-play-and-interaction-specification.md
 
@@ -13,8 +13,8 @@
 | DISCOVER | ✅ Complete | product-discovery.md updated | "Discovery from research" vs. "discovery from play" — novel framing; field notes as play's artifact (map/journal pairing with field guide); play needs meta-framing conversation like synthesis; play bounded by felt understanding not timebox |
 | MODEL | ✅ Complete | domain-model.md (Amendment 12) | Heart of the model: interaction specs define the playable surface, play explores it. Productive friction vs. genuine obstruction — the distinction you can only feel by inhabiting the stakeholder. Trellis example: "I have to write" is the mission, "meaningless connections" is the obstacle. |
 | DECIDE | ✅ Complete | ADRs 037-039, 36 scenarios, argument audit | "Facilitated epistemic phase" as a category — play and synthesis are both facilitated by the agent (shapes attention) while the practitioner generates understanding. Invariant 3 boundary principle confirmed. |
-| ARCHITECT | ☐ Next | — | — |
-| BUILD | ☐ Pending | — | — |
+| ARCHITECT | ✅ Complete | system-design.md v7.0, roadmap.md Cycle 4 | Play Skill at 10 glossary entries — right at threshold but unsplittable (one coherent purpose). Gamemaster-as-mode validated by ADR-039's conversation-context requirement. |
+| BUILD | ✅ Complete | skills/play/SKILL.md (new), skills/decide/SKILL.md (amended), skills/rdd/SKILL.md (amended), skills/synthesize/SKILL.md (amended), skills/discover/SKILL.md (amended), hooks/scripts/epistemic-gate.sh (amended) | All 36 scenarios verified by 3 parallel agents. No gaps. Plugin discovers 10 skills. |
 | SYNTHESIS | ☐ Optional | — | — |
 
 ## Feed-Forward Signals
@@ -45,6 +45,14 @@
 19. **Phenomenological bounding confirmed** — felt understanding as play's termination condition is the right lens. Consistent with synthesis bounding.
 20. **"Scenario" is less relevant for play** — play operates at the confluence of scenarios, not within individual ones. Semi-structured/unstructured exploration, not scenario verification.
 
+### From ARCHITECT
+21. **No new specialist subagents** — Gamemaster requires conversation context and user interaction, making it fundamentally incompatible with the specialist subagent model (isolated, no conversation history). This is the right boundary: gamemaster is a mode of the orchestrating agent within the Play Skill, not a new extraction.
+22. **Four work packages with clean dependency structure** — WP-A (interaction specs in Decide) and WP-B (Play Skill) are genuinely independent (open choice). WP-C (orchestrator + downstream wiring) is implied logic after both. WP-D (verification) is a hard dependency on all three.
+23. **Transition state TS-1** — after WP-A alone, the system has a richer specification layer without play. This is useful: interaction specs can inform BUILD directly even if play never runs.
+24. **Inversion principle now at 6 locations** — Orchestrator, Product Discovery, Decide, Architect, Play (gamemaster inversions), Synthesis (narrative). Each location applies the principle differently.
+25. **Epistemic-gate-enforcer hook behavioral update needed** — must recognize play subsumes its gate (like synthesis). Minor change to existing hook script.
+26. **Field notes as epistemic evidence trail** — field notes are not just feedback artifacts routed to specific phases. Like reflections, they are part of the epistemic provenance trail — they help tell the story of how understanding developed. When play loops back to an earlier phase, field notes become provenance (like reflections). When synthesis reads them, they help surface novelty. The architecture supports both uses without change.
+
 ## Context for Resumption
 
 - The essay treats interaction specs and play as two manifestations of the same gap (specification vs. experience), connected through discover's stakeholder models
@@ -54,6 +62,8 @@
 - Play bounded by felt understanding (Invariant 0), not timebox (Invariant 4 resolved differently than essay proposed)
 - Interaction specs are a precondition for productive play — they create the "playable surface"
 - Gamemaster is epistemic in character with practical byproducts
+- System design v7.0 adds Play Skill module, amends Decide/Orchestrator/Discover/Synthesis, adds 4 integration contracts, 14 fitness criteria, 12 boundary tests
+- Roadmap Cycle 4: 4 WPs (interaction specs, play skill, orchestrator integration, verification)
 - Plugin settings.json updated with Write/Bash permissions for subagents (ship with next release)
 - The reflection (008) captures the gamemaster concept and Stanislavski framing in detail
 - Product debt table now includes 3 new items: missing interaction spec layer, missing play phase, passive agent role gap
