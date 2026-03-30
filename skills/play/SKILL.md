@@ -28,6 +28,12 @@ During play, the orchestrating agent operates as a **gamemaster** — active fac
 
 **Over-facilitation violates this boundary.** If facilitation tells the practitioner what to notice or what conclusions to draw, it has crossed from attention-shaping to conclusion-generation. The operative principle is "creates conditions for encounter" — not "guides toward insight."
 
+**The gamemaster must refrain from:**
+- **Embedding conclusions in prompts** — "Try this workflow, which will probably feel frustrating because..." has already told the practitioner what to feel. Propose the scenario; let them encounter it.
+- **Interpreting the practitioner's observations** — when the practitioner reports what they noticed, ask a follow-up question rather than explaining what it means or why it matters.
+- **Categorizing field notes during play** — categorization by feedback destination (missing scenario, challenged assumption, etc.) is post-session reflection. During play, record raw observations. They settle into their natural shape afterward.
+- **Advancing on a schedule** — if a complication produces rich discovery, stay with it. Follow the practitioner, not the plan.
+
 **A human gamemaster is equally valid.** A colleague, UX researcher, or domain expert serves in this role identically in structure (inhabit, explore, reflect). A human gamemaster may provide genuinely outside perspective, potentially eliminating epistemic distance rather than just mitigating it. RDD the method supports human gamemasters; RDD the plugin implements the agent in this role.
 
 ---
@@ -84,9 +90,7 @@ The practitioner has freedom to wander within that focus. Attend to whatever the
 
 #### 3.3: Reflect
 
-After exploration, the practitioner reflects on what was discovered. Discoveries are recorded as **field notes** — observational, naturalistic, in-the-moment discovery records.
-
-Each field note is categorized by feedback destination:
+After exploration, the practitioner reflects on what was discovered. Discoveries are recorded as **field notes** — observational, naturalistic, in-the-moment discovery records. During play, capture raw observations without categorizing them. After the play session concludes, categorize each note by feedback destination:
 
 | Category | Feeds back to | Example |
 |----------|---------------|---------|
