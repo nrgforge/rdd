@@ -1,6 +1,6 @@
 ---
 name: rdd-decide
-description: Decision phase of RDD. Produces ADRs (Architecture Decision Records), refutable behavior scenarios, and interaction specifications using domain vocabulary. Use after /rdd-model to capture decisions and define what the software should do before building.
+description: Decide phase of RDD. Produces ADRs (Architecture Decision Records), refutable behavior scenarios, and interaction specifications using domain vocabulary. Use after /rdd-model to capture decisions and define what the software should do before building.
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write, Edit
 ---
 

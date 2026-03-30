@@ -1,6 +1,6 @@
 ---
 name: rdd-architect
-description: Architecture phase of RDD. Decomposes the system into modules with explicit responsibility allocation, dependency rules, and provenance chains linking design to research. Use after /rdd-decide to establish system structure before building.
+description: Architect phase of RDD. Decomposes the system into modules with explicit responsibility allocation, dependency rules, and provenance chains linking design to research. Use after /rdd-decide to establish system structure before building.
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash
 ---
 

@@ -66,7 +66,7 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 - `scenarios.md` — refutable behavior specifications (228 scenarios)
 - `interaction-specs.md` — workflow-level specification of how each stakeholder works with the system. Creates the playable surface.
 - `references/field-guide.md` — maps system design modules to implementation state. Developer reference.
-- `field-notes.md` — observational discovery records from play, categorized by feedback destination. Pairs with the field guide: the guide is the map, the notes are the journal.
+- `essays/reflections/field-notes.md` — observational discovery records from play, categorized by feedback destination. Pairs with the field guide: the guide is the map, the notes are the journal.
 - `essays/reflections/` — meta-observations from epistemic gate conversations
 - `essays/research-logs/` — process records from research phases
 

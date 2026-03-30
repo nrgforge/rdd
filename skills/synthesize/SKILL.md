@@ -1,6 +1,6 @@
 ---
 name: rdd-synthesize
-description: Synthesis phase of RDD. Mines the artifact trail for novelty signals and conducts a structured conversation (journey review, novelty surfacing, framing) to help the writer find their story. Produces a citation-audited and argument-audited outline as springboard for a publishable essay. Optional terminal phase — use after BUILD or any terminal phase when the writer wants to extract publishable insight from the RDD cycle.
+description: Synthesize phase of RDD. Mines the artifact trail for novelty signals and conducts a structured conversation (journey review, novelty surfacing, framing) to help the writer find their story. Produces a citation-audited and argument-audited outline as springboard for a publishable essay. Optional terminal phase — use after BUILD or any terminal phase when the writer wants to extract publishable insight from the RDD cycle.
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write, Edit
 ---
 
@@ -37,7 +37,7 @@ Read the artifact trail from the RDD cycle. The trail includes:
 - Scenarios: `./docs/scenarios.md`
 - Interaction specifications: `./docs/interaction-specs.md`
 - System design: `./docs/system-design.md`
-- Field notes from play: `./docs/field-notes.md` — experiential discoveries from post-build stakeholder inhabitation. Delight entries and surprising discoveries are especially strong candidate novelty signals — they capture what the practitioner encountered that specifications could not predict.
+- Field notes from play: `./docs/essays/reflections/field-notes.md` — experiential discoveries from post-build stakeholder inhabitation. Delight entries and surprising discoveries are especially strong candidate novelty signals — they capture what the practitioner encountered that specifications could not predict.
 
 Read what exists. Not every artifact will be present — the user may have run a partial pipeline.
 

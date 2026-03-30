@@ -132,7 +132,7 @@ Run when `product-discovery.md` already exists. The task is to refine the artifa
 
 Read `./docs/product-discovery.md` in full. Read the new essay (the most recent numbered essay from this cycle). If new ADRs, domain model changes, or code changes exist since the last product discovery update, read those too.
 
-**Read field notes from play** if `./docs/field-notes.md` exists. Field notes from the play phase contain experiential discoveries categorized by feedback destination. Two categories feed directly into product discovery: **usability friction** entries surface as candidate value tensions, and **challenged assumption** entries surface as candidate assumption inversions. Treat these as practitioner-observed evidence, not prescriptions — they inform the update but the user decides how to incorporate them.
+**Read field notes from play** if `./docs/essays/reflections/field-notes.md` exists. Field notes from the play phase contain experiential discoveries categorized by feedback destination. Two categories feed directly into product discovery: **usability friction** entries surface as candidate value tensions, and **challenged assumption** entries surface as candidate assumption inversions. Treat these as practitioner-observed evidence, not prescriptions — they inform the update but the user decides how to incorporate them.
 
 #### Section-by-Section Review
 

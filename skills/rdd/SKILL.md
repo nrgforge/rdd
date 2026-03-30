@@ -1,6 +1,6 @@
 ---
 name: rdd
-description: Research-Driven Development workflow. Orchestrates a phased process: Understand (research → citation-audited and argument-audited essay), Product Discovery (stakeholder maps, value tensions, assumption inversions), Model (domain vocabulary), Decide (ADRs), Architect (system design), Build (BDD → TDD), and optionally Synthesis (artifact trail mining → citation-audited and argument-audited essay outline). Use when starting a new project or feature that needs research before code.
+description: Research-Driven Development workflow. Orchestrates a phased process: Research (citation-audited essay), Discover (stakeholder maps, value tensions, assumption inversions), Model (domain vocabulary), Decide (ADRs, scenarios, interaction specs), Architect (system design), Build (BDD → TDD), and optionally Play (experiential discovery) and Synthesize (artifact trail mining → essay outline). Use when starting a new project or feature that needs research before code.
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write, Edit, Task, Bash
 ---
 
@@ -73,11 +73,11 @@ Present these options to the user and let them choose:
 Run everything in order. For projects that need research before code.
 
 ```
-Phase 1: UNDERSTAND
+Phase 1: RESEARCH
 └── /rdd-research — Research loop → citation-audited and argument-audited essay
     [Epistemic gate: User explains key findings and how their thinking shifted.]
 
-Phase 2: PRODUCT DISCOVERY
+Phase 2: DISCOVER
 └── /rdd-discover — Stakeholder maps, jobs, value tensions, assumption inversions
     [Epistemic gate: User surfaces tacit product knowledge.]
 
@@ -105,7 +105,7 @@ Phase 7: PLAY (optional)
 └── /rdd-play — Stakeholder inhabitation → gamemaster-facilitated exploration → field notes
     [No separate gate: the three-movement activity (inhabit → explore → reflect) IS the epistemic act. Practitioner generates at every step.]
 
-Phase 8: SYNTHESIS (optional)
+Phase 8: SYNTHESIZE (optional)
 └── /rdd-synthesize — Artifact trail mining → synthesis conversation → essay outline
     [No separate gate: the three-phase conversation (journey review, novelty surfacing, framing) IS the epistemic gate. Writer generates at every step.]
 ```
@@ -124,7 +124,7 @@ Phase 1 only. Use when the goal is understanding, not building.
 User already has research/essay. Start at the domain model bridge.
 
 ```
-Phase 2: PRODUCT DISCOVERY
+Phase 2: DISCOVER
 └── /rdd-discover — Stakeholder maps, jobs, value tensions, assumption inversions
 
 Bridge: MODEL
@@ -142,7 +142,7 @@ Phase 5: BUILD
 Phase 6: PLAY (optional)
 └── /rdd-play — Stakeholder inhabitation → field notes
 
-Phase 7: SYNTHESIS (optional)
+Phase 7: SYNTHESIZE (optional)
 └── /rdd-synthesize — Artifact trail mining → essay outline
 ```
 
@@ -179,15 +179,15 @@ Maintain a running status table:
 
 | Phase | Skill | Status | Artifact | Key Epistemic Response | Notes |
 |-------|-------|--------|----------|----------------------|-------|
-| UNDERSTAND | /rdd-research | ▶ In Progress | Research loop #3 | — | Investigating caching strategies |
-| PRODUCT DISCOVERY | /rdd-discover | ☐ Pending | — | — | — |
+| RESEARCH | /rdd-research | ▶ In Progress | Research loop #3 | — | Investigating caching strategies |
+| DISCOVER | /rdd-discover | ☐ Pending | — | — | — |
 | MODEL | /rdd-model | ☐ Pending | — | — | — |
 | DECIDE | /rdd-decide | ☐ Pending | — | — | — |
 | ARCHITECT | /rdd-architect | ☐ Pending | — | — | — |
 | BUILD | /rdd-build | ☐ Pending | — | — | — |
 | INTEGRATE | /rdd-build Step 5 | ☐ Pending | — | — | — |
 | PLAY | /rdd-play | ☐ Optional | — | — | — |
-| SYNTHESIS | /rdd-synthesize | ☐ Optional | — | — | — |
+| SYNTHESIZE | /rdd-synthesize | ☐ Optional | — | — | — |
 ```
 
 Update and display this table at each gate. The "Key Epistemic Response" column captures a brief summary of the user's most significant epistemic gate response for that phase — this is the feed-forward signal that subsequent phases should attend to, especially when resuming across sessions.
@@ -198,7 +198,7 @@ The user's epistemic gate responses are not just a learning exercise — they ar
 
 When generating artifacts in any phase, attend to the user's stated understanding from prior gates. If the user's self-explanation at the RESEARCH gate revealed a particular emphasis or concern, the MODEL phase should attend to that emphasis. The user's articulations clarify intent and surface priorities that pure approval does not.
 
-### Product Discovery Is Not Optional
+### Discover Is Not Optional
 
 **Always run `/rdd-discover`** in every pipeline cycle that proceeds past RESEARCH — even when `product-discovery.md` already exists. An existing artifact does not mean product thinking is current. Each new research cycle may shift stakeholder needs, surface new assumptions, or invalidate prior value tensions. When `product-discovery.md` exists, `/rdd-discover` runs in update mode (Step 2c) — a section-by-section review against new research with downstream consistency checks. When no product discovery has ever been done on an existing system, backward mode (Step 2b) audits implicit assumptions first. Skipping the phase because the file exists defeats the purpose: product assumptions harden silently, and downstream phases inherit stale context.
 
@@ -243,10 +243,10 @@ Findings from earlier phases inform later ones:
 
 | Phase | Artifact | Location |
 |-------|----------|----------|
-| UNDERSTAND | Research log | `./docs/essays/research-logs/research-log.md` |
-| UNDERSTAND | Essay | `./docs/essays/NNN-descriptive-name.md` |
-| UNDERSTAND | Reflections | `./docs/essays/reflections/NNN-descriptive-name.md` |
-| PRODUCT DISCOVERY | Product discovery document | `./docs/product-discovery.md` |
+| RESEARCH | Research log | `./docs/essays/research-logs/research-log.md` |
+| RESEARCH | Essay | `./docs/essays/NNN-descriptive-name.md` |
+| RESEARCH | Reflections | `./docs/essays/reflections/NNN-descriptive-name.md` |
+| DISCOVER | Product discovery document | `./docs/product-discovery.md` |
 | MODEL | Domain model/glossary | `./docs/domain-model.md` |
 | DECIDE | ADRs | `./docs/decisions/adr-NNN-*.md` |
 | DECIDE | Behavior scenarios | `./docs/scenarios.md` |
@@ -255,9 +255,9 @@ Findings from earlier phases inform later ones:
 | ARCHITECT | Roadmap (generated reflexively alongside system design) | `./docs/roadmap.md` |
 | BUILD | Tests + code | Project source |
 | BUILD | Field guide (generated when implementation exists, reflexively maintained) | `./docs/references/field-guide.md` |
-| PLAY | Field notes (observational discovery records, categorized by feedback destination) | `./docs/field-notes.md` |
-| SYNTHESIS | Synthesis outline (agent + user co-produced) | `./docs/synthesis/NNN-descriptive-name-outline.md` |
-| SYNTHESIS | Synthesis essay (user-written, outside pipeline) | `./docs/synthesis/NNN-descriptive-name.md` |
+| PLAY | Field notes (observational discovery records, categorized by feedback destination) | `./docs/essays/reflections/field-notes.md` |
+| SYNTHESIZE | Synthesis outline (agent + user co-produced) | `./docs/synthesis/NNN-descriptive-name-outline.md` |
+| SYNTHESIZE | Synthesis essay (user-written, outside pipeline) | `./docs/synthesis/NNN-descriptive-name.md` |
 | Cross-phase | Orientation document (agent-maintained, user-validated) | `./docs/ORIENTATION.md` |
 
 ### Invariant Amendments

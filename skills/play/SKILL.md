@@ -103,7 +103,7 @@ After exploration, the practitioner reflects on what was discovered. Discoveries
 
 **Field notes do not prescribe fixes.** Play observes and records. Fixes go through the normal pipeline cycle — missing scenarios to DECIDE, usability friction to DISCOVER, new questions to RESEARCH. This is Bruner's reduction in the seriousness of consequences: the play frame creates safety for honest observation.
 
-Write field notes to `./docs/field-notes.md` using this template:
+Write field notes to `./docs/essays/reflections/field-notes.md` using this template:
 
 ```markdown
 # Field Notes

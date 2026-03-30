@@ -516,7 +516,7 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 - Roadmap: `./docs/roadmap.md`
 - Field guide: `./docs/references/field-guide.md`
 - Interaction specs: `./docs/interaction-specs.md`
-- Field notes: `./docs/field-notes.md`
+- Field notes: `./docs/essays/reflections/field-notes.md`
 **Error handling:** If an artifact is missing, the next skill prompts the user (existing behavior).
 **Owned by:** Each skill owns its output artifact format.
 
@@ -554,7 +554,7 @@ The synthesis skill reads the full artifact trail (all prior artifacts), not jus
 - Interaction specs: `./docs/interaction-specs.md` (objectives, playable surface)
 - Field guide: `./docs/references/field-guide.md` (map of the territory)
 The play skill writes:
-- Field notes: `./docs/field-notes.md` (categorized discoveries)
+- Field notes: `./docs/essays/reflections/field-notes.md` (categorized discoveries)
 **Error handling:** If interaction specs do not exist, the skill notes that play benefits from a playable surface but the practitioner may proceed with less structured play or return to DECIDE. If product discovery is missing, the skill cannot propose stakeholder roles — play cannot proceed meaningfully.
 **Owned by:** Orchestrator defines PLAY as optional phase; Play Skill owns the three-movement process and gamemaster behavior.
 
@@ -565,7 +565,7 @@ The play skill writes:
 **Owned by:** Decide Skill owns the artifact format; Play Skill owns the consumption and interpretation.
 
 ### Play Skill → Discover/Decide/Research Skills (via field-notes.md) — NEW in v7.0
-**Protocol:** File-based feedback loop. Play Skill writes `./docs/field-notes.md` with discoveries categorized by feedback destination. In subsequent RDD cycles: Discover Skill (update mode) reads field notes alongside new research — usability friction entries surface as candidate value tensions, challenged assumptions surface as candidate assumption inversions. Decide Skill reads missing-scenario entries. Research reads new-question entries. Interaction specs receive interaction-gap entries.
+**Protocol:** File-based feedback loop. Play Skill writes `./docs/essays/reflections/field-notes.md` with discoveries categorized by feedback destination. In subsequent RDD cycles: Discover Skill (update mode) reads field notes alongside new research — usability friction entries surface as candidate value tensions, challenged assumptions surface as candidate assumption inversions. Decide Skill reads missing-scenario entries. Research reads new-question entries. Interaction specs receive interaction-gap entries.
 **Shared types:** Field notes categorized into six types: missing scenario, usability friction, new question, challenged assumption, delight, interaction gap. Each note records the observation without prescribing a fix.
 **Error handling:** If field notes do not exist (play was skipped or hasn't occurred), subsequent cycles proceed without them. Field notes are input to update mode, not a prerequisite.
 **Owned by:** Play Skill owns the artifact; receiving skills own interpretation in their respective phases.
@@ -784,7 +784,7 @@ The play skill writes:
 | Decide Skill → interaction-specs.md | Read Decide SKILL.md; verify interaction spec generation step after scenarios; verify stakeholder-organized template with super-objective, task, interaction mechanics | ADR-037 interaction spec contract |
 | Play Skill → interaction-specs.md | Read Play SKILL.md; verify it reads `./docs/interaction-specs.md` for playable surface; verify gamemaster draws objectives from interaction specs | ADR-037, ADR-038 playable surface contract |
 | Play Skill → product-discovery.md | Read Play SKILL.md; verify it reads product discovery for stakeholder roles and super-objectives | ADR-038, ADR-039 inhabitation contract |
-| Play Skill → field-notes.md | Read Play SKILL.md; verify field notes written to `./docs/field-notes.md`; verify 6 categories; verify no-fix-prescription rule | ADR-038 field notes contract |
+| Play Skill → field-notes.md | Read Play SKILL.md; verify field notes written to `./docs/essays/reflections/field-notes.md`; verify 6 categories; verify no-fix-prescription rule | ADR-038 field notes contract |
 | Play Skill → field-guide.md | Read Play SKILL.md; verify it reads field guide as "map of the territory" during play | ADR-038 field guide/notes pairing |
 | Discover Skill ← field-notes.md | Read Discover SKILL.md; verify update mode reads prior field notes; verify usability friction → value tensions, challenged assumptions → inversions | ADR-038 play feedback loop |
 | Synthesis Skill ← field-notes.md | Read Synthesis SKILL.md; verify artifact trail mining includes field notes; verify delight entries as candidate novelty signals | ADR-038 play-synthesis contract |
