@@ -192,6 +192,51 @@ Maintain a running status table:
 
 Update and display this table at each gate. The "Key Epistemic Response" column captures a brief summary of the user's most significant epistemic gate response for that phase — this is the feed-forward signal that subsequent phases should attend to, especially when resuming across sessions.
 
+### Cycle Status
+
+Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is the durable record of the active cycle — it survives across sessions where conversation context does not.
+
+**Create** when a new cycle begins. **Update** at every phase transition.
+
+```markdown
+# Active RDD Cycle: [Topic]
+
+**Started:** [date]
+**Current phase:** [phase name] (next)
+**Artifact base:** [path]
+**Essay:** [NNN-descriptive-name.md]
+
+## Phase Status
+
+| Phase | Status | Artifact | Key Epistemic Response |
+|-------|--------|----------|----------------------|
+| RESEARCH | ✅ Complete | ... | [brief summary of gate response] |
+| DISCOVER | ▶ In Progress | ... | — |
+| ... | ☐ Pending | — | — |
+
+## Feed-Forward Signals
+
+### From [PHASE]
+[Numbered list of signals that subsequent phases should attend to]
+
+## Context for Resumption
+
+[Key context needed to resume the cycle in a new session]
+```
+
+**When a phase loops back to an earlier phase** — play feeding back to DISCOVER, synthesis re-entering RESEARCH, or any backward propagation — record the loop in the phase status table:
+
+```
+| DISCOVER | ✅ Complete | product-discovery.md | ... |
+| ...phases... |
+| PLAY | ✅ Complete | field-notes.md | ... |
+| DISCOVER (loop from PLAY) | ▶ In Progress | updating product-discovery.md | Triggered by field notes: usability friction, challenged assumptions |
+```
+
+The loop entry shows: which phase is re-entered, what triggered the re-entry, and what the new pass is working from. This makes the cycle's non-linear history visible.
+
+**Archive** the cycle status when the cycle completes (graduate or user declares done). The completed cycle status becomes part of the artifact trail.
+
 ### Feed-Forward: Epistemic Responses Enrich Subsequent Phases
 
 The user's epistemic gate responses are not just a learning exercise — they are signal. In single-session cycles, these responses are naturally in conversation history. In multi-session cycles, the status table should summarize the user's key epistemic responses from prior gates.
@@ -259,6 +304,7 @@ Findings from earlier phases inform later ones:
 | SYNTHESIZE | Synthesis outline (agent + user co-produced) | `./docs/synthesis/NNN-descriptive-name-outline.md` |
 | SYNTHESIZE | Synthesis essay (user-written, outside pipeline) | `./docs/synthesis/NNN-descriptive-name.md` |
 | Cross-phase | Orientation document (agent-maintained, user-validated) | `./docs/ORIENTATION.md` |
+| Cross-phase | Cycle status (agent-maintained, tracks active cycle progress) | `./docs/cycle-status.md` |
 
 ### Invariant Amendments
 
