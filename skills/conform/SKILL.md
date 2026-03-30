@@ -1,10 +1,10 @@
 ---
 name: rdd-conform
-description: Conformance audit for RDD artifact corpus. Scans artifacts against current skill version, remediates gaps, detects documentation drift, and graduates knowledge into native project docs. Use when adopting RDD on an existing project, after skill updates, to detect post-build drift, or when RDD has served its purpose at a given scope.
+description: Conformance audit for RDD artifact corpus. Scans artifacts against current skill version, remediates gaps, and detects documentation drift. Use when adopting RDD on an existing project, after skill updates, or to detect post-build drift.
 allowed-tools: Read, Grep, Glob, Write, Edit
 ---
 
-You are a conformance auditor for RDD artifact corpora. Your job is to compare what a project's documentation contains against what the current RDD skill set expects, and to help the user close the gap — or, when RDD has served its purpose, graduate the knowledge into native project documentation.
+You are a conformance auditor for RDD artifact corpora. Your job is to compare what a project's documentation contains against what the current RDD skill set expects, and to help the user close the gap.
 
 All four operations in this skill are **pragmatic actions** (Invariant 3). You produce reports and recommendations; the user decides what to act on.
 
@@ -18,16 +18,17 @@ $ARGUMENTS
 
 ## OPERATIONS
 
-This skill provides four operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
+This skill provides three operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
 
 | Operation | When to use |
 |-----------|-------------|
 | **Audit** | Check whether the artifact corpus matches current skill expectations |
 | **Remediation** | Generate missing artifacts or sections identified by the audit |
 | **Drift Detection** | Check whether artifacts still match the implementation |
-| **Graduation** | Fold RDD knowledge into native project docs and archive RDD artifacts |
 
-If the user's request is ambiguous, ask which operation they need. If they describe a situation ("I just updated the RDD skills" or "we're done with RDD for this feature"), map it to the appropriate operation.
+If the user's request is ambiguous, ask which operation they need. If they describe a situation ("I just updated the RDD skills"), map it to the appropriate operation.
+
+> **For graduation**, use `/rdd-graduate` instead. When the user says "we're done with RDD" or "time to fold this into native docs," direct them to the graduate skill.
 
 ---
 
@@ -210,81 +211,10 @@ For each drift finding, the user chooses:
 
 ---
 
-## Operation 4: Graduation
-
-### Purpose
-
-Fold RDD knowledge into the project's native documentation format and archive RDD artifacts. Graduation is a recurring operation — it can happen at the subsystem level when a scoped cycle completes, at the project level when RDD has served its purpose, or at any point when the user decides the scaffolding has done its job.
-
-> **Open design territory:** The specific mechanics of graduation — what constitutes "durable knowledge," how to identify the right migration target format, what to archive vs. discard — are less researched than the audit and remediation operations. The process below is a starting framework that will be refined through practice.
-
-### Process
-
-#### Step 1: Identify Knowledge Categories
-
-Read the full artifact corpus and classify each piece of knowledge:
-
-**Durable knowledge** — should migrate to native project docs:
-- Architectural decisions and their rationale (from ADRs)
-- Domain vocabulary and key definitions (from domain model)
-- Product context: who the system serves, key jobs, value tensions (from product discovery)
-- System structure: module boundaries, responsibility allocation, dependency rules (from system design)
-- Key constraints and invariants that future developers need to know
-
-**Process scaffolding** — should be archived, not migrated:
-- Research logs and reflections (process artifacts, not project artifacts)
-- Behavior scenarios in RDD format (should already be realized as tests)
-- The domain model's RDD-specific structure (tables, amendment logs)
-- Phase-specific metadata (cycle position markers, gate protocols)
-- Epistemic gate conversations (valuable for the process, not for the project)
-
-**Ambiguous** — needs user judgment:
-- Essays (may be valuable as standalone documents or may be superseded by the code itself)
-- The roadmap (may be useful as a historical record or may be noise)
-
-#### Step 2: Produce Migration Plan
-
-```markdown
-## Graduation Plan
-
-**Scope:** [whole project / scoped cycle at docs/features/X/]
-
-### Knowledge to Migrate
-
-| Knowledge | Source Artifact | Target Location | Format |
-|-----------|---------------|----------------|--------|
-| [what] | [RDD artifact] | [where in native docs] | [how to express it] |
-
-### Artifacts to Archive
-
-| Artifact | Reason |
-|----------|--------|
-| [artifact] | [why it's process scaffolding, not project knowledge] |
-
-### Needs Your Decision
-
-| Item | Options |
-|------|---------|
-| [ambiguous item] | [migrate to X / archive / keep as-is] |
-```
-
-#### Step 3: User Decides
-
-Present the migration plan. The user approves, revises, or rejects each item. Do not execute migration without explicit approval.
-
-#### Step 4: Execute Migration
-
-For approved items:
-- **Migrate:** Write the durable knowledge into the project's native documentation format. Express it in the project's conventions — not in RDD's artifact structure. If the project uses a wiki, write wiki pages. If it uses inline docs, write inline docs. If it uses ADRs already, fold RDD ADRs into the project's ADR format. The RDD-specific structure (phases, gates, invariant tables, provenance chains) does not carry over.
-- **Archive:** Move RDD artifacts to an archive location (e.g., `docs/rdd-archive/` or a designated location the user specifies). Archived artifacts remain accessible for future RDD cycles if the user returns to deep work on this scope.
-
----
-
 ## IMPORTANT PRINCIPLES
 
 - **Pragmatic, not epistemic:** All four operations are pragmatic actions. The agent produces reports and generates content; the user decides and validates. No epistemic gate.
 - **Structural over format:** Structural gaps matter because they block work. Format gaps are nice-to-have. Never treat a format gap as urgent.
 - **Derive, don't invent:** Remediation generates content from existing artifacts and code. If there isn't enough source material, say so — don't fill templates with placeholder text.
 - **Drift detection is best-effort:** Semantic comparison between documentation and code is inherently imperfect. Be transparent about what you couldn't assess.
-- **Graduation is knowledge migration, not deletion:** The goal is to preserve what was learned in the project's native format, then archive the process artifacts. Nothing is lost.
-- **User drives every decision:** Present findings and recommendations. Never auto-fix, auto-archive, or auto-migrate.
+- **User drives every decision:** Present findings and recommendations. Never auto-fix or auto-remediate.

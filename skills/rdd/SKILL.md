@@ -24,7 +24,8 @@ $ARGUMENTS
 | `/rdd-build` | BDD scenarios → TDD loop → working software | Scenarios + domain model |
 | `/rdd-play` | Post-build experiential discovery — stakeholder inhabitation with gamemaster facilitation → field notes | Built software + interaction specs + product discovery (optional, post-build) |
 | `/rdd-synthesize` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build/play) |
-| `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation, graduation | Artifact corpus + skill files (utility, invoked as needed) |
+| `/rdd-graduate` | Fold RDD knowledge into native docs, archive process artifacts, stamp with plugin version | Completed cycle (terminal phase or utility) |
+| `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation | Artifact corpus + skill files (utility, invoked as needed) |
 | `/rdd-lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd-research`) |
 
 ---
