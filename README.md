@@ -16,16 +16,6 @@ At the end of an RDD cycle, you should be able to explain the system's design ra
 
 ## The Pipeline
 
-- RESEARCH
-- DISCOVER
-- MODEL
-- DECIDE
-- ARCHITECT
-- BUILD
-- PLAY *(optional)*
-- SYNTHESIZE *(optional)*
-- GRADUATE
-
 - **Research** — Investigate the problem space. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.
 - **Discover** — Surface who this is for and what you're assuming. Invert every major assumption before it becomes architecture.
 - **Model** — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants.
