@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/scripts/invariant-reminder.sh \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/invariant-reminder.sh\" \"$INPUT\""
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/scripts/epistemic-gate.sh \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/epistemic-gate.sh\" \"$INPUT\""
           }
         ]
       }
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node hooks/scripts/skill-activator.js"
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/skill-activator.js\""
           }
         ]
       }
@@ -37,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/scripts/orientation-trigger.sh \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/orientation-trigger.sh\" \"$INPUT\""
           }
         ]
       },
@@ -46,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "hooks/scripts/sizing-check.sh \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/sizing-check.sh\" \"$INPUT\""
           }
         ]
       }
