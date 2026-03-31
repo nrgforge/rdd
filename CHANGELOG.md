@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1
+
+- **Hooks format migration** — converted `hooks.json` from flat array to record format required by current Claude Code plugin schema
+
 ## v0.3.0
 
 Adaptive gates, play phase, and self-explanation. Two RDD cycles shipped in this release.
