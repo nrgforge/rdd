@@ -207,16 +207,42 @@ Present the complete set — ADRs + scenarios + interaction specifications + aud
 
 ### EPISTEMIC GATE
 
-After presenting the complete set, run the epistemic gate protocol before proceeding to the next phase.
+After presenting the complete set (ADRs + scenarios + interaction specifications + audit findings), run the Attend-Interpret-Decide cycle before proceeding to the next phase. Introduce the gate to the user as "reflection time" — not "epistemic gate."
 
-Present 2 of the following prompts, filling in the bracketed references with specific decisions, rejected alternatives, and scenario details from the ADRs just produced:
+> "Before we move on — reflection time."
 
-- **Elaborative interrogation:** "Any of these rejected alternatives you're not fully comfortable letting go of?"
-- **Reflection:** "Which decision feels least certain? What about it makes you uneasy?"
+Then run the three-phase cycle:
 
-Wait for the user to respond to at least one prompt. If the user responds with only non-generative approval ("looks good", "approved"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on the decisions, not just confirmation.
+**1. Attend.** Read the cycle's conversation history for engagement signals specific to the decision phase:
 
-After the user responds, note any obvious factual discrepancies between their response and the ADRs without framing it as an error ("ADR-NNN describes the tradeoff as X — your take was Y. Worth revisiting?"). Do not assess the quality of the user's understanding.
+- Did the user engage with rejected ADR alternatives or accept decisions without question?
+- Did the user ask about implications of decisions for downstream phases (architecture, build)?
+- Did the user connect decisions to their domain experience or prior project knowledge?
+- Did the user challenge any scenario's Given/When/Then or propose additional scenarios?
+- Did the user engage with interaction specifications or accept them as presented?
+- Cross-gate signals from prior phases (especially MODEL — did the user deeply engage with the vocabulary that these decisions use?)
+
+**2. Interpret.** Form a hypothesis about the user's engagement:
+
+- **Deeply engaged** — questioned rejected alternatives, asked about downstream implications, connected decisions to their experience, challenged scenarios. The user has been actively interrogating the decisions.
+- **Adequately engaged** — followed along with some specificity, accepted most decisions but engaged with one or two.
+- **Surface-engaged** — approved ADRs without engaging alternatives, brief responses, no questions about implications.
+- **Confused** — responses misalign with ADR rationale, inconsistent positions on tradeoffs, avoidance of specific decisions.
+- **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue. If thin throughout, the decision space may be overwhelming — shift toward teaching.
+
+**3. Decide.** Select a pedagogical move:
+
+- **Deep engagement → Challenge.** "ADR-NNN rejected [alternative]. If you had to argue FOR that rejected alternative, what would you say? What would the system look like?" Apply the Inversion Principle to the decisions themselves. Or reframe: "These decisions collectively assume [frame]. Is there a different frame that would lead to different decisions?"
+- **Adequate engagement → Probe.** "You asked about [decision/scenario] — what about that decision feels most consequential for what you're building?"
+- **Surface engagement → Teach.** Identify the most consequential ADR — the one whose trade-off most shapes downstream architecture — and explain why the rejected alternative was rejected: "The key decision is [ADR-NNN]. The alternative was [X], rejected because [Y]. Here's why that matters for what gets built. What's your take on that tradeoff?" Teach first, then ask.
+- **Confusion → Clarify.** "It sounds like the tradeoff in ADR-NNN between [option A] and [option B] isn't clear. Let me walk through the reasoning." Then re-approach.
+- **Disengagement → Re-anchor.** "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+
+**Iterative.** The gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+
+**Anti-sycophancy.** Do not evaluate the user's response with praise. Build on it, probe its implications, or surface a tension.
+
+After the conversation, note any factual discrepancies between the user's responses and the ADRs without framing as error ("ADR-NNN describes the tradeoff as X — your take was Y. Worth revisiting?"). Do not assess the quality of the user's understanding.
 
 Then ask whether to proceed to the next phase, revise the ADRs, or revisit research.
 

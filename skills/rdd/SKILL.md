@@ -26,6 +26,7 @@ $ARGUMENTS
 | `/rdd-synthesize` | Artifact trail mining → synthesis conversation → citation-audited and argument-audited essay outline | Full artifact trail (optional, post-build/play) |
 | `/rdd-graduate` | Fold RDD knowledge into native docs, archive process artifacts, stamp with plugin version | Completed cycle (terminal phase or utility) |
 | `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation | Artifact corpus + skill files (utility, invoked as needed) |
+| `/rdd-about` | Version check, methodology overview, adaptive deep-dive into how RDD works | Any time (utility, informational) |
 | `/rdd-lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd-research`) |
 
 ---
@@ -53,6 +54,8 @@ Report what was found and where. Offer to continue from that location:
 > Use `./docs/` as the artifact base? Or specify a different location.
 
 ### Step 3: If no artifacts found (or starting fresh)
+
+If this appears to be the user's first encounter with RDD, mention that `/rdd-about` is available for a quick overview of the methodology and current plugin version. Do not require it — just note it's there.
 
 Ask the user where RDD artifacts should live:
 
@@ -161,15 +164,31 @@ Before starting a new cycle or resuming an existing one, check whether the proje
 
 This check is lightweight: scan for artifact existence, note the suggestion, and let the user decide. Do not auto-run the audit or block the pipeline on it.
 
-### Stage Gates — Epistemic Gate Protocol
+### Stage Gates — Reflection Time Protocol
 
-Between every phase, you MUST run the epistemic gate protocol. No gate may consist solely of approval — every gate requires the user to produce something.
+Between every phase, you MUST run the Attend-Interpret-Decide (AID) cycle. No gate may consist solely of approval — every gate requires the user to produce something. Introduce each gate to the user as "reflection time" — not "epistemic gate."
 
 1. **Present the artifact** — summarize the phase artifact clearly
-2. **Present 2-3 exploratory epistemic act prompts** — each prompt references specific content from the artifact (concepts, decisions, relationships). Prompts use open-ended, collaborative framing ("before we move on, let me hear your take"), not quiz-style framing ("prove you understood")
-3. **User responds** — the user performs at least one epistemic act (explains, predicts, articulates, reflects). If the user responds with only non-generative approval ("looks good", "approved", "yes"), acknowledge the approval but gently re-present the prompts — the gate asks for the user's perspective, not just confirmation
-4. **Note discrepancies** — if the user's response contains a factual discrepancy with the artifact, note the specific discrepancy without framing it as an error ("The artifact describes X as Y — your take was Z. Worth revisiting?"). Do not attempt to assess the depth or quality of the user's understanding
-5. **Ask whether to proceed** — offer to proceed, revise, or go back to an earlier phase. Never auto-advance without explicit user confirmation
+2. **Introduce reflection time** — "Before we move on — reflection time."
+3. **Attend** — read the cycle's conversation history for engagement signals: questions the user asked during the phase, concepts they engaged with or avoided, challenges they raised, connections they made to prior knowledge or domain experience, and patterns of approval versus substantive response. Read across prior gates too — has engagement been deepening, steady, or declining? This cross-gate awareness enables earned fatigue detection.
+4. **Interpret** — form a hypothesis about the user's engagement:
+   - *Deeply engaged* — asked questions, challenged choices, connected to their domain, referenced specific artifact content
+   - *Adequately engaged* — followed along with some specificity, but didn't initiate questions or challenges
+   - *Surface-engaged* — approved without engaging, brief responses, no specificity
+   - *Confused* — contradictions, avoidance of specific topics, misalignment with artifact
+   - *Disengaged* — minimal responses. Distinguish earned fatigue (deep engagement earlier, now fading → suggest a break) from opacity disengagement (thin engagement throughout → shift toward teaching)
+5. **Decide** — select a pedagogical move calibrated to the interpretation:
+   - **Deep engagement → Challenge**: surface a tension, apply the Inversion Principle, reframe the problem space. Do not praise. Build on what the user demonstrated.
+   - **Adequate engagement → Probe**: reference something specific the user engaged with. Ask for reasoning, not recall.
+   - **Surface engagement → Teach**: identify the most consequential choice in the artifact, explain why it matters and why alternatives were rejected, then ask for the user's take.
+   - **Confusion → Clarify**: name the specific misalignment without framing it as error. Walk through the connection. Then re-approach.
+   - **Disengagement → Re-anchor**: "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+6. **Iterate** — the gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+7. **Anti-sycophancy** — do not evaluate the user's response with praise ("Great insight!", "Well done!"). Build on it, probe its implications, or surface a tension. Treat the user's contribution as the beginning of a conversation, not the end.
+8. **Note discrepancies** — if the user's response contains a factual discrepancy with the artifact, note it without framing as error ("The artifact describes X as Y — your take was Z. Worth revisiting?")
+9. **Ask whether to proceed** — offer to proceed, revise, or go back to an earlier phase. Never auto-advance without explicit user confirmation
+
+The time spent at each gate must be productive, not merely brief (Invariant 4, amended). Productive teaching that resolves a comprehension gap is the methodology working. Formulaic exchanges that build no understanding are waste. Earned fatigue from deep engagement is a signal to take a break, not a signal that the methodology is too heavy.
 
 ### State Tracking
 

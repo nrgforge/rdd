@@ -1,74 +1,81 @@
-# Active RDD Cycle: Play and Interaction Specification
+# Active RDD Cycle: Adaptive Epistemic Gates and Self-Explanation
 
-**Started:** 2026-03-25
-**Current phase:** BUILD complete (PLAY or SYNTHESIS next)
+**Started:** 2026-03-30
+**Current phase:** BUILD complete (PLAY, SYNTHESIS, or GRADUATE next)
+
+### From DECIDE
+21. **ADR-040 and Invariant 4 are co-dependent** — neither is coherent without the other. The prior "5-10 minute" constraint would conflict with iterative teaching.
+22. **ADR-003 substantially superseded** — the fixed-assignment prompt table is replaced by AID cycle. ADR-003's prompts become a candidate library, not a fixed selection.
+23. **19 conformance violations, all implementation-layer** — resolution sequence: AID in gates → reflection time naming → README/ORIENTATION → create /rdd-about → supersede ADR-003.
+24. **Predictability was the annoying part** — user confirms the formulaic quality was what they experienced negatively. Well-grounded methodology should feel responsive, not random. Whether it works is an empirical question to be tested in practice.
+
+### From ARCHITECT
+25. **Earned fatigue detection is a cross-cutting concern** — belongs in the orchestrator's gate protocol definition, not in individual skills. The Attend step reads the full cycle's conversation history (not just current phase), enabling cross-gate pattern recognition. Orchestrator defines the awareness; skills execute it.
 **Artifact base:** ./docs/
-**Essay:** 008-play-and-interaction-specification.md
+**Essay:** 009-adaptive-epistemic-gates.md
 
 ## Phase Status
 
 | Phase | Status | Artifact | Key Epistemic Response |
 |-------|--------|----------|----------------------|
-| RESEARCH | ✅ Complete | Essay 008, 2 lit reviews, 2 audit reports | Agent-as-gamemaster; "a game you've never played" reframes epistemic distance; Stanislavski objectives structure |
-| DISCOVER | ✅ Complete | product-discovery.md updated | "Discovery from research" vs. "discovery from play" — novel framing; field notes as play's artifact (map/journal pairing with field guide); play needs meta-framing conversation like synthesis; play bounded by felt understanding not timebox |
-| MODEL | ✅ Complete | domain-model.md (Amendment 12) | Heart of the model: interaction specs define the playable surface, play explores it. Productive friction vs. genuine obstruction — the distinction you can only feel by inhabiting the stakeholder. Trellis example: "I have to write" is the mission, "meaningless connections" is the obstacle. |
-| DECIDE | ✅ Complete | ADRs 037-039, 36 scenarios, argument audit | "Facilitated epistemic phase" as a category — play and synthesis are both facilitated by the agent (shapes attention) while the practitioner generates understanding. Invariant 3 boundary principle confirmed. |
-| ARCHITECT | ✅ Complete | system-design.md v7.0, roadmap.md Cycle 4 | Play Skill at 10 glossary entries — right at threshold but unsplittable (one coherent purpose). Gamemaster-as-mode validated by ADR-039's conversation-context requirement. |
-| BUILD | ✅ Complete | skills/play/SKILL.md (new), skills/decide/SKILL.md (amended), skills/rdd/SKILL.md (amended), skills/synthesize/SKILL.md (amended), skills/discover/SKILL.md (amended), hooks/scripts/epistemic-gate.sh (amended) | All 36 scenarios verified by 3 parallel agents. No gaps. Plugin discovers 10 skills. |
-| SYNTHESIS | ☐ Optional | — | — |
+| RESEARCH | ✅ Complete | Essay 009, research log, citation audit, argument audit, reflection | IRE trap diagnosis; Attend-Interpret-Decide cycle; challenge as response to deep engagement; "reflection time" naming; EventBridge reframing example; Invariant 4 is about waste not duration |
+| DISCOVER | ✅ Complete | product-discovery.md updated | RDD as reclamation of craft against vibe-coded MO; "earned fatigue" vs scattered exhaustion; concrete fatigue-response language; scope boundary — RDD is for when you care about understanding; the "sufficient tests" consensus loses the craft |
+| MODEL | ✅ Complete | domain-model.md (Amendment 13) | Invariant 4 amended: waste not duration, 5-10 min target removed. "RDD is for people who want to understand." 10 new concepts, Inversion Principle now at 7 locations. |
+| DECIDE | ✅ Complete | ADRs 040-042, 20 new scenarios, argument audit, conformance scan (19 implementation-layer violations) | ADR-040 (AID cycle) and Invariant 4 amendment are co-dependent; ADR-003 substantially superseded; conformance scan provides BUILD resolution sequence |
+| ARCHITECT | ✅ Complete | system-design.md v8.0, roadmap.md Cycle 5 | 5 WPs (AID in gates, reflection time, orchestrator, /rdd-about, verification); TS-1 after WP-A gives adaptive gates immediately; ADR-003 superseded |
+| BUILD | ✅ Complete | 6 skill gates rewritten, orchestrator protocol, /rdd-about created, README/ORIENTATION updated, hook updated, ADR-003 superseded | 22 scenarios: 20 PASS, 2 PARTIAL (fixed). Plugin discovers 11 skills. No "5-10 minutes" references remain. |
+| INTEGRATE | ☐ Pending | — | — |
+| PLAY | ☐ Optional | — | — |
+| SYNTHESIZE | ☐ Optional | — | — |
+
+## Scope
+
+Two interrelated concerns:
+
+1. **Epistemic gates v2** — evolve gates from predetermined phase-boundary checkpoints to adaptive dialogues. Two axes: (a) assessment — agent reads user engagement patterns across the cycle; (b) teaching — agent explains choices, meeting the user where they are. Grounded in inquiry methodology (Haraway "staying with the trouble" as anchor). User-facing language should be friendlier than "epistemic gate."
+
+2. **Self-explanation** — `/rdd-about` utility skill for version awareness and methodology overview. Orchestrator offers it to new users. The explanation depends on what the epistemology v2 pass discovers.
 
 ## Feed-Forward Signals
 
 ### From RESEARCH
-1. **Agent-as-gamemaster** — the agent's role in play is active facilitation (like Spolin's side-coaching or a tabletop RPG gamemaster), not just stage-setting. Candidate domain concept.
-2. **Stanislavski objectives structure** — inhabitation has internal structure: super-objective (stakeholder's overarching need from discover), objective (what they want in a given interaction), obstacles (discovered through play).
-3. **Persona-to-actor derivation method** — the pipeline from stakeholder model to interaction spec task decomposition is an open design problem. RDD provides the precondition (discover's stakeholder models) but not the method.
-4. **Interaction spec placement** — DECIDE (alongside scenarios, derived from stakeholder models) vs. ARCHITECT (alongside system design, Screenplay Pattern's SOLID architecture). Needs a decision.
-5. **Play bounding** — Invariant 4 tension. Time-boxed sessions? Stakeholder-count limits? Felt saturation? Needs a design decision.
-6. **Epistemic distance working hypothesis** — the play frame itself does the distancing work (Bateson), combined with discover's stakeholder profiles as anchoring material. Not fully solved but has a working position.
+1. **IRE trap** — current gates replicate the Initiation-Response-Evaluation pattern. The fix is engagement-sensitive prompts, not just artifact-specific ones.
+2. **Attend-Interpret-Decide cycle** — three-phase gate process replacing fixed templates. Agent reads engagement signals, forms hypothesis, selects pedagogical move.
+3. **Five response modes** — Challenge (deep engagement), Probe (adequate), Teach (thin), Clarify (confused), Re-anchor (disengaged).
+4. **Challenge is the response to deep engagement** — not validation. Anti-sycophancy axis: the user who demonstrates understanding gets the hardest question.
+5. **"Reflection time"** — user-facing name for epistemic gates. "Epistemic gate" stays in research vocabulary.
+6. **EventBridge example** — concrete case of the reframing gap. RDD cycle stayed in the solution space it defined (SNS→SQS) rather than questioning the frame. The agent should step outside the frame when it holds enough cross-phase context to see narrowing.
+7. **Invariant 4 reframed** — the constraint is on waste, not duration. Productive teaching time is not a violation; formulaic exchanges are the waste.
+8. **Disengagement as opacity signal** — disengagement may mean fatigue (back off) or loss of comprehension (teach more). Conversation history distinguishes them.
+9. **Agent-as-teacher within gates** — contingent teaching: diagnose gap, check, teach, check. Not separate from assessment.
+10. **`/rdd-about` as design proposal** — self-explanation utility follows from the main argument but was not independently researched. Better specified in DECIDE.
 
 ### From DISCOVER
-7. **"Discovery from research" / "discovery from play"** — the user's one-sentence framing of the discover-play symmetry. Novel in software context. Epistemic bookends around the pragmatic center.
-8. **Field notes, not play log** — play's artifact is field notes (observational, naturalistic, in-the-moment), not a structured log with categories. Pairs with the field guide: the guide is the map, the notes are the journal.
-9. **Play's meta-framing conversation** — like synthesis but more structured. Q&A around stakeholder roles, artifacts, where the cycle began, the journey of discovery, what got built. The field guide serves as reference during this setup.
-10. **Play bounded by felt understanding** — no timebox, no stakeholder-count limit. Play is praxis toward Invariant 0 — it continues until understanding plateaus. Aligns with how synthesis bounds itself.
-11. **Interaction specs create the "playable surface"** — confirmed from real frustration (GH issue #7). Without interaction specs, play is frustrating because there's nothing structured to encounter. Ordering confirmed: discover → interaction specs → build → play.
-12. **Gamemaster is epistemic** — sits on the epistemic side of Invariant 3 boundary. Practical byproducts (bugs, new questions) emerge, but the role serves understanding first.
-13. **Play is relevant once build has taken place** — play's impact is gated on BUILD having happened. Team Lead scoping use case (RESEARCH → ARCHITECT) doesn't reach play.
-14. **Playing as yourself is equally valid** — if the practitioner is the primary stakeholder, self-play is natural. The play frame does the distancing regardless. Role selection is contextual.
-15. **Spike-play is distinct from post-build play** — both valid, different purposes. Spike-play explores feasibility; post-build play discovers what specs missed.
-16. **Method vs. plugin distinction for gamemaster** — RDD the method could support a human gamemaster; RDD the plugin implements the agent in this role.
+11. **RDD as reclamation of craft** — the methodology's value proposition is the felt experience of understanding, not productivity or quality. "Understanding is good and fun and also good for the brain." Not an efficiency argument.
+12. **The "sufficient tests" consensus is insufficient** — the industry position that full-speed AI is fine with tests loses the craft of making, understanding, learning. RDD treats software as a practice to be understood, not an output to be validated.
+13. **Earned fatigue is a good signal** — tiredness from deep engagement means take a break. Qualitatively different from the scattered exhaustion of context-switching across AI agents.
+14. **Concrete fatigue-response language** — "It seems like the responses to these queries are not as in-depth as they could be so I just want to ask if it's a good time to take a break. Otherwise are there ways we can reframe our work to serve your current goals better?" Template for the re-anchor move.
+15. **RDD asks something of the user** — two-way street. The methodology doesn't work without user engagement. Adaptive gates detect this but the user must also bring their part.
+16. **Scope boundary** — RDD is for when it matters. Not silly feature work or bug fixes. Complex problems where the user cares about understanding.
+17. **RDD as pace regulator** — gates anchor the user in one domain while AI productivity culture incentivizes scattering attention. Counter-practice to the productivity loop.
 
 ### From MODEL
-17. **Productive friction vs. genuine obstruction** — the Obstacle concept needs a distinction play can surface: friction that IS the mission (Trellis: "you have to write") vs. friction that undermines it ("meaningless surfaced connections"). Scenarios in DECIDE should attend to this — designed resistance and unintended friction are different.
-18. **Theoretical foundations as illustration, not vocabulary** — Suchman, Winnicott, Sutton-Smith, de Certeau, Boal are load-bearing in the essay but deliberately excluded from domain vocabulary. They inform but don't bind. Theater framing is illustrative.
-19. **Phenomenological bounding confirmed** — felt understanding as play's termination condition is the right lens. Consistent with synthesis bounding.
-20. **"Scenario" is less relevant for play** — play operates at the confluence of scenarios, not within individual ones. Semi-structured/unstructured exploration, not scenario verification.
+18. **Invariant 4 amended** — "must be productive, not merely brief." 5-10 minute target removed. Propagation needed across all skill files, Essay 001, README.
+19. **Question-asking asymmetry** — AI answers questions well but doesn't generate the questions that matter. RDD should develop the user's question-asking capacity. Three levels: (1) answer agent's questions, (2) engage with adaptive questions, (3) ask your own questions. Level 3 is where Invariant 6 (fading) leads.
+20. **The heart of RDD** — "use AI for generation and scaffolding, then shift the fun part back to the user: engaging with problems that need thinking at the human level."
 
-### From ARCHITECT
-21. **No new specialist subagents** — Gamemaster requires conversation context and user interaction, making it fundamentally incompatible with the specialist subagent model (isolated, no conversation history). This is the right boundary: gamemaster is a mode of the orchestrating agent within the Play Skill, not a new extraction.
-22. **Four work packages with clean dependency structure** — WP-A (interaction specs in Decide) and WP-B (Play Skill) are genuinely independent (open choice). WP-C (orchestrator + downstream wiring) is implied logic after both. WP-D (verification) is a hard dependency on all three.
-23. **Transition state TS-1** — after WP-A alone, the system has a richer specification layer without play. This is useful: interaction specs can inform BUILD directly even if play never runs.
-24. **Inversion principle now at 6 locations** — Orchestrator, Product Discovery, Decide, Architect, Play (gamemaster inversions), Synthesis (narrative). Each location applies the principle differently.
-25. **Epistemic-gate-enforcer hook behavioral update needed** — must recognize play subsumes its gate (like synthesis). Minor change to existing hook script.
-26. **Field notes as epistemic evidence trail** — field notes are not just feedback artifacts routed to specific phases. Like reflections, they are part of the epistemic provenance trail — they help tell the story of how understanding developed. When play loops back to an earlier phase, field notes become provenance (like reflections). When synthesis reads them, they help surface novelty. The architecture supports both uses without change.
+### From prior cycles
+1. **Field notes (Cycle 4 PLAY):** Agent crosses Invariant 3 boundary in practice despite skill text stating the principle. Operational guardrails needed, not just principle statements.
+2. **Field notes (Cycle 4 PLAY):** Gamemaster needs "refrain from" instructions alongside "do" instructions — silence, following the participant, raw observation.
+3. **Field notes (Cycle 4 PLAY):** Recursive self-play is degenerate — evaluating facilitation while being facilitated collapses the frame.
+4. **Essay 001 citations:** Prior work on epistemic gates, pedagogical epistemology — starting research base.
+5. **User feedback:** Gates feel formulaic in practice. Predetermined questions don't adapt to context.
 
 ## Context for Resumption
 
-- The essay treats interaction specs and play as two manifestations of the same gap (specification vs. experience), connected through discover's stakeholder models
-- Discover-play symmetry: "discovery from research" vs. "discovery from play" — epistemic bookends
-- Play is structurally parallel to synthesis (three-movement: inhabit → explore → reflect) but with a preparatory meta-framing conversation
-- Play's artifact is field notes (observational, naturalistic) — not the essay's "play log" with structured categories. Field guide / field notes pairing: map / journal
-- Play bounded by felt understanding (Invariant 0), not timebox (Invariant 4 resolved differently than essay proposed)
-- Interaction specs are a precondition for productive play — they create the "playable surface"
-- Gamemaster is epistemic in character with practical byproducts
-- System design v7.0 adds Play Skill module, amends Decide/Orchestrator/Discover/Synthesis, adds 4 integration contracts, 14 fitness criteria, 12 boundary tests
-- Roadmap Cycle 4: 4 WPs (interaction specs, play skill, orchestrator integration, verification)
-- Plugin settings.json updated with Write/Bash permissions for subagents (ship with next release)
-- The reflection (008) captures the gamemaster concept and Stanislavski framing in detail
-- Product debt table now includes 3 new items: missing interaction spec layer, missing play phase, passive agent role gap
-
-## Related Issues
-
-- nrgforge/rdd#4 — New phase: 'play'
-- nrgforge/rdd#7 — Add interaction specification layer
+- This cycle addresses the user's experience that epistemic gates can feel formulaic — the agent asks predetermined questions rather than adapting to what happened in the cycle
+- Two design axes: assessment (reading user engagement) and teaching (explaining choices)
+- Haraway's "staying with the trouble" is the user's most influential reference
+- "Epistemic gate" stays in research vocabulary; user-facing language needs friendlier framing
+- Build deliverables: amended gate protocol, `/rdd-about` skill, orchestrator amendment
+- Prior cycle (Play & Interaction Spec) completed through PLAY, archived

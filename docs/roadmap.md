@@ -1,80 +1,159 @@
 # Roadmap: Pedagogical RDD
 
-**Generated:** 2026-03-26
-**Derived from:** System Design v7.0, ADRs 037-039
+**Generated:** 2026-03-30
+**Derived from:** System Design v8.0, ADRs 040-042
 
 ## Work Packages
 
-### WP-A: Interaction Specification Layer (Decide Skill)
+### WP-A: AID Cycle in All Gate Sections (ADR-040)
 
-**Objective:** Enable the Decide Skill to produce interaction specifications — the missing middle layer between business-rule scenarios and technical implementation — derived from Product Discovery's stakeholder models.
+**Objective:** Replace fixed-template epistemic gate prompts with the Attend-Interpret-Decide cycle across all 6 phase skill files. This is the core change — it makes gates engagement-sensitive.
 
 **Changes:**
-- Amend `skills/decide/SKILL.md` to add interaction spec generation step after scenario writing
-- Add interaction spec artifact template (stakeholder sections with super-objective, task, interaction mechanics)
-- Artifact written to `./docs/interaction-specs.md`
+- Amend `skills/research/SKILL.md` EPISTEMIC GATE section: replace 3 fixed prompts with AID cycle protocol (attend to research-phase signals, interpret, select move with phase-appropriate examples)
+- Amend `skills/discover/SKILL.md` EPISTEMIC GATE section: replace 5 fixed prompts with AID cycle
+- Amend `skills/model/SKILL.md` EPISTEMIC GATE section: replace 2 fixed prompts with AID cycle
+- Amend `skills/decide/SKILL.md` EPISTEMIC GATE section: replace 2 fixed prompts with AID cycle
+- Amend `skills/architect/SKILL.md` EPISTEMIC GATE section: replace 3 fixed prompts with AID cycle
+- Amend `skills/build/SKILL.md` EPISTEMIC GATE section: replace 2 fixed prompts with AID cycle
+- Add supersession note to `docs/decisions/adr-003-phase-specific-epistemic-act-assignments.md` (ADR-003's fixed-assignment table becomes a candidate prompt library, not a fixed selection)
 
-**Scenarios covered:** ADR-037 scenarios (6): DECIDE produces interaction specs, organized by stakeholder, derived from product discovery, creates playable surface, complements scenarios, derivation method acknowledged as open
+**Scenarios covered:** 11 ADR-040 scenarios: AID for all 5 engagement levels, earned fatigue vs. opacity distinction, contingent shift within gates, anti-sycophancy, Inversion Principle via reframing, AID as pragmatic action (Invariant 3), agent attends before prompt
 
 **Dependencies:** None
 
 ---
 
-### WP-B: Play Skill
+### WP-B: Reflection Time Naming (ADR-041)
 
-**Objective:** Create the Play Skill — post-build experiential discovery through stakeholder inhabitation, with the orchestrating agent as gamemaster.
+**Objective:** Apply the dual-register naming convention — "reflection time" in user-facing dialogue, "epistemic gate" in research/design vocabulary.
 
 **Changes:**
-- Create `skills/play/SKILL.md` with three-movement structure (inhabit → explore → reflect)
-- Implement gamemaster behavior: role proposals, points of concentration, complications, inversions
-- Implement Stanislavski inhabitation structure (super-objective from discover, objective from interaction specs, obstacle discovered through play)
-- Define field notes artifact template with 6 feedback-destination categories
-- Implement felt-understanding bounding (no timebox, no stakeholder-count limit)
-- No separate EPISTEMIC GATE section (activity subsumes gate — ADR-016 pattern)
-- Field notes written to `./docs/field-notes.md`
+- Amend all 6 phase skill EPISTEMIC GATE sections: add "Before moving on — reflection time." as the user-facing introduction preceding the AID prompt
+- Amend `README.md`: replace "epistemic gates" with "reflection time" in user-facing sentences (lines 71, 91, 93)
+- Amend `docs/ORIENTATION.md`: replace "Epistemic gate protocol" with "Reflection time protocol" in current-state section (line 80)
+- Internal section headings (`### EPISTEMIC GATE`) may remain as design-vocabulary navigation
 
-**Scenarios covered:** ADR-038 scenarios (16): play positioned after BUILD, requires built software, inhabit/explore/reflect movements, field notes production and categorization, play itself is epistemic act, felt-understanding bounding, playing as oneself valid, playable surface requirement, repeat per stakeholder, enriches artifact trail, feedback sustains loop, field notes pair with field guide. ADR-039 scenarios (8): gamemaster proposes roles, proposes points of concentration, introduces complications/inversions, shapes attention not conclusions, over-facilitation detection, human gamemaster equally valid, Stanislavski structure, extends Inversion Principle.
+**Scenarios covered:** 3 ADR-041 scenarios: agent introduces gates as "reflection time", skill files use dual register, domain model retains primary concept
 
-**Dependencies:** None (WP-A implied logic — play reads interaction specs, but skill can be written to reference the artifact path before it exists)
+**Dependencies:** WP-A (implied logic — simpler to add naming after AID sections are rewritten, but could be done in parallel if both builders coordinate)
 
 ---
 
-### WP-C: Orchestrator and Downstream Integration
+### WP-C: Orchestrator Gate Protocol Update
 
-**Objective:** Wire play and interaction specs into the pipeline — update the orchestrator, synthesis, discover, and hook infrastructure.
+**Objective:** Update the orchestrator's gate protocol description to reflect the AID cycle, amended Invariant 4, and pace regulator framing.
 
 **Changes:**
-- Amend `skills/rdd/SKILL.md`: pipeline sequence (PLAY after BUILD, before SYNTHESIS), state tracking table (PLAY row), artifact summary (interaction specs in DECIDE, field notes in PLAY), cross-phase integration rules (play feedback loops), Available Skills table (`/rdd-play`), Mode A pipeline listing
-- Amend `skills/synthesize/SKILL.md`: read field notes in artifact trail mining (delight entries as candidate novelty signals)
-- Amend `skills/discover/SKILL.md`: update mode reads prior field notes (usability friction → value tensions, challenged assumptions → inversions)
-- Update `hooks/scripts/epistemic-gate`: recognize play subsumes its gate (like synthesis)
+- Amend `skills/rdd/SKILL.md` Stage Gates section: replace "present 2-3 exploratory epistemic act prompts" with AID cycle description (attend, interpret, decide with five pedagogical moves)
+- Remove "5-10 minutes per gate" from orchestrator text (Invariant 4 amended)
+- Add pace regulator framing to deep work tool section
+- Add `/rdd-about` to Available Skills table
+- Add optional `/rdd-about` mention in ARTIFACT LOCATION "no artifacts found" branch
+- Amend `hooks/scripts/epistemic-gate`: recognize AID adaptive prompts as valid gate behavior
 
-**Scenarios covered:** Conformance scenarios (4): orchestrator pipeline includes PLAY, state tracking includes PLAY, artifact summary includes interaction specs and field notes, cross-phase integration includes play. Integration boundary scenarios (3): play reads interaction specs, field notes reference product discovery stakeholders, play feedback re-enters discover in update mode.
+**Scenarios covered:** 3 conformance scenarios (orchestrator reflects AID, hook recognizes AID, orchestrator offers /rdd-about to new users)
 
-**Dependencies:** WP-A (implied logic — orchestrator references interaction-specs.md), WP-B (implied logic — orchestrator references play skill and field-notes.md)
+**Dependencies:** WP-A (implied logic — orchestrator describes the protocol that phase skills implement)
 
 ---
 
-### WP-D: Verification Pass
+### WP-D: /rdd-about Utility Skill (ADR-042)
 
-**Objective:** Verify all 36 new scenarios, 14 new fitness criteria, and 12 new boundary integration tests.
+**Objective:** Create the self-explanation utility for new users and version awareness.
 
 **Changes:**
-- Verify all ADR-037 scenarios (6) against Decide Skill
-- Verify all ADR-038 scenarios (16) against Play Skill
-- Verify all ADR-039 scenarios (8) against Play Skill
-- Verify conformance scenarios (4) against Orchestrator
-- Verify integration boundary scenarios (3) against cross-skill artifact flow
-- Verify all 14 new fitness criteria
-- Verify all 12 new boundary integration tests
-- Verify plugin discovers 10 skills (was 9)
+- Create `skills/about/SKILL.md` with: version reporting (reads plugin manifest), methodology overview (user language), depth-calibrated elaboration
+- Ensure `package.json` (or equivalent) version field is accessible
 
-**Scenarios covered:** All 36 new scenarios (verification)
+**Scenarios covered:** 5 ADR-042 scenarios: version reporting, methodology overview, depth calibration, orchestrator offers to new users, no artifacts produced
 
-**Dependencies:** WP-A (hard), WP-B (hard), WP-C (hard)
+**Dependencies:** None (genuinely independent — can be built at any time)
+
+---
+
+### WP-E: Verification Pass
+
+**Objective:** Verify all 20 new scenarios and updated fitness criteria.
+
+**Changes:**
+- Verify all ADR-040 scenarios (11) against phase skills
+- Verify all ADR-041 scenarios (3) against skill files, README, ORIENTATION.md
+- Verify all ADR-042 scenarios (5) against About Skill and orchestrator
+- Verify conformance scenario: orchestrator reflects AID
+- Verify Invariant 4 enforcement test: no "5-10 minutes" references remain
+- Verify plugin discovers 11 skills (was 10)
+
+**Scenarios covered:** All 20 new scenarios (verification)
+
+**Dependencies:** WP-A (hard), WP-B (hard), WP-C (hard), WP-D (hard)
 
 ## Dependency Graph
 
+```
+WP-A (AID Cycle)          WP-D (/rdd-about)
+       │                        │
+  implied logic            independent
+       │                        │
+WP-B (Reflection Time)         │
+       │                        │
+  implied logic                 │
+       │                        │
+WP-C (Orchestrator)            │
+       │                        │
+       └──── hard dependency ───┘
+                    │
+             WP-E (Verification)
+```
+
+**Classification key:**
+- **Hard dependency:** WP-E cannot run until A, B, C, D are complete — verification requires all components
+- **Implied logic:** WP-B is simpler after WP-A (naming applies to rewritten sections); WP-C is simpler after WP-A (orchestrator describes the protocol skills implement)
+- **Independent:** WP-D (/rdd-about) has no dependency on the gate changes — build any time
+
+## Transition States
+
+### TS-1: Adaptive Gates (after WP-A)
+
+All phase skills use the AID cycle. Gates are engagement-sensitive. The system is functionally complete for the core change — the naming and orchestrator updates are polish. A user running any phase will experience adaptive gates immediately.
+
+### TS-2: Full Adaptive + Named (after WP-A + WP-B + WP-C)
+
+Gates are adaptive, user-facing language is "reflection time", orchestrator protocol is updated, hook recognizes adaptive behavior. The system is coherent for existing users.
+
+### TS-3: Shareable (after all WPs)
+
+`/rdd-about` exists for new users. Version awareness is available. README and ORIENTATION.md use updated language. The plugin is ready for broader sharing.
+
+## Open Decision Points
+
+- **AID section structure:** Each skill's EPISTEMIC GATE section needs to describe what engagement signals to attend to *for that specific phase*. The builder decides the phase-specific signal lists (e.g., RESEARCH: did the user ask follow-up questions during research? ARCHITECT: did the user connect architecture to their mental model?).
+- **ADR-003 prompts as candidate library:** The superseded ADR-003's prompt table (self-explanation at RESEARCH, retrieval at MODEL, etc.) becomes a reference library the AID cycle can draw from — not a fixed assignment. The builder decides how to reference this library in the rewritten sections.
+- **README scope of changes:** The conformance scan identifies 3 user-facing "epistemic gate" references in README. The builder decides whether to do a broader terminology pass or limit changes to the flagged lines.
+
+---
+
+## Completed Work Log
+
+### Cycle 4: Play and Interaction Specification
+
+**Derived from:** ADRs 037-039, Essay 008
+
+| WP | Title | Commit | Status |
+|----|-------|--------|--------|
+| A | Interaction Specification Layer (Decide Skill) | db28ebb | Complete |
+| B | Play Skill | db28ebb | Complete |
+| C | Orchestrator and Downstream Integration | db28ebb | Complete |
+| D | Verification Pass | db28ebb | Complete |
+
+**Summary:**
+- Created Play Skill with three-movement experiential discovery (inhabit → explore → reflect), gamemaster behavior, Stanislavski inhabitation structure
+- Added interaction specification production to Decide Skill
+- Updated orchestrator with PLAY in pipeline, state tracking, artifact summary, cross-phase play feedback integration
+- Updated discover (reads field notes), synthesize (reads field notes), epistemic-gate-enforcer (recognizes play subsumes gate)
+- All 36 scenarios verified by 3 parallel agents. Plugin discovers 10 skills.
+
+**Dependency graph (as-built):**
 ```
 WP-A (Interaction Specs)     WP-B (Play Skill)
        open choice                open choice
@@ -88,30 +167,7 @@ WP-A (Interaction Specs)     WP-B (Play Skill)
                   WP-D (Verification)
 ```
 
-**Classification key:**
-- **Hard dependency:** WP-D cannot run until A, B, and C are complete — verification requires all components
-- **Implied logic:** WP-C references artifacts from A and B, simpler to build after them, but a builder could stub the references
-- **Open choice:** WP-A and WP-B are genuinely independent — build either first
-
-## Transition States
-
-### TS-1: Richer Specification Layer (after WP-A)
-
-The Decide Skill produces interaction specifications alongside scenarios. The pipeline is usable without play — interaction specs enrich the specification layer and can inform BUILD directly. This is a coherent intermediate architecture: DECIDE produces three artifacts (ADRs, scenarios, interaction specs) where it previously produced two.
-
-### TS-2: Full Play Pipeline (after WP-A + WP-B + WP-C)
-
-The complete play/interaction-spec cycle is wired. The pipeline offers PLAY after BUILD. The discover skill reads field notes in update mode. Synthesis reads field notes. The system is ready for end-to-end play sessions, pending verification.
-
-## Open Decision Points
-
-- **Interaction spec format evolution:** ADR-037 acknowledges the derivation method from stakeholder model to task decomposition is an open design problem. The format will evolve through use. The builder should start with the simplest structure that creates a playable surface.
-- **Field notes artifact structure:** The scenarios specify 6 feedback-destination categories but not the artifact's exact markdown structure. The builder designs this during WP-B, keeping it naturalistic (field notes, not structured log — per discover gate feed-forward signal 8).
-- **Epistemic-gate-enforcer hook update:** The hook needs to recognize play (like synthesis) subsumes its gate. The simplest approach: add "play" to the same check that already recognizes synthesis. The builder decides the implementation detail.
-
 ---
-
-## Completed Work Log
 
 ### Cycle 3: Plugin Architecture
 

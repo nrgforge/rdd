@@ -1428,3 +1428,154 @@
 **Then** the discover skill reads prior field notes as input alongside new research
 **And** usability friction entries surface as candidate value tensions
 **And** challenged assumptions surface as candidate assumption inversions
+
+## Feature: Adaptive Gates — Attend-Interpret-Decide Cycle (ADR-040)
+
+### Scenario: Agent attends to engagement signals before gate prompt
+**Given** a phase has completed and the gate is reached
+**When** the agent prepares the reflection time prompt
+**Then** the agent reads the cycle's conversation history for engagement signals
+**And** the signals include: questions asked by the user, concepts the user engaged with or avoided, challenges raised, connections made to prior knowledge, and approval patterns
+
+### Scenario: Agent interprets deep engagement and responds with challenge
+**Given** the agent has attended to engagement signals during the cycle
+**And** the signals indicate deep engagement (authentic questions, elaborated explanations, specificity referencing artifact content, challenges to choices)
+**When** the agent selects a pedagogical move
+**Then** the agent selects Challenge: surfacing a tension, applying the Inversion Principle, or reframing the problem space
+**And** the agent does not offer validation or praise as the primary response
+
+### Scenario: Agent interprets adequate engagement and responds with probe
+**Given** the agent has attended to engagement signals during the cycle
+**And** the signals indicate adequate engagement (some specificity, following along, but no questions or challenges initiated by the user)
+**When** the agent selects a pedagogical move
+**Then** the agent selects Probe: asking for reasoning, specificity, or connections to the user's domain
+**And** the probe references specific concepts from the phase artifact
+
+### Scenario: Agent interprets thin engagement and responds with teaching
+**Given** the agent has attended to engagement signals during the cycle
+**And** the signals indicate thin engagement (brief approvals without specificity, no questions, restating without adding)
+**When** the agent selects a pedagogical move
+**Then** the agent selects Teach: explaining the key choice in the artifact, why it was made over alternatives, then asking for the user's take
+**And** the explanation uses domain vocabulary from the domain model
+
+### Scenario: Agent interprets confusion and responds with clarification
+**Given** the agent has attended to engagement signals during the cycle
+**And** the signals indicate confusion (contradictions between responses, avoidance of specific topics, misalignment with artifact content)
+**When** the agent selects a pedagogical move
+**Then** the agent selects Clarify: backing up, addressing the specific misunderstanding, then re-approaching
+**And** the clarification does not frame the confusion as an error
+
+### Scenario: Agent interprets disengagement and responds with re-anchor
+**Given** the agent has attended to engagement signals during the cycle
+**And** the signals indicate disengagement (minimal responses, apparent fatigue or distraction)
+**When** the agent selects a pedagogical move
+**Then** the agent selects Re-anchor: gently naming the observation and offering either a break or a reframe
+**And** the re-anchor language follows the template: "It seems like the responses are not as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways to reframe the work to serve your current goals better?"
+
+### Scenario: Agent distinguishes earned fatigue from opacity disengagement
+**Given** the user's gate responses are thin or minimal
+**When** the agent interprets the engagement pattern
+**Then** if prior conversation history shows deep engagement earlier in the cycle (questions, challenges, connections) followed by declining engagement, the agent interprets earned fatigue and suggests a break
+**And** if the conversation history shows thin engagement throughout the cycle (approval without specificity from the start), the agent interprets opacity disengagement and shifts toward teaching
+
+### Scenario: Contingent shift within a gate conversation
+**Given** the agent has selected a pedagogical move and presented a prompt
+**When** the user responds
+**Then** the agent applies the contingent shift: if the response is thin, shift toward more support (teaching); if the response demonstrates understanding, shift toward less support (challenge or proceed)
+**And** the gate continues iteratively until shared understanding is established or the user requests to proceed
+
+### Scenario: Agent resists sycophantic praise at gates
+**Given** the user has performed an epistemic act at a gate
+**When** the user's response demonstrates genuine understanding
+**Then** the agent builds on the response, probes its implications, or surfaces a tension
+**And** the agent does not evaluate with praise ("Great insight!", "Well done!", "Excellent!")
+**And** the agent does not terminate the dialogue with validation
+
+### Scenario: Agent applies Inversion Principle at gates via reframing
+**Given** the agent holds cross-phase context from the cycle's artifact corpus
+**And** the user demonstrates deep engagement at a gate
+**When** the agent selects the Challenge pedagogical move
+**Then** the challenge may include a reframing observation: questioning whether the solution space has narrowed or whether an alternative frame better serves the user's goals
+**And** the reframing draws on specific cross-phase evidence (e.g., research finding vs. domain model emphasis vs. scenario assumptions)
+
+### Scenario: AID cycle is a pragmatic action (Invariant 3)
+**Given** the Attend-Interpret-Decide cycle runs at a gate
+**When** the agent reads engagement signals, forms a hypothesis, and selects a pedagogical move
+**Then** these actions are pragmatic (diagnostic) — the agent reads signals and selects prompts
+**And** the user's response to the selected prompt is the epistemic action
+**And** the boundary between pragmatic (agent) and epistemic (user) is preserved
+
+## Feature: Reflection Time Naming (ADR-041)
+
+### Scenario: Agent introduces gates as "reflection time" in user dialogue
+**Given** any phase has completed and the gate is reached
+**When** the agent introduces the gate to the user
+**Then** the agent uses the phrase "reflection time" (not "epistemic gate")
+**And** the introduction follows the pattern: "Before moving on — reflection time." followed by the adaptive prompt
+
+### Scenario: Skill files use "epistemic gate" in structural sections
+**Given** a skill file contains an EPISTEMIC GATE section heading
+**When** the section describes the gate protocol for skill authors
+**Then** the section heading and protocol description use "epistemic gate" (research/design vocabulary)
+**And** any example agent dialogue within the section uses "reflection time" (user-facing vocabulary)
+
+### Scenario: Domain model retains "Epistemic Gate" as primary concept
+**Given** the domain model defines the gate concept
+**When** the concept table is read
+**Then** the primary term is "Epistemic Gate"
+**And** "Reflection Time" is listed as a user-facing alias with a cross-reference
+
+## Feature: /rdd-about Utility Skill (ADR-042)
+
+### Scenario: rdd-about reports current plugin version
+**Given** the user invokes `/rdd-about`
+**When** the skill executes
+**Then** it reports the current RDD plugin version from package metadata
+**And** the version is displayed prominently
+
+### Scenario: rdd-about provides brief methodology overview
+**Given** the user invokes `/rdd-about`
+**When** the skill provides the overview
+**Then** it describes RDD in approximately one paragraph using user language ("reflection time", not "epistemic gate")
+**And** it covers: what RDD is, the phase sequence, the core philosophy (understand what you build), and what makes it different
+**And** it offers to go deeper into any specific topic
+
+### Scenario: rdd-about adapts depth to user context
+**Given** the user invokes `/rdd-about`
+**When** the skill detects existing RDD artifacts in the project
+**Then** it acknowledges the existing cycle and calibrates its overview accordingly (not re-explaining basics to an experienced user)
+
+### Scenario: rdd-about is offered to new users by orchestrator
+**Given** the orchestrator detects no existing RDD artifacts in the project directory
+**When** the user invokes any RDD skill for the first time
+**Then** the orchestrator optionally mentions `/rdd-about` as available for methodology orientation
+**And** does not require the user to invoke it before proceeding
+
+### Scenario: rdd-about does not produce artifacts
+**Given** the user invokes `/rdd-about`
+**When** the skill completes
+**Then** no files are created or modified
+**And** the interaction is purely informational
+
+## Feature: Conformance — Adaptive Gates in Skill Files (ADR-040)
+
+### Scenario: Each phase skill's EPISTEMIC GATE section describes AID cycle
+**Given** a phase skill file (research, discover, model, decide, architect, build) exists
+**When** the EPISTEMIC GATE section is read
+**Then** it describes the Attend-Interpret-Decide cycle rather than a fixed list of predetermined prompts
+**And** it specifies what engagement signals to attend to for that phase
+**And** it lists the five pedagogical moves with phase-appropriate examples
+
+### Scenario: Orchestrator gate protocol reflects AID cycle
+**Given** the orchestrator skill file exists
+**When** the Stage Gates — Reflection Time Protocol section is read
+**Then** it describes the three-phase AID cycle (attend, interpret, decide)
+**And** it lists the five pedagogical moves
+**And** it references amended Invariant 4 (productive, not merely brief)
+**And** it does not reference "5-10 minutes per gate"
+
+### Scenario: Epistemic-gate-enforcer hook recognizes AID cycle
+**Given** the epistemic-gate-enforcer hook script exists
+**When** a gate conversation occurs
+**Then** the hook recognizes the AID cycle's adaptive prompts as valid gate behavior
+**And** the hook does not require a fixed number of predetermined prompts

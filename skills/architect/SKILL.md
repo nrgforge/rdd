@@ -285,17 +285,42 @@ Present the complete design to the user. Highlight:
 
 ### EPISTEMIC GATE
 
-After presenting the system design, run the epistemic gate protocol before proceeding to the build phase.
+After presenting the system design, run the Attend-Interpret-Decide cycle before proceeding to the build phase. Introduce the gate to the user as "reflection time" — not "epistemic gate."
 
-Present 2-3 of the following prompts, filling in the bracketed references with specific modules, boundaries, concepts, and responsibility allocations from the system design just produced:
+> "Before we move on — reflection time."
 
-- **Retrieval practice:** "Where in this architecture would you expect to find [concept X]? Does the design match your instinct?"
-- **Articulation:** "Which module boundary was hardest to draw? What about the domain made it difficult?"
-- **Reflection:** "Compare your intuitive sense of the architecture to the formal design. Where do they diverge?"
+Then run the three-phase cycle:
 
-Wait for the user to respond to at least one prompt. If the user responds with only non-generative approval ("looks good", "approved"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on the architecture, not just confirmation.
+**1. Attend.** Read the cycle's conversation history for engagement signals specific to the architecture phase:
 
-After the user responds, note any obvious factual discrepancies between their response and the system design without framing it as an error ("The design places X in Module Y — your instinct was Z. Worth revisiting?"). Do not assess the quality of the user's understanding.
+- Did the user engage with module boundary decisions or accept the decomposition as presented?
+- Did the user connect the architecture to their mental model of the domain?
+- Did the user question responsibility allocations or dependency directions?
+- Did the user ask about fitness criteria or the test architecture?
+- Did the user relate the system design to practical implementation concerns from their experience?
+- Cross-gate signals from prior phases (especially DECIDE — did the user deeply engage with the ADRs that constrain this architecture?)
+
+**2. Interpret.** Form a hypothesis about the user's engagement:
+
+- **Deeply engaged** — questioned module boundaries, connected architecture to their mental model, challenged responsibility allocations, asked about fitness criteria. The user has been actively interrogating the design.
+- **Adequately engaged** — followed along with some specificity, accepted most boundaries but engaged with one or two.
+- **Surface-engaged** — approved the design without engaging boundaries, brief responses, no connections to their own architectural intuition.
+- **Confused** — responses misalign with the design's structure, inconsistent understanding of what belongs where, avoidance of module boundary questions.
+- **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue. If thin throughout, the architecture may exceed current comprehension — shift toward teaching.
+
+**3. Decide.** Select a pedagogical move:
+
+- **Deep engagement → Challenge.** "Module [X] owns [concepts]. If a new requirement forced you to split that module, where would the seam be? What does that tell you about the current boundary?" Or reframe: "The architecture organizes around [principle]. Is there a different decomposition that would better match how you think about this system?"
+- **Adequate engagement → Probe.** "You engaged with the [module/boundary] — does it match how you'd naturally organize this in your head? Where does your intuition diverge from the formal design?"
+- **Surface engagement → Teach.** Identify the most consequential module boundary — the one whose placement most shapes the system's extensibility or maintainability — and explain why it was drawn there: "The boundary between [X] and [Y] is the most consequential because [reason]. Here's why the alternative boundary was rejected. What's your take?" Teach first, then ask.
+- **Confusion → Clarify.** "It sounds like how [concept X] ended up in [module Y] isn't intuitive. Let me walk through the responsibility allocation." Then re-approach.
+- **Disengagement → Re-anchor.** "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+
+**Iterative.** The gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+
+**Anti-sycophancy.** Do not evaluate the user's response with praise. Build on it, probe its implications, or surface a tension.
+
+After the conversation, note any factual discrepancies between the user's responses and the system design without framing as error ("The design places X in Module Y — your instinct was Z. Worth revisiting?"). Do not assess the quality of the user's understanding.
 
 Then ask whether to proceed to build, revise the design, or revisit decisions.
 

@@ -166,17 +166,42 @@ The essay that enters the epistemic gate should be citation-audited and argument
 
 ### EPISTEMIC GATE
 
-After presenting the essay, run the epistemic gate protocol before proceeding to the next phase.
+After presenting the essay, run the Attend-Interpret-Decide cycle before proceeding to the next phase. Introduce the gate to the user as "reflection time" — not "epistemic gate."
 
-Present 2-3 of the following prompts, filling in the bracketed references with specific findings, concepts, and claims from the essay just produced:
+> "Before we move on — reflection time."
 
-- **Self-explanation:** "What stands out to you as the most important finding here? How would you explain [key finding] to a colleague?"
-- **Reflection-on-action:** "How has your thinking about [domain topic] shifted from where you started?"
-- **Articulation:** "Which finding most challenged your initial assumptions, and why?"
+Then run the three-phase cycle:
 
-Wait for the user to respond to at least one prompt. If the user responds with only non-generative approval ("looks good", "approved"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on the research, not just confirmation that the essay exists.
+**1. Attend.** Read the cycle's conversation history for engagement signals specific to the research phase:
 
-After the user responds, note any obvious factual discrepancies between their response and the essay content without framing it as an error ("The essay describes X as Y — your take was Z. Worth revisiting?"). Do not assess the quality of the user's understanding.
+- Did the user ask follow-up questions during research iterations, or accept findings without discussion?
+- Did the user propose new research directions or reframe the question?
+- Did the user push back on any finding or challenge a conclusion?
+- Did the user connect research findings to their own domain experience or prior knowledge?
+- Did the user engage with the research plan before it ran, or approve it without comment?
+- If this is not the first gate in the cycle, read cross-gate signals: has engagement been deepening, steady, or declining across prior gates?
+
+**2. Interpret.** Form a hypothesis about the user's engagement:
+
+- **Deeply engaged** — asked questions during research, proposed directions, challenged findings, connected to their domain. The user has been actively co-driving the research.
+- **Adequately engaged** — followed along with some specificity, responded to findings but didn't initiate questions or challenges.
+- **Surface-engaged** — approved research iterations without engaging findings, brief responses, no specificity about what was learned.
+- **Confused** — responses show misalignment with essay content, avoidance of specific topics, contradictions.
+- **Disengaged** — minimal responses, possible fatigue. If prior gates showed deep engagement, this is likely earned fatigue (suggest a break). If engagement has been thin throughout, this may be an opacity signal (the material exceeds current comprehension — shift toward teaching).
+
+**3. Decide.** Select a pedagogical move:
+
+- **Deep engagement → Challenge.** Surface a tension the essay didn't fully resolve, apply the Inversion Principle ("The essay argues X — what would change if X were wrong?"), or reframe: "The research explored the problem through lens A. From your domain experience, is there a lens B that the research missed?" Do not praise. Build on what the user demonstrated.
+- **Adequate engagement → Probe.** Reference something specific the user engaged with: "You asked about [topic] during research — how does the essay's conclusion on that connect to what you're building?" Ask for reasoning, not recall.
+- **Surface engagement → Teach.** Identify the most consequential finding in the essay — the one that most shapes downstream decisions — and explain why it matters: "The finding that [X] is consequential because it constrains [Y] in the domain model. Here's why that matters for what you're building. What's your take on that tradeoff?" Teach first, then ask.
+- **Confusion → Clarify.** Name the specific misalignment without framing it as error: "It sounds like the relationship between [finding A] and [finding B] isn't clear. Let me walk through how they connect." Then re-approach.
+- **Disengagement → Re-anchor.** "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+
+**Iterative.** The gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+
+**Anti-sycophancy.** Do not evaluate the user's response with praise ("Great insight!", "Excellent point!"). Build on it, probe its implications, or surface a tension. Treat the user's contribution as the beginning of a conversation, not the end.
+
+After the conversation, note any factual discrepancies between the user's responses and the essay content without framing as error ("The essay describes X as Y — your take was Z. Worth revisiting?"). Do not assess the quality of the user's understanding.
 
 ### Step 5: Record Reflections
 

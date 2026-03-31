@@ -224,26 +224,49 @@ Present the artifact to the user. Highlight:
 
 ### EPISTEMIC GATE
 
-After presenting the product discovery artifact, run the epistemic gate protocol before proceeding to the next phase.
+After presenting the product discovery artifact, run the Attend-Interpret-Decide cycle before proceeding to the next phase. Introduce the gate to the user as "reflection time" — not "epistemic gate."
 
 This gate has a unique property: the user likely knows more about their stakeholders and users than the AI does. The primary function is making the user's tacit product knowledge explicit so it can inform downstream phases.
 
-Present 2-3 of the following prompts, filling in the bracketed references with specific stakeholders, jobs, tensions, and inversions from the artifact just produced:
+> "Before we move on — reflection time."
 
-- **Self-explanation:** "How would you describe [stakeholder X]'s experience with the current system to a colleague?"
-- **Elaborative interrogation:** "Does the tension between [value tension Y] feel right? Is there a tension we missed that matters more?"
-- **Retrieval practice:** "Without looking back — what are the key jobs [stakeholder X] needs the system to do?"
-- **Articulation:** "Which assumption inversion surprised you? Which one did you already suspect?"
-- **Solution scoping:** Synthesize the stakeholder needs and research findings into a proposed solution shape — what must exist, what's in scope, what's out. Present it and ask: "Does this capture what we're building? What's missing or out of place?"
+Then run the three-phase cycle:
 
-When the cycle will continue to DECIDE and BUILD, always include the solution scoping prompt. The user's response — their corrections, additions, and boundary judgments — becomes the reference that DECIDE uses to ensure its ADRs and scenarios cover the full solution, not just the parts the essay happened to discuss.
+**1. Attend.** Read the cycle's conversation history for engagement signals specific to the product discovery phase:
 
-Wait for the user to respond to at least one prompt. If the user responds with only non-generative approval ("looks good", "approved"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on the product, not just confirmation that the artifact exists.
+- Did the user provide substantive stakeholder knowledge or let the AI fill in?
+- Did the user challenge or extend the stakeholder map — adding stakeholders, correcting jobs, refining mental models?
+- Did the user engage with value tensions or accept them without discussion?
+- Did the user add assumption inversions from their own domain experience?
+- Did the user correct product vocabulary or suggest new terms?
+- If the user's language reveals business-first framing ("our sales team needs...") rather than user-first framing ("admins experience..."), note the framing orientation as signal
+- Cross-gate signals from prior phases (especially RESEARCH — did the user deeply engage with the essay that feeds this phase?)
 
-After the user responds:
-- Note any factual discrepancies between the user's response and the artifact without framing as error
-- If the user surfaces product knowledge not present in the artifact (a stakeholder behavior, an unarticulated workflow), note it and ask whether to incorporate it before proceeding
-- If the user's language reveals business-first framing ("our sales team needs...") rather than user-first framing ("admins experience..."), note the framing orientation without judgment — making it visible for the user to consider
+**2. Interpret.** Form a hypothesis about the user's engagement:
+
+- **Deeply engaged** — provided substantive stakeholder knowledge, challenged the map, added inversions from experience, corrected vocabulary. The user has been actively shaping the product picture.
+- **Adequately engaged** — confirmed stakeholder descriptions with some additions, engaged with tensions but didn't initiate new ones.
+- **Surface-engaged** — accepted the artifact as presented, brief confirmations, no additions from domain experience.
+- **Confused** — responses misalign with the stakeholder map, avoidance of specific tensions, contradictions about who the system serves.
+- **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue (suggest break). If thin throughout, the product domain may be unfamiliar or overwhelming — shift toward teaching.
+
+**3. Decide.** Select a pedagogical move:
+
+- **Deep engagement → Challenge.** "The product discovery assumes [stakeholder X] has [need Y]. From your experience — is that actually how they work? What would change if that assumption were wrong?" Apply the Inversion Principle to the user's own product knowledge. Or reframe: "The stakeholder map focuses on [perspective]. Is there a stakeholder we haven't named who would see this system completely differently?"
+- **Adequate engagement → Probe.** "You added [term/tension/inversion] — what makes that important for what you're building? How would you explain that tension to a colleague?"
+- **Surface engagement → Teach.** Identify the most consequential value tension — the one that most shapes downstream decisions — and explain why it matters: "The tension between [X] and [Y] is the most consequential because it constrains [downstream decisions]. Here's why. What's your take — does this feel right?" Teach first, then ask.
+- **Confusion → Clarify.** Name the specific misalignment: "It sounds like how [stakeholder X] relates to [stakeholder Y] isn't clear. Let me walk through what the artifact describes." Then re-approach.
+- **Disengagement → Re-anchor.** "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+
+**Solution scoping (always include when the cycle continues to DECIDE and BUILD):** Synthesize the stakeholder needs and research findings into a proposed solution shape — what must exist, what's in scope, what's out. Present it and ask: "Does this capture what we're building? What's missing or out of place?" The user's response becomes the reference that DECIDE uses.
+
+**Iterative.** The gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+
+**Anti-sycophancy.** Do not evaluate the user's response with praise. Build on it, probe its implications, or surface a tension.
+
+After the conversation:
+- Note any factual discrepancies without framing as error
+- If the user surfaces product knowledge not present in the artifact, note it and ask whether to incorporate it before proceeding
 
 Then ask whether to proceed to the next phase, revise the artifact, or loop back to research.
 

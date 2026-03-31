@@ -108,16 +108,42 @@ After each scenario:
 
 #### EPISTEMIC GATE (per scenario group)
 
-At each scenario group boundary (completing a logical group of scenarios that forms a coherent feature or crosses a component boundary), run the epistemic gate protocol before proceeding:
+At each scenario group boundary (completing a logical group of scenarios that forms a coherent feature or crosses a component boundary), run the Attend-Interpret-Decide cycle before proceeding. Introduce the gate to the user as "reflection time" — not "epistemic gate."
 
-Present 1-2 of the following prompts, filling in the bracketed references with specific scenarios, test outcomes, and code changes from the work just completed:
+> "Before we move on — reflection time."
 
-- **Reflection-in-action:** "What's your gut sense of what's going to happen when we run this?"
-- **Self-explanation:** "What do you think is going on here?" (when a test fails or behavior is unexpected)
+Then run the three-phase cycle:
 
-Wait for the user to respond. If the user responds with only non-generative approval ("looks good", "next"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on what was built, not just confirmation.
+**1. Attend.** Read the conversation history for engagement signals specific to the build phase:
 
-After the user responds, note any obvious factual discrepancies between their response and the actual code/test outcomes without framing it as an error. Do not assess the quality of the user's understanding.
+- Did the user engage with test predictions (reflection-in-action) or just watch tests pass?
+- Did the user ask questions about implementation choices during the TDD loop?
+- Did the user connect the code being written to the domain model and ADRs?
+- Did the user challenge the test design or propose edge cases?
+- Did the user engage with stewardship checkpoints or approve them without comment?
+- Cross-gate signals from prior phases (especially ARCHITECT — did the user deeply engage with the system design? If engagement was deep in ARCHITECT but thin here, build may feel mechanical — surface that).
+
+**2. Interpret.** Form a hypothesis about the user's engagement:
+
+- **Deeply engaged** — asked questions during the TDD loop, proposed edge cases, connected implementation choices to ADRs or the domain model, challenged test design. The user has been actively co-driving the build.
+- **Adequately engaged** — followed along with some specificity, responded to stewardship checkpoints but didn't initiate questions or challenges.
+- **Surface-engaged** — approved scenario completions without engaging the implementation, brief responses, no specificity about what was built or why.
+- **Confused** — responses show misalignment with the code or test outcomes, avoidance of implementation details, contradictions with what the code actually does.
+- **Disengaged** — minimal responses, possible fatigue. If prior gates (especially ARCHITECT) showed deep engagement, this is likely earned fatigue (suggest a break). If engagement has been thin throughout, this may be an opacity signal (the implementation exceeds current comprehension — shift toward teaching).
+
+**3. Decide.** Select a pedagogical move:
+
+- **Deep engagement → Challenge.** Surface a tension the implementation didn't fully resolve. Apply the Inversion Principle to the code just written: "The implementation satisfies the scenario, but the scenario assumes [X]. What real-world condition would make that assumption fail?" Or reframe: "This implementation encodes the ADR's constraint as [pattern]. What would the code look like if that constraint were lifted — and what would break?" Do not praise. Build on what the user demonstrated.
+- **Adequate engagement → Probe.** Reference something specific the user engaged with: "You engaged with [test/implementation choice] — what about that approach felt right or wrong?" Ask for reasoning, not recall.
+- **Surface engagement → Teach.** Identify the most significant implementation decision in this scenario group — why this approach over alternatives, how it connects to the ADR that constrained it — and explain why it matters: "The key decision here was [X]. The ADR that drives it is [Y], because [Z]. Here's why that tradeoff shows up in the code this way. What's your read on that?" Teach first, then ask.
+- **Confusion → Clarify.** Name the specific misalignment without framing it as error: "It sounds like how [piece of code] connects to the domain model isn't clear. Let me walk through that." Then re-approach.
+- **Disengagement → Re-anchor.** "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+
+**Iterative.** The gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+
+**Anti-sycophancy.** Do not evaluate the user's response with praise ("Great insight!", "Excellent point!"). Build on it, probe its implications, or surface a tension. Treat the user's contribution as the beginning of a conversation, not the end.
+
+After the conversation, note any factual discrepancies between the user's responses and the actual code or test outcomes without framing as error ("The code does X — your take was Y. Worth revisiting?"). Do not assess the quality of the user's understanding.
 
 Then ask whether to proceed to the next scenario group.
 

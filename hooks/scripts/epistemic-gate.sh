@@ -12,6 +12,7 @@ fi
 
 # Check if conversation context suggests an active RDD phase
 # The hook injects a reminder — it cannot enforce, only advise (Invariant 2)
-if echo "$INPUT" | grep -qi 'rdd\|epistemic gate\|/rdd'; then
-  echo "REMINDER: If you are in an active RDD phase, ensure the epistemic gate has been completed before stopping. Every phase transition requires the user to produce something — an explanation, prediction, reconstruction, or articulation — not merely approve (Invariant 2)."
+# Recognizes both fixed-template gates (legacy) and AID cycle adaptive prompts (ADR-040)
+if echo "$INPUT" | grep -qi 'rdd\|epistemic gate\|reflection time\|/rdd'; then
+  echo "REMINDER: If you are in an active RDD phase, ensure reflection time has been completed before stopping. Run the Attend-Interpret-Decide cycle: read engagement signals from the conversation, interpret the user's understanding, and select the appropriate pedagogical move (challenge, probe, teach, clarify, or re-anchor). Every phase transition requires the user to produce something — not merely approve (Invariant 2). Time spent must be productive, not merely brief (Invariant 4)."
 fi

@@ -36,7 +36,7 @@ At the end of an RDD cycle, you should be able to explain the system's design ra
 - **Synthesize** — Write about what you built — not a summary, but an act of inquiry. New research questions may loop back into a new cycle.
 - **Graduate** — Fold the durable knowledge into native docs. Archive the RDD artifacts. The scaffolding comes down.
 
-Each phase ends with a challenge: can you articulate what you learned? A full cycle is a mindful process of making — depending on the problem, it can take several hours across multiple sessions.
+Each phase ends with reflection time — a conversation that adapts to how you've been engaging. The agent teaches when there's a gap, challenges when you're ready, and steps back when you need a break. A full cycle is a mindful process of making — depending on the problem, it can take several hours across multiple sessions.
 
 ## When to Use RDD
 
@@ -68,7 +68,7 @@ Start an RDD cycle with the orchestrator:
 /rdd
 ```
 
-The orchestrator scans for existing artifacts, asks where to store new ones, and guides you through the pipeline — invoking each phase skill in order with epistemic gates between them.
+The orchestrator scans for existing artifacts, asks where to store new ones, and guides you through the pipeline — invoking each phase skill in order with reflection time between them.
 
 You can also invoke phases directly:
 
@@ -83,20 +83,27 @@ You can also invoke phases directly:
 | `/rdd-play` | Play with what you built as different users, discover what specs missed |
 | `/rdd-synthesize` | Write about what you built and what you discovered |
 | `/rdd-conform` | Audit artifact corpus, detect drift, graduate knowledge |
+| `/rdd-about` | Learn what RDD is, check version, explore the methodology |
 
 ## Architecture
 
 RDD is a four-layer Claude Code plugin:
 
-- **Skills** (10) — orchestrate phases, manage user interaction, run epistemic gates
+- **Skills** (11) — orchestrate phases, manage user interaction, run adaptive reflection time
 - **Agents** (6) — specialist subagents for citation auditing, argument auditing, literature review, conformance scanning, orientation writing, and code spikes
-- **Hooks** (5) — passive enforcement of invariants, epistemic gates, document sizing, and orientation regeneration
+- **Hooks** (5) — passive enforcement of invariants, reflection time, document sizing, and orientation regeneration
 
 Agents follow an artifact-mediated communication pattern: they read input files, perform analysis in isolation, and write structured output files. Every finding is durable and inspectable.
 
+## Method vs. Implementation
+
+RDD is a methodology — a set of principles for building software you understand. This plugin is one implementation of that methodology, built for Claude Code. The methodology is more general than the plugin: its principles apply to any AI-assisted development process, and could be practiced with different tools, a human facilitator, or even pen and paper. RDD is specifically necessitated by AI-generated work — without generative AI, understanding comes as a byproduct of doing the manual work. AI speeds up generation, leaving understanding and building the right thing as the hard part. RDD augments generative processes by structuring the practices that produce understanding.
+
+The plugin implements the methodology through specific mechanisms — an Attend-Interpret-Decide cycle at each reflection time, specialist auditing agents, cross-cutting hooks — but these are implementation choices, not the methodology itself.
+
 ## Built With RDD
 
-This plugin was built using RDD. The full artifact trail — eight research essays, 39 architectural decisions, 228 behavior scenarios, a domain model, system design, and product discovery document — lives in the `docs/` directory.
+This plugin was built using RDD. The full artifact trail — nine research essays, 42 architectural decisions, 248 behavior scenarios, a domain model, system design, and product discovery document — lives in the `docs/` directory.
 
 ## License
 

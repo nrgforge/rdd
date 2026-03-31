@@ -1,15 +1,19 @@
 # System Design: Pedagogical RDD
 
-**Version:** 7.0
+**Version:** 8.0
 **Status:** Current
-**Last amended:** 2026-03-26
+**Last amended:** 2026-03-30
 
 ## Architectural Drivers
 
 | Driver | Type | Provenance |
 |--------|------|------------|
 | Every gate must require user generation, not just approval | Quality Attribute | Invariant 1, 2; ADR-001 |
-| Epistemic cost stays under 5-10 min per gate | Constraint | Invariant 4; ADR-003 |
+| Epistemic cost must be productive, not merely brief — constraint is on waste, not duration | Constraint | Invariant 4 (Amendment 13); ADR-040 |
+| Gates use Attend-Interpret-Decide cycle: read engagement signals, form hypothesis, select pedagogical move (challenge/probe/teach/clarify/re-anchor) | Quality Attribute | ADR-040; Essay 009 §§3-5 |
+| User-facing gate language is "reflection time"; "epistemic gate" reserved for research/design vocabulary | Quality Attribute | ADR-041; Essay 009 §9 |
+| Inversion Principle operates at gates via reframing (seventh cross-cutting location) | Quality Attribute | ADR-040; Essay 009 §7; Domain model Amendment 13 |
+| Agent resists sycophantic praise at gates — builds on responses, does not evaluate with "Great insight!" | Quality Attribute | ADR-040; Essay 009 §7; Rowe (1974) |
 | Each skill is self-contained (owns its gate definition) | Quality Attribute | ADR-002 |
 | User responses enrich subsequent phases | Quality Attribute | Invariant 7; ADR-004 |
 | Prompts reference specific artifact content, not generic questions | Quality Attribute | ADR-003 |
@@ -57,9 +61,9 @@
 ## Module Decomposition
 
 ### Module: Orchestrator (`skills/rdd/SKILL.md`)
-**Purpose:** Defines the pipeline sequence, epistemic gate protocol, three-tier artifact hierarchy, cross-cutting principles, scoped cycle workflow pattern, agent dispatch protocol, and ensures no phase transition consists solely of approval.
-**Provenance:** ADR-001 (gate pattern); ADR-002 (orchestrator defines protocol); ADR-004 (feed-forward instruction); ADR-006 (pipeline includes PRODUCT DISCOVERY); ADR-010 (inversion principle cross-cutting); ADR-019 (three-tier artifact hierarchy); ADR-022 (roadmap at Tier 2); ADR-023 (field guide at Tier 3); ADR-024 (document sizing heuristics); ADR-026 (scoped cycles, deep work tool framing); ADR-031 (artifact-mediated communication as cross-cutting principle); ADR-032 (agent dispatch protocol); ADR-034 (plugin packaging); ADR-037 (interaction specs in artifact summary); ADR-038 (PLAY in pipeline and state tracking); Invariant 0, 2
-**Owns:** Gate protocol definition, pipeline sequence (including PRODUCT DISCOVERY and optional PLAY phases), state tracking, feed-forward instruction, cross-cutting principles (inversion principle, document sizing heuristics, artifact-mediated communication), Available Skills table, Artifacts Summary (including interaction specs and field notes), three-tier artifact hierarchy principle (with roadmap at Tier 2 and field guide at Tier 3), orientation document regeneration instruction (dispatches orientation-writer agent), scoped cycle workflow pattern, deep work tool framing, agent dispatch protocol (how phase skills delegate specialist work to subagents), cross-phase integration rules for play feedback (field notes → DISCOVER, DECIDE, RESEARCH, interaction specs, SYNTHESIS)
+**Purpose:** Defines the pipeline sequence, adaptive gate protocol (Attend-Interpret-Decide cycle), three-tier artifact hierarchy, cross-cutting principles, scoped cycle workflow pattern, agent dispatch protocol, and ensures no phase transition consists solely of approval.
+**Provenance:** ADR-001 (gate pattern); ADR-002 (orchestrator defines protocol); ADR-004 (feed-forward instruction); ADR-006 (pipeline includes PRODUCT DISCOVERY); ADR-010 (inversion principle cross-cutting); ADR-019 (three-tier artifact hierarchy); ADR-022 (roadmap at Tier 2); ADR-023 (field guide at Tier 3); ADR-024 (document sizing heuristics); ADR-026 (scoped cycles, deep work tool framing); ADR-031 (artifact-mediated communication as cross-cutting principle); ADR-032 (agent dispatch protocol); ADR-034 (plugin packaging); ADR-037 (interaction specs in artifact summary); ADR-038 (PLAY in pipeline and state tracking); ADR-040 (AID cycle replaces fixed-template gates); ADR-041 (reflection time naming); Invariant 0, 2, 4 (amended)
+**Owns:** Adaptive gate protocol definition (Attend-Interpret-Decide cycle with five pedagogical moves: challenge, probe, teach, clarify, re-anchor; includes cross-gate engagement pattern awareness — the Attend step reads the full cycle's conversation history, not just the current phase, enabling earned fatigue detection as a cross-cutting concern), pipeline sequence (including PRODUCT DISCOVERY and optional PLAY phases), state tracking, feed-forward instruction, cross-cutting principles (inversion principle including gate-level reframing, document sizing heuristics, artifact-mediated communication, anti-sycophancy at gates), Available Skills table (including `/rdd-about`), Artifacts Summary (including interaction specs and field notes), three-tier artifact hierarchy principle (with roadmap at Tier 2 and field guide at Tier 3), orientation document regeneration instruction (dispatches orientation-writer agent), scoped cycle workflow pattern, deep work tool and pace regulator framing, agent dispatch protocol, cross-phase integration rules for play feedback (field notes → DISCOVER, DECIDE, RESEARCH, interaction specs, SYNTHESIS)
 **Depends on:** None (top-level coordinator)
 **Depended on by:** All phase skills (they follow its protocol); all hooks (they supplement its cross-cutting principles)
 **Note:** In the plugin architecture, the orchestrator's cross-cutting principles are additionally enforced by hooks — the hooks supplement skill-level instructions with passive event-driven reminders. The orchestrator dispatches the orientation-writer agent at milestones rather than generating ORIENTATION.md inline.
@@ -128,6 +132,14 @@
 **Depends on:** Orchestrator (available skill listing); Conformance Scanner Agent (dispatched during drift detection operation)
 **Depended on by:** None directly (invoked by user or orchestrator as needed; produces conformance report consumed by user)
 
+### Module: About Skill (`skills/about/SKILL.md`) — NEW in v8.0
+**Purpose:** Reports current plugin version, provides a brief adaptive methodology overview, and offers depth-calibrated elaboration for users unfamiliar with RDD.
+**Provenance:** ADR-042 (self-explanation utility); Essay 009 §11 (design proposal — agent-as-teacher extends to meta-teaching)
+**Owns:** Version detection (reads plugin manifest), methodology overview (user language — "reflection time" not "epistemic gate"), depth calibration based on in-session signals
+**Depends on:** Plugin Manifest (version metadata)
+**Depended on by:** Orchestrator (optionally offers `/rdd-about` when no existing RDD artifacts detected)
+**Note:** Utility skill, not a pipeline phase. Does not produce artifacts. Depth calibration relies on in-session signals (stated purpose, questions asked), which are weaker than the full-cycle conversation history the AID cycle uses at phase gates. This limitation is acknowledged by design (ADR-042).
+
 ### Specialist Subagent Modules
 
 All specialist subagents follow the artifact-mediated communication pattern (ADR-031): they receive file paths as input, run in isolated context with no conversation history, and write structured output to artifact files. Phase skills dispatch them and read the output artifacts.
@@ -192,10 +204,10 @@ All hooks are configured in `hooks/hooks.json` at the plugin root, with scripts 
 **Depends on:** Domain model artifact (references invariants section path)
 
 ### Module: Epistemic Gate Enforcer Hook (`hooks/scripts/epistemic-gate`)
-**Purpose:** Reminds the agent about the epistemic gate if an RDD phase is completing without gate conversation.
-**Provenance:** ADR-033; Invariant 2 (epistemic acts mandatory at every gate); Essay 007 §3
+**Purpose:** Reminds the agent about the epistemic gate (reflection time) if an RDD phase is completing without gate conversation. Recognizes AID cycle adaptive prompts as valid gate behavior.
+**Provenance:** ADR-033; ADR-040 (AID cycle); Invariant 2 (epistemic acts mandatory at every gate); Essay 007 §3
 **Event:** Stop (no matcher — fires on all Stop events; script checks if in RDD phase)
-**Owns:** Gate reminder text injection
+**Owns:** Gate reminder text injection (updated to recognize adaptive AID prompts, not just fixed-template prompts)
 
 ### Module: Skill Activator Hook (`hooks/scripts/skill-activator`)
 **Purpose:** Detects RDD-related prompts, suggests the appropriate phase skill, and prevents brainstorming override on explicit RDD requests.
@@ -410,6 +422,27 @@ All hooks are configured in `hooks/hooks.json` at the plugin root, with scripts 
 | Skill Activator (brainstorming override prevention) | Skill Activator Hook | ADR-035 |
 | Dispatch (send work to specialist subagent) | Orchestrator (protocol definition); Research, Decide, Synthesis, Conform Skills (execution) | ADR-032 |
 | Write Audit Artifact (produce structured report as file) | Citation Auditor Agent, Argument Auditor Agent, Conformance Scanner Agent | ADR-031; ADR-032 |
+
+### Adaptive Gate Concepts (from Essay 009 / ADRs 040-042) — NEW in v8.0
+
+| Domain Concept/Action | Owning Module | Provenance |
+|----------------------|---------------|------------|
+| Reflection Time (user-facing alias for Epistemic Gate) | Orchestrator (defines dual-register convention); all phase skills (use in agent dialogue) | ADR-041; Essay 009 §9 |
+| Attend-Interpret-Decide / AID cycle (adaptive gate protocol) | Orchestrator (defines protocol); all phase skills (execute at gates) | ADR-040; Essay 009 §5; Jacobs et al. 2010 |
+| Engagement Signal (observable markers in conversation history) | All phase skills (read signals at gate time) | ADR-040; Essay 009 §4 |
+| Pedagogical Move (five response modes: challenge, probe, teach, clarify, re-anchor) | All phase skills (select move at gate time) | ADR-040; Essay 009 §5 |
+| Contingent Teaching (four-step loop within gates: diagnose, check, intervene, check) | All phase skills (execute when Interpret reveals gap) | ADR-040; Essay 009 §6; Wood, Bruner & Ross 1976 |
+| Contingent Shift (increase support on struggle, decrease on success) | All phase skills (iterative adjustment within gates) | ADR-040; Essay 009 §3 |
+| Earned Fatigue (tiredness from genuine deep engagement — signal to break) | All phase skills (detected during Attend; Re-anchor response offers break) | Product discovery 2026-03-30; Reflection 009 |
+| Pace Regulator (RDD's function anchoring user in one domain) | Orchestrator (framing); all phase skills (gates sustain focus) | Product discovery 2026-03-30; Reflection 009 |
+| IRE Pattern (the discourse pattern being replaced) | None (anti-pattern) | Essay 009 §2; Sinclair & Coulthard 1975 |
+| Reframing (questioning the problem frame from cross-phase vantage) | All phase skills (available as Challenge sub-move at gates) | ADR-040; Essay 009 §7; Inversion Principle at gate level |
+| Attend (read engagement signals from conversation history) | All phase skills | ADR-040; Invariant 3 (pragmatic action) |
+| Interpret (form hypothesis about user engagement/understanding) | All phase skills | ADR-040; Invariant 3 (pragmatic action) |
+| Select Pedagogical Move (choose gate response based on interpretation) | All phase skills | ADR-040; Invariant 3 (pragmatic action) |
+| Reframe (surface narrowed solution space from cross-phase context) | All phase skills | ADR-040; Inversion Principle (7th location) |
+| Version reporting (read plugin manifest version) | About Skill | ADR-042 |
+| Methodology overview (user-language explanation of RDD) | About Skill | ADR-042 |
 
 ## Dependency Graph
 
@@ -800,7 +833,7 @@ The play skill writes:
 | 1: Understanding requires generation | Each skill's gate section; Play Skill (three movements are inherently generative) | Verify every gate requires user to produce something; verify play's inhabit/explore/reflect are generative activities |
 | 2: Epistemic acts mandatory at every gate | Each skill's gate section + orchestrator protocol; Play Skill (activity subsumes gate — ADR-016 pattern) | Verify no gate consists solely of approval; play verified by three-movement presence |
 | 3: Pragmatic automated, epistemic preserved; Gamemaster: shapes attention (pragmatic form), not conclusions (epistemic) | Each skill; Play Skill (gamemaster boundary principle) | Verify skills have AI generation + epistemic gates; verify gamemaster shapes attention not conclusions |
-| 4: Epistemic cost lightweight | Each skill's gate section | Verify 2-3 prompts per gate |
+| 4: Epistemic cost productive, not merely brief (amended) | Each skill's AID cycle at gate; Orchestrator protocol | Verify gates use AID cycle (not fixed prompts); verify no "5-10 minute" references remain; verify teaching mode expands when needed |
 | 5: Approval is not grounding | Orchestrator protocol | Verify protocol includes epistemic acts, not just approval |
 | 6: Scaffolding must fade | Not enforced in v1 — tracked as debt | ADR-005 revisit trigger |
 | 7: Epistemic acts bidirectional | Orchestrator feed-forward instruction; Product Discovery gate (user → AI direction especially strong) | Verify orchestrator instructs AI to reference prior gate responses; Product Discovery gate surfaces tacit product knowledge |
@@ -829,4 +862,5 @@ Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, con
 | 6 | 2026-03-12 | Added: Conformance Audit Skill module, roadmap generation to Architect Skill, field guide generation to Build Skill. Updated: Orchestrator (scoped cycles, document sizing heuristics, artifact hierarchy with roadmap Tier 2 and field guide Tier 3, deep work tool framing). Added: 7 architectural drivers, 17 responsibility matrix rows (2 new sections), 3 integration contracts, 12 fitness criteria, 5 boundary integration tests. Replaced: Build Sequence with link to roadmap. | ADRs 022-026 (essay 005 cycle) | ADR-022 (roadmap), ADR-023 (field guide), ADR-024 (document sizing), ADR-025 (conformance audit + graduation), ADR-026 (scoped cycles + deep work tool) | Approved |
 | 7 | 2026-03-12 | Updated Synthesis Skill module (purpose, provenance, ownership) to incorporate four-dimension framing, structural experiments, two-register outline, and re-entry logic. Updated 2 architectural drivers (synthesis terminal → usually terminal; four-dimension framing + structural experiments). Added 9-row responsibility matrix section (Synthesis Enrichment Concepts from Essay 006 / ADRs 027-030). Updated Frame Narrative action row. Updated dependency graph (synthesis conditional re-entry to Research). Added 1 integration contract (Synthesis Skill → Research Skill re-entry). Added 7 fitness criteria. Added 3 boundary integration tests. Updated acceptance scenario count (133 → 164). | ADRs 027-030 (essay 006 cycle) | ADR-027 (four-dimension framing), ADR-028 (structural experiments), ADR-029 (synthesis re-entry), ADR-030 (two-register outline) | Accepted |
 | 8 | 2026-03-19 | Four-layer plugin architecture. Added 12 new modules: 6 specialist subagent modules (citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner), 5 cross-cutting hook modules (invariant-reminder, epistemic-gate-enforcer, skill-activator, orientation-trigger, sizing-check), 1 plugin manifest. Updated 5 existing modules: Orchestrator (agent dispatch protocol, plugin packaging), Research Skill (dispatches agents instead of invoking external skills; log archival at cycle end), Decide Skill (dispatches argument-auditor and conformance-scanner), Synthesis Skill (dispatches auditor agents), Conform Skill (dispatches conformance-scanner). Added 10 architectural drivers. Added 9-row responsibility matrix section (Plugin Architecture Concepts). Replaced dependency graph with four-layer structure (skills → agents → hooks). Replaced 4 external skill integration contracts with 3 new contracts (skill→agent dispatch, hook→agent context injection, plugin→runtime discovery). Added 9 fitness criteria. Added 14 boundary integration tests. Updated test layers and acceptance scenario count (164 → 192). | ADRs 031-036 (essay 007 plugin architecture cycle) | ADR-031 (artifact-mediated communication), ADR-032 (specialist subagent extraction), ADR-033 (cross-cutting hooks), ADR-034 (plugin packaging), ADR-035 (skill activator), ADR-036 (research log archival) | Proposed |
+| 10 | 2026-03-30 | Adaptive gates, reflection time naming, and /rdd-about utility. Added 1 new module: About Skill (version reporting, methodology overview, depth-calibrated elaboration — utility, not pipeline phase). Updated 3 existing modules: Orchestrator (gate protocol becomes AID cycle with five pedagogical moves; adds pace regulator framing; Available Skills includes /rdd-about; optionally offers /rdd-about for fresh projects), Epistemic Gate Enforcer Hook (recognizes AID adaptive prompts), all 6 phase skills (EPISTEMIC GATE sections updated from fixed templates to AID cycle; user-facing dialogue uses "reflection time"). Added 5 architectural drivers (amended Invariant 4, AID cycle, reflection time naming, Inversion Principle at gates, anti-sycophancy). Added 16-row responsibility matrix section (Adaptive Gate Concepts). Updated invariant enforcement tests (Invariant 4 amended — productive not brief). Supersedes ADR-003 (fixed-assignment prompt table replaced by AID cycle; ADR-003's prompts become candidate library). Conformance scan: 19 implementation-layer violations mapped with resolution sequence. | ADRs 040-042 (essay 009 adaptive gates cycle) | ADR-040 (AID cycle), ADR-041 (reflection time naming), ADR-042 (/rdd-about utility); Essay 009; Invariant 4 (Amendment 13 — productive not brief); Invariant 0 (understanding is the purpose); Inversion Principle (7th location at gates) | Proposed |
 | 9 | 2026-03-26 | Play phase and interaction specification layer. Added 1 new module: Play Skill (three-movement experiential discovery with gamemaster mode, field notes production — no specialist subagents, no separate epistemic gate). Updated 4 existing modules: Decide Skill (produces interaction specs after scenarios), Orchestrator (pipeline includes PLAY after BUILD, state tracking, artifact summary, cross-phase integration for play feedback), Product Discovery Skill (update mode reads field notes), Synthesis Skill (reads field notes in artifact trail mining). Added 6 architectural drivers. Added 16-row responsibility matrix section (Play and Interaction Specification Concepts). Updated dependency graph (inter-skill artifact flow includes interaction-specs.md and field-notes.md with feedback loop). Added 4 integration contracts (Orchestrator→Play, Decide→Play via interaction-specs, Play→Discover/Decide/Research via field-notes, Play→Synthesis via field-notes). Added 14 fitness criteria. Added 12 boundary integration tests. Updated invariant enforcement tests (play serves Invariant 0 experiential dimension; gamemaster boundary for Invariant 3). Updated test layers and acceptance scenario count (192 → 228). Updated inversion principle locations from 5 to 6. | ADRs 037-039 (essay 008 play/interaction-spec cycle) | ADR-037 (interaction specification layer), ADR-038 (play phase), ADR-039 (agent as gamemaster); Essay 008; Invariant 0 (experiential authority dimension), Invariant 3 (gamemaster boundary) | Proposed |

@@ -1,6 +1,8 @@
 # ADR-003: Phase-Specific Epistemic Act Assignments
 
-**Status:** Proposed
+**Status:** Superseded by ADR-040
+
+> **Supersession note (2026-03-30):** ADR-040 replaces the fixed-assignment prompt table with an Attend-Interpret-Decide (AID) cycle. The pedagogical frameworks and prompts defined below remain valid as a *candidate library* that the AID cycle can draw from when selecting its response — but they are no longer a fixed assignment. The agent selects its pedagogical move based on engagement signals, not phase identity. The "5-10 minutes per gate" constraint referenced below was replaced by Invariant 4 Amendment 13: "Epistemic cost must be productive, not merely brief."
 
 ## Context
 

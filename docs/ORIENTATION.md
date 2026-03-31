@@ -72,12 +72,12 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 
 ## Current State
 
-**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 10 skills (orchestration), 6 specialist subagents (focused work), 5 cross-cutting hooks (passive enforcement), and the self-referential artifact corpus.
+**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 11 skills (orchestration + `/rdd-about` utility), 6 specialist subagents (focused work), 5 cross-cutting hooks (passive enforcement), and the self-referential artifact corpus.
 
 **Pipeline:** RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. A conformance audit utility (`/rdd-conform`) operates outside the pipeline for artifact template alignment, drift detection, remediation, and graduation.
 
 **What's settled:**
-- Epistemic gate protocol (ADRs 001-005) — implemented in all skill files
+- Adaptive reflection time protocol (ADRs 001-005, 040-041) — Attend-Interpret-Decide cycle implemented in all skill files; "reflection time" in user-facing dialogue
 - Product discovery phase (ADRs 006-011) — implemented as `/rdd-discover` with forward, backward, and update modes
 - Synthesis phase (ADRs 012-018) — implemented as `/rdd-synthesize`
 - Orientation document (ADRs 019-021) — integrated into orchestrator with three-tier hierarchy
@@ -91,6 +91,9 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 - Interaction specification layer (ADR-037) — `/rdd-decide` produces workflow-level interaction specs after scenarios, creating the playable surface
 - Play phase (ADR-038) — `/rdd-play` facilitates post-build experiential discovery through stakeholder inhabitation; three movements (inhabit → explore → reflect); bounded by felt understanding; produces field notes
 - Gamemaster role (ADR-039) — orchestrating agent serves as active facilitator during play, shaping attention (not conclusions) within the Invariant 3 boundary
+- Adaptive gates (ADR-040) — Attend-Interpret-Decide cycle replaces fixed-template prompts; five pedagogical moves (challenge, probe, teach, clarify, re-anchor); challenge is the response to deep engagement
+- Reflection time naming (ADR-041) — user-facing gates are "reflection time"; "epistemic gate" stays in research/design vocabulary
+- Self-explanation utility (ADR-042) — `/rdd-about` reports plugin version and provides adaptive methodology overview for new users
 
 **Open questions (selected):**
 - How would Pair-RDD work at epistemic gates?

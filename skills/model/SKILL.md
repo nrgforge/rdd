@@ -104,16 +104,42 @@ Present it to the user. Highlight:
 
 ### EPISTEMIC GATE
 
-After presenting the domain model, run the epistemic gate protocol before proceeding to the next phase.
+After presenting the domain model, run the Attend-Interpret-Decide cycle before proceeding to the next phase. Introduce the gate to the user as "reflection time" — not "epistemic gate."
 
-Present 2 of the following prompts, filling in the bracketed references with specific concepts, relationships, and invariants from the domain model just produced:
+> "Before we move on — reflection time."
 
-- **Retrieval practice:** "What feels like the heart of this model to you? What would you explain first to a colleague?"
-- **Self-explanation:** "Does the relationship between [concept X] and [concept Y] match your intuition, or does something feel off?"
+Then run the three-phase cycle:
 
-Wait for the user to respond to at least one prompt. If the user responds with only non-generative approval ("looks good", "approved"), acknowledge it but gently re-present the prompts — the gate asks for the user's perspective on the model, not just confirmation.
+**1. Attend.** Read the cycle's conversation history for engagement signals specific to the modeling phase:
 
-After the user responds, note any obvious factual discrepancies between their response and the domain model without framing it as an error ("The model defines X as Y — your take was Z. Worth revisiting?"). Do not assess the quality of the user's understanding.
+- Did the user engage with concept definitions or accept vocabulary without discussion?
+- Did the user challenge relationship definitions or propose alternatives?
+- Did the user connect domain concepts to their mental model of how the system works?
+- Did the user notice missing concepts, synonyms, or ambiguities?
+- Did the user engage with invariant changes (amendments) or accept them?
+- Cross-gate signals from prior phases (especially DISCOVER — did the user provide rich product knowledge that should show up in the model?)
+
+**2. Interpret.** Form a hypothesis about the user's engagement:
+
+- **Deeply engaged** — challenged definitions, proposed alternative relationships, connected concepts to their mental model, noticed gaps. The user has been actively shaping the vocabulary.
+- **Adequately engaged** — followed along with some specificity, confirmed terms but didn't initiate challenges or additions.
+- **Surface-engaged** — accepted the model as presented, brief responses, no connections to their own understanding.
+- **Confused** — responses misalign with the model's definitions, inconsistent use of terms, avoidance of relationship questions.
+- **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue. If thin throughout, the domain vocabulary may be overwhelming — shift toward teaching.
+
+**3. Decide.** Select a pedagogical move:
+
+- **Deep engagement → Challenge.** "The model defines [concept X] as related to [concept Y] this way. Where does this model break? What edge case or real-world scenario would stress this relationship?" Or reframe: "The model organizes concepts around [principle]. Is there a different organizing principle that would reveal something the current structure hides?"
+- **Adequate engagement → Probe.** "You engaged with [concept] during the discussion — what makes that concept central to how you think about this system? What would you explain first to a colleague?"
+- **Surface engagement → Teach.** Identify the most load-bearing relationship in the model — the one that most constrains downstream decisions — and explain why it matters: "The relationship between [X] and [Y] is the most important because [reason]. Here's how it shapes what comes next. Does this match your intuition?" Teach first, then ask.
+- **Confusion → Clarify.** "It sounds like the relationship between [concept X] and [concept Y] doesn't match your mental model. Let me walk through how the model connects them." Then re-approach.
+- **Disengagement → Re-anchor.** "It seems like the responses aren't as in-depth as they could be — is this a good time to take a break? Otherwise, are there ways we can reframe the work to serve your current goals better?"
+
+**Iterative.** The gate is a conversation, not a single exchange. Apply the contingent shift: if the user's response to a probe is thin, shift toward teaching. If teaching demonstrates understanding, shift toward challenge. The gate ends when shared understanding is established or the user requests to proceed.
+
+**Anti-sycophancy.** Do not evaluate the user's response with praise. Build on it, probe its implications, or surface a tension.
+
+After the conversation, note any factual discrepancies between the user's responses and the domain model without framing as error ("The model defines X as Y — your take was Z. Worth revisiting?"). Do not assess the quality of the user's understanding.
 
 Then ask whether to proceed to the next phase or revise the model.
 
