@@ -12,9 +12,9 @@ $ARGUMENTS
 
 ---
 
-## STEP 1: Report Version
+## STEP 1: Report Version and Check for Updates
 
-Read the plugin manifest to get the current version:
+**Local version:** Read the plugin manifest to get the current installed version:
 
 ```
 .claude-plugin/plugin.json
@@ -25,6 +25,30 @@ Report the version at the top of your response:
 > **RDD version:** `<version from plugin.json>`
 
 If the file cannot be read, note that the version is unavailable and continue.
+
+**Remote version check:** After reporting the local version, check whether a newer version is available on GitHub. Run:
+
+```bash
+gh api repos/nrgforge/rdd/releases/latest --jq '.tag_name' 2>/dev/null
+```
+
+If `gh` is not available or the command fails, try:
+
+```bash
+curl -s https://api.github.com/repos/nrgforge/rdd/releases/latest | grep -o '"tag_name": "[^"]*"' | head -1 | cut -d'"' -f4
+```
+
+**Compare versions:**
+- If the remote version is newer than the local version, notify the user:
+  > **Update available:** Version `<remote>` is available (you have `<local>`). To update:
+  > ```
+  > /plugin marketplace add nrgforge/rdd
+  > /plugin install rdd@nrgforge
+  > ```
+  > After updating, consider running `/rdd-conform` to check whether your existing artifacts align with the new skill version.
+
+- If versions match, note that the installation is up to date.
+- If the remote check fails (no network, no `gh` CLI, no releases published), skip silently — don't let a failed version check block the rest of the skill.
 
 ---
 
