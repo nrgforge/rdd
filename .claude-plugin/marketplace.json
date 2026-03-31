@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "rdd",
-      "source": "./",
+      "source": {"source": "url", "url": "https://github.com/nrgforge/rdd.git"},
       "description": "Research-Driven Development — a methodology for building software you understand"
     }
   ]
