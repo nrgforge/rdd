@@ -60,6 +60,23 @@ Synthesize a brief orientation summary from these artifacts:
 
 > **Orientation:** This change affects [modules/areas]. The relevant decisions are [ADR-NNN: decided X because Y]. The expected behavior is [scenario: given/when/then]. The domain model says [key concepts and their relationships].
 
+**Include a tree view of the changeset.** Before the orientation summary, present the changed files as a tree structure so the reviewer sees the structural shape of the change at a glance — where changes cluster, how they spread, what areas are touched:
+
+```
+src/
+  auth/
+    middleware.ts  (modified)
+    tokens.ts      (new)
+  api/
+    routes.ts      (modified)
+tests/
+  auth/
+    middleware.test.ts  (modified)
+    tokens.test.ts      (new)
+```
+
+This gives immediate structural intuition before any code is read. In corpus-grounded mode, annotate the tree with module ownership from the system design where applicable. In context-reconstructive mode, use the raw file paths.
+
 Present this orientation to the reviewer. It is not a report — it is the context needed to ask good questions.
 
 #### Context-Reconstructive Mode (RDD-Lite)
@@ -76,6 +93,7 @@ When no RDD artifacts exist, build orientation collaboratively:
    - **Graceful degradation:** If a tool is unavailable, ask the reviewer to paste the content. Never fail because a specific tool isn't installed.
 
 3. **Synthesize orientation.** From the gathered context, produce a brief orientation summary covering:
+   - **Changeset structure** — a tree view of changed files so the reviewer sees the shape of the change at a glance
    - **What** the change is (the diff, at a high level)
    - **Why** it exists (the ticket goal, the broader initiative)
    - **What constraints** shaped the approach (technical constraints, deadlines, dependencies)
