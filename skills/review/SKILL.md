@@ -102,6 +102,7 @@ When no RDD artifacts exist, build orientation collaboratively:
 2. **Fetch and read.** For each source the reviewer provides:
    - Ticket URLs → fetch using available CLI tools (`gh issue view`, `glab issue view`) or MCP services, or ask the reviewer to paste if tools are unavailable
    - MR/PR links → fetch the diff and description using CLI tools (`gh pr view`, `glab mr view`) or ask for paste
+   - **Existing MR comments and discussion** → fetch review comments on the MR (`gh api repos/{owner}/{repo}/pulls/{pr}/comments`, `gh pr view --comments`, or equivalent). Other reviewers' comments are part of the context — they may have already raised points, resolved questions, or surfaced disagreements. Include a summary of existing discussion in the orientation: what's been raised, what's been resolved, what's still open. This prevents the reviewer from duplicating points already made and helps them build on the existing conversation rather than starting from scratch.
    - Doc links → fetch via WebFetch, or ask for paste
    - Pasted content → read directly
    - **Graceful degradation:** If a tool is unavailable, ask the reviewer to paste the content. Never fail because a specific tool isn't installed.
