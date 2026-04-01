@@ -177,14 +177,63 @@ Do not attempt to replicate a linter's or static analysis tool's judgment throug
 - **15 minutes:** Surface 3-5 questions across tiers, plus mechanical findings. Focus on design intent and assumption validity.
 - **30+ minutes:** Full question set. Include test quality evaluation, observation→question items, and inversion principle questions.
 
-### Step 5: Engage with the Reviewer
+### Step 5: Maintain Review Notes
+
+Large reviews — especially across multiple sessions — need a persistent place to accumulate the reviewer's observations, questions, and conclusions. Review notes are the reviewer's working memory externalized.
+
+**At the start of a review,** ask where review notes should be kept:
+
+> "Want me to keep review notes as we go? I can save them to a file so they persist across sessions and you can use them to write your MR comments later. Where should they go?"
+
+- **Within an RDD corpus:** `./docs/reviews/YYYY-MM-DD-<brief-slug>.md` (create `./docs/reviews/` if needed)
+- **Outside an RDD corpus:** wherever the reviewer prefers — a scratch file, a temp directory, or a path they specify
+- **No notes:** the reviewer may decline — some reviews are quick enough to hold in working memory
+
+**What goes in review notes:**
+
+```markdown
+# Review Notes: [MR/change title]
+
+**Date:** [date]
+**Reviewer:** [name if provided]
+**Source:** [ticket URL, MR link, or work package reference]
+
+## Overview
+[The orientation summary from Step 2 — what the change is, why it exists, key context]
+
+## Walkthrough Notes
+### [Item 1 name]
+- **Code:** [file:line reference]
+- **Observation:** [what the reviewer noticed]
+- **Discussion:** [key points from the conversation]
+- **Reviewer's take:** [the reviewer's conclusion or open question]
+
+### [Item 2 name]
+...
+
+## Mechanical Findings
+- [items from Tier 1]
+
+## Open Questions
+- [unresolved questions the reviewer wants to raise on the MR]
+
+## Reviewer's Assessment
+[Added by the reviewer when they're ready — the skill does not write this section]
+```
+
+**Update notes as you go.** After each walkthrough item or significant discussion point, append to the notes file. The reviewer can see the notes accumulating and correct course.
+
+**Notes are the reviewer's artifact, not the skill's.** The skill maintains them as a service to the reviewer. The reviewer translates them into MR comments in their own words. The notes are a bridge between "I understand this" and "I can articulate my review" — they are not the review itself.
+
+### Step 6: Engage with the Reviewer
 
 After presenting the output, engage with the reviewer's responses. This is a conversation, not a report delivery.
 
-- If the reviewer engages with a question, build on their response — probe deeper, connect to other aspects of the change, surface implications.
+- If the reviewer engages with a question, build on their response — probe deeper, connect to other aspects of the change, surface implications. Update the review notes with key discussion points.
 - If the review surfaces an issue that needs fixing during a build session, the fix follows standard commit discipline (structure vs. behavior separation) — these are review commits, changes driven by what the review uncovered.
 - If the reviewer dismisses questions without engaging ("looks fine", "approved"), acknowledge their response but note: "The questions are designed to help you build understanding of the changes. If you'd like to engage with any of them, I'm here. Otherwise, the review is yours to conclude."
 - Do not auto-approve or produce a verdict. The skill scaffolds; it does not compel.
+- When the reviewer is ready to conclude, offer to help them formulate their thoughts for MR comments — but the words must be theirs. The review notes provide the raw material; the reviewer shapes the message.
 
 ---
 
@@ -192,9 +241,9 @@ After presenting the output, engage with the reviewer's responses. This is a con
 
 - **No merge verdict.** The skill does not produce approve/reject/merge assessments. The reviewer forms their own judgment.
 - **No severity ratings.** No Critical/Important/Minor categorization. The reviewer evaluates severity based on context.
-- **No pre-written review comments.** The skill does not produce comments for the reviewer to post on the MR. If the reviewer asks for this, decline: "The review is yours to give — I can help you think about what to say, but the comments should reflect your understanding."
+- **No pre-written review comments.** The skill does not produce comments for the reviewer to post on the MR. If the reviewer asks for this, decline: "The review is yours to give — I can help you think about what to say, but the comments should reflect your understanding." The review notes are raw material for the reviewer to draw from, not finished comments.
 - **No summary for forwarding.** The output is for the reviewer's understanding, not for passing along as their own review.
-- **No durable artifacts.** The skill does not write files to `./docs/`. The review's value lives in the reviewer's mental model, not in documentation.
+- **Review notes are optional.** The reviewer may decline notes for quick reviews. The skill does not require them.
 
 ---
 
