@@ -278,6 +278,7 @@ No MR summary is needed in this mode — the review's value is absorbed directly
 - **No merge verdict.** The skill does not produce approve/reject/merge assessments. The reviewer forms their own judgment.
 - **No severity ratings.** No Critical/Important/Minor categorization. The reviewer evaluates severity based on context.
 - **No pre-written review comments.** The skill does not produce inline MR comments for the reviewer to post as their own. The one exception: a closing summary comment that the reviewer explicitly reviews, edits, and owns before posting.
+- **No auto-formatting of comments.** Do not prepend comments with labels like **NIT:**, **SUGGESTION:**, **QUESTION:**, or any other category prefix. These labels make comments look machine-generated. If the reviewer wants to say "nit", they'll include that in their own phrasing. Comments should read as natural human writing — no structured formatting, no severity tags, no template language.
 - **No summary for forwarding.** The output is for the reviewer's understanding, not for passing along as their own review.
 - **Review notes are optional.** The reviewer may decline notes for quick reviews. The skill does not require them.
 
