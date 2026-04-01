@@ -97,9 +97,34 @@ Read with the orientation in mind — you now know *why* the change exists and *
 - **Test presence and quality:** Are there tests? Do they verify behavior or just execution?
 - **Vocabulary:** Does the code use domain terms consistently? (In corpus-grounded mode, check against the domain model.)
 
+### Step 3.5: Facilitated Walkthrough (Large Changes)
+
+For large or complex changes, do not jump directly from orientation to a batch of questions. Instead, offer a facilitated point-by-point walkthrough of the key items identified during orientation and code reading.
+
+**When to offer:** If the change spans multiple files, introduces new concepts, or touches several areas of the codebase, suggest a walkthrough:
+
+> "This is a substantial change. Want me to walk through each key area one at a time with code examples? We can discuss each before moving on."
+
+**How it works:**
+
+1. **Identify the key items** from the orientation and code reading — the 3-7 most significant aspects of the change (new abstractions, structural decisions, behavioral changes, integration points).
+
+2. **Present one item at a time.** For each item:
+   - Name the concept or change area
+   - Show the relevant code (actual lines from the diff, not summaries)
+   - Explain what the code does and how it connects to the broader change
+   - Surface the question(s) this item raises
+   - Wait for the reviewer to discuss before proceeding
+
+3. **Allow genuine conversation.** The reviewer may ask questions, push back, connect what they see to their own experience, or flag concerns. Engage with their responses — this is where understanding gets built, not in the overview.
+
+4. **Track comprehension naturally.** By the end of the walkthrough, the reviewer has engaged with each major aspect of the change individually. The questions from Step 4 become a summary and supplement, not the primary delivery.
+
+**If the reviewer declines the walkthrough** or the change is small enough not to warrant one, proceed directly to Step 4.
+
 ### Step 4: Surface Review Output
 
-Produce three tiers of output, presented distinctly:
+After the walkthrough (or directly after code reading for smaller changes), produce three tiers of output, presented distinctly:
 
 #### Tier 1: Mechanical Findings
 
