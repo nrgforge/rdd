@@ -233,7 +233,43 @@ After presenting the output, engage with the reviewer's responses. This is a con
 - If the review surfaces an issue that needs fixing during a build session, the fix follows standard commit discipline (structure vs. behavior separation) — these are review commits, changes driven by what the review uncovered.
 - If the reviewer dismisses questions without engaging ("looks fine", "approved"), acknowledge their response but note: "The questions are designed to help you build understanding of the changes. If you'd like to engage with any of them, I'm here. Otherwise, the review is yours to conclude."
 - Do not auto-approve or produce a verdict. The skill scaffolds; it does not compel.
-- When the reviewer is ready to conclude, offer to help them formulate their thoughts for MR comments — but the words must be theirs. The review notes provide the raw material; the reviewer shapes the message.
+
+### Step 7: Articulate the Review
+
+When the walkthrough and discussion are complete, transition from understanding to articulation. This step has two paths depending on context.
+
+#### Context-Reconstructive Mode (MR Review)
+
+Go through the review notes one at a time:
+
+1. **Present each note back.** For each note in the review document, present the observation, the discussion context, and the reviewer's take as captured during the walkthrough.
+
+2. **The reviewer phrases the comment.** For each note the reviewer wants to raise on the MR, they articulate it in their own words. The skill can help them sharpen their phrasing — "Would you frame it more like X or Y?" — but does not write the comment for them. The reviewer's voice is the reviewer's voice.
+
+3. **Post or skip.** The reviewer decides which notes warrant MR comments and which are resolved or not worth raising. Not every note becomes a comment — some were learning moments, some were resolved in the walkthrough itself.
+
+After all notes are addressed, offer a closing summary:
+
+> "Based on our discussion, here's my read of the overall change: [brief synthesis of the key themes, strengths, and concerns that emerged]. Want me to draft a summary comment for the MR for you to review and edit?"
+
+The summary comment is the one exception to the "no pre-written comments" principle — it's a draft the reviewer explicitly reviews, edits, and posts in their own name. It synthesizes the walkthrough conversation, not the agent's independent analysis. The reviewer must review and own it before posting. If the reviewer prefers to write their own summary, respect that.
+
+If the reviewer wants to post the summary, offer to do so using available tools (`gh pr comment`, `glab mr comment`, etc.).
+
+#### Corpus-Grounded Mode (Build Review)
+
+In build context, notes typically translate into action rather than comments:
+
+1. **Present each note back.** Same as above — go through notes one at a time.
+
+2. **The reviewer decides the response.** For each note:
+   - **Fix it** — address the issue as a review commit (structure or behavior change)
+   - **Flag for later** — add to a backlog or open question
+   - **Accept as-is** — the reviewer understands the tradeoff and it's fine
+
+3. **Update the review notes** with the resolution for each item.
+
+No MR summary is needed in this mode — the review's value is absorbed directly into the build.
 
 ---
 
@@ -241,7 +277,7 @@ After presenting the output, engage with the reviewer's responses. This is a con
 
 - **No merge verdict.** The skill does not produce approve/reject/merge assessments. The reviewer forms their own judgment.
 - **No severity ratings.** No Critical/Important/Minor categorization. The reviewer evaluates severity based on context.
-- **No pre-written review comments.** The skill does not produce comments for the reviewer to post on the MR. If the reviewer asks for this, decline: "The review is yours to give — I can help you think about what to say, but the comments should reflect your understanding." The review notes are raw material for the reviewer to draw from, not finished comments.
+- **No pre-written review comments.** The skill does not produce inline MR comments for the reviewer to post as their own. The one exception: a closing summary comment that the reviewer explicitly reviews, edits, and owns before posting.
 - **No summary for forwarding.** The output is for the reviewer's understanding, not for passing along as their own review.
 - **Review notes are optional.** The reviewer may decline notes for quick reviews. The skill does not require them.
 
