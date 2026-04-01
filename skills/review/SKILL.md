@@ -62,6 +62,8 @@ Synthesize a brief orientation summary from these artifacts:
 
 **Include a tree view of the changeset.** Before the orientation summary, present the changed files as a tree structure so the reviewer sees the structural shape of the change at a glance — where changes cluster, how they spread, what areas are touched:
 
+For small-to-medium changesets, show individual files:
+
 ```
 src/
   auth/
@@ -74,6 +76,18 @@ tests/
     middleware.test.ts  (modified)
     tokens.test.ts      (new)
 ```
+
+For large changesets (roughly 20+ files), zoom out — collapse to a directory-level summary showing change counts and where the heaviest activity clusters:
+
+```
+src/auth/          4 files (2 new, 2 modified)
+src/api/           8 files (1 new, 7 modified)  ← heaviest
+src/db/migrations/ 3 files (3 new)
+tests/             12 files (5 new, 7 modified)
+config/            1 file (modified)
+```
+
+Offer to expand any area the reviewer wants to drill into: "Want me to expand `src/api/` to see the individual files?"
 
 This gives immediate structural intuition before any code is read. In corpus-grounded mode, annotate the tree with module ownership from the system design where applicable. In context-reconstructive mode, use the raw file paths.
 
