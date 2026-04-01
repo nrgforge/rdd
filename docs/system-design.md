@@ -1,8 +1,8 @@
 # System Design: Pedagogical RDD
 
-**Version:** 8.0
+**Version:** 9.0
 **Status:** Current
-**Last amended:** 2026-03-30
+**Last amended:** 2026-03-31
 
 ## Architectural Drivers
 
@@ -57,6 +57,13 @@
 | Play bounded by felt understanding, not timebox | Constraint | ADR-038; Invariant 0, 4 |
 | Field notes categorized by feedback destination, do not prescribe fixes | Quality Attribute | ADR-038 |
 | Inversion Principle operates at play level (gamemaster introduces inversions to challenge interaction assumptions) | Quality Attribute | ADR-039; ADR-010 |
+| Code review produces questions not findings — guides reviewer thinking without verdicts | Quality Attribute | ADR-045; Essay 010 §Agent's Role |
+| Two review modes: corpus-grounded (RDD artifacts) and context-reconstructive (collaborative breadcrumb gathering) | Functional Requirement | ADR-044; Essay 010 §Two Operating Modes |
+| Review integrates with build stewardship as expected per-work-package rhythm | Quality Attribute | ADR-046 |
+| Question depth adapts to reviewer's available time (zone of proximal development) | Quality Attribute | ADR-045; Reflection 010 §ZPD |
+| Review does not produce merge verdicts, severity ratings, or AI-authored MR comments | Constraint | ADR-045; Essay 010 §Success Criterion |
+| Three-tier output: pure mechanical, observation→question, pure question | Quality Attribute | ADR-045; Reflection gate conversation |
+| Success criterion: reviewer discusses changes with informed judgment without AI | Quality Attribute | ADR-043; Invariant 0 (adapted) |
 
 ## Module Decomposition
 
@@ -139,6 +146,14 @@
 **Depends on:** Plugin Manifest (version metadata)
 **Depended on by:** Orchestrator (optionally offers `/rdd-about` when no existing RDD artifacts detected)
 **Note:** Utility skill, not a pipeline phase. Does not produce artifacts. Depth calibration relies on in-session signals (stated purpose, questions asked), which are weaker than the full-cycle conversation history the AID cycle uses at phase gates. This limitation is acknowledged by design (ADR-042).
+
+### Module: Review Skill (`skills/review/SKILL.md`) — NEW in v9.0
+**Purpose:** Scaffolds the reviewer's understanding of code changes through question-driven orientation, operating in corpus-grounded or context-reconstructive mode.
+**Provenance:** ADR-043 (utility skill positioning); ADR-044 (two operating modes); ADR-045 (questions as primary output); ADR-046 (build stewardship integration); ADR-047 (collaborative context-gathering); Essay 010; Invariant 0 (adapted — informed judgment, not full authority)
+**Owns:** Mode detection (check for RDD artifacts, offer corpus-grounded or context-reconstructive), collaborative context-gathering protocol (prompt for breadcrumbs, fetch, synthesize, validate, re-synthesize on substantial correction), corpus-grounded orientation (read relevant artifact slice for work package), review question generation (three-tier: pure mechanical, observation→question, pure question), test quality evaluation (mutation testing lens: not "are there tests?" but "do the tests catch anything?" — surface questions about assertion effectiveness, boundary coverage, and whether tests would detect operator changes or logic inversions), time-budget adaptation (zone of proximal development — scale depth to available time), mechanical finding separation (objective issues labeled distinctly; static analysis concerns belong here — the agent is not a linter but can flag what a linter would catch), classification heuristic (mechanical if determinable without intent/context; question if contextual judgment required), reviewer autonomy safeguards (no merge verdict, no pre-written comments, no auto-approval)
+**Depends on:** Orchestrator (available skill listing); Build Skill (optional integration — build suggests review at stewardship boundaries)
+**Depended on by:** None directly (invoked by user or during build; produces no durable artifact)
+**Note:** Utility skill, not a pipeline phase. Does not produce artifacts — the review's value lives in the reviewer's mental model, not in a record of the questions. Has no epistemic gate section — the review conversation itself is the epistemic activity. No new agents needed. Success criterion is Invariant 0 adapted to the review context: the reviewer can discuss changes with *informed judgment* (the reviewer's bar) rather than *authority* (the builder's bar).
 
 ### Specialist Subagent Modules
 

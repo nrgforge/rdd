@@ -1579,3 +1579,220 @@
 **When** a gate conversation occurs
 **Then** the hook recognizes the AID cycle's adaptive prompts as valid gate behavior
 **And** the hook does not require a fixed number of predetermined prompts
+
+## Feature: Code Review Utility Skill (ADR-043)
+
+### Scenario: Review skill is invocable at any time
+**Given** the `/rdd-review` skill file exists at `skills/review/SKILL.md`
+**When** the user invokes `/rdd-review` at any point (during build, between phases, or outside any pipeline)
+**Then** the skill activates and begins the review process
+**And** it does not require a pipeline context or phase position
+
+### Scenario: Review skill does not produce a pipeline artifact
+**Given** the `/rdd-review` skill has completed a review
+**When** the review session ends
+**Then** no durable artifact is written to `./docs/` (the output is conversational, not a phase artifact)
+**And** the pipeline state is not affected
+
+### Scenario: Review skill follows utility skill pattern
+**Given** the RDD plugin defines utility skills (`/rdd-conform`, `/rdd-about`, `/rdd-review`)
+**When** the `/rdd-review` skill file is read
+**Then** it follows the same structural conventions as other utility skills (frontmatter with name, description, allowed-tools)
+**And** it is not listed as a pipeline phase in the orchestrator's phase sequence
+
+## Feature: Two Review Operating Modes (ADR-044)
+
+### Scenario: Corpus-grounded mode detected when RDD artifacts exist
+**Given** a project directory containing `./docs/domain-model.md`, `./docs/decisions/`, and `./docs/scenarios.md`
+**When** the user invokes `/rdd-review`
+**Then** the skill offers corpus-grounded mode
+**And** it identifies relevant artifacts for the review context
+
+### Scenario: Context-reconstructive mode when no RDD artifacts exist
+**Given** a project directory with no RDD artifacts (no `./docs/domain-model.md`, no `./docs/decisions/`)
+**When** the user invokes `/rdd-review`
+**Then** the skill defaults to context-reconstructive mode
+**And** it prompts the reviewer for context breadcrumbs
+
+### Scenario: User can override detected mode
+**Given** the skill has detected corpus-grounded mode (RDD artifacts present)
+**When** the user requests context-reconstructive mode instead (e.g., reviewing a colleague's MR in a different repo)
+**Then** the skill switches to context-reconstructive mode
+**And** it prompts for context breadcrumbs instead of reading RDD artifacts
+
+### Scenario: Corpus-grounded review reads relevant artifacts for work package
+**Given** a project with RDD artifacts and a work package scope
+**When** the skill operates in corpus-grounded mode for a specific work package
+**Then** it reads the relevant ADRs, scenarios, domain model entries, and system design sections for that work package
+**And** it does not read the entire artifact corpus (it reads the relevant slice)
+
+### Scenario: Context-reconstructive review synthesizes orientation from breadcrumbs
+**Given** the reviewer has provided ticket URLs, MR links, and pasted discussion content
+**When** the skill operates in context-reconstructive mode
+**Then** it fetches and reads the provided sources using available tools
+**And** it produces an orientation summary: what the change is, why it exists, what constraints shaped it, and what assumptions appear to be in play
+
+### Scenario: Both modes converge on the same output type
+**Given** a review session in either corpus-grounded or context-reconstructive mode
+**When** the orientation phase completes
+**Then** the skill surfaces review questions grounded in the orientation context
+**And** mechanical findings are surfaced separately
+**And** no merge verdict is produced
+
+## Feature: Questions as Primary Review Output (ADR-045)
+
+### Scenario: Review surfaces questions, not findings
+**Given** the skill has completed review orientation (in either mode)
+**When** it produces review output
+**Then** the primary output is a set of questions grounded in the orientation context
+**And** questions are phrased to guide the reviewer's thinking (e.g., "This change touches a module the ADR marked as hard-to-reverse — was that intentional?")
+**And** the output does not include severity ratings (Critical/Important/Minor)
+
+### Scenario: Mechanical findings surfaced separately
+**Given** the skill has analyzed the code changes
+**When** it identifies clear, objective issues (missing type checks, circular dependencies, obvious bugs)
+**Then** these are surfaced as mechanical findings, explicitly labeled as such
+**And** they are presented separately from review questions
+**And** they do not carry severity classifications — the reviewer evaluates severity based on context
+
+### Scenario: No merge verdict produced
+**Given** a review session has completed
+**When** the skill presents its output
+**Then** it does not produce an approve/reject/merge verdict
+**And** it does not produce a "ready to merge?" assessment
+**And** the reviewer forms their own judgment
+
+### Scenario: Question depth adapts to available time
+**Given** the reviewer has indicated their available time budget
+**When** the skill produces review questions
+**Then** a short time budget (5 minutes) produces 1-2 high-priority questions focused on the most consequential aspect of the change
+**And** a longer time budget (30+ minutes) produces a fuller set of questions covering design intent, assumption validity, and decision rationale
+
+### Scenario: Skill asks about time budget
+**Given** the user invokes `/rdd-review`
+**When** the review session begins
+**Then** the skill asks the reviewer how much time they have or how deep they want to go
+**And** it adapts question depth accordingly (zone of proximal development)
+
+### Scenario: Review questions reference orientation context
+**Given** the skill has built orientation (from artifacts or from breadcrumbs)
+**When** it surfaces review questions
+**Then** each question references specific context that grounds it (e.g., "The ticket mentions X but the implementation does Y" or "ADR-NNN decided Z but this code appears to diverge")
+**And** questions are not generic (not "is error handling adequate?" but specific to the change's context)
+
+## Feature: Code Review Integration with Build Stewardship (ADR-046)
+
+### Scenario: Build stewardship includes review callout
+**Given** the `/rdd-build` skill has completed a Tier 1 stewardship check at a scenario group boundary
+**When** the stewardship results are presented to the user
+**Then** the skill includes a callout: the user may invoke `/rdd-review` for epistemic review of this work package
+
+### Scenario: Review during build reads work package context
+**Given** the user invokes `/rdd-review` during build, after a stewardship check
+**When** the review skill activates in corpus-grounded mode
+**Then** it reads the current work package's scenarios, relevant ADRs, and domain model
+**And** it does not duplicate what stewardship already checked (architectural conformance)
+**And** it surfaces questions about design intent, assumption validity, and decision rationale
+
+### Scenario: Review during build may produce review commits
+**Given** a review during build surfaces an issue that needs fixing
+**When** the reviewer decides to address the issue
+**Then** the fix follows the same commit discipline as the rest of build (structure vs. behavior separation)
+**And** the commit is a review commit — a change driven by what the review uncovered
+
+### Scenario: Review and stewardship are independently invocable
+**Given** the build phase stewardship checks exist independently of the review skill
+**When** the user wants stewardship without review, or review without stewardship
+**Then** each can be invoked independently — stewardship runs as part of build regardless of review, and review can be invoked at any time regardless of stewardship
+
+## Feature: Collaborative Context-Gathering (ADR-047)
+
+### Scenario: Context-reconstructive review begins with breadcrumb prompt
+**Given** the skill is operating in context-reconstructive mode
+**When** the review session begins
+**Then** the skill prompts: "What context do I need? Share ticket URLs, MR links, relevant docs, or paste discussion threads."
+
+### Scenario: Agent fetches and reads provided sources
+**Given** the reviewer has provided a ticket URL and an MR link
+**When** the skill processes the breadcrumbs
+**Then** it attempts to fetch the ticket content using available tools (CLI, MCP, or asks the reviewer to paste)
+**And** it reads the MR diff and description
+**And** it does not fail if a specific tool is unavailable — it asks the reviewer to paste the content instead
+
+### Scenario: Agent synthesizes orientation from gathered context
+**Given** the agent has fetched and read the provided sources
+**When** it produces the orientation summary
+**Then** the summary covers: what the change is, why it exists, what constraints shaped the approach, and what assumptions appear to be in play
+**And** the summary is concise (not a full report — enough to ground review questions)
+
+### Scenario: Reviewer validates or corrects orientation
+**Given** the agent has produced an orientation summary
+**When** it presents the summary to the reviewer
+**Then** it asks: "Does this capture the context? What would you adjust or add?"
+**And** the reviewer can correct, extend, or confirm the orientation before questions are surfaced
+**And** this validation step is a grounding move — it ensures orientation reflects reality, not just the agent's interpretation
+
+### Scenario: Graceful degradation when tools unavailable
+**Given** the reviewer provides a ticket URL but the agent has no CLI tool or MCP service to fetch it
+**When** the agent cannot access the URL
+**Then** it asks the reviewer to paste the ticket content directly
+**And** the review process continues with the pasted content
+**And** no error or failure state is produced
+
+## Feature: Review Success Criterion
+
+### Scenario: Reviewer can discuss changes with informed judgment
+**Given** a review session has completed (in either mode)
+**When** the reviewer has engaged with the review questions
+**Then** the reviewer should be able to discuss the code changes without AI assistance
+**And** this discussion should include: what changed, why, what the tradeoffs are, and the reviewer's assessment
+**And** this is the Feynman test applied to code review — if the reviewer can't explain it, the review didn't produce understanding
+
+### Scenario: Review does not produce understanding without reviewer engagement
+**Given** a review session produces questions
+**When** the reviewer dismisses the questions without engaging (e.g., "looks fine", "approved")
+**Then** the skill acknowledges the response but notes that the review questions are designed to build understanding
+**And** it does not auto-approve or produce a verdict on the reviewer's behalf
+**And** it respects the reviewer's choice — the skill scaffolds, it does not compel
+
+## Feature: Test Quality Evaluation
+
+### Scenario: Review evaluates test effectiveness, not just test existence
+**Given** the skill has oriented to the code changes and their associated tests
+**When** it generates review questions about tests
+**Then** questions evaluate whether tests actually catch defects, not just whether tests exist
+**And** questions apply a mutation testing lens: "If this operator were changed, would a test fail?" or "If this return value were altered, which test catches it?"
+**And** questions do not stop at code coverage metrics — coverage measures execution, not effectiveness
+
+### Scenario: Review surfaces weak assertions
+**Given** the code changes include tests with assertions
+**When** the skill analyzes test quality
+**Then** it surfaces observation→question items where assertions appear weak (e.g., "This test asserts the function returns without error but does not check the return value — what is it actually verifying?")
+**And** it distinguishes between tests that verify behavior and tests that verify execution
+
+### Scenario: Review considers boundary and edge case coverage
+**Given** the code changes include conditional logic or boundary conditions
+**When** the skill generates test-related questions
+**Then** it asks about boundary cases the tests may not cover (e.g., "The tests cover the happy path with valid input — what happens at the boundaries?")
+**And** it frames these as questions for the reviewer's judgment, not as findings
+
+### Scenario: Static analysis concerns surfaced as mechanical findings
+**Given** the code changes contain issues a linter or static analysis tool would catch (unused imports, unreachable code, style violations)
+**When** the skill categorizes these
+**Then** they are surfaced as mechanical findings, not questions
+**And** the skill does not attempt to replicate a linter's judgment through LLM analysis — it flags what automated tools would catch and recommends running them if not already in the CI pipeline
+
+## Feature: Review Anti-Pattern Detection
+
+### Scenario: Skill does not enable reviewer-as-passthrough
+**Given** the review skill has produced questions and mechanical findings
+**When** the skill presents its output
+**Then** it does not produce pre-written review comments for the reviewer to post on the MR
+**And** it does not produce a summary the reviewer could paste as their own review
+**And** the output is for the reviewer's understanding, not for forwarding
+
+### Scenario: Skill does not produce AI-authored MR comments
+**Given** the review session is complete
+**When** the reviewer asks the skill to write review comments for them
+**Then** the skill declines — it can help the reviewer formulate their thoughts, but the comments should be in the reviewer's own words
+**And** it explains: "The review is yours to give — I can help you think about what to say, but the comments should reflect your understanding"

@@ -27,6 +27,7 @@ $ARGUMENTS
 | `/rdd-graduate` | Fold RDD knowledge into native docs, archive process artifacts, stamp with plugin version | Completed cycle (terminal phase or utility) |
 | `/rdd-conform` | Conformance audit — artifact template alignment, drift detection, remediation | Artifact corpus + skill files (utility, invoked as needed) |
 | `/rdd-about` | Version check, methodology overview, adaptive deep-dive into how RDD works | Any time (utility, informational) |
+| `/rdd-review` | Code review — scaffolds reviewer understanding through question-driven orientation | Code changes (utility, during build stewardship or standalone) |
 | `/rdd-lit-review` | Systematic literature search and synthesis | Topic (used within `/rdd-research`) |
 
 ---

@@ -399,6 +399,8 @@ Present a brief conformance summary:
 **If all clear** → continue to next scenario group.
 **If flags** → can the issue be resolved with a small structural tidying (extract, move, rename)? If yes, tidy as a `refactor:` commit and continue. If no, escalate to Tier 2.
 
+> **Epistemic review available.** For deeper understanding of the work package beyond architectural conformance — design intent, assumption validity, decision rationale, test quality — invoke `/rdd-review`. The review skill complements stewardship: stewardship checks architectural drift, review builds your understanding of what was built and why.
+
 ### Tier 2: Deep Architecture Review
 
 Triggered when Tier 1 flags can't be resolved with simple tidying — the code is drifting from the design in a way that suggests the design or the code needs non-trivial adjustment.

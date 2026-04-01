@@ -1,139 +1,125 @@
 # Roadmap: Pedagogical RDD
 
-**Generated:** 2026-03-30
-**Derived from:** System Design v8.0, ADRs 040-042
+**Generated:** 2026-03-31
+**Derived from:** System Design v9.0, ADRs 043-047
 
 ## Work Packages
 
-### WP-A: AID Cycle in All Gate Sections (ADR-040)
+### WP-A: Review Skill File (`skills/review/SKILL.md`)
 
-**Objective:** Replace fixed-template epistemic gate prompts with the Attend-Interpret-Decide cycle across all 6 phase skill files. This is the core change — it makes gates engagement-sensitive.
+**Objective:** Create the code-review utility skill with both operating modes, question-driven output, and time-budget adaptation.
 
 **Changes:**
-- Amend `skills/research/SKILL.md` EPISTEMIC GATE section: replace 3 fixed prompts with AID cycle protocol (attend to research-phase signals, interpret, select move with phase-appropriate examples)
-- Amend `skills/discover/SKILL.md` EPISTEMIC GATE section: replace 5 fixed prompts with AID cycle
-- Amend `skills/model/SKILL.md` EPISTEMIC GATE section: replace 2 fixed prompts with AID cycle
-- Amend `skills/decide/SKILL.md` EPISTEMIC GATE section: replace 2 fixed prompts with AID cycle
-- Amend `skills/architect/SKILL.md` EPISTEMIC GATE section: replace 3 fixed prompts with AID cycle
-- Amend `skills/build/SKILL.md` EPISTEMIC GATE section: replace 2 fixed prompts with AID cycle
-- Add supersession note to `docs/decisions/adr-003-phase-specific-epistemic-act-assignments.md` (ADR-003's fixed-assignment table becomes a candidate prompt library, not a fixed selection)
+- Create `skills/review/SKILL.md` with frontmatter (name: rdd-review, description, allowed-tools: Read, Grep, Glob, Bash, WebFetch, WebSearch)
+- Implement mode detection: scan for RDD artifacts, offer corpus-grounded or context-reconstructive
+- Implement corpus-grounded mode: read relevant artifact slice (ADRs, scenarios, domain model) for work package scope, synthesize orientation, surface questions
+- Implement context-reconstructive mode: collaborative context-gathering protocol (prompt for breadcrumbs, fetch/read, synthesize orientation, validate with reviewer, re-synthesize on substantial correction)
+- Implement three-tier output: pure mechanical findings, observation→question, pure questions
+- Implement time-budget adaptation: ask reviewer about available time, scale question depth accordingly
+- Implement reviewer autonomy safeguards: no merge verdict, no severity ratings, no pre-written comments, decline to write comments for reviewer
+- Include utility skill preamble (not a pipeline phase, no epistemic gate section, no cycle position)
 
-**Scenarios covered:** 11 ADR-040 scenarios: AID for all 5 engagement levels, earned fatigue vs. opacity distinction, contingent shift within gates, anti-sycophancy, Inversion Principle via reframing, AID as pragmatic action (Invariant 3), agent attends before prompt
+**Scenarios covered:** All Feature scenarios for ADRs 043, 044, 045, 047; Review Success Criterion; Review Anti-Pattern Detection
 
 **Dependencies:** None
 
 ---
 
-### WP-B: Reflection Time Naming (ADR-041)
+### WP-B: Build Skill Stewardship Callout
 
-**Objective:** Apply the dual-register naming convention — "reflection time" in user-facing dialogue, "epistemic gate" in research/design vocabulary.
+**Objective:** Add the review integration callout to the build skill's stewardship section.
 
 **Changes:**
-- Amend all 6 phase skill EPISTEMIC GATE sections: add "Before moving on — reflection time." as the user-facing introduction preceding the AID prompt
-- Amend `README.md`: replace "epistemic gates" with "reflection time" in user-facing sentences (lines 71, 91, 93)
-- Amend `docs/ORIENTATION.md`: replace "Epistemic gate protocol" with "Reflection time protocol" in current-state section (line 80)
-- Internal section headings (`### EPISTEMIC GATE`) may remain as design-vocabulary navigation
+- Amend `skills/build/SKILL.md` stewardship section: after Tier 1 check description, add callout noting the user may invoke `/rdd-review` for epistemic review of the work package
+- The callout is informational — build continues with or without review
 
-**Scenarios covered:** 3 ADR-041 scenarios: agent introduces gates as "reflection time", skill files use dual register, domain model retains primary concept
+**Scenarios covered:** All Feature scenarios for ADR-046 (build stewardship integration)
 
-**Dependencies:** WP-A (implied logic — simpler to add naming after AID sections are rewritten, but could be done in parallel if both builders coordinate)
+**Dependencies:** WP-A (implied logic — the callout references a skill that should exist, but the build skill functions without it)
 
 ---
 
-### WP-C: Orchestrator Gate Protocol Update
+### WP-C: Orchestrator Integration
 
-**Objective:** Update the orchestrator's gate protocol description to reflect the AID cycle, amended Invariant 4, and pace regulator framing.
+**Objective:** Register the review skill in the orchestrator's Available Skills table.
 
 **Changes:**
-- Amend `skills/rdd/SKILL.md` Stage Gates section: replace "present 2-3 exploratory epistemic act prompts" with AID cycle description (attend, interpret, decide with five pedagogical moves)
-- Remove "5-10 minutes per gate" from orchestrator text (Invariant 4 amended)
-- Add pace regulator framing to deep work tool section
-- Add `/rdd-about` to Available Skills table
-- Add optional `/rdd-about` mention in ARTIFACT LOCATION "no artifacts found" branch
-- Amend `hooks/scripts/epistemic-gate`: recognize AID adaptive prompts as valid gate behavior
+- Amend `skills/rdd/SKILL.md` Available Skills table: add `/rdd-review` with description "Code review utility — scaffolds reviewer understanding through question-driven orientation"
+- Ensure plugin discovers the new skill directory
 
-**Scenarios covered:** 3 conformance scenarios (orchestrator reflects AID, hook recognizes AID, orchestrator offers /rdd-about to new users)
+**Scenarios covered:** Review skill listed in orchestrator's Available Skills (integration test)
 
-**Dependencies:** WP-A (implied logic — orchestrator describes the protocol that phase skills implement)
+**Dependencies:** WP-A (implied logic — the skill should exist before being listed, but the orchestrator entry is just a text addition)
 
 ---
 
-### WP-D: /rdd-about Utility Skill (ADR-042)
+### WP-D: Verification Pass
 
-**Objective:** Create the self-explanation utility for new users and version awareness.
-
-**Changes:**
-- Create `skills/about/SKILL.md` with: version reporting (reads plugin manifest), methodology overview (user language), depth-calibrated elaboration
-- Ensure `package.json` (or equivalent) version field is accessible
-
-**Scenarios covered:** 5 ADR-042 scenarios: version reporting, methodology overview, depth calibration, orchestrator offers to new users, no artifacts produced
-
-**Dependencies:** None (genuinely independent — can be built at any time)
-
----
-
-### WP-E: Verification Pass
-
-**Objective:** Verify all 20 new scenarios and updated fitness criteria.
+**Objective:** Verify all new scenarios and fitness criteria.
 
 **Changes:**
-- Verify all ADR-040 scenarios (11) against phase skills
-- Verify all ADR-041 scenarios (3) against skill files, README, ORIENTATION.md
-- Verify all ADR-042 scenarios (5) against About Skill and orchestrator
-- Verify conformance scenario: orchestrator reflects AID
-- Verify Invariant 4 enforcement test: no "5-10 minutes" references remain
-- Verify plugin discovers 11 skills (was 10)
+- Verify all 36 code-review scenarios against skill files
+- Verify fitness criteria: no merge verdict language, both modes present, three-tier output specified, build callout exists
+- Verify plugin discovers 12 skills (was 11)
+- Verify skill reads artifacts correctly in corpus-grounded mode
 
-**Scenarios covered:** All 20 new scenarios (verification)
+**Scenarios covered:** All 36 scenarios (verification)
 
-**Dependencies:** WP-A (hard), WP-B (hard), WP-C (hard), WP-D (hard)
+**Dependencies:** WP-A (hard), WP-B (hard), WP-C (hard)
 
 ## Dependency Graph
 
 ```
-WP-A (AID Cycle)          WP-D (/rdd-about)
-       │                        │
-  implied logic            independent
-       │                        │
-WP-B (Reflection Time)         │
-       │                        │
-  implied logic                 │
-       │                        │
-WP-C (Orchestrator)            │
+WP-A (Review Skill)
+       │
+  implied logic
+       │
+WP-B (Build Callout)    WP-C (Orchestrator)
        │                        │
        └──── hard dependency ───┘
                     │
-             WP-E (Verification)
+             WP-D (Verification)
 ```
 
 **Classification key:**
-- **Hard dependency:** WP-E cannot run until A, B, C, D are complete — verification requires all components
-- **Implied logic:** WP-B is simpler after WP-A (naming applies to rewritten sections); WP-C is simpler after WP-A (orchestrator describes the protocol skills implement)
-- **Independent:** WP-D (/rdd-about) has no dependency on the gate changes — build any time
+- **Hard dependency:** WP-D cannot run until A, B, C are complete — verification requires all components
+- **Implied logic:** WP-B and WP-C reference the review skill that WP-A creates, but both are text additions that could be written before WP-A
+- **Open choice:** WP-B and WP-C are independent of each other — build either first
 
 ## Transition States
 
-### TS-1: Adaptive Gates (after WP-A)
+### TS-1: Review Skill Exists (after WP-A)
 
-All phase skills use the AID cycle. Gates are engagement-sensitive. The system is functionally complete for the core change — the naming and orchestrator updates are polish. A user running any phase will experience adaptive gates immediately.
+The review skill is invocable standalone. Users can run `/rdd-review` for any code review — both corpus-grounded and context-reconstructive modes work. The skill is functionally complete for standalone use. Build integration and orchestrator listing are not yet in place, so the user must know to invoke it directly.
 
-### TS-2: Full Adaptive + Named (after WP-A + WP-B + WP-C)
+### TS-2: Fully Integrated (after WP-A + WP-B + WP-C)
 
-Gates are adaptive, user-facing language is "reflection time", orchestrator protocol is updated, hook recognizes adaptive behavior. The system is coherent for existing users.
-
-### TS-3: Shareable (after all WPs)
-
-`/rdd-about` exists for new users. Version awareness is available. README and ORIENTATION.md use updated language. The plugin is ready for broader sharing.
+The review skill is listed in the orchestrator, the build skill suggests it at stewardship boundaries, and standalone invocation works. The skill is discoverable and integrated.
 
 ## Open Decision Points
 
-- **AID section structure:** Each skill's EPISTEMIC GATE section needs to describe what engagement signals to attend to *for that specific phase*. The builder decides the phase-specific signal lists (e.g., RESEARCH: did the user ask follow-up questions during research? ARCHITECT: did the user connect architecture to their mental model?).
-- **ADR-003 prompts as candidate library:** The superseded ADR-003's prompt table (self-explanation at RESEARCH, retrieval at MODEL, etc.) becomes a reference library the AID cycle can draw from — not a fixed assignment. The builder decides how to reference this library in the rewritten sections.
-- **README scope of changes:** The conformance scan identifies 3 user-facing "epistemic gate" references in README. The builder decides whether to do a broader terminology pass or limit changes to the flagged lines.
+- **Allowed tools for review skill:** The skill needs `Read`, `Grep`, `Glob` for artifact reading. It may also benefit from `Bash` (for `gh`/`glab` CLI), `WebFetch` (for ticket URLs), and `WebSearch` (for doc lookup). The builder decides the minimal tool set that supports both modes.
+- **Build skill callout placement:** The stewardship section has Tier 1 and Tier 2 checks. The callout could go after Tier 1 (where most reviews would trigger) or after the full stewardship reflexive loop. The builder decides based on flow.
 
 ---
 
 ## Completed Work Log
+
+### Cycle 5: Adaptive Epistemic Gates
+
+**Derived from:** ADRs 040-042, Essay 009
+
+| WP | Title | Commit | Status |
+|----|-------|--------|--------|
+| A | AID Cycle in All Gate Sections | — | Pending |
+| B | Reflection Time Naming | — | Pending |
+| C | Orchestrator Gate Protocol Update | — | Pending |
+| D | /rdd-about Utility Skill | — | Pending |
+| E | Verification Pass | — | Pending |
+
+**Note:** Cycle 5 work packages are carried forward from the prior roadmap. They are independent of Cycle 6 (code review) and can be built in any order relative to Cycle 6.
+
+---
 
 ### Cycle 4: Play and Interaction Specification
 
