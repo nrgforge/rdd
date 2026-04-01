@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4.1
+
+Post-release refinements to `/rdd-review` based on first real-world use.
+
+- **Facilitated walkthrough** — for large changes, the skill walks through each key area one at a time with real code examples, allowing discussion and comprehension before moving on
+- **Persistent review notes** — accumulates the reviewer's observations in a structured file across sessions; reviewer chooses location (RDD corpus or custom path)
+- **Articulation step** — after walkthrough, presents notes back one at a time; reviewer phrases each MR comment in their own words; offers closing summary draft for reviewer to edit and own
+- **No auto-formatting** — comments never get machine-generated labels (NIT:, SUGGESTION:, etc.); the reviewer's voice stays human
+
 ## v0.4.0
 
 Code review as epistemic practice.
