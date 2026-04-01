@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.2
+
+Continued `/rdd-review` refinements from real-world use.
+
+- **Changeset tree view** — orientation starts with a structural tree of changed files; adapts to scale (individual files for small changes, directory-level summary with cluster highlighting for 20+ files, expand on demand)
+- **Codebase context in walkthrough** — each walkthrough item locates code in the repo structure (file path, neighboring files, module ownership, call relationships); the reviewer leaves knowing more about the codebase, not just the diff
+- **Existing MR comments** — fetches other reviewers' comments as part of context-gathering; summarizes what's been raised, resolved, and left open so the reviewer builds on existing discussion
+
 ## v0.4.1
 
 Post-release refinements to `/rdd-review` based on first real-world use.
