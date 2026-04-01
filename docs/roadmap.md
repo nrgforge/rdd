@@ -5,67 +5,7 @@
 
 ## Work Packages
 
-### WP-A: Review Skill File (`skills/review/SKILL.md`)
-
-**Objective:** Create the code-review utility skill with both operating modes, question-driven output, and time-budget adaptation.
-
-**Changes:**
-- Create `skills/review/SKILL.md` with frontmatter (name: rdd-review, description, allowed-tools: Read, Grep, Glob, Bash, WebFetch, WebSearch)
-- Implement mode detection: scan for RDD artifacts, offer corpus-grounded or context-reconstructive
-- Implement corpus-grounded mode: read relevant artifact slice (ADRs, scenarios, domain model) for work package scope, synthesize orientation, surface questions
-- Implement context-reconstructive mode: collaborative context-gathering protocol (prompt for breadcrumbs, fetch/read, synthesize orientation, validate with reviewer, re-synthesize on substantial correction)
-- Implement three-tier output: pure mechanical findings, observation→question, pure questions
-- Implement time-budget adaptation: ask reviewer about available time, scale question depth accordingly
-- Implement reviewer autonomy safeguards: no merge verdict, no severity ratings, no pre-written comments, decline to write comments for reviewer
-- Include utility skill preamble (not a pipeline phase, no epistemic gate section, no cycle position)
-
-**Scenarios covered:** All Feature scenarios for ADRs 043, 044, 045, 047; Review Success Criterion; Review Anti-Pattern Detection
-
-**Dependencies:** None
-
----
-
-### WP-B: Build Skill Stewardship Callout
-
-**Objective:** Add the review integration callout to the build skill's stewardship section.
-
-**Changes:**
-- Amend `skills/build/SKILL.md` stewardship section: after Tier 1 check description, add callout noting the user may invoke `/rdd-review` for epistemic review of the work package
-- The callout is informational — build continues with or without review
-
-**Scenarios covered:** All Feature scenarios for ADR-046 (build stewardship integration)
-
-**Dependencies:** WP-A (implied logic — the callout references a skill that should exist, but the build skill functions without it)
-
----
-
-### WP-C: Orchestrator Integration
-
-**Objective:** Register the review skill in the orchestrator's Available Skills table.
-
-**Changes:**
-- Amend `skills/rdd/SKILL.md` Available Skills table: add `/rdd-review` with description "Code review utility — scaffolds reviewer understanding through question-driven orientation"
-- Ensure plugin discovers the new skill directory
-
-**Scenarios covered:** Review skill listed in orchestrator's Available Skills (integration test)
-
-**Dependencies:** WP-A (implied logic — the skill should exist before being listed, but the orchestrator entry is just a text addition)
-
----
-
-### WP-D: Verification Pass
-
-**Objective:** Verify all new scenarios and fitness criteria.
-
-**Changes:**
-- Verify all 36 code-review scenarios against skill files
-- Verify fitness criteria: no merge verdict language, both modes present, three-tier output specified, build callout exists
-- Verify plugin discovers 12 skills (was 11)
-- Verify skill reads artifacts correctly in corpus-grounded mode
-
-**Scenarios covered:** All 36 scenarios (verification)
-
-**Dependencies:** WP-A (hard), WP-B (hard), WP-C (hard)
+*No active work packages — Cycle 6 complete.*
 
 ## Dependency Graph
 
@@ -104,6 +44,40 @@ The review skill is listed in the orchestrator, the build skill suggests it at s
 ---
 
 ## Completed Work Log
+
+### Cycle 6: Code Review Utility Skill
+
+**Derived from:** ADRs 043-047, Essay 010
+
+| WP | Title | Commit | Status |
+|----|-------|--------|--------|
+| A | Review Skill File (`skills/review/SKILL.md`) | d9a9937 | Complete |
+| B | Build Skill Stewardship Callout | d9a9937 | Complete |
+| C | Orchestrator Integration | d9a9937 | Complete |
+| D | Verification Pass | d9a9937 | Complete |
+
+**Summary:**
+- Created `/rdd-review` utility skill with two operating modes (corpus-grounded, context-reconstructive), three-tier question-driven output, test quality evaluation with mutation testing lens, time-budget adaptation (ZPD), and reviewer autonomy safeguards
+- Added stewardship callout in build skill referencing `/rdd-review` after Tier 1 checks
+- Added `/rdd-review` to orchestrator Available Skills table
+- All 40 scenarios verified, 5 fitness criteria checked, plugin discovers 13 skills
+- Full RDD cycle: research (Essay 010, citation/argument audited) → discover (product discovery updated) → model (14 concepts added, Amendment 14) → decide (5 ADRs, 40 scenarios, interaction specs) → architect (system design v9.0, roadmap) → build (skill file + integration)
+
+**Dependency graph (as-built):**
+```
+WP-A (Review Skill)
+       │
+  implied logic
+       │
+WP-B (Build Callout)    WP-C (Orchestrator)
+       open choice              open choice
+              │                        │
+              └──── hard dependency ───┘
+                         │
+                  WP-D (Verification)
+```
+
+---
 
 ### Cycle 5: Adaptive Epistemic Gates
 
