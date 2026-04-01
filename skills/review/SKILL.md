@@ -143,8 +143,9 @@ For large or complex changes, do not jump directly from orientation to a batch o
 
 2. **Present one item at a time.** For each item:
    - Name the concept or change area
-   - Show the relevant code (actual lines from the diff, not summaries)
-   - Explain what the code does and how it connects to the broader change
+   - **Locate it in the codebase** — show the file path and where this code sits in the repo structure. Connect it to neighboring files, the module it belongs to, and what calls it or what it calls. The reviewer should leave the walkthrough knowing more about how the codebase is organized, not just what this diff contains.
+   - **Show the relevant code** — actual lines from the diff, not summaries. Include enough surrounding context that the reviewer can see how the change fits into the file. Use file:line references.
+   - Explain what the code does, why it's structured this way, and how it connects to the broader change
    - Surface the question(s) this item raises
    - Wait for the reviewer to discuss before proceeding
 
