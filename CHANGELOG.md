@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.5.0
+
+AI in the loop — not human in the loop. Composable skill family for everyday building.
+
+### Cycle 7: Composable Skill Family
+- **`/rdd-debug` skill (NEW)** — hypothesis-trace-understand-fix cycle; names the misunderstanding before fixing; standalone or seamless mode shift from build
+- **`/rdd-refactor` skill (NEW)** — Three-Level Refactor (smells → patterns → methodology) with AI Smell Taxonomy (novel/exacerbated/accelerated tiers); AI hygiene prompts for novel patterns separate from diagnostic detection; standalone or mode shift from build
+- **`/rdd-build` rewritten** — outer loop of the composable skill family; context-reconstructive mode (orientation from tickets, codebase, breadcrumbs — no RDD corpus required); work decomposition with heuristic dependency classification; session artifacts (`session/` directory); time budget mechanism (deep/standard/focused); seamless mode shifts to debug, refactor, and review
+- **Context Gathering protocol** — shared five-step orientation protocol (detect mode, prompt for breadcrumbs, fetch, synthesize, validate) defined in orchestrator, implemented by all four composable skills with per-skill adaptation
+- **Mode-shift composition** — build composes debug/refactor/review as seamless lens changes, not dispatched sub-workflows; skill boundaries invisible inside the build flow; the developer stays in the thread of understanding
+- **"AI in the loop" framing** — RDD inverts the "human in the loop" model; the human builds understanding, the AI is in their loop serving that journey
+- **"Reflection-driven development"** — the "research" in RDD is not just upfront investigation but the ongoing practice of reflecting, looping back, and capturing what the practitioner thinks
+- **`/rdd-review` updated** — MODE SHIFT FROM BUILD section; Context Gathering protocol reference; ADR-054 supersedes ADR-046 callout model
+- **`/rdd-about` updated** — composable skill family overview; AI in the loop and reflection-driven framing
+- **Essay 011** — "Building with Understanding: Context-Reconstructive Development as Epistemic Practice" (citation-audited, argument-audited); AI Smell Taxonomy (three tiers), productive resistance framework, five orientation questions, composable skill architecture
+- **15 skills** (was 13), **54 ADRs** (was 47), **~280 scenarios** (was 288), **11 essays** (was 10)
+
 ## v0.4.2
 
 Continued `/rdd-review` refinements from real-world use.
