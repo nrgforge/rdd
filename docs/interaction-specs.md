@@ -72,3 +72,85 @@
 ### Task: Respect reviewer autonomy
 
 **Interaction mechanics:** If the reviewer dismisses questions without engaging, the agent notes that the questions are designed to build understanding but does not compel engagement. If the reviewer asks the agent to write review comments for them, the agent declines — it can help the reviewer formulate thoughts, but the comments should be in the reviewer's own words. The agent scaffolds; the reviewer thinks.
+
+---
+
+## Stakeholder: Everyday Developer (using build skill)
+
+**Super-Objective:** "I want to actually understand what I built, not just have it work"
+
+### Task: Build a feature from a ticket (context-reconstructive mode)
+
+**Interaction mechanics:** The developer invokes `/rdd-build` and provides context: a ticket URL, a description of what needs to happen, or both. The skill detects no RDD artifact corpus and enters context-reconstructive mode. It asks for breadcrumbs — ticket, relevant docs, codebase pointers, discussion threads. It fetches and reads these, then synthesizes orientation answering the five Orientation Questions. It presents the orientation and work decomposition for validation. The developer corrects or confirms. The skill writes the work decomposition as a session artifact. It asks about available time. Then the build loop begins: one work package at a time, TDD (red → green → refactor). At natural boundaries, stewardship checks the work against the session artifact. At the end, the developer can explain what was built and why.
+
+### Task: Build a feature from a roadmap work package (pipeline mode)
+
+**Interaction mechanics:** The developer invokes `/rdd-build` within an RDD project with a full artifact corpus. The skill detects the corpus and enters pipeline mode. It reads the relevant work package from the roadmap, the associated scenarios, interaction specifications, domain model entries, and ADRs. It presents this as orientation. The developer validates. The build loop proceeds through the scenarios as specified, with TDD and stewardship against the full artifact trail. The developer can compose the deeper modes of debug and refactor when triggered.
+
+### Task: Build under time pressure (focused mode)
+
+**Interaction mechanics:** The developer invokes `/rdd-build` and indicates limited time (e.g., "I have 10 minutes"). The skill adapts: essential orientation (the most consequential answer from each Orientation Question), a single work item (the highest-priority package), TDD without formal stewardship. Orientation validation still happens — "Does this capture the situation?" — but the ceremony is minimal. The developer completes one focused piece of work with understanding rather than rushing through multiple items without it.
+
+---
+
+## Stakeholder: Everyday Developer (using debug skill)
+
+**Super-Objective:** "When I debug, I want to understand *why* it broke, not just get a fix"
+
+### Task: Debug a production bug (standalone)
+
+**Interaction mechanics:** The developer invokes `/rdd-debug` with a bug description — error logs, reproduction steps, the expected vs actual behavior. The skill runs Context Gathering: it reads the relevant code, any available documentation, and the developer's description. It synthesizes orientation focused on the expected-vs-actual divergence. The developer validates. Then the hypothesis-trace-understand-fix cycle begins: the skill asks "What do you think the mental model was wrong about?", guides the developer through tracing data flow to the divergence point, names the misunderstanding (not just the fix), and helps write a test encoding the corrected understanding. The fix follows. The developer walks away knowing what was wrong and why — not just that it's fixed.
+
+### Task: Debug an unexpected failure during build
+
+**Interaction mechanics:** During a build session, a test fails unexpectedly — not the red-phase failure the developer wrote, but something else. The build skill suggests invoking debug. The developer confirms. The debug skill inherits the build session's orientation and current work package. It does not re-ask for context. It guides through the hypothesis-trace cycle within the build's existing context. When the bug is understood and fixed (with a test), control returns to the build loop. The interruption was brief but the understanding was real.
+
+---
+
+## Stakeholder: Everyday Developer (using refactor skill)
+
+**Super-Objective:** "When I refactor, I want to understand the code well enough to make it genuinely better"
+
+### Task: Refactor a code area (standalone)
+
+**Interaction mechanics:** The developer invokes `/rdd-refactor` on a code area they want to improve. The skill runs Context Gathering: reads the code area, surrounding context, and any available architectural documentation. It synthesizes orientation focused on the code's current structure, its role in the broader system, and the architectural intent. The developer validates. Then the Three-Level Refactor begins: level 1 (Smells) — diagnose classical and AI-exacerbated smells, run AI hygiene prompts; level 2 (Patterns) — select techniques from the catalog, considering inverse pairs; level 3 (Methodology) — check against architectural intent. Each refactoring is committed as a `refactor:` commit. Tests pass before and after.
+
+### Task: Refactor after green during build
+
+**Interaction mechanics:** During a build session, the green phase is complete and the developer (or agent) notices a smell. The build skill suggests invoking refactor. The developer confirms. The refactor skill inherits the build session's orientation. It runs the Three-Level Refactor on the code just written or modified, checking against the build session's architectural intent. The refactoring is committed separately from the behavior change. Control returns to the build loop.
+
+### Task: Consume a codebase audit's findings
+
+**Interaction mechanics:** A codebase audit has been performed, producing prioritized findings. The developer invokes `/rdd-refactor` with the audit as input. The skill reads the audit findings and uses them as the level 1 diagnostic — the smells are already identified and prioritized. The developer selects which findings to address. The skill guides through levels 2 and 3 for each selected finding. This is the remediation arm the audit currently lacks.
+
+---
+
+## Stakeholder: Everyday Developer (skill composition)
+
+**Super-Objective:** "I have a ticket — I want to break it into work packages that I understand, build with TDD, and check my work as I go"
+
+### Task: Complete a full build session with seamless mode shifts
+
+**Interaction mechanics:** The developer invokes `/rdd-build` with a ticket. Context Gathering produces orientation and work decomposition. The developer validates both. The build loop begins. During the first work package, an unexpected test failure shifts the flow into debug mode — the developer traces and fixes it within the same conversation. During the second work package, after green, a smell shifts the flow into refactor mode — the developer cleans it up. At the scenario group boundary, the flow shifts into review mode — the developer engages with the review questions. Each mode shift is seamless: the context carries through, no re-orientation occurs, the developer stays in the thread of understanding. The developer completes the ticket having understood every piece of what was built.
+
+### Task: Handle a mode shift the developer wants to skip
+
+**Interaction mechanics:** During a build session, the build skill identifies a smell after green and begins shifting toward refactor. The developer says they want to skip it and move on. The build flow continues without the refactoring. The developer controls the workflow — mode shifts are the skill's best judgment about where understanding matters, not mandates.
+
+---
+
+## Stakeholder: AI Agent (Orchestrator, executing composable skills)
+
+**Super-Objective:** "Scaffold the developer's understanding without substituting for their judgment"
+
+### Task: Run Context Gathering protocol
+
+**Interaction mechanics:** The agent detects whether an RDD artifact corpus exists. In pipeline mode, it reads relevant artifacts. In context-reconstructive mode, it prompts for breadcrumbs, fetches using available tools (CLI, MCP, or reading pasted content), and synthesizes orientation answering the five Orientation Questions. In either mode, it presents the orientation for user validation. It adapts step 4 (synthesis) to the invoking skill's needs: build emphasizes work decomposition, debug emphasizes expected-vs-actual divergence, refactor emphasizes structural health.
+
+### Task: Manage seamless mode shifts during build
+
+**Interaction mechanics:** During the build loop, the agent observes test outcomes and code quality signals. When it detects an unexpected failure, the flow shifts into debug mode. When it detects a smell after green, the flow shifts into refactor mode. At scenario group boundaries, the flow shifts into review mode. These shifts are seamless — the context carries through, the conversation is unbroken, and the developer stays in the thread of understanding. The developer can skip or redirect any mode shift. When a mode resolves, the build flow resumes at the point where the shift occurred.
+
+### Task: Write and manage session artifacts
+
+**Interaction mechanics:** In context-reconstructive mode, the agent writes validated facsimiles (work decomposition, orientation summary) to a `session/` directory as markdown files with `session-artifact: true` frontmatter. During stewardship, it reads these files to check conformance. It does not automatically clean up session artifacts after the session — it leaves that decision to the developer.

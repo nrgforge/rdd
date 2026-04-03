@@ -1,49 +1,120 @@
 # Roadmap: Pedagogical RDD
 
-**Generated:** 2026-03-31
-**Derived from:** System Design v9.0, ADRs 043-047
+**Generated:** 2026-04-02
+**Derived from:** System Design v10.0, ADRs 048-054
 
 ## Work Packages
 
-*No active work packages — Cycle 6 complete.*
+*No active work packages — Cycle 7 complete.*
 
 ## Dependency Graph
 
 ```
-WP-A (Review Skill)
+WP-A (Protocol + Conformance Fixes)
        │
-  implied logic
+  hard dependency
        │
-WP-B (Build Callout)    WP-C (Orchestrator)
-       │                        │
-       └──── hard dependency ───┘
+       ├──────────────────────────┐
+       │                          │
+WP-B (Debug Skill)        WP-C (Refactor Skill)
+  open choice                 open choice
+       │                          │
+       └──── implied logic ───────┘
                     │
-             WP-D (Verification)
+             WP-D (Build Rewrite)
+                    │
+               hard dependency
+                    │
+             WP-E (Orchestrator)
+                    │
+               hard dependency
+                    │
+             WP-F (Verification)
 ```
 
 **Classification key:**
-- **Hard dependency:** WP-D cannot run until A, B, C are complete — verification requires all components
-- **Implied logic:** WP-B and WP-C reference the review skill that WP-A creates, but both are text additions that could be written before WP-A
-- **Open choice:** WP-B and WP-C are independent of each other — build either first
+- **Hard dependency:** WP-B and WP-C need the protocol from WP-A. WP-E needs the skills to exist. WP-F needs everything.
+- **Implied logic:** WP-D is simpler to write after B and C exist (mode-shift descriptions can reference actual skill text), but the descriptions could be written from the ADRs alone.
+- **Open choice:** WP-B and WP-C are genuinely independent — build debug or refactor first, builder's choice.
 
 ## Transition States
 
-### TS-1: Review Skill Exists (after WP-A)
+### TS-1: Protocol Defined, Conformance Fixed (after WP-A)
 
-The review skill is invocable standalone. Users can run `/rdd-review` for any code review — both corpus-grounded and context-reconstructive modes work. The skill is functionally complete for standalone use. Build integration and orchestrator listing are not yet in place, so the user must know to invoke it directly.
+The Context Gathering protocol reference exists. The two standalone conformance violations (interaction-specs.md, /rdd-play) are fixed in the existing build skill. No new user-facing skills yet, but the foundation for all four is in place.
 
-### TS-2: Fully Integrated (after WP-A + WP-B + WP-C)
+### TS-2: Standalone Skills Available (after WP-A + WP-B and/or WP-C)
 
-The review skill is listed in the orchestrator, the build skill suggests it at stewardship boundaries, and standalone invocation works. The skill is discoverable and integrated.
+At least one new standalone skill is usable: `/rdd-debug` for debugging with epistemic care, `/rdd-refactor` for structured refactoring with AI smell awareness. Each operates in both modes (pipeline and context-reconstructive). The build skill is still monolithic — no mode-shift composition yet.
+
+### TS-3: Composable Build Functional (after WP-A + WP-B + WP-C + WP-D)
+
+The build skill is rewritten as the outer loop. Mode shifts to debug, refactor, and review work seamlessly. Context-reconstructive mode serves the Everyday Developer. Session artifacts survive context compression. The composable skill family is functionally complete, though not yet listed in the orchestrator.
+
+### TS-4: Fully Integrated (after all)
+
+All skills listed in the orchestrator. Plugin discovers 12 skills. All scenarios, fitness criteria, and boundary tests verified.
 
 ## Open Decision Points
 
-- **Allowed tools for review skill:** The skill needs `Read`, `Grep`, `Glob` for artifact reading. It may also benefit from `Bash` (for `gh`/`glab` CLI), `WebFetch` (for ticket URLs), and `WebSearch` (for doc lookup). The builder decides the minimal tool set that supports both modes.
-- **Build skill callout placement:** The stewardship section has Tier 1 and Tier 2 checks. The callout could go after Tier 1 (where most reviews would trigger) or after the full stewardship reflexive loop. The builder decides based on flow.
+- **Session artifact location:** The `session/` directory could be at the project root (`./session/`) or within `./docs/` (`./docs/session/`). The builder decides based on gitignore conventions.
+- **Context Gathering protocol reference location:** Could be a section in the orchestrator's cross-phase integration rules, a standalone reference file in the plugin, or inline in each skill with cross-references. The builder decides based on maintainability.
+- **Build skill rewrite approach:** Could be an incremental rewrite (preserve existing pipeline mode, add context-reconstructive mode alongside) or a clean rewrite (start from the ADRs and scenarios). The builder decides based on how tangled the existing skill is.
+- **Mode-shift language calibration:** The ADRs and scenarios use "mode shift" language. The actual skill text needs to describe what happens from the developer's perspective without referencing skill boundaries. The builder decides the concrete phrasing.
 
 ---
 
 ## Completed Work Log
+
+### Cycle 7: Composable Skill Family
+
+**Derived from:** ADRs 048-054, Essay 011
+
+| WP | Title | Status |
+|----|-------|--------|
+| A | Context Gathering Protocol + Conformance Fixes | Complete |
+| B | Debug Skill (`skills/debug/SKILL.md`) | Complete |
+| C | Refactor Skill (`skills/refactor/SKILL.md`) | Complete |
+| D | Build Skill Rewrite (`skills/build/SKILL.md`) | Complete |
+| E | Orchestrator Integration | Complete |
+| F | Verification Pass | Complete |
+
+**Summary:**
+- Defined shared Context Gathering protocol in orchestrator (5-step protocol with per-skill adaptation)
+- Created `/rdd-debug` with hypothesis-trace-understand-fix cycle, naming the misunderstanding as non-negotiable step
+- Created `/rdd-refactor` with Three-Level Refactor (smells → patterns → methodology), AI Smell Taxonomy (classical + AI-exacerbated), AI hygiene prompts (novel patterns — separate from detection)
+- Rewrote `/rdd-build` as outer loop: context-reconstructive mode, work decomposition from available sources, session artifacts (`session/` directory), time budget mechanism, seamless mode-shift composition to debug/refactor/review
+- Updated orchestrator: Available Skills includes debug and refactor, Artifacts Summary includes session artifacts, cross-phase integration describes composition
+- Updated `/rdd-review` with MODE SHIFT FROM BUILD section and Context Gathering protocol reference (ADR-054 supersedes ADR-046)
+- Fixed conformance violations: interaction-specs.md in build read list, /rdd-play in build NEXT PHASE
+- Verification: 2 structural + 5 cosmetic findings from conformance scan, all resolved
+- Full RDD cycle: research (Essay 011, citation/argument audited) → discover (product discovery updated — Everyday Developer stakeholder) → model (24 concepts, Amendment 15) → decide (7 ADRs, ~50 scenarios, interaction specs) → architect (system design v10.0, roadmap) → build (4 skill files created/rewritten + orchestrator)
+
+**Dependency graph (as-built):**
+```
+WP-A (Protocol + Fixes)
+       │
+  hard dependency
+       │
+       ├──────────────────────────┐
+       │                          │
+WP-C (Refactor Skill)     WP-B (Debug Skill)
+  open choice                 open choice
+       │                          │
+       └──── implied logic ───────┘
+                    │
+             WP-D (Build Rewrite)
+                    │
+               hard dependency
+                    │
+             WP-E (Orchestrator)
+                    │
+               hard dependency
+                    │
+             WP-F (Verification)
+```
+
+---
 
 ### Cycle 6: Code Review Utility Skill
 
@@ -91,7 +162,7 @@ WP-B (Build Callout)    WP-C (Orchestrator)
 | D | /rdd-about Utility Skill | — | Pending |
 | E | Verification Pass | — | Pending |
 
-**Note:** Cycle 5 work packages are carried forward from the prior roadmap. They are independent of Cycle 6 (code review) and can be built in any order relative to Cycle 6.
+**Note:** Cycle 5 work packages are carried forward from the prior roadmap. They are independent of Cycle 7 (composable skill family) and can be built in any order relative to it.
 
 ---
 

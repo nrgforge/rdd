@@ -1,10 +1,10 @@
 # Orientation: Research-Driven Development (RDD)
 
-*Generated 2026-03-27*
+*Generated 2026-04-02 — ARCHITECT milestone*
 
 ## What This System Is
 
-RDD is a methodology for building software you understand. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it. AI changed what's easy (generation) and what's hard (understanding); RDD uses AI for what it's good at while structuring the practices that produce the understanding AI can't give you. The pipeline runs: RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. RDD composes with existing workflows — you reach for it when a problem warrants structured thinking, and graduate the artifacts when the knowledge has been absorbed.
+RDD is a methodology for building software you understand. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it. AI changed what is easy (generation) and what is hard (understanding); RDD uses AI for what it is good at while structuring the practices that produce the understanding AI cannot give you. The pipeline runs: RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. At Cycle 7, RDD extends beyond the pipeline into everyday work: a composable skill family (build, debug, refactor, review) shares a Context Gathering protocol and can be used standalone or composed within a build cycle — serving both the practitioner running a full pipeline and the developer with no RDD background who simply wants to understand what they build.
 
 Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforge/rdd). Manifesto at [nrgforge.github.io/rdd](https://nrgforge.github.io/rdd/).
 
@@ -17,7 +17,11 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
   - Then: [roadmap.md](roadmap.md) (what depends on what, where are choices?)
   - Background: [Essay 001](essays/001-pedagogical-epistemology-of-rdd.md) (why epistemic gates exist)
 
-- **Research-Engineer-Writer** — uses the research, discovery, and modeling phases as a structured investigation methodology, whether or not software gets built.
+- **Everyday Developer** — uses build, debug, refactor, and review for everyday work outside the full pipeline. Two entry points to the same stakeholder: an RDD practitioner doing lighter-weight work; or a developer with no RDD background who wants to understand what they build. Both arrive at the same need: orient before acting, build with understanding, come away sharper.
+  - Start: `/rdd-build`, `/rdd-debug`, `/rdd-refactor`, or `/rdd-review` directly
+  - Bridge to philosophy: `/rdd-about` (methodology overview, depth-calibrated)
+
+- **Research-Engineer-Writer** — uses research, discovery, and modeling phases as a structured investigation methodology, whether or not software gets built.
   - Start: [research SKILL.md](../skills/research/SKILL.md) (research loop mechanics)
   - Then: [discover SKILL.md](../skills/discover/SKILL.md) (product discovery process)
   - Then: [domain-model.md](domain-model.md) (vocabulary authority)
@@ -46,8 +50,9 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 
 1. **The user must be able to speak with authority** about what was built, who it was built for, and why — without AI assistance. Every other design decision serves this outcome. (Invariant 0)
 2. **Understanding requires generation, not review.** Every phase transition challenges the user to produce something — an explanation, prediction, or articulation. Approval alone is not sufficient. (Invariants 1, 2)
-3. **Pragmatic actions may be automated; epistemic actions may not.** The boundary between what the AI does and what the human does is the core design decision. (Invariant 3)
-4. **Epistemic cost must remain lightweight.** Minutes per reflection, not hours. If it becomes burdensome, users will circumvent it. (Invariant 4)
+3. **Pragmatic actions may be automated; epistemic actions may not.** The boundary between what the AI does and what the human does is the core design decision. Generation, artifact production, and context gathering are pragmatic. Reflection, articulation, and the decision to proceed are epistemic. (Invariant 3)
+4. **Epistemic cost must be productive, not merely brief.** The constraint is on waste, not duration. Five minutes of genuine understanding beats two minutes of surface approval; formulaic gate exchanges that build no understanding are the waste. (Invariant 4, amended)
+5. **Skill composition inside build is seamless mode shifts, not dispatch.** When a bug surfaces during TDD, build shifts to debug; when smells appear after green, it shifts to refactor; at stewardship checkpoints, it shifts to review. The developer stays in the thread of understanding — skill boundaries are implementation details that disappear inside the flow. (ADR-054)
 
 ## How the Artifacts Fit Together
 
@@ -55,52 +60,48 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 - `ORIENTATION.md` — system overview, routes readers to depth
 
 **Tier 2 — Primary Readables (read end-to-end)**
-- `product-discovery.md` — stakeholder maps, jobs, value tensions, assumption inversions. Written in user language. The product perspective.
-- `system-design.md` — module decomposition, responsibility allocation, dependency graph, provenance chains. The technical perspective.
-- `roadmap.md` — work packages with classified dependencies (hard/implied/open), transition states, open decision points. The sequencing perspective.
+- `product-discovery.md` — stakeholder maps, jobs, value tensions, assumption inversions. Written in user language. The product perspective. Updated at Cycle 6 to include the Everyday Developer stakeholder.
+- `system-design.md` — module decomposition, responsibility allocation, dependency graph, provenance chains. v10.0: Debug Skill and Refactor Skill added; Build Skill rewritten as outer loop with mode-shift composition. The technical perspective.
+- `roadmap.md` — Cycle 7 work packages (WP-A through WP-F) with classified dependencies, transition states, and open decision points. The sequencing perspective.
 
 **Tier 3 — Supporting Material (consulted for provenance and depth)**
-- `domain-model.md` — concepts, actions, relationships, invariants. The vocabulary authority.
-- `essays/` — research findings (8 essays: pedagogical epistemology, product discovery, synthesis, orientation document, roadmap/field guide/sizing, outline as exhibition, plugin architecture, play and interaction specification)
-- `decisions/` — ADRs (39 decisions, from epistemic gates through play/interaction specs)
-- `scenarios.md` — refutable behavior specifications (228 scenarios)
+- `domain-model.md` — concepts, actions, relationships, invariants. Amendment 15: Composable Skill Family, Context Gathering, Reconstructed Facsimile, Three-Level Refactor, AI Smell Taxonomy, and related terms. The vocabulary authority.
+- `essays/` — research findings (11 essays: 001-010 as before; 011 — Building with Understanding — grounds the composable skill family in five research traditions under the unifying concept of Productive Resistance)
+- `decisions/` — ADRs (54 decisions: 001-042 as settled; 043-047 code review utility; 048-054 composable skill family — composable skill family design, Context Gathering protocol, session artifacts, work decomposition, AI Smell Taxonomy, time budget, mode-shift composition)
+- `scenarios.md` — refutable behavior specifications
 - `interaction-specs.md` — workflow-level specification of how each stakeholder works with the system. Creates the playable surface.
 - `references/field-guide.md` — maps system design modules to implementation state. Developer reference.
 - `essays/reflections/field-notes.md` — observational discovery records from play, categorized by feedback destination. Pairs with the field guide: the guide is the map, the notes are the journal.
 - `essays/reflections/` — meta-observations from epistemic gate conversations
-- `essays/research-logs/` — process records from research phases
+- `essays/research-logs/` — process records from research phases; `session/` directory (gitignored) — reconstructed facsimiles produced during context-reconstructive mode builds
 
 ## Current State
 
-**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 11 skills (orchestration + `/rdd-about` utility), 6 specialist subagents (focused work), 5 cross-cutting hooks (passive enforcement), and the self-referential artifact corpus.
+**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 12 skills (orchestration + composable skill family + `/rdd-about` utility), 6 specialist subagents, 5 cross-cutting hooks, and the self-referential artifact corpus. (Currently 10 skills implemented; debug and refactor skills are Cycle 7 deliverables.)
 
-**Pipeline:** RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. A conformance audit utility (`/rdd-conform`) operates outside the pipeline for artifact template alignment, drift detection, remediation, and graduation.
+**Pipeline:** RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. A conformance audit utility (`/rdd-conform`) operates outside the pipeline.
 
-**What's settled:**
-- Adaptive reflection time protocol (ADRs 001-005, 040-041) — Attend-Interpret-Decide cycle implemented in all skill files; "reflection time" in user-facing dialogue
-- Product discovery phase (ADRs 006-011) — implemented as `/rdd-discover` with forward, backward, and update modes
-- Synthesis phase (ADRs 012-018) — implemented as `/rdd-synthesize`
-- Orientation document (ADRs 019-021) — integrated into orchestrator with three-tier hierarchy
-- Roadmap generation (ADR-022) — architect skill generates roadmap alongside system design
-- Field guide generation (ADR-023) — build skill generates field guide when implementation exists
-- Document sizing heuristics (ADR-024) — five cascading heuristics as cross-cutting principle
-- Conformance audit with graduation (ADR-025) — `/rdd-conform` with four operations
-- Scoped cycles (ADR-026) — first-class workflow pattern: scope → cycle → graduate
-- Synthesis enrichment (ADRs 027-030) — four-dimension framing, structural experiments, two-register outline, re-entry
-- Plugin architecture (ADRs 031-036) — specialist subagent extraction, cross-cutting hooks, plugin packaging, skill activator, research log archival
-- Interaction specification layer (ADR-037) — `/rdd-decide` produces workflow-level interaction specs after scenarios, creating the playable surface
-- Play phase (ADR-038) — `/rdd-play` facilitates post-build experiential discovery through stakeholder inhabitation; three movements (inhabit → explore → reflect); bounded by felt understanding; produces field notes
-- Gamemaster role (ADR-039) — orchestrating agent serves as active facilitator during play, shaping attention (not conclusions) within the Invariant 3 boundary
-- Adaptive gates (ADR-040) — Attend-Interpret-Decide cycle replaces fixed-template prompts; five pedagogical moves (challenge, probe, teach, clarify, re-anchor); challenge is the response to deep engagement
-- Reflection time naming (ADR-041) — user-facing gates are "reflection time"; "epistemic gate" stays in research/design vocabulary
-- Self-explanation utility (ADR-042) — `/rdd-about` reports plugin version and provides adaptive methodology overview for new users
+**Active cycle:** Cycle 7 — composable skill family. RESEARCH through DECIDE complete; ARCHITECT milestone just reached.
+
+**What's settled (through ADR-054):**
+- Full pipeline ADRs 001-042 — gate protocol, product discovery, synthesis, orientation, roadmap, field guide, plugin architecture, play, gamemaster, adaptive gates (AID cycle), reflection time naming, self-explanation utility
+- Code review utility (ADRs 043-047) — two operating modes, questions-not-findings, collaborative context-gathering, build stewardship integration
+- Composable skill family (ADRs 048-054) — four skills sharing Context Gathering; Build as outer loop with seamless mode-shift composition (supersedes callout model, ADR-046); Debug and Refactor as standalone skills with mode-shift entry; session artifacts to `session/` directory; AI Smell Taxonomy (novel/exacerbated/accelerated) embedded in refactor skill; time budget as continuous spectrum; skill boundaries invisible inside build flow
+
+**What Cycle 7 builds (in dependency order):**
+- WP-A: Context Gathering protocol reference + two conformance fixes (no dependencies)
+- WP-B: Debug Skill — hypothesis-trace-understand-fix cycle (hard dependency: WP-A)
+- WP-C: Refactor Skill — Three-Level Refactor with AI Smell Taxonomy (hard dependency: WP-A; independent of WP-B)
+- WP-D: Build Skill rewrite — outer loop with mode-shift composition, context-reconstructive mode, session artifacts (hard: WP-A; implied: WP-B, WP-C)
+- WP-E: Orchestrator integration — add debug/refactor to available skills, update session artifact convention (hard: WP-B, WP-C, WP-D)
+- WP-F: Verification pass — ~50 scenarios, 17 fitness criteria, 16 boundary tests, plugin discovery (hard: all)
 
 **Open questions (selected):**
 - How would Pair-RDD work at epistemic gates?
 - Should external review be formalized as a pipeline operation?
 - Cross-project synthesis (portfolio mode) is described but not operationalized
 - Fading implementation (Invariant 6) is deferred — tracked as design debt (ADR-005)
-- Should graduation surface lingering open questions as a distinct category?
 - What is the systematic derivation method from stakeholder model to interaction specification? (ADR-037 open problem)
-- Does play change across RDD cycles? Fading (Invariant 6) suggests early cycles involve deep play. (Essay 008 §6)
-- Spike-play vs. post-build play — should spike-play be formalized? (Essay 008 §7)
+- Does play change across RDD cycles? Fading suggests early cycles involve deep play. (Essay 008 §6)
+- Session artifact location (`./session/` vs `./docs/session/`) — builder decides based on gitignore conventions (Roadmap open decision point)
+- Context Gathering protocol reference location — orchestrator section, standalone file, or inline per skill (Roadmap open decision point)

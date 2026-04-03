@@ -1,8 +1,8 @@
 # System Design: Pedagogical RDD
 
-**Version:** 9.0
+**Version:** 10.0
 **Status:** Current
-**Last amended:** 2026-03-31
+**Last amended:** 2026-04-02
 
 ## Architectural Drivers
 
@@ -64,6 +64,14 @@
 | Review does not produce merge verdicts, severity ratings, or AI-authored MR comments | Constraint | ADR-045; Essay 010 §Success Criterion |
 | Three-tier output: pure mechanical, observation→question, pure question | Quality Attribute | ADR-045; Reflection gate conversation |
 | Success criterion: reviewer discusses changes with informed judgment without AI | Quality Attribute | ADR-043; Invariant 0 (adapted) |
+| Four composable skills (build, debug, refactor, review) share Context Gathering protocol; each operates standalone or composed within build | Design Principle | ADR-048; Essay 011 §6 |
+| Context Gathering is an embedded protocol (5 steps: detect mode, prompt, fetch, synthesize, validate); not a separate skill | Design Principle | ADR-049; Essay 011 §6 |
+| Reconstructed facsimiles written as session artifacts in `session/` directory, gitignored | Quality Attribute | ADR-050; Essay 011 §2 |
+| Work decomposition from available sources uses roadmap dependency classification (heuristic at ticket level) | Functional Requirement | ADR-051; Essay 011 §6 |
+| AI Smell Taxonomy (novel/exacerbated/accelerated) embedded in refactor skill; novel smells as hygiene prompts, not diagnostic detection | Quality Attribute | ADR-052; Essay 011 §4 |
+| Time budget mechanism: continuous spectrum, orientation validation never skipped | Quality Attribute | ADR-053; Essay 011 §8 |
+| Build composes debug/refactor/review as seamless mode shifts, not dispatch; skill boundaries invisible inside build | Design Principle | ADR-054; DECIDE gate conversation |
+| ADR-054 supersedes ADR-046 callout model for build→review integration | Constraint | ADR-054 |
 
 ## Module Decomposition
 
@@ -110,12 +118,29 @@
 **Depends on:** Orchestrator (protocol)
 **Depended on by:** None directly (produces system design and roadmap artifacts consumed by Build Skill via file)
 
-### Module: Build Skill (`skills/build/SKILL.md`)
-**Purpose:** Turns scenarios into working software through BDD/TDD, with epistemic prompts at scenario group boundaries; generates field guide when implementation exists.
-**Provenance:** ADR-002; ADR-003 (build gate assignments); ADR-023 (field guide generation); Essay 001 §6; Essay 005 §3
-**Owns:** Build-phase process, epistemic gate prompts, scenario completion presentation step, field guide generation (module-to-implementation mapping, design rationale, settled vs. in-flux marking)
-**Depends on:** Orchestrator (protocol)
+### Module: Build Skill (`skills/build/SKILL.md`) — AMENDED in v10.0
+**Purpose:** Outer loop of the composable skill family: work decomposition, TDD (red → green → refactor), stewardship checkpoints, integration verification, with seamless mode shifts to debug/refactor/review; operates in pipeline mode or context-reconstructive mode.
+**Provenance:** ADR-002; ADR-048 (composable skill family); ADR-049 (Context Gathering protocol); ADR-050 (session artifacts); ADR-051 (work decomposition); ADR-053 (time budget); ADR-054 (mode-shift composition); ADR-023 (field guide generation); Essay 011 §§5-6
+**Owns:** Context Gathering protocol (build adaptation — step 4 emphasizes work decomposition and testable behaviors), mode detection (pipeline vs context-reconstructive), time budget prompt and scope adaptation, work decomposition from available sources (derives work packages with dependency classification), session artifact writing (work decomposition and orientation summary to `session/` directory), TDD outer loop (red → green → refactor per work package), stewardship checkpoints (at scenario group boundaries — checks code against orientation/work package), integration verification (real types, not stubs), mode-shift triggers (unexpected failure → debug mode; smell after green → refactor mode; stewardship → review mode; all seamless with context continuity), field guide generation (module-to-implementation mapping when implementation exists), epistemic gate prompts at scenario group boundaries
+**Depends on:** Orchestrator (protocol); Debug Skill (mode-shift target — context inheritance, not dispatch); Refactor Skill (mode-shift target); Review Skill (mode-shift target)
 **Depended on by:** None
+**Note:** Mode-shift composition means the build skill shares its orientation context with inner skills seamlessly — no re-orientation, no perceivable boundary. The developer stays in the thread of understanding. Skill boundaries are implementation details that disappear during the build flow. ADR-054 supersedes ADR-046's callout model for build→review.
+
+### Module: Debug Skill (`skills/debug/SKILL.md`) — NEW in v10.0
+**Purpose:** Guides hypothesis-trace-understand-fix debugging cycle, naming what the mental model was wrong about before fixing, with a test encoding the corrected understanding.
+**Provenance:** ADR-048 (composable skill family); ADR-049 (Context Gathering protocol); ADR-053 (time budget); Essay 011 §§3, 6 (debugging as first-class epistemic activity; Anthropic 17% comprehension gap on debugging questions)
+**Owns:** Context Gathering protocol (debug adaptation — step 4 emphasizes expected-vs-actual divergence), hypothesis-trace-understand-fix cycle (orient → hypothesize the mental model divergence → trace data flow to divergence point → name the misunderstanding → TDD the fix), time budget adaptation
+**Depends on:** Orchestrator (available skill listing)
+**Depended on by:** Build Skill (mode-shift target for unexpected failures)
+**Note:** Standalone invocation runs its own Context Gathering. When entered via mode shift from build, inherits the build session's orientation and current work package — no re-orientation. The debug skill's distinctive epistemic contribution: it names what the mental model was wrong about, not just what the fix is. This is what makes debugging a learning activity rather than a patching activity.
+
+### Module: Refactor Skill (`skills/refactor/SKILL.md`) — NEW in v10.0
+**Purpose:** Drives the Three-Level Refactor diagnostic-remediation cycle (smells → patterns → methodology) with embedded AI Smell Taxonomy awareness and AI hygiene prompts, producing structure-only changes committed as `refactor:`.
+**Provenance:** ADR-048 (composable skill family); ADR-049 (Context Gathering protocol); ADR-052 (AI smell detection embedded); ADR-053 (time budget); Essay 011 §§4-5 (AI smell taxonomy; reclaimed refactor step)
+**Owns:** Context Gathering protocol (refactor adaptation — step 4 emphasizes structural health and architectural intent), Three-Level Refactor cycle: level 1 Smells (classical catalog from Fowler + AI-exacerbated catalog: Avoidance of Refactors, Over-Specification, Distributed Incoherence, Bugs Deja-Vu, Oracle Mirroring, Logic Drift), level 2 Patterns (technique selection with inverse-pair awareness), level 3 Methodology (check against architectural intent — module boundaries, dependency rules, domain vocabulary consistency), AI hygiene prompts (separate from smell detection — Constraint Decay: check earlier constraints still hold; Slopsquatting: verify unfamiliar packages; Intent Debt: check rationale exists for generated code), time budget adaptation, audit finding consumption (when codebase-audit output available as optional input)
+**Depends on:** Orchestrator (available skill listing)
+**Depended on by:** Build Skill (mode-shift target after green phase and at stewardship)
+**Note:** Standalone invocation runs its own Context Gathering. When entered via mode shift from build, inherits the build session's orientation. AI hygiene prompts are awareness reminders, not code-inspection smell detection — novel AI patterns have no code-level signature (Essay 011 §4). The refactor skill is the remediation arm the codebase-audit skill lacks.
 
 ### Module: Play Skill (`skills/play/SKILL.md`) — NEW in v7.0
 **Purpose:** Facilitates post-build experiential discovery through stakeholder inhabitation, with the orchestrating agent serving as gamemaster, producing field notes categorized by feedback destination.
@@ -151,9 +176,9 @@
 **Purpose:** Scaffolds the reviewer's understanding of code changes through question-driven orientation, operating in corpus-grounded or context-reconstructive mode.
 **Provenance:** ADR-043 (utility skill positioning); ADR-044 (two operating modes); ADR-045 (questions as primary output); ADR-046 (build stewardship integration); ADR-047 (collaborative context-gathering); Essay 010; Invariant 0 (adapted — informed judgment, not full authority)
 **Owns:** Mode detection (check for RDD artifacts, offer corpus-grounded or context-reconstructive), collaborative context-gathering protocol (prompt for breadcrumbs, fetch, synthesize, validate, re-synthesize on substantial correction), corpus-grounded orientation (read relevant artifact slice for work package), review question generation (three-tier: pure mechanical, observation→question, pure question), test quality evaluation (mutation testing lens: not "are there tests?" but "do the tests catch anything?" — surface questions about assertion effectiveness, boundary coverage, and whether tests would detect operator changes or logic inversions), time-budget adaptation (zone of proximal development — scale depth to available time), mechanical finding separation (objective issues labeled distinctly; static analysis concerns belong here — the agent is not a linter but can flag what a linter would catch), classification heuristic (mechanical if determinable without intent/context; question if contextual judgment required), reviewer autonomy safeguards (no merge verdict, no pre-written comments, no auto-approval)
-**Depends on:** Orchestrator (available skill listing); Build Skill (optional integration — build suggests review at stewardship boundaries)
+**Depends on:** Orchestrator (available skill listing); Build Skill (mode-shift target at stewardship checkpoints — ADR-054 supersedes ADR-046 callout model)
 **Depended on by:** None directly (invoked by user or during build; produces no durable artifact)
-**Note:** Utility skill, not a pipeline phase. Does not produce artifacts — the review's value lives in the reviewer's mental model, not in a record of the questions. Has no epistemic gate section — the review conversation itself is the epistemic activity. No new agents needed. Success criterion is Invariant 0 adapted to the review context: the reviewer can discuss changes with *informed judgment* (the reviewer's bar) rather than *authority* (the builder's bar).
+**Note:** Utility skill, not a pipeline phase. Does not produce artifacts — the review's value lives in the reviewer's mental model, not in a record of the questions. Has no epistemic gate section — the review conversation itself is the epistemic activity. No new agents needed. Success criterion is Invariant 0 adapted to the review context: the reviewer can discuss changes with *informed judgment* (the reviewer's bar) rather than *authority* (the builder's bar). Within the build flow, review is entered as a seamless mode shift (ADR-054) — context inheritance replaces the prior callout model (ADR-046). Standalone invocation is unchanged.
 
 ### Specialist Subagent Modules
 
@@ -438,6 +463,30 @@ All hooks are configured in `hooks/hooks.json` at the plugin root, with scripts 
 | Dispatch (send work to specialist subagent) | Orchestrator (protocol definition); Research, Decide, Synthesis, Conform Skills (execution) | ADR-032 |
 | Write Audit Artifact (produce structured report as file) | Citation Auditor Agent, Argument Auditor Agent, Conformance Scanner Agent | ADR-031; ADR-032 |
 
+### Composable Skill Family Concepts (from Essay 011 / ADRs 048-054) — NEW in v10.0
+
+| Domain Concept/Action | Owning Module | Provenance |
+|----------------------|---------------|------------|
+| Composable Skill Family (architectural pattern) | Orchestrator (defines pattern); Build, Debug, Refactor, Review Skills (members) | ADR-048 |
+| Context Gathering (embedded protocol — 5 steps) | Build Skill (build adaptation); Debug Skill (debug adaptation); Refactor Skill (refactor adaptation); Review Skill (review adaptation — existing Collaborative Context-Gathering) | ADR-049; ADR-047 |
+| Context-Reconstructive Mode (operating mode) | Build, Debug, Refactor, Review Skills (all support both modes) | ADR-049; ADR-044 |
+| Pipeline Mode (operating mode) | Build, Debug, Refactor, Review Skills | ADR-049 |
+| Orientation Questions (five questions — lossy compression of pipeline knowledge) | Build, Debug, Refactor, Review Skills (synthesize answers in step 4 of Context Gathering) | ADR-049; Essay 011 §2 |
+| Reconstructed Facsimile (lightweight session artifact) | Build Skill (writes during Context Gathering) | ADR-050 |
+| Session Artifact lifecycle (write, reference, promote/discard) | Build Skill (manages `session/` directory) | ADR-050 |
+| Decompose Work (action — derive work packages from ticket/codebase) | Build Skill (context-reconstructive mode) | ADR-051 |
+| Dependency Classification at ticket level (heuristic application) | Build Skill (classifies as hard/implied/open; approximate, not architectural) | ADR-051; ADR-022 |
+| Three-Level Refactor (smells → patterns → methodology) | Refactor Skill (owns the cycle) | ADR-052; Essay 011 §5 |
+| AI Smell Taxonomy (novel/exacerbated/accelerated tiers) | Refactor Skill (level 1 diagnostic step — exacerbated; hygiene prompts — novel) | ADR-052; Essay 011 §4 |
+| AI Hygiene Prompts (awareness for novel AI patterns) | Refactor Skill (runs separately from smell detection) | ADR-052 |
+| Diagnose Smell (action — level 1 of Three-Level Refactor) | Refactor Skill | ADR-052 |
+| Debug (Epistemic) (action — hypothesis-trace-understand-fix) | Debug Skill | ADR-048; Essay 011 §6 |
+| Productive Resistance (interpretive synthesis — foundational + distributed) | Build Skill (orientation = foundational; TDD/stewardship = distributed) | Essay 011 §3 |
+| Time Budget (continuous spectrum: deep/standard/focused) | Build, Debug, Refactor, Review Skills (prompt during or after Context Gathering) | ADR-053 |
+| Everyday Developer (stakeholder served by context-reconstructive mode) | Build, Debug, Refactor, Review Skills (all serve via context-reconstructive mode) | ADR-048; Product discovery Cycle 6 |
+| Comprehension Debt (motivating problem — Opacity Problem quantified) | None (motivating context) | Essay 011 §4; Osmani 2026 |
+| Gather Context (General) (action — shared protocol across skill family) | Build, Debug, Refactor, Review Skills | ADR-049 |
+
 ### Adaptive Gate Concepts (from Essay 009 / ADRs 040-042) — NEW in v8.0
 
 | Domain Concept/Action | Owning Module | Provenance |
@@ -471,7 +520,12 @@ Plugin Manifest (.claude-plugin/plugin.json)
 │   ├── Model Skill
 │   ├── Decide Skill ──dispatches──→ argument-auditor, conformance-scanner
 │   ├── Architect Skill (also generates roadmap.md)
-│   ├── Build Skill (also generates field-guide.md)
+│   ├── Build Skill (outer loop; generates field-guide.md)
+│   │       ├──mode-shift──→ Debug Skill (on unexpected failure)
+│   │       ├──mode-shift──→ Refactor Skill (after green / stewardship)
+│   │       └──mode-shift──→ Review Skill (at stewardship checkpoints)
+│   ├── Debug Skill (standalone or via build mode-shift)
+│   ├── Refactor Skill (standalone or via build mode-shift)
 │   ├── Play Skill (optional; gamemaster mode of orchestrating agent)
 │   ├── Synthesis Skill (usually terminal; conditional re-entry to Research)
 │   │       └──dispatches──→ citation-auditor, argument-auditor
@@ -494,11 +548,14 @@ Plugin Manifest (.claude-plugin/plugin.json)
     sizing-check (PostToolUse: Write on docs/) → sizing flag
 ```
 
-**Skill-level edges (updated in v7.0):**
+**Skill-level edges (updated in v10.0):**
 - Orchestrator → all phase skills including Play Skill (invokes, defines protocol)
+- Orchestrator → Debug Skill, Refactor Skill (lists in Available Skills for standalone invocation)
+- Build Skill → Debug Skill, Refactor Skill, Review Skill (mode-shift composition — context inheritance, seamless transitions; supersedes ADR-046 callout model)
 - Synthesis Skill → Research Skill (conditional re-entry — writer-initiated)
 - Orchestrator → Conformance Audit Skill (lists in Available Skills)
 - Play Skill dispatches no specialist subagents (gamemaster requires conversation context)
+- Debug Skill, Refactor Skill dispatch no specialist subagents (standalone work in conversation context)
 
 **Skill-to-agent dispatch edges (NEW in v6.0):**
 - Research Skill → citation-auditor (after essay writing)
@@ -698,6 +755,32 @@ The play skill writes:
 **Error handling:** If the synthesis essay does not exist (user hasn't written it yet), the orchestrator proceeds without it (existing behavior).
 **Owned by:** Orchestrator owns context loading logic; the synthesis essay's existence is the trigger.
 
+### Build Skill → Debug/Refactor/Review Skills (mode-shift composition) — NEW in v10.0
+**Protocol:** Seamless mode shift within a single conversation. When a trigger condition is met (unexpected failure, smell after green, stewardship checkpoint), the build skill shifts into the corresponding mode. The inner skill's logic executes with full access to the build session's orientation context and current work package. When the inner skill's work resolves, the build flow resumes at the trigger point. No dispatch, no re-orientation, no perceivable boundary.
+**Shared types:** The build session's validated orientation (answers to the five Orientation Questions), the current work package (scope, integration points, testable behaviors, dependencies), and the architectural intent (system design in pipeline mode, orientation summary in context-reconstructive mode). These are conversation context, not files — the mode shift happens within the same conversation.
+**Error handling:** If the developer declines a mode shift, the build flow continues without it. If a mode shift reveals an issue that cannot be resolved (e.g., a bug that requires upstream research), the build flow pauses and the developer decides next steps.
+**Owned by:** Build Skill owns the trigger conditions; each inner skill owns its specialized logic.
+**Note:** This supersedes ADR-046's callout model for build→review. The key change: the prior model suggested the user invoke a separate skill; the new model shifts seamlessly with context continuity.
+
+### Context Gathering Protocol (embedded in all composable skills) — NEW in v10.0
+**Protocol:** Five-step protocol embedded in each skill of the Composable Skill Family. Steps 1-3 and 5 are shared; step 4 adapts to the invoking skill's direction.
+1. Detect mode (check for RDD artifacts → pipeline or context-reconstructive)
+2. Prompt for breadcrumbs (context-reconstructive mode only)
+3. Fetch and read (heterogeneous sources, graceful degradation)
+4. Synthesize orientation (skill-specific adaptation: build → work decomposition; debug → expected-vs-actual; refactor → structural health; review → design rationale)
+5. Validate with user ("Does this capture the context?")
+**Shared types:** Orientation summary (answers to five Orientation Questions). In context-reconstructive mode, written as session artifact (ADR-050). In pipeline mode, read from artifact trail.
+**Error handling:** If tools for fetching are unavailable, the skill asks the user to paste content. If the user declines validation, the skill proceeds but notes the risk.
+**Owned by:** Each skill owns its implementation; the protocol specification is shared reference material.
+
+### Build Skill → Session Artifacts (`session/` directory) — NEW in v10.0
+**Protocol:** In context-reconstructive mode, the build skill writes validated facsimiles to a `session/` directory within the project. Files use `session-artifact: true` frontmatter. Stewardship checkpoints read these files for conformance checks. The skill does not clean up session artifacts automatically.
+**Shared types:** Markdown files with `session-artifact: true` frontmatter:
+- `session/work-decomposition.md` (always written)
+- `session/orientation.md` (written for standard/deep time budgets)
+**Error handling:** If the `session/` directory does not exist, the skill creates it. If session artifacts from a prior session exist, the skill notes them and asks whether to continue or start fresh.
+**Owned by:** Build Skill owns creation and reference; the developer owns lifecycle decisions (keep, promote, discard).
+
 ### Feed-Forward Contract (ADR-004)
 **Protocol:** Conversational. In single-session cycles, the user's epistemic responses are in conversation history. In multi-session cycles, the orchestrator's status table summarizes key responses.
 **Shared types:** Natural language in conversation context.
@@ -780,6 +863,20 @@ The play skill writes:
 | Research log archived at cycle end | Research skill archives log after reflections, not at start of next cycle | Archival step at cycle end in skill file | ADR-036 |
 | Agents run at model-appropriate level | Auditors, lit-reviewer, conformance-scanner, orientation-writer on Sonnet; spike-runner inherits parent | Model selection in each agent's frontmatter | ADR-032 |
 | Hooks are advisory, not blocking | All hooks use exit code 0 (context injection); none use exit code 2 | Hook scripts return 0 | ADR-033 |
+| All four composable skills implement Context Gathering | Presence of 5-step protocol in each SKILL.md | All 4 skills (build, debug, refactor, review) have Context Gathering section | ADR-049 |
+| Context Gathering step 4 adapts per skill | Each skill's step 4 synthesis emphasizes its specialized direction | Build: work decomposition; Debug: expected-vs-actual; Refactor: structural health; Review: design rationale | ADR-049 |
+| All composable skills support both operating modes | Each SKILL.md offers pipeline and context-reconstructive modes | Mode detection present in all 4 skills | ADR-049; ADR-044 |
+| Build skill produces work decomposition in context-reconstructive mode | Presence of work decomposition step with dependency classification | Step present, writes session artifact | ADR-051 |
+| Session artifacts written to `session/` directory | Build skill writes facsimiles with `session-artifact: true` frontmatter | Session artifact writing logic present | ADR-050 |
+| All composable skills prompt for time budget | Time budget prompt present during or after Context Gathering | Prompt present in all 4 skills | ADR-053 |
+| Time budget adapts scope, not understanding quality | Focused mode retains orientation validation | Validation step present at all budget levels | ADR-053; Invariant 4 |
+| Build composes via mode shifts, not dispatch | Build SKILL.md describes trigger conditions with context continuity, no re-orientation | Mode-shift language (not dispatch/invoke) for debug/refactor/review | ADR-054 |
+| Debug skill names the misunderstanding | Debug SKILL.md requires naming what the mental model was wrong about before fixing | Naming step present in hypothesis-trace-understand-fix cycle | ADR-048; Essay 011 §6 |
+| Refactor skill includes AI Smell Taxonomy | Refactor SKILL.md level 1 includes classical + AI-exacerbated catalogs | Both catalogs present in diagnostic step | ADR-052 |
+| AI hygiene prompts separate from smell detection | Refactor SKILL.md runs novel-pattern prompts separately from level 1 | Hygiene prompts in separate section, not in smell catalog | ADR-052 |
+| Refactoring committed as structure change | Refactor skill instruction specifies `refactor:` commit prefix | Commit guidance present | ADR-052; Essay 011 §5 |
+| Plugin installs with all components including new skills | Plugin loads 12 skills (was 10), 6 agents, 5 hooks | All components registered | ADR-034; ADR-048 |
+| Orchestrator Available Skills includes debug and refactor | rdd/SKILL.md Available Skills table has rows for both | Both rows present | ADR-048 |
 
 ## Test Architecture
 
@@ -838,13 +935,26 @@ The play skill writes:
 | Synthesis Skill ← field-notes.md | Read Synthesis SKILL.md; verify artifact trail mining includes field notes; verify delight entries as candidate novelty signals | ADR-038 play-synthesis contract |
 | Epistemic Gate Enforcer → Play phase | Verify hook recognizes play subsumes its gate (like synthesis) and does not fire "missing gate" reminder | ADR-038 hook behavioral update |
 | Orchestrator → Play in pipeline | Read Orchestrator SKILL.md; verify PLAY appears after BUILD, before SYNTHESIS in workflow modes; verify state table includes PLAY; verify artifact summary includes interaction-specs.md and field-notes.md; verify cross-phase integration rules include play feedback | ADR-037, ADR-038 orchestrator integration |
-| Plugin Manifest → Runtime (updated) | Install via `--plugin-dir`; verify 10 skills (was 9), 6 agents, 5 hooks discovered | ADR-034 updated plugin discovery |
+| Plugin Manifest → Runtime (updated) | Install via `--plugin-dir`; verify 12 skills (was 10), 6 agents, 5 hooks discovered | ADR-034; ADR-048 updated plugin discovery |
+| Build Skill → Context Gathering | Read Build SKILL.md; verify 5-step Context Gathering protocol present; verify step 4 emphasizes work decomposition and testable behaviors; verify mode detection (pipeline/context-reconstructive); verify user validation step | ADR-049 Context Gathering contract |
+| Debug Skill → Context Gathering | Read Debug SKILL.md; verify 5-step Context Gathering protocol present; verify step 4 emphasizes expected-vs-actual divergence | ADR-049 Context Gathering contract |
+| Refactor Skill → Context Gathering | Read Refactor SKILL.md; verify 5-step Context Gathering protocol present; verify step 4 emphasizes structural health and architectural intent | ADR-049 Context Gathering contract |
+| Build Skill → Work Decomposition | Read Build SKILL.md; verify work decomposition step in context-reconstructive mode; verify dependency classification (hard/implied/open) with heuristic note; verify session artifact writing | ADR-051 work decomposition contract |
+| Build Skill → Session Artifacts | Read Build SKILL.md; verify `session/` directory convention; verify `session-artifact: true` frontmatter; verify stewardship reads session artifacts | ADR-050 session artifact contract |
+| Build Skill → Debug (mode shift) | Read Build SKILL.md; verify unexpected failure triggers debug mode with context continuity (not dispatch/invoke language); verify no re-orientation occurs | ADR-054 mode-shift composition |
+| Build Skill → Refactor (mode shift) | Read Build SKILL.md; verify after-green and stewardship triggers refactor mode with context continuity; verify `refactor:` commit instruction | ADR-054 mode-shift composition |
+| Build Skill → Review (mode shift) | Read Build SKILL.md; verify stewardship checkpoint triggers review mode with context continuity; verify supersedes ADR-046 callout | ADR-054 mode-shift composition |
+| Debug Skill → hypothesis-trace cycle | Read Debug SKILL.md; verify hypothesis-trace-understand-fix cycle present; verify misunderstanding-naming step before fix | ADR-048 debug epistemic contract |
+| Refactor Skill → Three-Level Refactor | Read Refactor SKILL.md; verify level 1 (classical + AI-exacerbated smells), level 2 (patterns with inverse pairs), level 3 (methodology — architectural intent check) | ADR-052 three-level refactor contract |
+| Refactor Skill → AI Hygiene Prompts | Read Refactor SKILL.md; verify hygiene prompts (Constraint Decay, Slopsquatting, Intent Debt) present as separate section from level 1 smell detection | ADR-052 hygiene prompt separation |
+| Build/Debug/Refactor/Review → Time Budget | Read all 4 SKILL.md files; verify time budget prompt present; verify scope adaptation along continuous spectrum; verify orientation validation never skipped at any level | ADR-053 time budget contract |
+| Orchestrator → Debug/Refactor in Available Skills | Read Orchestrator SKILL.md; verify Available Skills table includes `/rdd-debug` and `/rdd-refactor` with purpose and invocation descriptions | ADR-048 orchestrator integration |
 
 ### Invariant Enforcement Tests
 
 | Invariant | Enforcement Location | Test |
 |-----------|---------------------|------|
-| 0: User can speak with authority about what was built, who it was built for, and why | Pipeline-wide (cumulative); Product Discovery Skill (product dimension); Play Skill (experiential dimension — inhabiting stakeholders builds authority to speak about stakeholder experience) | Cannot be tested structurally — this is an outcome. Product discovery + play serve the "who" and "why" dimensions from complementary angles |
+| 0: User can speak with authority about what was built, who it was built for, and why | Pipeline-wide (cumulative); Product Discovery Skill (product dimension); Play Skill (experiential dimension); Build Skill context-reconstructive mode (extends Invariant 0 to codebases without full pipeline via orientation validation); Debug Skill (names the misunderstanding — builds causal understanding) | Cannot be tested structurally — this is an outcome. Context-reconstructive mode extends Invariant 0 to the Everyday Developer; debug naming step builds the deepest layer of understanding |
 | 1: Understanding requires generation | Each skill's gate section; Play Skill (three movements are inherently generative) | Verify every gate requires user to produce something; verify play's inhabit/explore/reflect are generative activities |
 | 2: Epistemic acts mandatory at every gate | Each skill's gate section + orchestrator protocol; Play Skill (activity subsumes gate — ADR-016 pattern) | Verify no gate consists solely of approval; play verified by three-movement presence |
 | 3: Pragmatic automated, epistemic preserved; Gamemaster: shapes attention (pragmatic form), not conclusions (epistemic) | Each skill; Play Skill (gamemaster boundary principle) | Verify skills have AI generation + epistemic gates; verify gamemaster shapes attention not conclusions |
@@ -857,13 +967,13 @@ The play skill writes:
 
 - **Unit:** Read each SKILL.md individually. Verify: EPISTEMIC GATE section exists, contains 2-3 prompts, prompts use exploratory framing, redirect for non-generative approval is present, discrepancy noting instruction is present. For Product Discovery Skill: verify forward mode, backward mode, update mode, all 5 artifact sections, assumption inversion step. For Play Skill: verify three-movement structure (no EPISTEMIC GATE section — activity subsumes gate), verify gamemaster behavior (4 functions), verify field notes template (6 categories), verify Stanislavski structure. For Conformance Audit Skill: verify four operations present. For each agent `.md` file: verify YAML frontmatter specifies model, verify system prompt specifies file I/O, verify no conversation history access. For each hook script: verify it reads JSON stdin, verify correct event matching, verify advisory exit code 0.
 - **Integration:** Verify orchestrator protocol matches what skills implement. Verify workflow mode descriptions include PRODUCT DISCOVERY and PLAY. Verify feed-forward instruction exists. Verify Model/Decide/Architect skills read product discovery artifact. Verify Decide Skill produces interaction specs after scenarios. Verify Play Skill reads interaction specs, product discovery, and field guide. Verify Play field notes feed back to Discover (update mode), Decide, Research, and forward to Synthesis. Verify inversion principle appears in Orchestrator, Product Discovery, Decide, Architect, Play, Synthesis (6 locations). Verify three-tier artifact hierarchy includes roadmap (Tier 2) and field guide (Tier 3). Verify architect skill generates roadmap. Verify build skill generates field guide. Verify orchestrator supports scoped cycles and document sizing heuristics. Verify skill-to-agent dispatch: each phase skill that uses specialist work dispatches the corresponding agent (play dispatches none). Verify hook registration: all 5 hooks present in `hooks/hooks.json` with correct events and matchers; epistemic-gate-enforcer recognizes play subsumes its gate. Verify plugin discovery: `--plugin-dir` loads 10 skills, 6 agents, 5 hooks.
-- **Acceptance:** The behavior scenarios in `scenarios.md` (192 existing + 36 play/interaction-spec from ADRs 037-039 = 228 total). Verified by reading the modified files and confirming the described behavior is present in the prompt text.
+- **Acceptance:** The behavior scenarios in `scenarios.md` (228 existing + ~50 composable skill family from ADRs 048-054 = ~278 total). Verified by reading the modified files and confirming the described behavior is present in the prompt text.
 
 ## Roadmap
 
 See [`./docs/roadmap.md`](./docs/roadmap.md) for the current roadmap — work packages, classified dependencies, transition states, and open decision points.
 
-Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, conformance, scoped cycles), Cycle 2 (ADRs 027-030: synthesis enrichment), Cycle 3 (ADRs 031-036: plugin architecture). Current work packages address ADRs 037-039 (interaction specification layer, play phase, gamemaster).
+Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, conformance, scoped cycles), Cycle 2 (ADRs 027-030: synthesis enrichment), Cycle 3 (ADRs 031-036: plugin architecture), Cycle 4 (ADRs 037-039: interaction specs, play, gamemaster), Cycle 5 (ADRs 040-042: adaptive gates, reflection time, rdd-about), Cycle 6a (ADRs 043-047: code review). Current work packages address ADRs 048-054 (composable skill family: build revamp, debug, refactor, skill composition).
 
 ## Design Amendment Log
 
@@ -878,4 +988,5 @@ Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, con
 | 7 | 2026-03-12 | Updated Synthesis Skill module (purpose, provenance, ownership) to incorporate four-dimension framing, structural experiments, two-register outline, and re-entry logic. Updated 2 architectural drivers (synthesis terminal → usually terminal; four-dimension framing + structural experiments). Added 9-row responsibility matrix section (Synthesis Enrichment Concepts from Essay 006 / ADRs 027-030). Updated Frame Narrative action row. Updated dependency graph (synthesis conditional re-entry to Research). Added 1 integration contract (Synthesis Skill → Research Skill re-entry). Added 7 fitness criteria. Added 3 boundary integration tests. Updated acceptance scenario count (133 → 164). | ADRs 027-030 (essay 006 cycle) | ADR-027 (four-dimension framing), ADR-028 (structural experiments), ADR-029 (synthesis re-entry), ADR-030 (two-register outline) | Accepted |
 | 8 | 2026-03-19 | Four-layer plugin architecture. Added 12 new modules: 6 specialist subagent modules (citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner), 5 cross-cutting hook modules (invariant-reminder, epistemic-gate-enforcer, skill-activator, orientation-trigger, sizing-check), 1 plugin manifest. Updated 5 existing modules: Orchestrator (agent dispatch protocol, plugin packaging), Research Skill (dispatches agents instead of invoking external skills; log archival at cycle end), Decide Skill (dispatches argument-auditor and conformance-scanner), Synthesis Skill (dispatches auditor agents), Conform Skill (dispatches conformance-scanner). Added 10 architectural drivers. Added 9-row responsibility matrix section (Plugin Architecture Concepts). Replaced dependency graph with four-layer structure (skills → agents → hooks). Replaced 4 external skill integration contracts with 3 new contracts (skill→agent dispatch, hook→agent context injection, plugin→runtime discovery). Added 9 fitness criteria. Added 14 boundary integration tests. Updated test layers and acceptance scenario count (164 → 192). | ADRs 031-036 (essay 007 plugin architecture cycle) | ADR-031 (artifact-mediated communication), ADR-032 (specialist subagent extraction), ADR-033 (cross-cutting hooks), ADR-034 (plugin packaging), ADR-035 (skill activator), ADR-036 (research log archival) | Proposed |
 | 10 | 2026-03-30 | Adaptive gates, reflection time naming, and /rdd-about utility. Added 1 new module: About Skill (version reporting, methodology overview, depth-calibrated elaboration — utility, not pipeline phase). Updated 3 existing modules: Orchestrator (gate protocol becomes AID cycle with five pedagogical moves; adds pace regulator framing; Available Skills includes /rdd-about; optionally offers /rdd-about for fresh projects), Epistemic Gate Enforcer Hook (recognizes AID adaptive prompts), all 6 phase skills (EPISTEMIC GATE sections updated from fixed templates to AID cycle; user-facing dialogue uses "reflection time"). Added 5 architectural drivers (amended Invariant 4, AID cycle, reflection time naming, Inversion Principle at gates, anti-sycophancy). Added 16-row responsibility matrix section (Adaptive Gate Concepts). Updated invariant enforcement tests (Invariant 4 amended — productive not brief). Supersedes ADR-003 (fixed-assignment prompt table replaced by AID cycle; ADR-003's prompts become candidate library). Conformance scan: 19 implementation-layer violations mapped with resolution sequence. | ADRs 040-042 (essay 009 adaptive gates cycle) | ADR-040 (AID cycle), ADR-041 (reflection time naming), ADR-042 (/rdd-about utility); Essay 009; Invariant 4 (Amendment 13 — productive not brief); Invariant 0 (understanding is the purpose); Inversion Principle (7th location at gates) | Proposed |
+| 11 | 2026-04-02 | Composable skill family. Added 2 new modules: Debug Skill (hypothesis-trace-understand-fix cycle), Refactor Skill (three-level diagnostic-remediation with AI Smell Taxonomy). Amended 2 existing modules: Build Skill (rewritten as outer loop with Context Gathering protocol, context-reconstructive mode, work decomposition, session artifacts, time budget, mode-shift composition — replaces monolithic build), Review Skill (mode-shift composition from build supersedes ADR-046 callout). Updated Orchestrator (Available Skills includes debug and refactor; plugin count 10→12). Added 9 architectural drivers. Added 19-row responsibility matrix section (Composable Skill Family Concepts). Updated dependency graph (mode-shift edges within build; debug and refactor as standalone skills). Added 3 integration contracts (mode-shift composition, Context Gathering protocol, session artifacts). Added 17 fitness criteria. Added 16 boundary integration tests. Updated invariant enforcement (Invariant 0 extended via context-reconstructive mode and debug naming). Updated acceptance scenario count (228→~278). | ADRs 048-054 (essay 011 composable skill family cycle) | ADR-048 (composable skill family), ADR-049 (Context Gathering protocol), ADR-050 (session artifacts), ADR-051 (work decomposition), ADR-052 (AI smell detection), ADR-053 (time budget), ADR-054 (mode-shift composition); Essay 011; DECIDE gate: "mode shifts not dispatch; the thread is understanding" | Proposed |
 | 9 | 2026-03-26 | Play phase and interaction specification layer. Added 1 new module: Play Skill (three-movement experiential discovery with gamemaster mode, field notes production — no specialist subagents, no separate epistemic gate). Updated 4 existing modules: Decide Skill (produces interaction specs after scenarios), Orchestrator (pipeline includes PLAY after BUILD, state tracking, artifact summary, cross-phase integration for play feedback), Product Discovery Skill (update mode reads field notes), Synthesis Skill (reads field notes in artifact trail mining). Added 6 architectural drivers. Added 16-row responsibility matrix section (Play and Interaction Specification Concepts). Updated dependency graph (inter-skill artifact flow includes interaction-specs.md and field-notes.md with feedback loop). Added 4 integration contracts (Orchestrator→Play, Decide→Play via interaction-specs, Play→Discover/Decide/Research via field-notes, Play→Synthesis via field-notes). Added 14 fitness criteria. Added 12 boundary integration tests. Updated invariant enforcement tests (play serves Invariant 0 experiential dimension; gamemaster boundary for Invariant 3). Updated test layers and acceptance scenario count (192 → 228). Updated inversion principle locations from 5 to 6. | ADRs 037-039 (essay 008 play/interaction-spec cycle) | ADR-037 (interaction specification layer), ADR-038 (play phase), ADR-039 (agent as gamemaster); Essay 008; Invariant 0 (experiential authority dimension), Invariant 3 (gamemaster boundary) | Proposed |

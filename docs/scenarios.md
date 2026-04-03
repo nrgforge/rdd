@@ -1796,3 +1796,286 @@
 **When** the reviewer asks the skill to write review comments for them
 **Then** the skill declines — it can help the reviewer formulate their thoughts, but the comments should be in the reviewer's own words
 **And** it explains: "The review is yours to give — I can help you think about what to say, but the comments should reflect your understanding"
+
+## Feature: Composable Skill Family (ADR-048)
+
+### Scenario: Four skills share Context Gathering protocol
+**Given** any skill in the Composable Skill Family (build, debug, refactor, review) is invoked standalone
+**When** the skill begins its work
+**Then** it runs the five-step Context Gathering protocol: detect mode, prompt for breadcrumbs, fetch and read, synthesize orientation, validate with user
+**And** it answers the five Orientation Questions from available evidence
+
+### Scenario: Skills operate in pipeline mode when artifacts exist
+**Given** an RDD artifact corpus exists (domain model, system design, scenarios, ADRs)
+**When** any composable skill is invoked
+**Then** it detects the artifact corpus and offers pipeline mode
+**And** in pipeline mode, orientation is read from the artifact trail rather than synthesized from breadcrumbs
+
+### Scenario: Skills operate in context-reconstructive mode without artifacts
+**Given** no RDD artifact corpus exists
+**When** any composable skill is invoked
+**Then** it enters context-reconstructive mode
+**And** it prompts for breadcrumbs: "What context do I need? Share ticket URLs, docs, paste threads, or describe the situation"
+**And** it synthesizes orientation from whatever sources are available
+
+### Scenario: User validation of orientation is never skipped
+**Given** any composable skill has synthesized orientation (in either mode)
+**When** the orientation is presented to the user
+**Then** the skill asks "Does this capture the context? What would you adjust or add?"
+**And** the skill does not proceed to specialized work until the user validates or corrects the orientation
+
+## Feature: Context Gathering Protocol Adaptation (ADR-049)
+
+### Scenario: Build skill emphasizes work decomposition in orientation synthesis
+**Given** the build skill is running Context Gathering in context-reconstructive mode
+**When** it synthesizes orientation (step 4)
+**Then** the synthesis emphasizes scope, integration points, testable behaviors, and work decomposition
+**And** it produces a work decomposition as a reconstructed facsimile
+
+### Scenario: Debug skill emphasizes expected-vs-actual divergence in orientation synthesis
+**Given** the debug skill is running Context Gathering standalone
+**When** it synthesizes orientation (step 4)
+**Then** the synthesis emphasizes the expected behavior, the actual behavior, and where the divergence occurs
+**And** it frames the orientation around the hypothesis: "What is the mental model wrong about?"
+
+### Scenario: Refactor skill emphasizes structural health in orientation synthesis
+**Given** the refactor skill is running Context Gathering standalone
+**When** it synthesizes orientation (step 4)
+**Then** the synthesis emphasizes current code structure, architectural intent, and the relationship between the code area and the broader system
+**And** it orients toward the Three-Level Refactor's diagnostic framework
+
+## Feature: Reconstructed Facsimiles (ADR-050)
+
+### Scenario: Work decomposition written as session artifact
+**Given** the build skill has derived a work decomposition in context-reconstructive mode
+**And** the user has validated the decomposition
+**When** the decomposition is finalized
+**Then** it is written as a markdown file in a `session/` directory
+**And** the file includes `session-artifact: true` in its frontmatter
+**And** the build loop references this file during iteration
+
+### Scenario: Orientation summary written as session artifact
+**Given** Context Gathering has produced a validated orientation summary
+**When** the session is expected to be substantial (standard or deep time budget)
+**Then** the orientation summary is written as a session artifact
+**And** stewardship checkpoints reference it for conformance checks
+
+### Scenario: Session artifacts survive context compression
+**Given** a build session has been running long enough for context compression to occur
+**When** a stewardship checkpoint needs to reference the original work decomposition
+**Then** the skill reads the work decomposition from the session artifact file
+**And** the check is performed against the written facsimile, not from compressed conversation memory
+
+## Feature: Work Decomposition (ADR-051)
+
+### Scenario: Build derives work packages from ticket and codebase
+**Given** the build skill is in context-reconstructive mode
+**And** the user has provided a ticket description and relevant codebase breadcrumbs
+**When** the skill synthesizes orientation
+**Then** it derives atomic work packages, each specifying: scope, integration points, testable behaviors, and dependencies
+**And** dependencies are classified as hard, implied, or open
+
+### Scenario: User validates work decomposition before build loop begins
+**Given** the build skill has derived work packages
+**When** the decomposition is presented to the user
+**Then** the user can reorder, split, merge, or reject work packages
+**And** the build loop does not begin until the user confirms the decomposition
+
+### Scenario: Dependency classification is heuristic at ticket level
+**Given** the build skill has derived work packages from a ticket (not a roadmap)
+**When** the dependency classification is presented
+**Then** the skill notes that at the ticket level, classification is approximate rather than architecturally grounded
+**And** it presents the classification as a starting decomposition, not an architectural fact
+
+### Scenario: Work decomposition includes optional demo scenarios
+**Given** the build skill has derived work packages
+**When** a work package's scope is clear enough to envision stakeholder use
+**Then** the work package includes a demo scenario: how would a stakeholder use this feature?
+**And** the demo scenario preserves the forward path to Play
+
+## Feature: Build Skill Outer Loop
+
+### Scenario: Build iterates through work packages with TDD
+**Given** the build skill has a validated work decomposition (from roadmap or reconstructed facsimile)
+**When** the build loop processes a work package
+**Then** it follows the TDD cycle: red (write a failing test encoding the testable behavior), green (make the test pass), refactor (Three-Level Refactor)
+**And** it proceeds to the next work package when the current one is complete
+
+### Scenario: Stewardship checkpoint at scenario group boundaries
+**Given** the build skill has completed a scenario group (set of related work packages)
+**When** a natural boundary is reached
+**Then** the skill runs a stewardship checkpoint: does the code implement the work package's testable behaviors, does architecture match the orientation, is domain vocabulary consistent, are there integration concerns?
+**And** the developer engages with the stewardship assessment before proceeding
+
+### Scenario: Integration verification against real neighbors
+**Given** a work package involves a component with adjacent dependencies
+**When** the build skill reaches integration verification
+**Then** it tests the boundary with at least one adjacent component using real types (not stubs)
+**And** it verifies that the component's output can be consumed by downstream components
+
+## Feature: Debug Skill (ADR-048)
+
+### Scenario: Debug follows hypothesis-trace-understand-fix cycle
+**Given** the debug skill is invoked (standalone or from build)
+**And** Context Gathering has produced an orientation
+**When** the developer describes the unexpected behavior
+**Then** the skill guides through: hypothesize (what is the mental model wrong about?), trace (follow data flow to the divergence point), understand (name the misunderstanding, not just the fix), fix with tests (TDD the corrected behavior)
+
+### Scenario: Debug names the misunderstanding, not just the fix
+**Given** the debug skill has traced a bug to its source
+**When** it presents the finding to the developer
+**Then** it names what the developer's (or AI's) mental model was wrong about
+**And** it does not jump directly to a fix without the developer understanding what was incorrect
+
+### Scenario: Debug encodes corrected understanding in a test
+**Given** the debug skill has identified the root cause of a bug
+**When** the fix is implemented
+**Then** a test is written that encodes the corrected understanding
+**And** the test would have caught the original misunderstanding if it had existed before
+
+## Feature: Refactor Skill with AI Smell Taxonomy (ADR-052)
+
+### Scenario: Refactor diagnoses smells from classical and AI-exacerbated catalogs
+**Given** the refactor skill is diagnosing code (standalone or within build)
+**When** it runs level 1 (Smells) of the Three-Level Refactor
+**Then** it checks against both the classical catalog (Fowler) and the AI-exacerbated catalog (Avoidance of Refactors, Over-Specification, Distributed Incoherence, Bugs Deja-Vu, Oracle Mirroring, Logic Drift)
+**And** it identifies which catalog each smell belongs to
+
+### Scenario: Refactor runs AI hygiene prompts separately from smell detection
+**Given** the refactor skill is running its diagnostic step
+**When** it addresses novel AI patterns (Constraint Decay, Slopsquatting, Intent Debt)
+**Then** it runs these as awareness prompts, not as smell detection
+**And** it does not claim the code is free of novel AI patterns based on code inspection alone
+**And** the prompts are: check whether earlier constraints still hold, verify unfamiliar package names, check whether rationale exists for generated code
+
+### Scenario: Refactor applies technique from catalog with awareness of inverse pairs
+**Given** the refactor skill has identified a smell at level 1
+**When** it moves to level 2 (Patterns)
+**Then** it selects the appropriate technique from the refactoring catalog
+**And** it considers the inverse pair (e.g., Extract Method vs Inline Method) because direction depends on context
+
+### Scenario: Refactor checks against architectural intent at level 3
+**Given** the refactor skill has applied a technique at level 2
+**When** it moves to level 3 (Methodology)
+**Then** it checks: does the code land in the right module? Does it respect dependency rules? Does it use consistent domain vocabulary?
+**And** it references the system design (pipeline mode) or orientation summary (context-reconstructive mode) as the architectural intent
+
+### Scenario: Refactoring committed as structure change
+**Given** the refactor skill has completed a refactoring
+**When** the changes are committed
+**Then** the commit uses the `refactor:` prefix
+**And** behavior is unchanged — tests pass before and after
+**And** the refactoring is not mixed with behavior changes in the same commit
+
+## Feature: Time Budget Mechanism (ADR-053)
+
+### Scenario: Skill prompts for available time
+**Given** any composable skill has completed Context Gathering
+**When** the skill is ready to begin specialized work
+**Then** it asks about available time: "How much time do you have for this?"
+**And** it adapts its scope based on the response
+
+### Scenario: Deep time budget enables full cycle
+**Given** the developer indicates 30+ minutes available
+**When** the skill runs
+**Then** it provides full Context Gathering, complete TDD cycle with three-level refactor, stewardship at every scenario group boundary, and integration verification
+
+### Scenario: Focused time budget reduces scope without skipping orientation
+**Given** the developer indicates less than 10 minutes available
+**When** the skill runs
+**Then** it provides essential orientation (the most consequential answer from each Orientation Question)
+**And** it focuses on a single work item
+**And** it still validates orientation with the user before proceeding
+
+### Scenario: Time budget is advisory, not enforced
+**Given** the developer indicated a focused time budget
+**When** the developer wants to go deeper mid-session
+**Then** the skill adapts to the deeper scope without requiring the developer to restart
+
+## Feature: Seamless Mode Shifts Within Build (ADR-054)
+
+### Scenario: Build shifts to debug mode on unexpected test failure
+**Given** the build skill is in the TDD cycle
+**And** a test fails with an error unrelated to the behavior being specified (not a red-phase expected failure)
+**When** the build skill detects the unexpected failure
+**Then** it shifts seamlessly into debug mode within the same conversation
+**And** the developer does not perceive a skill boundary — the thread of understanding continues
+
+### Scenario: Build shifts to refactor mode after green
+**Given** the build skill has completed the green phase (test passes)
+**When** the developer or agent identifies a smell in the code just written
+**Then** the build flow shifts into refactor mode
+**And** the refactor mode inherits the build session's orientation without any re-orientation step
+
+### Scenario: Build shifts to review mode at stewardship checkpoint
+**Given** the build skill has reached a natural scenario group boundary
+**When** a stewardship checkpoint is warranted
+**Then** the build flow shifts into review mode
+**And** the review mode enters the appropriate orientation (corpus-grounded or context-reconstructive) based on the build session's mode
+
+### Scenario: Mode shifts inherit build session context without interruption
+**Given** the build flow shifts into any mode (debug, refactor, or review)
+**When** the mode begins
+**Then** it inherits the build session's validated orientation and current work package
+**And** no re-orientation occurs
+**And** no time budget prompt occurs (it operates within the build session's budget)
+**And** the conversation continues without perceivable interruption
+
+### Scenario: Build flow resumes after mode shift resolves
+**Given** the build flow shifted into debug mode and the bug is resolved
+**When** the fix is complete (with a test encoding the corrected understanding)
+**Then** the build flow resumes at the point where the trigger occurred
+**And** the developer continues with the current work package
+
+### Scenario: Previously passing test breaks after green-phase change
+**Given** the build skill has completed a green-phase change
+**And** a test that previously passed now fails
+**When** the build skill detects this regression
+**Then** it shifts into debug mode — this is an unexpected failure, not a red-phase expectation
+**And** the debug mode traces the regression to its cause
+
+## Feature: Standalone Skill Invocation
+
+### Scenario: Debug invoked standalone on a production bug
+**Given** a developer encounters a production bug outside a build cycle
+**When** the developer invokes `/rdd-debug`
+**Then** the skill runs its own Context Gathering protocol
+**And** it prompts for breadcrumbs: error logs, reproduction steps, relevant code areas
+**And** it synthesizes orientation before beginning the hypothesis-trace-understand-fix cycle
+
+### Scenario: Refactor invoked standalone on a code area
+**Given** a developer wants to improve a code area outside a build cycle
+**When** the developer invokes `/rdd-refactor`
+**Then** the skill runs its own Context Gathering protocol
+**And** it reads the code area and surrounding context
+**And** it begins the Three-Level Refactor diagnostic from the architectural intent
+
+### Scenario: Standalone skill respects time budget independently
+**Given** a developer invokes `/rdd-debug` standalone
+**When** the skill asks about available time
+**Then** the developer can specify any time budget
+**And** the skill adapts without reference to a parent build session
+
+## Feature: Integration — Mode Shifts Use Real Context
+
+### Scenario: Debug mode uses real orientation context from build
+**Given** a build session is active with a validated orientation and work decomposition
+**And** an unexpected failure occurs during the TDD cycle
+**When** the build flow shifts into debug mode
+**Then** the debug mode has access to the orientation summary (not a stub or placeholder)
+**And** the debug mode can reference the work package's testable behaviors and integration points
+**And** the hypothesis is informed by the build context
+
+### Scenario: Refactor mode uses real architectural intent from build
+**Given** a build session is active in pipeline mode with system design available
+**And** the green phase is complete and a smell is identified
+**When** the build flow shifts into refactor mode
+**Then** the refactor mode has access to the system design's module boundaries and dependency rules (not stubs)
+**And** the level 3 (Methodology) check references the real architectural intent
+
+### Scenario: Stewardship references session artifacts in context-reconstructive mode
+**Given** a build session is active in context-reconstructive mode
+**And** the work decomposition was written as a session artifact
+**When** a stewardship checkpoint occurs
+**Then** the stewardship check reads the session artifact file for the original work decomposition
+**And** it compares the completed work against the decomposition's scope and testable behaviors

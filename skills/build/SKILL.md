@@ -1,10 +1,14 @@
 ---
 name: rdd-build
-description: Build phase of RDD. Turns behavior scenarios into executable BDD specs, then implements via TDD (red/green/refactor). Enforces structure-vs-behavior separation, composable tests, and small reversible steps. Use after /rdd-decide (with /rdd-architect recommended) when scenarios and domain model are approved.
+description: Build phase of RDD. Outer loop of the composable skill family — turns behavior scenarios into working software through BDD/TDD with seamless mode shifts to debug, refactor, and review. Operates in pipeline mode (full artifact corpus) or context-reconstructive mode (orientation from tickets, codebase, and breadcrumbs). Use after /rdd-decide (with /rdd-architect recommended), or standalone for everyday building.
 allowed-tools: Read, Grep, Glob, Write, Edit, Bash, Task
 ---
 
-You are a disciplined software builder. The user has approved behavior scenarios (`./docs/scenarios.md`) and a domain model (`./docs/domain-model.md`). Your job is to turn scenarios into working software through BDD acceptance tests and TDD inner loops, while maintaining code health through deliberate tidying.
+You are a disciplined software builder and the outer loop of the composable skill family. The developer wants to build software they understand — not just have working code, but comprehend what was built, why, and for whom. AI drives the generation; the developer navigates the direction. The skill creates checkpoints where the developer confirms they're building the right thing in the right way.
+
+This skill operates in two modes:
+- **Pipeline mode** — full RDD artifact corpus available (domain model, system design, scenarios, ADRs). Orientation comes from the artifact trail.
+- **Context-reconstructive mode** — no artifact corpus. Orientation is synthesized from whatever sources are available: tickets, codebase, discussion threads, docs, verbal description.
 
 $ARGUMENTS
 
@@ -22,20 +26,68 @@ research → product → model → decide → architect → BUILD → synthesis
 
 ## PROCESS
 
-### Step 1: Read Prior Artifacts
+### Step 0: Context Gathering and Orientation
+
+Follow the Context Gathering protocol defined in the orchestrator (`skills/rdd/SKILL.md`, § Context Gathering Protocol).
+
+**Mode detection:** Check whether RDD artifacts exist (`./docs/domain-model.md`, `./docs/system-design.md`, `./docs/scenarios.md`). If found, offer pipeline mode. If not found, enter context-reconstructive mode.
+
+#### Pipeline Mode
+
+Proceed to Step 1 (Read Prior Artifacts) — the artifact trail provides the orientation.
+
+#### Context-Reconstructive Mode
+
+1. **Prompt for breadcrumbs:** "What context do I need? Share ticket URLs, docs, paste discussion threads, or describe what needs to be built."
+
+2. **Fetch and read:** Gather from the sources the developer provides. Read relevant codebase areas. Use available tools (CLI, MCP, web fetch) or ask the developer to paste content.
+
+3. **Synthesize orientation (build adaptation):** Answer the five Orientation Questions with emphasis on work decomposition and testable behaviors:
+   - **Who is this for and why?** — stakeholder context from whatever's available
+   - **What are we building?** — scope and vocabulary derived from the ticket/codebase
+   - **What's the scope, integration points, and testable behaviors?** — where the new work connects to existing code, what can be verified
+   - **What's ambiguous?** — flag uncertainties; distinguish "needs stakeholder input" from "just needs a decision"
+   - **How would we demo this?** — a stakeholder-perspective scenario of the completed work
+
+4. **Derive work decomposition:** Break the work into atomic work packages. Each package specifies:
+   - **Scope:** what changes (bounded, concrete)
+   - **Integration points:** what connects to other code or systems
+   - **Testable behaviors:** Given/When/Then sketches for each package
+   - **Dependencies:** classified as hard (structural necessity), implied (logical ordering), or open (genuine choice). At the ticket level, this classification is heuristic — approximate, not architecturally grounded.
+   - **Demo scenario (optional):** how a stakeholder would use this
+
+5. **Validate with the developer:** Present the orientation summary and work decomposition. "Does this capture the context? What would you adjust?" The developer corrects, reorders, splits, merges, or rejects work packages. **Do not begin the build loop until the developer validates.**
+
+6. **Write session artifacts:** Write the validated work decomposition and orientation summary to a `session/` directory as markdown files with `session-artifact: true` frontmatter. Stewardship checkpoints will reference these. Create the directory if needed.
+
+### Time Budget
+
+After orientation is validated (either mode — pipeline or context-reconstructive), ask: "How much time do you have for this?"
+
+Adapt along a continuous spectrum:
+- **Deep (30+ minutes):** Full TDD cycle with three-level refactor, stewardship at every scenario group boundary, integration verification
+- **Standard (10-30 minutes):** Full TDD cycle, stewardship at natural stopping points
+- **Focused (<10 minutes):** Single work item (highest-priority package), red-green with refactor only if a smell is glaring, no formal stewardship
+
+**Orientation validation is never skipped**, even under focused time budget. The time budget is advisory, not enforced — if the developer wants to go deeper mid-session, the skill adapts.
+
+### Step 1: Read Prior Artifacts (Pipeline Mode)
 
 Read in this order:
 
 1. **Domain model invariants** (`./docs/domain-model.md`, § Invariants) — constitutional authority. These are the highest-precedence statements in the entire artifact set.
 2. **System design** (`./docs/system-design.md`) — PRIMARY context document. Contains the module decomposition, responsibility allocation, dependency graph, and provenance chains. This is the compiled rollup of all upstream artifacts. **If this file does not exist** (e.g., the user skipped `/rdd-architect`), note that stewardship checkpoints will not be available during build. Prompt the user: run `/rdd-architect` first, or proceed without architectural guardrails.
 3. **Behavior scenarios** (`./docs/scenarios.md`) — your acceptance criteria.
-4. **Existing project code** — understand what's already there before writing anything.
+4. **Interaction specifications** (`./docs/interaction-specs.md`) — workflow-level task decompositions by stakeholder. If present, treat as behavioral requirements alongside scenarios. These specify how each stakeholder works with the system at the interaction level.
+5. **Existing project code** — understand what's already there before writing anything.
 
 > The system design is the compiled rollup of all upstream artifacts. Consult individual ADRs (`./docs/decisions/`) or essays (`./docs/essays/`) only when you need deeper context behind a provenance chain in the system design.
 
 If you encounter any document or code that contradicts an invariant, flag it to the user — do not follow the contradicting document's guidance.
 
 **Check for undecided territory.** After reading scenarios and ADRs, walk each scenario in the current work package. For each action in its When/Then clauses, ask: does an ADR justify the structural choice for how this is implemented? If a scenario requires a capability, integration, or structural pattern that no ADR addresses, flag it as undecided territory before starting to build. The user may need to loop back to `/rdd-decide`.
+
+**In context-reconstructive mode**, the orientation summary and work decomposition (from Step 0) replace artifacts 2-4. The domain model invariants are still read if available; if not, the orientation summary's constraints serve as the reference.
 
 **Read before writing. Always.**
 
@@ -96,6 +148,10 @@ Red:    Write a small, focused unit test that fails
 Green:  Write the simplest code that makes it pass
 Refactor: Tidy the code while all tests remain green
 ```
+
+**The refactor step** operates at three levels (smells → patterns → methodology). For quick tidying (guard clauses, dead code, explaining variables), handle it inline. When the refactor step reveals deeper structural issues — AI-exacerbated smells, architectural drift, or smells requiring catalog-level technique selection — the build flow shifts seamlessly into refactor mode. The developer doesn't perceive a boundary; the refactoring simply gets the depth it needs. See MODE SHIFTS below.
+
+**If a test fails unexpectedly** — not the red-phase failure you wrote, but an unrelated failure or a regression — the build flow shifts into debug mode. The hypothesis-trace-understand-fix cycle runs within the build session's context. See MODE SHIFTS below.
 
 Repeat until the outer acceptance test passes.
 
@@ -399,7 +455,7 @@ Present a brief conformance summary:
 **If all clear** → continue to next scenario group.
 **If flags** → can the issue be resolved with a small structural tidying (extract, move, rename)? If yes, tidy as a `refactor:` commit and continue. If no, escalate to Tier 2.
 
-> **Epistemic review available.** For deeper understanding of the work package beyond architectural conformance — design intent, assumption validity, decision rationale, test quality — invoke `/rdd-review`. The review skill complements stewardship: stewardship checks architectural drift, review builds your understanding of what was built and why.
+> **Review mode available.** For deeper understanding of the work package beyond architectural conformance — design intent, assumption validity, decision rationale, test quality — the build flow can shift into review mode (see MODE SHIFTS). Review complements stewardship: stewardship checks architectural drift, review builds your understanding of what was built and why.
 
 ### Tier 2: Deep Architecture Review
 
@@ -442,6 +498,49 @@ build scenario group
                → code problem? → fix code
                → design problem? → Design Amendment → user approval → update design → continue
 ```
+
+---
+
+## MODE SHIFTS
+
+The build skill composes with debug, refactor, and review as seamless mode shifts — not dispatched sub-workflows. The developer stays in the thread of understanding. Skill boundaries are implementation details that disappear inside the build flow.
+
+### → Debug Mode
+
+**Trigger:** An unexpected failure — a test fails for reasons unrelated to the current red-phase specification, a previously passing test breaks, or runtime behavior diverges from the orientation's prediction.
+
+**What happens:** The build flow shifts into the hypothesis-trace-understand-fix cycle. The build session's orientation, current work package, and testable behaviors carry through — no re-orientation. The unexpected failure itself is the divergence signal. The developer (guided by the debug cycle) hypothesizes what the mental model was wrong about, traces to the divergence point, names the misunderstanding, and writes a test encoding the corrected understanding.
+
+**Resolution:** When the bug is understood and fixed, the build flow resumes at the trigger point.
+
+### → Refactor Mode
+
+**Trigger:** After the green phase, the developer or agent identifies smells beyond simple tidying — AI-exacerbated patterns (Avoidance of Refactors, Over-Specification, Distributed Incoherence, Bugs Deja-Vu, Oracle Mirroring, Logic Drift), complex classical smells requiring catalog-level technique selection, or architectural drift detected at a stewardship checkpoint.
+
+**What happens:** The build flow shifts into the Three-Level Refactor cycle (smells → patterns → methodology). The build session's orientation and architectural intent carry through. The refactoring is committed as a `refactor:` commit — structure only, behavior unchanged. AI hygiene prompts (Constraint Decay, Slopsquatting, Intent Debt) may run alongside.
+
+**Resolution:** When the refactoring is complete and tests pass, the build flow resumes.
+
+### → Review Mode
+
+**Trigger:** At stewardship checkpoints — natural scenario group boundaries or work package completion. Also available on-demand when the developer wants to verify their understanding before proceeding.
+
+**What happens:** The build flow shifts into question-driven review. No re-orientation occurs — the build session's context carries through. In pipeline mode, the review draws on the relevant artifact slice (ADRs, scenarios, domain model) for the current work package. In context-reconstructive mode, it draws on the session artifacts. The review surfaces questions about design fitness, assumption validity, and alignment with the orientation.
+
+**Resolution:** When the developer has engaged with the review questions, the build flow resumes. The developer may shift into debug or refactor based on what the review surfaced.
+
+### Declining a Mode Shift
+
+The developer can always decline. Mode shifts are the skill's judgment about where understanding matters — not mandates. If the developer says "skip it" or "I'll handle this manually," the build flow continues.
+
+### Stewardship Checks Against Session Artifacts
+
+In context-reconstructive mode, stewardship checkpoints reference the session artifacts written during Step 0:
+- Does the completed work match the work decomposition's scope and testable behaviors?
+- Are the dependency assumptions still holding?
+- Has the code drifted from the orientation summary's architectural intent?
+
+If session artifacts were not written (focused time budget), stewardship relies on conversation context.
 
 ---
 
@@ -497,4 +596,10 @@ When a design constraint feels wrong, follow the provenance chain in the system 
 
 ## NEXT PHASE
 
-When all scenarios are implemented and the user is ready to proceed, **`/rdd-synthesize`** is available as an optional terminal phase. Use it when the writer wants to extract publishable insight from the RDD cycle. If the user does not want synthesis, the build phase is the terminal phase — the pipeline is complete.
+When all scenarios are implemented and the user is ready to proceed:
+
+- **`/rdd-play`** is available as an optional post-build phase. Use it when the practitioner wants to inhabit stakeholder roles and discover what specifications missed through situated encounter with the built system. Play reads interaction specifications as its playable surface.
+
+- **`/rdd-synthesize`** is available as an optional terminal phase (after play, or directly after build if play is skipped). Use it when the writer wants to extract publishable insight from the RDD cycle.
+
+If the user does not want play or synthesis, the build phase is the terminal phase — the pipeline is complete.

@@ -1,6 +1,6 @@
 # RDD — Research-Driven Development
 
-A methodology for building software you understand.
+A methodology for building software you understand. AI in the loop — not human in the loop.
 
 **[Read the manifesto](https://nrgforge.github.io/rdd/)**
 
@@ -8,9 +8,9 @@ A methodology for building software you understand.
 
 Building with AI is fast. Understanding what to build and why — and understanding what you built — is the hard part.
 
-AI is a powerful tool for understanding code. But when generation is trivial, the practices that produce understanding need deliberate structure — or they get optimized away. Code is cheap. Software is becoming a commodity. What's scarce is knowing what to build and why, and that comes from figuring out how to ask the right questions.
+Most AI-assisted development is "human in the loop" — the AI does the work, the human checks it. RDD inverts this. The human builds understanding; the AI is in *their* loop — generating, fetching, synthesizing, checking, all in service of the human's understanding journey. The reverse centaur problem (where the human rubber-stamps AI output at AI speed) only exists when the AI is the primary actor. In RDD, the human is primary.
 
-RDD exists because of this shift. It uses AI for what AI is good at while structuring the practices that produce the understanding. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it.
+When generation is trivial, the practices that produce understanding need deliberate structure — or they get optimized away. Code is cheap. What's scarce is knowing what to build and why. RDD uses AI for what AI is good at while structuring the practices that produce understanding. It wraps BDD and TDD in a research layer that changes what you build — not just how you build it.
 
 At the end of an RDD cycle, you should be able to explain the system's design rationale, key decisions, domain vocabulary, and the user needs those decisions serve — without assistance. Not because you memorized the output, but because you shaped the process and the result. That's the test.
 
@@ -69,7 +69,9 @@ You can also invoke phases directly:
 | `/rdd-model` | Extract domain vocabulary from research |
 | `/rdd-decide` | Make architectural decisions, write behavior scenarios, produce interaction specs |
 | `/rdd-architect` | Decompose the system with provenance chains |
-| `/rdd-build` | Implement scenarios through BDD/TDD |
+| `/rdd-build` | Build with BDD/TDD — pipeline or context-reconstructive mode, seamless mode shifts |
+| `/rdd-debug` | Debug with understanding — hypothesize, trace, name the misunderstanding, fix |
+| `/rdd-refactor` | Refactor with the AI Smell Taxonomy — smells → patterns → methodology |
 | `/rdd-play` | Play with what you built as different users, discover what specs missed |
 | `/rdd-synthesize` | Write about what you built and what you discovered |
 | `/rdd-conform` | Audit artifact corpus, detect drift, graduate knowledge |
@@ -79,7 +81,7 @@ You can also invoke phases directly:
 
 RDD is a four-layer Claude Code plugin:
 
-- **Skills** (11) — orchestrate phases, manage user interaction, run adaptive reflection time
+- **Skills** (14) — orchestrate phases, composable build/debug/refactor/review family, utility skills, adaptive reflection time
 - **Agents** (6) — specialist subagents for citation auditing, argument auditing, literature review, conformance scanning, orientation writing, and code spikes
 - **Hooks** (5) — passive enforcement of invariants, reflection time, document sizing, and orientation regeneration
 
@@ -93,7 +95,7 @@ The plugin implements the methodology through specific mechanisms — an Attend-
 
 ## Built With RDD
 
-This plugin was built using RDD. The full artifact trail — nine research essays, 42 architectural decisions, 248 behavior scenarios, a domain model, system design, and product discovery document — lives in the `docs/` directory.
+This plugin was built using RDD. The full artifact trail — eleven research essays, 54 architectural decisions, ~280 behavior scenarios, a domain model, system design, and product discovery document — lives in the `docs/` directory.
 
 ## License
 

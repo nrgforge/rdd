@@ -307,6 +307,28 @@ No MR summary is needed in this mode — the review's value is absorbed directly
 
 ---
 
+## CONTEXT GATHERING PROTOCOL
+
+This skill's opening steps (mode detection, breadcrumb gathering, fetching, orientation synthesis, user validation) implement the shared Context Gathering protocol defined in the orchestrator (`skills/rdd/SKILL.md`, § Context Gathering Protocol). The review adaptation of step 4 emphasizes design rationale and decision context — backward-looking synthesis toward a completed change. Steps 1-3 and 5 are shared across all composable skills; step 4 diverges by direction.
+
+---
+
+## MODE SHIFT FROM BUILD
+
+When the build skill shifts into review mode (at a stewardship checkpoint or on developer request):
+
+- **No Context Gathering** — the build session's orientation carries through
+- **No time budget prompt** — operate within the build session's scope
+- In pipeline mode, draw on the relevant artifact slice for the current work package. In context-reconstructive mode, draw on the session artifacts
+- Surface review questions within the build session's context — the developer doesn't perceive a skill boundary
+- When the developer has engaged with the questions, the build flow resumes
+
+The developer can decline the mode shift. Mode shifts are the skill's judgment about where understanding matters — not mandates.
+
+This supersedes the prior callout model (ADR-046). The review skill remains fully functional as a standalone utility; the mode-shift integration is an additional entry path.
+
+---
+
 ## WHAT THIS SKILL DOES NOT DO
 
 - **No merge verdict.** The skill does not produce approve/reject/merge assessments. The reviewer forms their own judgment.
