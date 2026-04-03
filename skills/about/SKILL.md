@@ -75,7 +75,7 @@ Then give the full overview. Do not skip the overview on the assumption they kno
 Deliver this in your own words, but cover all of these points. Write in user language throughout — no jargon, no system-internal terms.
 
 **What RDD is:**
-RDD is a methodology for building software you actually understand. The premise is that AI tools are very good at generating code quickly, but they can also produce code you don't understand, can't maintain, and can't explain. RDD slows down the right parts of the process to make sure understanding keeps pace with output.
+RDD is a methodology for building software you actually understand. The "research" in the name is not just upfront investigation — it is the ongoing practice of reflecting on what was built, looping back when understanding shifts, and capturing what you think. Research-driven development is also reflection-driven development. The premise is that AI tools are very good at generating code quickly, but they can also produce code you don't understand, can't maintain, and can't explain. RDD slows down the right parts of the process to make sure understanding keeps pace with output.
 
 **The phase sequence:**
 A cycle moves through eight phases: RESEARCH, DISCOVER, MODEL, DECIDE, ARCHITECT, BUILD, and optionally PLAY and SYNTHESIZE. Each phase has a defined output — an essay, a domain model, architecture decisions, behavior specs, tests, and so on — that becomes the input for the next phase.
