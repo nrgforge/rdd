@@ -1,6 +1,6 @@
 # Orientation: Research-Driven Development (RDD)
 
-*Generated 2026-04-02 — ARCHITECT milestone*
+*Updated 2026-04-04 — Cycle 7 complete, Cycle 8 paused*
 
 ## What This System Is
 
@@ -77,27 +77,21 @@ Distributed as a Claude Code plugin at [nrgforge/rdd](https://github.com/nrgforg
 
 ## Current State
 
-**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 12 skills (orchestration + composable skill family + `/rdd-about` utility), 6 specialist subagents, 5 cross-cutting hooks, and the self-referential artifact corpus. (Currently 10 skills implemented; debug and refactor skills are Cycle 7 deliverables.)
+**Plugin:** RDD is packaged as a Claude Code plugin (`nrgforge/rdd`) with a four-layer architecture: 12 skills (orchestration + composable skill family + `/rdd-about` utility), 6 specialist subagents, 5 cross-cutting hooks, and the self-referential artifact corpus. All skills implemented.
 
 **Pipeline:** RESEARCH → DISCOVER → MODEL → DECIDE → ARCHITECT → BUILD → [PLAY] → [SYNTHESIZE] → GRADUATE. A conformance audit utility (`/rdd-conform`) operates outside the pipeline.
 
-**Active cycle:** Cycle 7 — composable skill family. RESEARCH through DECIDE complete; ARCHITECT milestone just reached.
+**Completed cycle:** Cycle 7 — composable skill family. All six work packages delivered: Context Gathering protocol (WP-A), Debug Skill (WP-B), Refactor Skill (WP-C), Build Skill rewrite with mode-shift composition (WP-D), orchestrator integration (WP-E), and verification pass (WP-F). ADRs 048-054. Essay 011 (Building with Understanding). Domain model Amendment 15. System Design v10.0.
 
 **What's settled (through ADR-054):**
 - Full pipeline ADRs 001-042 — gate protocol, product discovery, synthesis, orientation, roadmap, field guide, plugin architecture, play, gamemaster, adaptive gates (AID cycle), reflection time naming, self-explanation utility
 - Code review utility (ADRs 043-047) — two operating modes, questions-not-findings, collaborative context-gathering, build stewardship integration
 - Composable skill family (ADRs 048-054) — four skills sharing Context Gathering; Build as outer loop with seamless mode-shift composition (supersedes callout model, ADR-046); Debug and Refactor as standalone skills with mode-shift entry; session artifacts to `session/` directory; AI Smell Taxonomy (novel/exacerbated/accelerated) embedded in refactor skill; time budget as continuous spectrum; skill boundaries invisible inside build flow
 
-**What Cycle 7 builds (in dependency order):**
-- WP-A: Context Gathering protocol reference + two conformance fixes (no dependencies)
-- WP-B: Debug Skill — hypothesis-trace-understand-fix cycle (hard dependency: WP-A)
-- WP-C: Refactor Skill — Three-Level Refactor with AI Smell Taxonomy (hard dependency: WP-A; independent of WP-B)
-- WP-D: Build Skill rewrite — outer loop with mode-shift composition, context-reconstructive mode, session artifacts (hard: WP-A; implied: WP-B, WP-C)
-- WP-E: Orchestrator integration — add debug/refactor to available skills, update session artifact convention (hard: WP-B, WP-C, WP-D)
-- WP-F: Verification pass — ~50 scenarios, 17 fitness criteria, 16 boundary tests, plugin discovery (hard: all)
+**Paused cycle:** Cycle 8 — Pair-RDD. RESEARCH and DISCOVER complete; paused at MODEL boundary to let a key distinction marinate (corpus intersection vs. live pairing session — two design problems, not one). Full state in `cycle-status.md`. Essay 012 (trading-fours.md) is audited. Product discovery updated.
 
 **Open questions (selected):**
-- How would Pair-RDD work at epistemic gates?
+- ~~How would Pair-RDD work at epistemic gates?~~ **Researched (Cycle 8, Essay 012)** — two humans at a gate enriches the protocol; the pair log mechanic and phase-dependent coupling are proposed. Paused before DECIDE.
 - Should external review be formalized as a pipeline operation?
 - Cross-project synthesis (portfolio mode) is described but not operationalized
 - Fading implementation (Invariant 6) is deferred — tracked as design debt (ADR-005)

@@ -1,78 +1,48 @@
-# Active RDD Cycle: Revamping rdd-build for Context-Reconstructive Building
+# Active RDD Cycle: Sycophancy and RDD Reflexivity
 
-**Started:** 2026-04-02
-**Current phase:** BUILD ✅ Complete (PLAY/SYNTHESIZE optional)
+**Started:** 2026-04-04
+**Current phase:** DISCOVER (next)
 **Artifact base:** ./docs/
-**Essay:** 011-building-with-understanding.md
+**Essay:** 013-sycophancy-and-rdd-reflexivity.md
 
 ## Phase Status
 
 | Phase | Status | Artifact | Key Epistemic Response | Notes |
 |-------|--------|----------|----------------------|-------|
-| RESEARCH | ✅ Complete | Essay 011, research log, citation audit, argument audit, reflection | Productive resistance is both foundational and distributed; five questions pragmatically sufficient; three-tier smell taxonomy is sharpest contribution; user draws the line on depth/scope | 4 research loops + AI pathology loop |
-| DISCOVER | ✅ Complete | product-discovery.md updated | Everyday Developer as single stakeholder with two entry points; context-reconstructive makes build more capable not lesser; reconstructed facsimiles needed (especially work decomposition from roadmap); rdd-about as bridge for sharpening developers | New stakeholder, 6 tensions, 6 inversions, 9 vocab entries, 3 debt entries |
-| MODEL | ✅ Complete | domain-model.md Amendment 15 | Context Gathering generalizes Collaborative Context-Gathering — same orientation, different direction (understanding existing changes vs making new ones); the protocol holds across all four skills | 24 concepts, 5 actions, 23 relationships, 12 synonym aliases; 5 original naming contributions |
-| DECIDE | ✅ Complete | ADRs 048-054, scenarios updated, interaction-specs updated, argument audit, conformance scan | Composition should feel like mode shifts, not dispatch — skill boundaries are implementation details; the thread is understanding; standalone invocation is valid but inside build the transitions must be seamless | 7 ADRs, 40+ scenarios, 13 interaction spec tasks, 12 audit issues resolved |
-| ARCHITECT | ✅ Complete | system-design.md v10.0, roadmap.md updated, ORIENTATION.md regenerated | Build skill density is agent instruction, not developer ceremony — the developer's experience is lightweight (orient, validate, build, check); the skill file is heavy because it encodes when the agent should pause and surface. TDAD principle applies: context > procedure, and Context Gathering is the most consequential step. Balance: AI drives, human navigates | Amendment #11: 2 new modules, 2 amended, 19 responsibility rows, 17 fitness criteria, 16 tests; 6 work packages |
-| BUILD | ✅ Complete | 4 skill files (debug new, refactor new, build rewritten, review updated) + orchestrator updated | AI in the loop — the human builds understanding, the AI is in their loop serving that journey. Density is agent instruction not developer ceremony. | 6 WPs: protocol, debug, refactor, build rewrite, orchestrator, verification |
-| INTEGRATE | ✅ Complete (within BUILD) | Verification pass: 2 structural + 5 cosmetic findings resolved | — | Conformance scan clean |
+| RESEARCH | ✅ Complete | Essay 013, research log, 1 lit review, citation audit, argument audit, reflection | **Three design implications.** (A) Heavier framing architecture in early phases — same genuine mechanisms deployed earlier, not different ones. (B) Every phase transition evaluated through sycophancy lens — framing stability as a signal. (C) Retrospective sycophancy audit on prior corpuses with measurable proxies. Also: the framing audit concept — a new specialist or extended argument auditor that surfaces frames the essay didn't choose by comparing essay against full research log. User sees the convenience-of-AI as the content selection problem itself. "Rub vs. opportunity" — resolved toward opportunity but with honest acknowledgment this resolution happened inside the dynamic described. | 4 research loops, 1 lit review, 16+ web searches. All P1/P2 audit fixes applied. Hallucinated author name caught and corrected. |
+| DISCOVER | ☐ Pending | — | — | — |
+| MODEL | ☐ Pending | — | — | — |
+| DECIDE | ☐ Pending | — | — | — |
+| ARCHITECT | ☐ Pending | — | — | — |
+| BUILD | ☐ Pending | — | — | — |
+| INTEGRATE | ☐ Pending | — | — | — |
 | PLAY | ☐ Optional | — | — | — |
 | SYNTHESIZE | ☐ Optional | — | — | — |
 
 ## Feed-Forward Signals
 
 ### From RESEARCH
-1. **White space confirmed** — no tool scaffolds the developer's understanding before and during building
-2. **Context > procedure for AI agents** — TDAD: context outperforms procedural TDD instructions
-3. **Shared context-reconstruction is real** — same pre-work questions, divergence after orientation
-4. **Five orientation questions** — pragmatically sufficient, lossy compression of the full pipeline
-5. **Productive resistance is both foundational and distributed** — orientation starts it, iterative engagement deepens it
-6. **Three-tier smell taxonomy** — novel, exacerbated, accelerated; each tier needs different intervention
-7. **The refactor step is reclaimed** — Red → Green → Refactor(smells → patterns → methodology)
-8. **Four composable skills** — build, debug, refactor, review; user controls calibration
-9. **Codebase audit is diagnosis without remediation** — rdd-refactor is the action arm
-10. **Open: shared skill vs shared protocol** — DECIDE question
-11. **Willison's golden rule has scoped exception** — principle holds for production work
-
-### From DISCOVER
-12. **Everyday Developer** — single stakeholder, two entry points (RDD practitioner in light mode; sharpening developer with no RDD background). Same need: orient before acting, come away sharper
-13. **The skill teaches through use** — sharpening developer won't read a manifesto; the philosophy is implicit in the process
-14. **Context-reconstructive makes build more capable, not lesser** — the enhancement benefits both modes; pipeline mode is deeper, not replaced
-15. **Reconstructed facsimiles** — lightweight artifacts (mini-roadmap, testable behaviors, vocabulary) produced during orientation; gives stewardship something to check against
-16. **Work decomposition is the most consequential reconstruction** — without work packages, the build loop has nothing to iterate through
-17. **rdd-about as bridge** — for the sharpening developer who wants to understand the philosophy without running a full cycle
-
-### From MODEL
-18. **Context Gathering generalizes Collaborative Context-Gathering** — same orientation protocol, different direction (understanding existing vs making new changes). Validated by user experience
-19. **Original naming contributions** — Productive Resistance, Constraint Decay, Distributed Incoherence, Oracle Mirroring, three-tier AI Smell Taxonomy. These give the skill family a diagnostic language
-20. **No invariant amendments** — context-reconstructive mode extends Invariant 0 through a different mechanism, no contradictions
-21. **Comprehension Debt now in domain model** — the Opacity Problem quantified (Osmani 2026). Links to Intent Debt as second-order manifestation
-
-### From DECIDE
-22. **Mode shifts, not dispatch** — skill composition inside build should feel like the build skill changing its lens, not dispatching sub-workflows. Skill boundaries are implementation details that disappear inside the build flow. Standalone invocation (`/rdd-debug`, `/rdd-refactor`) is where boundaries are visible and valid.
-23. **The thread is understanding** — the connective tissue across all mode shifts. Debug, refactor, review are different lenses on the same thread. The developer should never stop thinking about the code to think about the process.
-24. **Orientation quality vs understanding depth** — the argument audit forced a useful distinction. Focused mode preserves orientation quality; understanding depth scales with time. The essay's "five minutes of genuinely oriented work" is about orientation, not the full epistemic loop.
-25. **Session artifacts for context compression survival** — reconstructed facsimiles written to `session/` directory. Not provenance records (outside ADR-031 scope) — working-memory externalization.
-26. **Heuristic dependency classification at ticket level** — the roadmap's hard/implied/open scheme applies, but the classification is approximate without architectural grounding. A starting decomposition, not an architectural fact.
-27. **AI hygiene prompts are distinct from smell detection** — novel AI patterns (Constraint Decay, Slopsquatting, Intent Debt) have no code-level signature. The refactor skill runs awareness prompts, not diagnostic detection.
-28. **ADR-054 supersedes ADR-046** — the callout model evolves to seamless mode shifts with context continuity. The review skill retains standalone utility (ADR-043 intact).
-
-### From ARCHITECT
-29. **Build skill density is agent instruction** — the developer's experience is lightweight (orient, validate, build, periodically check). The skill file is heavy because it encodes the agent's side of the contract: when to pause, when to surface, when to shift mode. Procedure density ≠ developer ceremony.
-30. **AI drives, human navigates** — use AI to its fullest potential while ensuring the human holds direction. The build skill shouldn't micromanage the AI; it should create checkpoints where the human confirms they're building the right thing in the right way for the right reasons.
-31. **TDAD principle confirmed as load-bearing** — Context Gathering (context-first orientation) is the most consequential step. The procedural scaffolding (TDD, stewardship, mode shifts) creates moments where context matters — the rhythm, not the rules.
-32. **Build skill at fitness threshold** — right at the "no module owns more than 10 glossary entries" line. Justified by domain complexity (building epistemically is inherently complex), not by poor decomposition. Monitor during BUILD.
+1. **Content selection is the operative mechanism** — sycophancy operates through which truths get surfaced, not tone (Cheng et al. 2026, Science). Stylistic mitigations address the wrong dimension.
+2. **The performative/genuine distinction** — can the structure be satisfied while leaving the most consequential information unsurfaced? If yes, performative. If no, genuine. The testable criterion for evaluating any anti-sycophancy mechanism.
+3. **The sycophancy gradient** — pipeline is most vulnerable in early phases (RESEARCH, DISCOVER, MODEL) where structural constraints are weakest, most resistant in later phases (BUILD, PLAY) where work contacts non-sycophantic systems.
+4. **Three performative mechanisms** — anti-praise instruction (wrong dimension), AID engagement calibration (optimizes for user state not material demands), Inversion Principle as currently specified (agent selects what to invert).
+5. **Three genuine mechanisms already in RDD** — argument auditor dispatch (architectural isolation), domain model invariants (externalized, durable), BUILD empirical tests (compilers can't sycophantically agree).
+6. **The framing audit concept** — new specialist or extended argument auditor that surfaces frames the essay didn't choose, comparing essay against full evidence base. Turns negative space of content selection into a visible artifact.
+7. **Commitment gating at phase boundaries** — user explicitly states which premises they're building on and which remain open. From Khurana et al.'s premise governance framework.
+8. **The self-correction blind spot as design leverage** — same model in fresh context treats prior output as external input, activating dormant correction capabilities (Tsui et al. 2025). Architectural isolation works.
+9. **Automation bias inverts engagement assumption** — enthusiastic, trusting users are more susceptible, not less (Sayin & Khasawneh 2025). Deep engagement may be the most dangerous level.
+10. **Retrospective sycophancy audit** — measurable proxies: framing coverage, alternative engagement depth, vocabulary provenance. Applied to prior corpuses, not just current cycle.
+11. **Pre-mortem framing for essays** — "assume this essay led the project astray — what would have caused that?" Exploits prospective hindsight (Mitchell et al. 1989) at the framing level.
+12. **Invariant tensions** — Invariant 0 (authority may be illusory), Invariant 3 (pragmatic/epistemic boundary may be operationally blurred), Invariant 4 (productive engagement may be performatively productive).
+13. **The convenience-of-AI IS the problem** — the agent's value proposition (filtering for relevance) is exactly where sycophantic agreement hides. Structure must constrain what can be omitted, not just what gets said.
+14. **"Rub vs. opportunity"** — user's framing. Same genuine mechanisms deployed earlier (pragmatic cost, not epistemic) is the opportunity reading. The test is whether these ideas survive DECIDE and BUILD.
+15. **The briefing document** (sycophancy-and-rdd-reflexivity.md) should be retired — all content migrated into research log and essay.
 
 ## Context for Resumption
 
-- This cycle redesigns rdd-build and creates rdd-debug and rdd-refactor as composable skills
-- The user's framing: "orient first, set guardrails, then move fast" — orientation is foundational, TDD/stewardship is distributed
-- **Key DECIDE insight:** composition is seamless mode shifts inside build, real entry points outside. The developer thinks about the code, not the process
-- Context Gathering is an embedded protocol (ADR-049), not a separate skill — each skill adapts step 4 (synthesis) to its direction
-- Reconstructed facsimiles (ADR-050) are session artifacts written to files, surviving context compression
-- The argument audit surfaced 12 issues (all resolved); the conformance scan found no contradictions, 7 structural debt items for BUILD
-- Two standalone conformance fixes needed before BUILD: interaction-specs.md in build read list, /rdd-play in build NEXT PHASE
-- ARCHITECT produced system design v10.0 (Amendment #11): 2 new modules (Debug, Refactor), Build rewritten as outer loop, 6 work packages in roadmap
-- User's build philosophy: "AI drives, human navigates" — build skill encodes agent behavior (when to pause, surface, shift), not developer ceremony
-- TDAD principle is load-bearing: Context Gathering is step 1 and the most consequential part; procedural scaffolding creates moments where context matters
-- Next: BUILD phase implements the composable skill family through the roadmap's work packages (WP-A through WP-F)
+- Cycle 9 investigates whether RDD's anti-sycophancy mechanisms provide genuine structural resistance or performative anti-sycophancy
+- RESEARCH complete with essay 013, audited and reflection recorded
+- The central finding: a testable distinction between performative and genuine structural resistance, a sycophancy gradient showing early phases are most vulnerable, and three design implications (heavier early framing architecture, phase-transition sycophancy evaluation, retrospective corpus audit)
+- The framing audit concept is the key design contribution from the gate conversation — needs specification in DECIDE
+- DISCOVER should update stakeholder maps, value tensions, and assumption inversions against the sycophancy research
+- The briefing document (sycophancy-and-rdd-reflexivity.md) can be removed once confirmed that all content is in the research log and essay
