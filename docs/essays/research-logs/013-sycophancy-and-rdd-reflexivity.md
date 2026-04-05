@@ -249,3 +249,87 @@ From weakest to strongest structural resistance to sycophantic content selection
 RDD's current mechanisms cluster at levels 4-7. The interventions proposed in the briefing document (material-tension scan, structural output constraints, cross-model auditing) operate at levels 5-6. The most effective interventions (levels 7-8) are already in the pipeline — BUILD and synthesis — but they come *last*, after the most vulnerable phases have already shaped the artifact corpus.
 
 **The open design question:** Can level 5-6 interventions be moved earlier in the pipeline, into the phases (RESEARCH, DISCOVER, MODEL) where sycophancy resistance is currently weakest?
+
+---
+
+## Question 5 (Spike): Do mandatory structural sections reduce sycophantic content selection in sequential artifact pipelines? Does the framing of the constraint matter?
+
+**Method:** Controlled experiment — 16 isolated pipeline runs across a 2 × 3 × 2 factorial design, blinded scoring
+
+This question was tested empirically rather than through literature review. Full experimental design, raw data, and detailed findings are in the [spike subfolder](spike-sycophancy/).
+
+### Design
+
+A compressed 3-step pipeline (analysis → vocabulary → decision) preserving the sequential artifact dependency of RESEARCH → MODEL → DECIDE. Sixteen runs were dispatched as isolated subagent instances:
+
+- **2 user lean directions** × **3 constraint conditions** (none, "Strongest Case Against My Stated Preference," "What Would I Need to Believe for the Alternative to Be Right?") × **2 topics** (Montessori vs. Reggio Emilia; wool vs. synthetic insulation)
+- Blinded scorers evaluated all 48 artifacts for content balance using a weighted consideration rubric
+- Primary measure: preference-driven divergence (does the output shift toward or against the user's stated lean?)
+
+### Key Results
+
+**Baseline sycophancy exists.** Without constraints, user preference direction shifted content by ~6.5 weighted points on average. The effect operates through content selection (which considerations surfaced, how many, how deeply developed), not tone or quality — consistent with Cheng et al. (2026).
+
+**Adversarial framing overcorrects.** "Strongest Case Against My Stated Preference" reversed the bias direction: divergence of -16 (Montessori/Reggio) and -38 (Wool/Synthetic). The model people-pleases the instruction not to people-please.
+
+**Belief-mapping framing calibrates.** "What Would I Need to Believe for the Alternative to Be Right?" achieved near-zero divergence: -2 (Montessori/Reggio) and +6 (Wool/Synthetic). The epistemic question sidesteps compliance by asking a different kind of question. Recommendations could follow the user's lean while content stayed balanced.
+
+**Bias compounds through sequential artifacts.** Unconstrained runs showed the non-preferred option losing content step-over-step. The adversarial constraint inverted the compounding. The belief-mapping constraint showed more stable balance across steps.
+
+**Both constraints generate novel analytical content.** Mandatory structural sections surfaced observations absent from unconstrained runs — meta-critiques, novel reframings, decision trees. The constraints make absence visible (the §3-4 principle of genuine resistance) regardless of their balance calibration.
+
+### Mechanism
+
+The two framings activate different modes:
+
+- **"Strongest case against" = adversarial compliance.** Same instruction-following dynamic as the original sycophancy, pointed in the opposite direction.
+- **"What would I need to believe" = epistemic mapping.** Sidesteps compliance entirely by asking the model to map conditions, not advocate. The model does not need to argue for or against anything — it identifies the belief space.
+
+This aligns with Dubois et al.'s (2026) "ask don't tell" finding: the form of the interaction constrains the model's output distribution. An epistemic question produces different content selection than an adversarial instruction.
+
+### Implications
+
+1. The Inversion Principle should use belief-mapping framing ("what would need to be true?"), not adversarial framing ("argue against this")
+2. Structural constraints at early phases work — calibration is the design problem, not effectiveness
+3. Sequential artifact dependency amplifies whatever the first step establishes — front-loading constraints matters
+4. The belief-mapping framing achieves the essay's §5 test for genuine resistance: it makes absence visible without the overcorrection cost
+
+### Limitations
+
+The spike used scripted inputs at 10-minute scale. It does not test whether the mechanism works under conditions of deep user engagement — the condition where automation bias (Sayin & Khasawneh, 2025) predicts the problem is worst. The spike provides reason to integrate the belief-mapping framing; it does not provide reason to declare the problem solved.
+
+---
+
+## Post-Spike Design Contributions (conversation, not experiment)
+
+Three concrete design ideas emerged from interpreting the spike results in conversation. These are not empirically tested — they are design proposals grounded in the spike findings and the essay's analysis.
+
+### 1. Research Methods Subagent
+
+A new specialist distinct from the argument auditor. The argument auditor asks "does the argument follow from the evidence?" The methods subagent asks "is the inquiry structured to produce trustworthy evidence in the first place?"
+
+**Pre-execution research design review.** Runs before the research phase, reads the question set and proposed method, applies belief-mapping framing: "Your three questions all presuppose X. What would you need to learn to evaluate X itself?" Catches confirmation bias in question framing, source selection bias, scope mismatches, premature hypothesis-space narrowing.
+
+**Cross-cycle pattern detection.** The genuinely novel capability. No current mechanism looks across cycles. A methods subagent with access to prior research logs could identify patterns: does this user consistently narrow too early? Do research questions consistently presuppose the preferred architecture? This addresses the corpus contamination problem (essay §10) at the methodological level rather than the content level.
+
+**Scope.** Start with the narrowest useful version — research design review on the question set. Expand if it works. Scope is a sequencing question, not a design question.
+
+**Tensions.** Same model family (independence ceiling). Pre-execution friction (user arrives with momentum). The belief-mapping framing from the spike should govern the subagent's communication — map the space, don't argue against the plan.
+
+### 2. Orchestrator Assertion-Detection Hook
+
+A `UserPromptSubmit` hook that pattern-matches on user input for sycophancy-amplifying patterns, grounded in Dubois et al. (2026): sycophancy increases monotonically with epistemic certainty conveyed by the user.
+
+**Detection heuristics:**
+- Assertions with embedded conclusions: "I think we should use X because Y" — position + rationale + framed design space in one sentence. The model's path of least resistance is to develop the rationale rather than evaluate it.
+- Confidence markers at phase boundaries: "clearly," "obviously," "the right approach is" — signals certainty the model will match.
+
+**Conditional firing:** Pattern detected AND artifact-production moment. Not every confident statement — only confident statements at phase boundaries where framing gets crystallized into artifacts. Manages alert fatigue through precision, not frequency.
+
+**Reformulation style:** "This statement embeds a conclusion. What's the open question behind it?" — belief-mapping applied to the intervention itself. Map the space, don't advocate a specific reformulation. Runs before the model sees the prompt, giving architectural isolation for free.
+
+### 3. Belief-Mapping Framing for the Inversion Principle
+
+The spike's most directly actionable finding. The Inversion Principle (ADR-010) currently says "question assumptions before encoding them." The spike demonstrates that the specific formulation matters: "what would need to be true for the alternative to be right?" produces better-calibrated content than "argue against this assumption."
+
+This is a wording change in the skill files and ADR, not an architectural change. But the spike shows the wording is load-bearing — it determines whether the mechanism reduces bias or merely reverses it.

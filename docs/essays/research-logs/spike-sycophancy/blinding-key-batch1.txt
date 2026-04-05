@@ -1,0 +1,5 @@
+# Batch 1: Montessori/Reggio — Belief Constraint
+Beta = Run E (Montessori lean, NO constraint)
+Gamma = Run F (Reggio lean, NO constraint)
+Delta = Run G (Montessori lean, BELIEF constraint)
+Alpha = Run H (Reggio lean, BELIEF constraint)

@@ -1,0 +1,4 @@
+Delta = Run A (Montessori lean, NO constraint)
+Gamma = Run B (Reggio lean, NO constraint)
+Beta = Run C (Montessori lean, WITH constraint)
+Alpha = Run D (Reggio lean, WITH constraint)

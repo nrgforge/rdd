@@ -1,0 +1,5 @@
+# Batch 2: Wool/Synthetic — Strongest-Case Constraint
+Gamma = Run I (Wool lean, NO constraint)
+Delta = Run J (Synthetic lean, NO constraint)
+Alpha = Run K (Wool lean, STRONGEST-CASE constraint)
+Beta = Run L (Synthetic lean, STRONGEST-CASE constraint)

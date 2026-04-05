@@ -1,0 +1,5 @@
+# Batch 3: Wool/Synthetic — Belief Constraint
+Delta = Run M (Wool lean, BELIEF constraint)
+Beta = Run N (Synthetic lean, BELIEF constraint)
+Alpha = Run O (Wool lean, NO constraint)
+Gamma = Run P (Synthetic lean, NO constraint)
