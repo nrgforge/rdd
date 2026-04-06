@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.2
+
+- **Re-audit after revision is mandatory** — any revision of an artifact (essay, ADRs, outline) made in response to audit findings now triggers a fresh argument auditor dispatch before the pipeline advances. The prior instruction was buried inside a conditional paragraph ("if substantial...then re-dispatch") which gave the agent wiggle room to skip the re-audit. Revisions can introduce new logical gaps, overreach, or framing issues — the re-audit catches these. The loop runs as many times as needed: audit → revise → audit → ... → clean audit. Applied to research, decide, and synthesize skills.
+
 ## v0.6.1
 
 - **Framing audit findings surfaced to user** — the argument auditor's two sections are now handled differently: argument audit issues (logical gaps, overreaching claims) are auto-corrected by the agent, but framing audit findings (alternative framings, absent truths, content selection choices) are surfaced to the user at the gate for their judgment. Auto-correcting framing choices would be the exact content selection mechanism the research identified as where sycophancy operates. Updated in research, decide, and synthesize skills.
