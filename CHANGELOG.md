@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.3
+
+- **AID Interpret step is now strictly private** — the AID cycle was designed with Attend and Interpret as private calibration steps (the agent reads engagement signals, forms a hypothesis, adjusts its response) but skill text was narrating interpretations back to the user ("You asked about X", "You engaged with Y") as preambles to probes. This is content-level sycophancy dressed as observation — the user already knows how engaged they've been, so telling them is praise-as-observation, functionally identical to "Great question!" It also corrupts the AID architecture by leaking private calibration into the user-facing conversation, creating conformity pressure. Updated orchestrator AID protocol and all six phase skill gate sections. Probes and challenges now reference specific artifact content directly ("The essay's conclusion on X rests on Y", "ADR-NNN trades A against B") rather than characterizing the user's prior engagement. Explicit anti-pattern note added to the orchestrator's Anti-sycophancy step and Decide step preamble.
+
 ## v0.6.2
 
 - **Re-audit after revision is mandatory** — any revision of an artifact (essay, ADRs, outline) made in response to audit findings now triggers a fresh argument auditor dispatch before the pipeline advances. The prior instruction was buried inside a conditional paragraph ("if substantial...then re-dispatch") which gave the agent wiggle room to skip the re-audit. Revisions can introduce new logical gaps, overreach, or framing issues — the re-audit catches these. The loop runs as many times as needed: audit → revise → audit → ... → clean audit. Applied to research, decide, and synthesize skills.
