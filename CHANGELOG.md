@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.1
+
+- **Framing audit findings surfaced to user** — the argument auditor's two sections are now handled differently: argument audit issues (logical gaps, overreaching claims) are auto-corrected by the agent, but framing audit findings (alternative framings, absent truths, content selection choices) are surfaced to the user at the gate for their judgment. Auto-correcting framing choices would be the exact content selection mechanism the research identified as where sycophancy operates. Updated in research, decide, and synthesize skills.
+
 ## v0.6.0
 
 Sycophancy resistance as structural architecture — not just conversational discipline.
