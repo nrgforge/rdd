@@ -103,6 +103,8 @@ After the agent completes, read the audit report. The two sections are handled d
 2. **P2 issues:** Underrepresented considerations in rejected alternatives — present for user judgment
 3. **P3 issues:** Minor framing observations — note for user awareness
 
+**Re-audit after ADR revision is mandatory.** Any revision of the ADRs made in response to audit findings (argument audit corrections or framing audit discussions) triggers a fresh argument auditor dispatch on the revised ADRs before proceeding to scenarios. This is unconditional: revisions can introduce new logical gaps, new overreach, or new framing issues. The loop runs as many times as needed: audit → revise → audit → ... → clean audit. Advance only when the most recent audit found no unaddressed issues.
+
 ### Step 3.5: Conformance Audit
 
 After the argument audit passes, dispatch the **conformance-scanner** specialist subagent. Provide it with:

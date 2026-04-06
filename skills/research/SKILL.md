@@ -188,9 +188,11 @@ After the agent completes, read the audit report. The two sections are handled d
 2. **P2 issues:** Underrepresented alternatives — framings the evidence supported but the essay didn't choose. Present to the user for their judgment.
 3. **P3 issues:** Minor framing choices. Note for the user's awareness.
 
-**Essay-as-checkpoint:** After the user reviews the framing audit findings, if they identify substantial alternative framings or consequential omissions that should be addressed, revise the essay to absorb, reframe, or explicitly reject the alternatives. Then re-dispatch the argument auditor on the revised essay. The pipeline does not advance past RESEARCH with unaddressed framing audit findings. The research phase's structural advantage is its iterability — each pass through question → investigate → write → audit → revise is another chance for consequential omissions to surface.
+**Re-audit after revision is mandatory, not optional.** Any revision of the essay made in response to audit findings (argument audit corrections or framing audit discussions) triggers a fresh argument auditor dispatch on the revised essay before the pipeline advances. This is unconditional: the only question is whether the revision addressed the findings, not whether the revision was "substantial enough" to warrant re-auditing. Revisions can introduce new logical gaps, new overreach, or new framing issues — the re-audit catches these. The dispatch is cheap (a specialist subagent run); the cost of propagating unverified revisions into downstream phases is not.
 
-The essay that enters the epistemic gate should be citation-audited, argument-audited, and framing-audited. Downstream phases inherit whatever the essay asserts — catching problems here is far cheaper than discovering them during DECIDE or BUILD.
+The loop runs as many times as needed: audit → revise → audit → revise → ... → clean audit. The pipeline advances past RESEARCH only when the most recent audit found no unaddressed issues. The research phase's structural advantage is its iterability — each pass through question → investigate → write → audit → revise is another chance for consequential omissions to surface.
+
+The essay that enters the epistemic gate should be citation-audited, argument-audited, and framing-audited — on its current state, not a prior version. Downstream phases inherit whatever the essay asserts; catching problems here is far cheaper than discovering them during DECIDE or BUILD.
 
 ### EPISTEMIC GATE
 
@@ -249,7 +251,7 @@ Write reflections to `./docs/essays/reflections/NNN-descriptive-name.md`, using 
 - **New research question** — offer to loop back into the research cycle (Step 1–3) before proceeding. The reflection becomes the next question. Dispatch the **research-methods-reviewer** on the revised question set before the next loop.
 - **Open question without a clear research path** — note it for the domain model. When `/rdd-model` runs, these open questions should appear in a dedicated **Open Questions** section of the domain model, so they are visible to downstream phases rather than lost between sessions.
 
-**Essay-as-checkpoint from reflections.** If a reflection surfaces a reframing substantial enough to change the essay's central argument or dominant framing, the essay must be revised before the pipeline advances. Revise the essay, then re-dispatch the argument auditor (with framing audit) on the revised essay.
+**Essay-as-checkpoint from reflections.** If a reflection surfaces a reframing that changes the essay's central argument or dominant framing, revise the essay before the pipeline advances. Any such revision triggers a fresh argument auditor dispatch (with framing audit) on the revised essay — this is unconditional, matching the re-audit rule from Step 4b.
 
 Then ask whether to proceed to the next phase, revise the essay, or loop back to research.
 

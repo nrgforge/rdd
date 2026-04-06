@@ -247,6 +247,8 @@ After the agent completes, read the audit report. The two sections are handled d
 
 **Framing audit issues — surface these to the writer. Do NOT auto-correct.** The framing audit surfaces alternative narrative framings the material could support. These are the writer's judgment calls — the whole point is making the narrative negative space visible so the writer can choose their framing with awareness of what they're not choosing.
 
+**Re-audit after outline revision is mandatory.** Any revision of the outline made in response to audit findings (argument audit corrections or framing audit discussions with the writer) triggers a fresh argument auditor dispatch on the revised outline before presenting to the writer as finalized. This is unconditional: revisions can introduce new logical gaps or framing issues. The loop runs as many times as needed: audit → revise → audit → ... → clean audit.
+
 #### Outline Location
 
 Ask the writer where the outline should be stored. Default: `./docs/synthesis/NNN-descriptive-name-outline.md` (using the next sequential number in the synthesis directory). Create the `./docs/synthesis/` directory if it doesn't exist. Synthesis outlines are distinct from research essays — essays are research artifacts that feed the pipeline, while outlines are for sharing publishable insight outward. The writer may prefer a different location.
