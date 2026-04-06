@@ -34,3 +34,7 @@ The inversion principle is documented in the orchestrator's workflow description
 
 **Neutral:**
 - The relationship is: Invariant 0 (amended) → Inversion Principle (mechanism) → Assumption Inversions (artifact). This is a three-level hierarchy: constitutional authority → methodological principle → concrete output
+
+---
+
+> **Amendment (ADR-055, 2026-04-06):** Cross-cutting application expanded from four locations to six — PLAY (gamemaster introduces belief-mapping questions about the practitioner's design assumptions) and SYNTHESIS (belief-mapping applied to narrative framing) added. Form specified: belief-mapping questions ("What would I need to believe for the alternative to be right?") are the mandatory operationalization; adversarial framing deprecated as default.

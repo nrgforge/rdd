@@ -154,3 +154,73 @@
 ### Task: Write and manage session artifacts
 
 **Interaction mechanics:** In context-reconstructive mode, the agent writes validated facsimiles (work decomposition, orientation summary) to a `session/` directory as markdown files with `session-artifact: true` frontmatter. During stewardship, it reads these files to check conformance. It does not automatically clean up session artifacts after the session — it leaves that decision to the developer.
+
+---
+
+*Updated 2026-04-06 (Cycle 9: Sycophancy and RDD Reflexivity — ADRs 055-062)*
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Sycophancy-Aware Interaction)
+
+**Super-Objective:** "I need structural mechanisms that catch what I can't catch — not because I'm inattentive, but because neither I nor the agent can detect sycophantic content selection from inside the interaction"
+
+### Task: Engage with belief-mapping questions at gates
+
+**Interaction mechanics:** At each epistemic gate, the agent deploys one or more research-grounded question forms (belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, or open-question reframing) composed from the specific phase artifact. The practitioner engages with the question — their response is simultaneously sycophancy resistance evidence, confidence diagnosis, and epistemic advancement. The practitioner's substantive engagement with alternatives demonstrates Earned Confidence; deflection or surface response flags reinforced confidence. The gate conversation continues until shared understanding is established.
+
+### Task: Respond to Grounding Reframe
+
+**Interaction mechanics:** When the agent determines that sycophancy risk is unassessable, it names the specific uncertainty and offers concrete grounding actions (run a spike, write a test, consult an expert, belief-map a specific assumption). The practitioner chooses: pursue a grounding action, or proceed with the limitation visible. Proceeding without grounding is a conscious choice — the practitioner knows what they're building on. The decision is recorded for the Susceptibility Snapshot.
+
+### Task: Review Susceptibility Snapshot
+
+**Interaction mechanics:** At phase boundaries, a Susceptibility Snapshot artifact is produced by isolated evaluation. The practitioner may review the snapshot to see what susceptibility signals were observed during the phase — assertion density, narrowing, framing adoption. The snapshot is advisory. The practitioner decides whether to act on its recommendations, adjust their approach, or proceed.
+
+### Task: Understand and communicate process limitations
+
+**Interaction mechanics:** The practitioner develops understanding of where the methodology is weakest (early phases, content selection, the agent's value proposition being mechanistically identical to the sycophancy vector). When communicating about artifacts produced through RDD, the practitioner can articulate: "here's what the methodology can and can't guarantee, and here's where external review would be most valuable." This is Authority (Invariant 0) including limitation transparency.
+
+---
+
+## Stakeholder: AI Agent (Orchestrator, Sycophancy-Aware Operation)
+
+**Super-Objective:** "Apply belief-mapping framing rather than adversarial framing when surfacing alternatives — the form of the question determines whether it reduces bias or reverses it"
+
+### Task: Run AID cycle with susceptibility observation
+
+**Interaction mechanics:** During the Attend phase, the agent reads engagement signals AND susceptibility signals: assertion density, solution-space narrowing without user initiation, adoption of agent-provided framing without challenge, confidence markers at artifact-production moments. The agent records susceptibility signals but does not evaluate them inline — evaluation happens in isolated context at phase boundaries, producing a Susceptibility Snapshot.
+
+### Task: Deploy question forms from the toolkit
+
+**Interaction mechanics:** At each gate, the agent selects from six research-grounded question forms based on the AID interpretation and the phase-specific mapping. The agent composes each question from the specific artifact content and conversation state — the form is a type, not a script. The same question type at two different gates produces different specific questions. The agent does not recite templates.
+
+### Task: Perform assertion-aware observation
+
+**Interaction mechanics:** During conversation, the agent attends to assertions that embed framing, architectural, or design conclusions — using semantic assessment, not lexical pattern matching. When an embedded conclusion is detected near an artifact-production moment, the agent deploys open-question reframing from the toolkit. The agent does NOT flag harmless implementation confidence. The agent is transparent about this mechanism's limitation: it operates inside the conversation without Architectural Isolation.
+
+### Task: Perform Grounding Reframe when risk is unassessable
+
+**Interaction mechanics:** When the agent cannot determine whether the user's confidence is earned or reinforced (no belief-mapping test available, no empirical contact), the agent does not disclaim and proceed. Instead, it names the specific uncertainty, offers concrete grounding actions, and makes visible what the user would be building on without grounding. The reframe is composed from the current context, not from a template.
+
+### Task: Respect unconditional architectural floor
+
+**Interaction mechanics:** The agent dispatches Tier 1 mechanisms (specialist audits, Susceptibility Snapshot evaluation, Research Methods Subagent review) regardless of its own assessment of sycophancy risk. The agent does not skip audits because the context seems low-risk. When the user provides domain grounding, the agent treats it as additional evidence, not as a replacement for structural assessment.
+
+---
+
+## Stakeholder: AI Agent (Specialist Subagents, Sycophancy-Aware Extensions)
+
+**Super-Objective:** "Read input artifacts, perform focused analysis, and write output artifacts — in architectural isolation from the main conversation"
+
+### Task: Produce Susceptibility Snapshot
+
+**Interaction mechanics:** At phase boundaries, the subagent receives recorded susceptibility signals from the AID cycle's inline observations. In an isolated context (fresh window, no conversation history), the subagent evaluates the signals: assertion density patterns, narrowing trajectory, framing adoption. The subagent writes a structured Susceptibility Snapshot artifact — observed signals, interpretation, and any warranted Grounding Reframe recommendation.
+
+### Task: Perform framing audit (extended argument auditor)
+
+**Interaction mechanics:** When the argument auditor is dispatched, it produces a two-section audit: the existing argument audit (inferential chain verification) and a new framing audit section. The framing audit reads the artifact and its source material, identifies 2-3 alternative framings the evidence supported, surfaces findings that are absent or underrepresented, and applies belief-mapping to the dominant framing ("What would the reader need to believe for a different framing to be right?").
+
+### Task: Review research design before execution
+
+**Interaction mechanics:** Before the first research loop, the Research Methods Subagent reads the research question set. It applies belief-mapping to each question, flags embedded conclusions and premature narrowing, and produces a research design review artifact with flagged questions and suggested reformulations. In the future version, it reads prior cycle research logs to detect cross-cycle methodological patterns.

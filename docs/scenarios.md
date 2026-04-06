@@ -2079,3 +2079,261 @@
 **When** a stewardship checkpoint occurs
 **Then** the stewardship check reads the session artifact file for the original work decomposition
 **And** it compares the completed work against the decomposition's scope and testable behaviors
+
+## Feature: Belief-Mapping Operationalization of Inversion Principle (ADR-055)
+
+### Scenario: Agent uses belief-mapping form at RESEARCH gate
+**Given** the `/rdd-research` skill has produced an essay artifact
+**When** the agent applies the Inversion Principle at the gate
+**Then** the agent uses belief-mapping framing ("What would you need to believe for a different problem framing to be right?")
+**And** the agent does NOT use adversarial framing ("Argue against this approach" or "Strongest case against")
+
+### Scenario: Agent uses belief-mapping form at DECIDE gate
+**Given** the `/rdd-decide` skill has produced ADRs with rejected alternatives
+**When** the agent applies the Inversion Principle at the gate
+**Then** the agent asks "What would you need to believe for [rejected alternative] to be right?"
+**And** the question references the specific rejected alternative from the ADR
+
+### Scenario: Adversarial framing is available when explicitly requested
+**Given** the user explicitly asks the agent to argue against their position ("play devil's advocate", "argue against this")
+**When** the agent responds
+**Then** the agent may use adversarial framing as a deliberate rhetorical choice
+**And** the agent is not constrained to belief-mapping form for explicit user requests
+
+### Scenario: Belief-mapping decouples content from recommendation
+**Given** the agent has applied belief-mapping to an alternative at a gate
+**When** the agent's response includes both content balance and a recommendation
+**Then** the content addresses both the user's position and the alternative with comparable depth
+**And** the recommendation may still favor the user's preferred position (content balance is independent of recommendation direction)
+
+## Feature: Research-Grounded Question Toolkit for AID Cycle (ADR-056)
+
+### Scenario: AID deploys belief-mapping question at gate
+**Given** the AID cycle interprets deep engagement at a gate
+**When** the agent selects a challenge move
+**Then** the agent deploys a belief-mapping question composed from the specific artifact content
+**And** the question is not a template recitation — it references specific concepts, decisions, or findings from the current phase
+
+### Scenario: AID deploys pre-mortem question at RESEARCH gate
+**Given** the AID cycle is operating at the RESEARCH gate
+**When** the agent selects a challenge or probe move
+**Then** the agent may deploy a pre-mortem question: "Assume this essay led the project astray — what would have caused that?"
+**And** the question references specific claims or framings from the essay
+
+### Scenario: AID deploys commitment gating at phase boundary
+**Given** the AID cycle is operating at any phase boundary
+**When** the agent is preparing to advance to the next phase
+**Then** the agent asks the user to distinguish settled premises from open questions: "Which premises are you building on, and which remain open?"
+**And** the user's response is recorded in the cycle status for downstream feed-forward
+
+### Scenario: Question forms are non-formulaic
+**Given** the agent deploys the same question type (e.g., belief-mapping) at two different gates
+**When** the two questions are compared
+**Then** they reference different specific content from each gate's artifact
+**And** they are composed for the specific conversation state, not recited from a template
+
+### Scenario: Question forms serve triple duty
+**Given** the agent deploys any question from the toolkit at a gate
+**When** the user responds
+**Then** the response simultaneously serves as sycophancy resistance evidence (did the user engage alternatives?), confidence diagnosis (is their confidence earned?), and epistemic advancement (did the user's understanding deepen?)
+
+## Feature: AID Susceptibility Extension (ADR-057)
+
+### Scenario: AID notices assertion density signal inline
+**Given** the AID cycle is in the Attend phase at a gate
+**And** the conversation history shows the user's assertion density increased over the phase (more declarative conclusions, fewer questions)
+**When** the agent records susceptibility signals
+**Then** assertion density is noted as a susceptibility signal
+**And** the signal is NOT evaluated inline — it is recorded for the Susceptibility Snapshot
+
+### Scenario: AID notices narrowing without user initiation
+**Given** the AID cycle is in the Attend phase
+**And** the solution space narrowed during the phase without the user initiating the narrowing
+**When** the agent records susceptibility signals
+**Then** uninitiated narrowing is noted as a susceptibility signal
+
+### Scenario: Susceptibility Snapshot produced at phase boundary
+**Given** the AID cycle has recorded susceptibility signals during a phase
+**When** the pipeline reaches a phase boundary
+**Then** a specialist subagent evaluates the signals in an isolated context
+**And** the subagent produces a Susceptibility Snapshot artifact with observed signals, suggested interpretation, and any warranted Grounding Reframe
+**And** the evaluation occurs outside the main conversation context (Architectural Isolation)
+
+### Scenario: Susceptibility Snapshot is advisory
+**Given** a Susceptibility Snapshot has been produced at a phase boundary
+**When** the orchestrator reads the snapshot
+**Then** the snapshot informs the agent's approach to the next phase
+**But** the snapshot does not block pipeline advancement
+**And** the snapshot is available to the user for review
+
+## Feature: Unconditional Architectural Floor (ADR-058)
+
+### Scenario: Tier 1 mechanisms fire regardless of context
+**Given** the pipeline is in any phase (early or late, pipeline or standalone mode)
+**When** an audit is warranted (essay produced, ADRs written, phase boundary reached)
+**Then** specialist subagent dispatch occurs (citation audit, argument audit, framing audit)
+**And** the Susceptibility Snapshot evaluation runs at phase boundaries
+**And** these mechanisms are not skipped because the agent or user assesses the context as low-risk
+
+### Scenario: Agent cannot self-exempt from Tier 1 mechanisms
+**Given** the agent assesses the current context as low sycophancy risk
+**When** a Tier 1 mechanism is due (e.g., framing audit on a new essay)
+**Then** the Tier 1 mechanism runs anyway
+**And** the agent's risk assessment does not reduce the structural floor
+
+### Scenario: User grounding does not replace Tier 1 mechanisms
+**Given** the user provides domain knowledge as grounding during a phase
+**When** a Tier 1 mechanism is due
+**Then** the mechanism still runs — the user's input is additional evidence, not a replacement for structural assessment
+
+### Scenario: Tier 2 mechanisms adapt to context
+**Given** the multidimensional rubric indicates low phase vulnerability and deep engagement
+**When** the agent selects question forms and constraint intensity
+**Then** the agent may calibrate lighter Tier 2 constraints (fewer probing questions, less intensive alternative exploration)
+**And** Tier 1 mechanisms remain unchanged
+
+## Feature: Grounding Reframe (ADR-059)
+
+### Scenario: Agent reframes toward grounding when risk is unassessable
+**Given** the agent determines that sycophancy risk is unassessable (no belief-mapping test, no empirical contact available)
+**When** the agent communicates this to the user
+**Then** the agent names what is uncertain ("the ground is soft here because...")
+**And** the agent offers concrete grounding actions (run a spike, write a test, consult a domain expert, belief-map the specific assumption)
+**And** the agent makes visible what the user would be building on without grounding
+
+### Scenario: User proceeds without grounding after reframe
+**Given** the agent has performed a Grounding Reframe
+**And** the user chooses to proceed without pursuing any grounding action
+**When** the pipeline continues
+**Then** the decision to proceed without grounding is visible (not silent)
+**And** the Susceptibility Snapshot at the next phase boundary notes the ungrounded decision
+
+### Scenario: User pursues grounding action after reframe
+**Given** the agent has performed a Grounding Reframe
+**And** the user pursues one of the suggested grounding actions (e.g., runs a spike, belief-maps the assumption)
+**When** the grounding action produces evidence
+**Then** the evidence informs the current phase's artifact
+**And** the Earned Confidence for the specific assumption is now assessable
+
+### Scenario: Grounding Reframe is non-formulaic
+**Given** two different Grounding Reframes occur in the same cycle
+**When** the reframes are compared
+**Then** each names specific uncertainties and suggests context-appropriate grounding actions
+**And** the reframes are not template recitations
+
+## Feature: Research Methods Subagent (ADR-060)
+
+### Scenario: Research design review before first research loop
+**Given** the user has provided research questions for a new cycle
+**When** the `/rdd-research` skill begins
+**Then** the orchestrator dispatches the Research Methods Subagent before the first research loop
+**And** the subagent reads the research question set
+**And** the subagent produces a research design review artifact
+
+### Scenario: Subagent flags embedded conclusion in research question
+**Given** a research question embeds a conclusion ("What's the best way to implement event-driven architecture for this?")
+**When** the Research Methods Subagent reviews the question
+**Then** the subagent flags the embedded conclusion (presupposes event-driven architecture)
+**And** the subagent suggests a reformulated question ("What architectural patterns best serve [the actual need]?")
+
+### Scenario: Subagent applies belief-mapping to question set
+**Given** a set of research questions
+**When** the Research Methods Subagent reviews them
+**Then** for each question, the subagent asks: "What would the researcher need to believe for a different question to be more productive?"
+**And** the results are included in the design review artifact
+
+## Feature: Framing Audit as Argument Auditor Extension (ADR-061)
+
+### Scenario: Argument audit includes framing analysis
+**Given** the argument auditor is dispatched for an essay
+**When** the audit is produced
+**Then** the audit artifact contains two sections: argument audit (existing) and framing audit (new)
+**And** the framing audit identifies 2-3 alternative framings the evidence supported but the essay didn't choose
+**And** the framing audit identifies findings from the evidence base that are absent or underrepresented
+
+### Scenario: Framing audit applies belief-mapping to essay's framing
+**Given** the framing audit section is being produced
+**When** the auditor analyzes the essay's dominant framing
+**Then** the auditor applies: "What would the reader need to believe for a different framing to be right?"
+**And** the response surfaces what the inverted framing would reveal
+
+### Scenario: Framing audit runs unconditionally on essays
+**Given** a new essay has been produced by `/rdd-research`
+**When** the argument audit is dispatched (Tier 1 mechanism)
+**Then** the framing audit section is included — it is not omitted because the agent assesses the essay as well-framed
+
+## Feature: Assertion-Aware Observation in AID (ADR-062)
+
+### Scenario: Agent detects embedded conclusion at artifact-production moment
+**Given** the user submits a prompt containing an embedded design conclusion ("given the research, the natural architecture here is event-driven")
+**And** the pipeline is at or near an artifact-production moment
+**When** the agent processes the prompt
+**Then** the agent deploys open-question reframing: "What's the open question behind [the specific assertion]?"
+**And** the reframing is composed from the assertion's content, not from a template
+
+### Scenario: Agent does not flag harmless implementation confidence
+**Given** the user submits a prompt containing implementation confidence ("this test should clearly pass once we fix the null check")
+**When** the agent processes the prompt
+**Then** the agent does NOT deploy open-question reframing — the confidence is about implementation mechanics, not framing or design
+
+### Scenario: Agent detects subtle embedded conclusion without confidence markers
+**Given** the user submits a prompt containing a sophisticated embedded conclusion with no confidence markers ("the stakeholder model suggests three user types, so the interaction specs should have three sections")
+**And** the pipeline is at or near an artifact-production moment
+**When** the agent processes the prompt
+**Then** the agent detects the embedded conclusion (presupposes a 1:1 mapping from stakeholders to interaction spec sections)
+**And** the agent deploys open-question reframing composed from the specific assertion
+
+### Scenario: Accepted limitation is transparent
+**Given** the agent is operating the assertion-aware observation
+**When** the user asks about the limitations of sycophancy detection
+**Then** the agent names the limitation: assertion-aware observation operates inside the conversation without Architectural Isolation — the same agent susceptible to the assertion detects it
+**And** the agent identifies the structural backstops: Susceptibility Snapshot and Framing Audit provide isolated evaluation
+
+## Feature: Integration — Sycophancy Mechanisms Compose Across ADRs
+
+### Scenario: Full sycophancy resistance stack at a phase boundary
+**Given** a pipeline phase has completed and the gate is about to begin
+**When** the full sycophancy resistance stack is applied
+**Then** Tier 1 fires: specialist audits dispatch (including framing audit), Susceptibility Snapshot evaluation runs in isolation
+**And** Tier 2 calibrates: AID selects question forms from the toolkit based on the rubric, assertion-aware observation monitors the gate conversation
+**And** if risk is unassessable, Grounding Reframe offers concrete actions
+
+### Scenario: Standalone skill invocation has reduced but present protection
+**Given** a skill is invoked standalone (context-reconstructive mode, no artifact trail)
+**When** the skill executes
+**Then** Tier 1 mechanisms that apply fire (Susceptibility Snapshot at completion)
+**And** Tier 2 mechanisms operate with reduced calibration data (no prior gate signals to compare)
+**And** if risk is unassessable, Grounding Reframe names the limitation and offers grounding actions
+
+## Feature: Essay as Research Phase Checkpoint
+
+### Scenario: Framing audit findings circle back to essay revision
+**Given** the framing audit has surfaced alternative framings or consequential omissions in the essay
+**When** the practitioner reviews the framing audit findings
+**Then** the essay is revised to address the findings (absorbing, reframing, or explicitly rejecting the alternatives)
+**And** the revised essay is re-audited before the pipeline advances past RESEARCH
+
+### Scenario: Discovery feedback triggers essay revision
+**Given** the DISCOVER phase surfaces value tensions or assumption inversions that challenge the essay's framing
+**When** the challenge is substantial (not a minor addition but a reframing of the problem space)
+**Then** the pipeline loops back to RESEARCH to revise the essay
+**And** the Research Methods Subagent reviews any revised research questions before the next loop
+
+### Scenario: Reflection writing triggers essay revision
+**Given** a reflection artifact surfaces a new angle or reframing of the research
+**When** the reframing is substantial enough to change the essay's central argument or dominant framing
+**Then** the essay is revised to incorporate the reframing
+**And** the framing audit runs again on the revised essay
+
+### Scenario: Research Methods Subagent participates in each research loop
+**Given** the essay has been substantially revised (from framing audit, discovery feedback, or reflection)
+**And** a new research loop is beginning
+**When** the orchestrator prepares the next research loop
+**Then** the Research Methods Subagent is dispatched to review the revised question set
+**And** the subagent produces a new research design review artifact
+
+### Scenario: Pipeline does not advance past RESEARCH with unrevised essay
+**Given** a substantial framing change has been identified (by the framing audit, the user, or discovery feedback)
+**When** the orchestrator considers advancing to the next phase
+**Then** the orchestrator does not advance until the essay has been revised to reflect the change
+**And** the revised essay has passed a fresh argument audit and framing audit

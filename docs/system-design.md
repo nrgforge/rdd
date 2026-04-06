@@ -1,8 +1,8 @@
 # System Design: Pedagogical RDD
 
-**Version:** 10.0
+**Version:** 11.0
 **Status:** Current
-**Last amended:** 2026-04-02
+**Last amended:** 2026-04-06
 
 ## Architectural Drivers
 
@@ -65,6 +65,15 @@
 | Three-tier output: pure mechanical, observation→question, pure question | Quality Attribute | ADR-045; Reflection gate conversation |
 | Success criterion: reviewer discusses changes with informed judgment without AI | Quality Attribute | ADR-043; Invariant 0 (adapted) |
 | Four composable skills (build, debug, refactor, review) share Context Gathering protocol; each operates standalone or composed within build | Design Principle | ADR-048; Essay 011 §6 |
+| Inversion Principle operationalized through belief-mapping questions ("what would I need to believe for the alternative to be right?"); adversarial framing deprecated as default | Quality Attribute | ADR-055; Essay 013 §7 (spike: near-zero divergence vs. 2-6× overcorrection) |
+| AID cycle equipped with six research-grounded question forms as toolkit; non-formulaic requirement — forms are types composed with context, not scripts | Quality Attribute | ADR-056; Essay 013; DISCOVER feed-forward |
+| AID susceptibility extension: inline observation of sycophancy signals + isolated evaluation at phase boundaries producing Susceptibility Snapshot | Quality Attribute | ADR-057; Essay 013 §5; Sayin & Khasawneh 2025 |
+| Two-tier sycophancy resistance: Tier 1 unconditional architectural mechanisms (subagent audits, susceptibility snapshots, research methods review) that always fire; Tier 2 context-responsive conversational mechanisms (question form selection, constraint intensity, assertion-aware observation) calibrated by rubric | Design Principle | ADR-058; MODEL gate conversation |
+| Grounding Reframe: when sycophancy risk is unassessable, agent names uncertainty and offers concrete grounding actions — not disclaim and proceed | Quality Attribute | ADR-059; MODEL gate conversation |
+| Research Methods Subagent reviews research design before execution; fires before each loop after substantial revision | Quality Attribute | ADR-060; Essay 013 §6 |
+| Argument Auditor extended with framing audit: surfaces alternative framings the evidence supported but the artifact didn't choose | Quality Attribute | ADR-061; Essay 013 §5 |
+| Assertion-aware observation in AID: semantic detection of embedded conclusions at artifact-production moments; Tier 2 (agent exercises judgment); accepted limitation — no Architectural Isolation | Quality Attribute | ADR-062; Dubois et al. 2026 |
+| Essay as checkpoint: every substantial change circles back to essay revision before pipeline advances past RESEARCH | Constraint | DECIDE gate conversation; Essay 013 §6 (sycophancy gradient) |
 | Context Gathering is an embedded protocol (5 steps: detect mode, prompt, fetch, synthesize, validate); not a separate skill | Design Principle | ADR-049; Essay 011 §6 |
 | Reconstructed facsimiles written as session artifacts in `session/` directory, gitignored | Quality Attribute | ADR-050; Essay 011 §2 |
 | Work decomposition from available sources uses roadmap dependency classification (heuristic at ticket level) | Functional Requirement | ADR-051; Essay 011 §6 |
@@ -78,17 +87,18 @@
 ### Module: Orchestrator (`skills/rdd/SKILL.md`)
 **Purpose:** Defines the pipeline sequence, adaptive gate protocol (Attend-Interpret-Decide cycle), three-tier artifact hierarchy, cross-cutting principles, scoped cycle workflow pattern, agent dispatch protocol, and ensures no phase transition consists solely of approval.
 **Provenance:** ADR-001 (gate pattern); ADR-002 (orchestrator defines protocol); ADR-004 (feed-forward instruction); ADR-006 (pipeline includes PRODUCT DISCOVERY); ADR-010 (inversion principle cross-cutting); ADR-019 (three-tier artifact hierarchy); ADR-022 (roadmap at Tier 2); ADR-023 (field guide at Tier 3); ADR-024 (document sizing heuristics); ADR-026 (scoped cycles, deep work tool framing); ADR-031 (artifact-mediated communication as cross-cutting principle); ADR-032 (agent dispatch protocol); ADR-034 (plugin packaging); ADR-037 (interaction specs in artifact summary); ADR-038 (PLAY in pipeline and state tracking); ADR-040 (AID cycle replaces fixed-template gates); ADR-041 (reflection time naming); Invariant 0, 2, 4 (amended)
-**Owns:** Adaptive gate protocol definition (Attend-Interpret-Decide cycle with five pedagogical moves: challenge, probe, teach, clarify, re-anchor; includes cross-gate engagement pattern awareness — the Attend step reads the full cycle's conversation history, not just the current phase, enabling earned fatigue detection as a cross-cutting concern), pipeline sequence (including PRODUCT DISCOVERY and optional PLAY phases), state tracking, feed-forward instruction, cross-cutting principles (inversion principle including gate-level reframing, document sizing heuristics, artifact-mediated communication, anti-sycophancy at gates), Available Skills table (including `/rdd-about`), Artifacts Summary (including interaction specs and field notes), three-tier artifact hierarchy principle (with roadmap at Tier 2 and field guide at Tier 3), orientation document regeneration instruction (dispatches orientation-writer agent), scoped cycle workflow pattern, deep work tool and pace regulator framing, agent dispatch protocol, cross-phase integration rules for play feedback (field notes → DISCOVER, DECIDE, RESEARCH, interaction specs, SYNTHESIS)
+**Owns:** Adaptive gate protocol definition (Attend-Interpret-Decide cycle with five pedagogical moves: challenge, probe, teach, clarify, re-anchor; includes cross-gate engagement pattern awareness — the Attend step reads the full cycle's conversation history, not just the current phase, enabling earned fatigue detection as a cross-cutting concern; **extended (Cycle 9):** AID Attend phase also reads sycophancy susceptibility signals — assertion density, narrowing, framing adoption, embedded conclusions at artifact-production moments — and records them for isolated Susceptibility Snapshot evaluation at phase boundaries; AID deploys six research-grounded question forms as toolkit: belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing — composed with phase content, not recited as templates; assertion-aware observation detects embedded conclusions semantically and deploys open-question reframing), pipeline sequence (including PRODUCT DISCOVERY and optional PLAY phases), state tracking, feed-forward instruction, cross-cutting principles (inversion principle operationalized through belief-mapping questions per ADR-055 including gate-level reframing, two-tier sycophancy resistance principle per ADR-058, Grounding Reframe pattern per ADR-059, document sizing heuristics, artifact-mediated communication, anti-sycophancy at gates, essay-as-checkpoint for RESEARCH phase), Available Skills table (including `/rdd-about`), Artifacts Summary (including interaction specs and field notes), three-tier artifact hierarchy principle (with roadmap at Tier 2 and field guide at Tier 3), orientation document regeneration instruction (dispatches orientation-writer agent), scoped cycle workflow pattern, deep work tool and pace regulator framing, agent dispatch protocol (updated: eight specialist subagents including research-methods-reviewer and susceptibility-snapshot-evaluator), cross-phase integration rules for play feedback (field notes → DISCOVER, DECIDE, RESEARCH, interaction specs, SYNTHESIS)
 **Depends on:** None (top-level coordinator)
 **Depended on by:** All phase skills (they follow its protocol); all hooks (they supplement its cross-cutting principles)
 **Note:** In the plugin architecture, the orchestrator's cross-cutting principles are additionally enforced by hooks — the hooks supplement skill-level instructions with passive event-driven reminders. The orchestrator dispatches the orientation-writer agent at milestones rather than generating ORIENTATION.md inline.
 
-### Module: Research Skill (`skills/research/SKILL.md`)
-**Purpose:** Runs an iterative research loop and produces a citation-audited and argument-audited essay, with an epistemic gate tailored to essay artifacts.
-**Provenance:** ADR-002 (skill owns gate); ADR-003 (research gate assignments); ADR-032 (agent dispatch for audits and research helpers); ADR-036 (research log archival at cycle end); Essay 001 §6
-**Owns:** Research-phase process, epistemic gate prompts, essay presentation step, research log archival at cycle end (ADR-036)
-**Depends on:** Orchestrator (protocol); Citation Auditor Agent (dispatched during essay finalization); Argument Auditor Agent (dispatched after citation audit); Lit Reviewer Agent (dispatched as user-selected research method); Spike Runner Agent (dispatched as user-selected research method)
+### Module: Research Skill (`skills/research/SKILL.md`) — AMENDED in v11.0
+**Purpose:** Runs an iterative research loop and produces a citation-audited, argument-audited, and framing-audited essay, with the essay as checkpoint — every substantial change circles back to essay revision before the pipeline advances.
+**Provenance:** ADR-002 (skill owns gate); ADR-003 (research gate assignments); ADR-032 (agent dispatch for audits and research helpers); ADR-036 (research log archival at cycle end); ADR-060 (Research Methods Subagent before each loop); ADR-061 (framing audit as argument auditor extension); Essay 001 §6; Essay 013 §6 (sycophancy gradient — RESEARCH is the most vulnerable phase)
+**Owns:** Research-phase process, epistemic gate prompts, essay presentation step, research log archival at cycle end (ADR-036), **essay-as-checkpoint enforcement** (essay revised before pipeline advances when framing audit, discovery feedback, or reflection surfaces substantial reframing)
+**Depends on:** Orchestrator (protocol); Citation Auditor Agent (dispatched during essay finalization); Argument Auditor Agent (dispatched after citation audit — now includes framing audit section per ADR-061); Lit Reviewer Agent (dispatched as user-selected research method); Spike Runner Agent (dispatched as user-selected research method); **Research Methods Subagent** (dispatched before first loop and before each loop after substantial revision per ADR-060)
 **Depended on by:** None directly (produces essay artifact consumed by Product Discovery Skill and Model Skill via file)
+**Note:** The Research Methods Subagent fires before each research loop following substantial revision, not just the first. The essay is the checkpoint: understanding crystallizes here and becomes auditable. The framing audit (ADR-061) makes the negative space of content selection visible — what alternative framings the evidence supported but the essay didn't choose. The research phase's structural advantage is its iterability: the loop runs multiple times before the pipeline advances.
 
 ### Module: Product Discovery Skill (`skills/discover/SKILL.md`)
 **Purpose:** Surfaces user needs, stakeholder maps, value tensions, and assumption inversions, producing a product discovery artifact in user language that feeds forward into MODEL, DECIDE, ARCHITECT, and PLAY.
@@ -192,13 +202,14 @@ All specialist subagents follow the artifact-mediated communication pattern (ADR
 **Depended on by:** Research Skill (dispatches after essay), Synthesis Skill (dispatches before outline finalization)
 **Model:** Sonnet
 
-### Module: Argument Auditor Agent (`agents/argument-auditor.md`)
-**Purpose:** Maps inferential chains from evidence to conclusions in an essay, ADR set, or outline, producing a structured audit artifact.
-**Provenance:** ADR-031; ADR-032; Essay 007 §3
-**Owns:** Argument mapping process, logical gap detection, hidden assumption identification, audit artifact production
-**Depends on:** None (receives input via file paths in dispatch)
+### Module: Argument Auditor Agent (`agents/argument-auditor.md`) — AMENDED in v11.0
+**Purpose:** Maps inferential chains from evidence to conclusions in an essay, ADR set, or outline, producing a two-section audit artifact: argument audit (logical consistency) and framing audit (content selection visibility).
+**Provenance:** ADR-031; ADR-032; ADR-061 (framing audit extension); Essay 007 §3; Essay 013 §5
+**Owns:** Argument mapping process, logical gap detection, hidden assumption identification, **framing audit** (three questions: what alternative framings did the evidence support? what truths were available but not featured? what would change if the dominant framing were inverted?), audit artifact production (two sections per dispatch)
+**Depends on:** None (receives input via file paths in dispatch — reads artifact AND its source material for framing audit)
 **Depended on by:** Research Skill (dispatches after citation audit), Decide Skill (dispatches after ADRs), Synthesis Skill (dispatches after citation audit)
 **Model:** Sonnet
+**Note:** The framing audit is a Tier 1 unconditional mechanism (ADR-058) — it runs on every essay and ADR set. The framing audit makes the negative space of Content Selection visible as an inspectable artifact. Known limitation (P3-B): the framing auditor is itself subject to content selection in what it surfaces; architectural isolation reduces but does not eliminate this. The three framing audit questions provide structural constraints on what must be addressed.
 
 ### Module: Lit Reviewer Agent (`agents/lit-reviewer.md`)
 **Purpose:** Performs systematic literature search and synthesis for a research question, producing a research log entry as artifact.
@@ -231,6 +242,24 @@ All specialist subagents follow the artifact-mediated communication pattern (ADR
 **Depends on:** None (receives spike question via dispatch)
 **Depended on by:** Research Skill (user-selected research method)
 **Model:** Inherit (parent model — spikes may require exploratory reasoning)
+
+### Module: Research Methods Reviewer Agent (`agents/research-methods-reviewer.md`) — NEW in v11.0
+**Purpose:** Reviews research design before execution — evaluates question framing, source selection bias, scope mismatches, and premature hypothesis-space narrowing, applying belief-mapping to each question.
+**Provenance:** ADR-060; Essay 013 §6 (sycophancy gradient — RESEARCH most vulnerable); ADR-055 (belief-mapping form)
+**Owns:** Research question review (belief-mapping each question: "what would the researcher need to believe for a different question to be more productive?"), embedded conclusion detection in questions, premature narrowing flags, research design review artifact production. Cross-cycle methodological pattern detection deferred to v2.
+**Depends on:** None (receives research question set via dispatch)
+**Depended on by:** Research Skill (dispatched before each research loop after substantial revision, not just the first)
+**Model:** Sonnet
+**Note:** Tier 1 unconditional mechanism (ADR-058) — fires before every research phase regardless of context. Known limitation: belief-mapping surfaces questions adjacent to the existing framing but does not address questions requiring a fundamentally different framing (second-order framing capture — an open problem per Essay 013 §10).
+
+### Module: Susceptibility Snapshot Evaluator Agent (`agents/susceptibility-snapshot-evaluator.md`) — NEW in v11.0
+**Purpose:** Evaluates sycophancy susceptibility signals in an isolated context at phase boundaries, producing a Susceptibility Snapshot artifact.
+**Provenance:** ADR-057; ADR-058 (Tier 1 unconditional); Essay 013 §5 (self-correction blind spot — isolated evaluation treats conversation as external input)
+**Owns:** Susceptibility signal evaluation (reads signals recorded by AID inline observation: assertion density, solution-space narrowing, framing adoption, confidence markers, declining alternative engagement), Susceptibility Snapshot artifact production (observed signals, interpretation, Grounding Reframe recommendation if warranted)
+**Depends on:** None (receives recorded susceptibility signals via dispatch)
+**Depended on by:** Orchestrator (dispatched at phase boundaries); all phase skills (snapshot informs next phase entry)
+**Model:** Sonnet
+**Note:** Tier 1 unconditional mechanism (ADR-058) — fires at every phase boundary. Outputs are acted on via Grounding Reframe (ADR-059) — not dismissible without engagement. The architectural isolation exploits the Self-Correction Blind Spot: a fresh context treats the conversation's signals as external input. Known limitation (P3-C): susceptibility signal thresholds are unspecified; calibration deferred to practice.
 
 ### Cross-Cutting Hook Modules
 
@@ -487,6 +516,33 @@ All hooks are configured in `hooks/hooks.json` at the plugin root, with scripts 
 | Comprehension Debt (motivating problem — Opacity Problem quantified) | None (motivating context) | Essay 011 §4; Osmani 2026 |
 | Gather Context (General) (action — shared protocol across skill family) | Build, Debug, Refactor, Review Skills | ADR-049 |
 
+### Sycophancy Resistance Concepts (from Essay 013 / ADRs 055-062) — NEW in v11.0
+
+| Domain Concept/Action | Owning Module | Provenance |
+|----------------------|---------------|------------|
+| Sycophancy (content selection bias mechanism) | None (motivating context — the problem being addressed) | Essay 013; Cheng et al. 2026 |
+| Content Selection (operative mechanism of sycophancy) | None (motivating context) | Essay 013 §1 |
+| Curated Truth (product of sycophantic content selection) | None (motivating context) | Essay 013 §1 |
+| Performative Structural Resistance (satisfiable without addressing content selection; context-dependent classification) | Orchestrator (defines the classification framework and tier boundary) | ADR-058; Essay 013 §5; MODEL gate |
+| Genuine Structural Resistance (makes absence visible; two tiers: unconditional architectural + context-responsive conversational) | Orchestrator (defines the two-tier principle) | ADR-058; Essay 013 §5; MODEL gate |
+| Sycophancy Gradient (phase-by-phase vulnerability hierarchy; also a characterization gradient) | Orchestrator (front-loading principle); Research Skill (heaviest safeguards) | ADR-058; Essay 013 §6 |
+| Belief-Mapping Question (primary Inversion Principle form) | All phase skills (deploy at gates via AID); Orchestrator (specifies as primary form) | ADR-055; ADR-056; Essay 013 §7 |
+| Compliance Dynamics (why adversarial framing overcorrects) | None (motivating context — mechanism to avoid) | Essay 013 §7 |
+| Earned Confidence (testable through belief-mapping response; has unassessable floor state) | All phase skills (assess at gates); Orchestrator (Grounding Reframe at floor state) | ADR-055; ADR-059; MODEL gate |
+| Grounding Reframe (actionable fork when risk unassessable) | Orchestrator (defines pattern); all phase skills (execute when triggered) | ADR-059; MODEL gate |
+| Susceptibility Snapshot (isolated evaluation artifact at phase boundaries) | Susceptibility Snapshot Evaluator Agent (produces); Orchestrator (dispatches) | ADR-057; ADR-058 |
+| Framing Audit (negative space of content selection made visible) | Argument Auditor Agent (produces as second audit section) | ADR-061; Essay 013 §8 |
+| Research Methods Subagent (pre-execution research design review) | Research Methods Reviewer Agent (executes); Research Skill (dispatches) | ADR-060; Essay 013 §6 |
+| Assertion-Aware Observation (semantic detection of embedded conclusions at artifact-production moments) | All phase skills (AID Attend phase responsibility) | ADR-062; Dubois et al. 2026 |
+| Self-Correction Blind Spot (mechanism behind architectural isolation) | Specialist subagents (exploitation mechanism) | Essay 013 §4; Tsui et al. 2025 |
+| Architectural Isolation (fresh context exploiting blind spot) | All specialist subagents (design principle) | ADR-057; ADR-061; Essay 013 §4 |
+| Corpus Contamination (early-phase sycophancy propagating downstream) | None (motivating context — the systemic risk) | Essay 013 §10 |
+| Automation Bias Inversion (deep engagement = highest risk) | Orchestrator (motivates unconditional floor) | Essay 013 §3; Sayin & Khasawneh 2025 |
+| Belief-Map (action — ask "what would I need to believe?") | All phase skills (at gates) | ADR-055; ADR-056 |
+| Audit Framing (action — surface alternative framings) | Argument Auditor Agent (second audit section) | ADR-061 |
+| Review Research Design (action — evaluate question set before execution) | Research Methods Reviewer Agent | ADR-060 |
+| Assess Susceptibility (action — isolated evaluation of conversation signals) | Susceptibility Snapshot Evaluator Agent | ADR-057 |
+
 ### Adaptive Gate Concepts (from Essay 009 / ADRs 040-042) — NEW in v8.0
 
 | Domain Concept/Action | Owning Module | Provenance |
@@ -532,13 +588,15 @@ Plugin Manifest (.claude-plugin/plugin.json)
 │   │       └──→ Research Skill (re-entry when structural experimentation surfaces new questions)
 │   └── Conformance Audit Skill (utility) ──dispatches──→ conformance-scanner
 │
-├── Agents Layer ─────────────────────────────────────────────────
+├── Agents Layer ───────────────────────────────────────────────── (AMENDED v11.0: 6→8 agents)
 │   citation-auditor (Sonnet) ──reads──→ essay/outline, research log ──writes──→ audit artifact
-│   argument-auditor (Sonnet) ──reads──→ essay/ADRs/outline, evidence trail ──writes──→ audit artifact
+│   argument-auditor (Sonnet) ──reads──→ essay/ADRs/outline + SOURCE MATERIAL ──writes──→ two-section audit artifact (argument + framing) [AMENDED v11.0: framing audit extension per ADR-061]
 │   lit-reviewer (Sonnet) ──reads──→ research question ──writes──→ research log entry
 │   conformance-scanner (Sonnet) ──reads──→ ADRs, codebase ──writes──→ conformance debt table
 │   orientation-writer (Sonnet) ──reads──→ artifact corpus ──writes──→ ORIENTATION.md
 │   spike-runner (inherit) ──reads──→ spike question ──writes──→ research log entry
+│   research-methods-reviewer (Sonnet) ──reads──→ research question set ──writes──→ research design review artifact [NEW v11.0: ADR-060]
+│   susceptibility-snapshot-evaluator (Sonnet) ──reads──→ AID susceptibility signals ──writes──→ Susceptibility Snapshot artifact [NEW v11.0: ADR-057]
 │
 └── Hooks Layer ──────────────────────────────────────────────────
     invariant-reminder (PreToolUse: Write|Edit on docs/) → context injection
@@ -557,17 +615,19 @@ Plugin Manifest (.claude-plugin/plugin.json)
 - Play Skill dispatches no specialist subagents (gamemaster requires conversation context)
 - Debug Skill, Refactor Skill dispatch no specialist subagents (standalone work in conversation context)
 
-**Skill-to-agent dispatch edges (NEW in v6.0):**
+**Skill-to-agent dispatch edges (NEW in v6.0, AMENDED in v11.0):**
 - Research Skill → citation-auditor (after essay writing)
-- Research Skill → argument-auditor (after citation audit passes)
+- Research Skill → argument-auditor (after citation audit passes — now includes framing audit section per ADR-061)
 - Research Skill → lit-reviewer (user-selected research method)
 - Research Skill → spike-runner (user-selected research method)
-- Decide Skill → argument-auditor (after ADRs written)
+- Research Skill → research-methods-reviewer (before each research loop after substantial revision, not just first — ADR-060) **[NEW v11.0]**
+- Decide Skill → argument-auditor (after ADRs written — includes framing audit)
 - Decide Skill → conformance-scanner (Step 3.5, codebase scan)
 - Synthesis Skill → citation-auditor (before outline finalization)
-- Synthesis Skill → argument-auditor (after citation audit on outline)
+- Synthesis Skill → argument-auditor (after citation audit on outline — includes framing audit)
 - Conform Skill → conformance-scanner (drift detection operation)
 - Orchestrator → orientation-writer (at milestones, triggered by orientation-trigger hook)
+- Orchestrator → susceptibility-snapshot-evaluator (at every phase boundary — Tier 1 unconditional — ADR-057) **[NEW v11.0]**
 
 **Hook event edges (NEW in v6.0):**
 - invariant-reminder → fires on PreToolUse (Write|Edit on `docs/`)
@@ -781,6 +841,24 @@ The play skill writes:
 **Error handling:** If the `session/` directory does not exist, the skill creates it. If session artifacts from a prior session exist, the skill notes them and asks whether to continue or start fresh.
 **Owned by:** Build Skill owns creation and reference; the developer owns lifecycle decisions (keep, promote, discard).
 
+### Research Skill → Research Methods Reviewer Agent (dispatch) — NEW in v11.0
+**Protocol:** Research Skill dispatches the Research Methods Reviewer Agent before the first research loop, and before each subsequent loop following a substantial essay revision (from framing audit findings, discovery feedback, or reflection). The agent reads the research question set, applies belief-mapping to each question, and writes a research design review artifact.
+**Shared types:** Input: research question set (typically 3-7 questions). Output: structured review artifact at `./docs/essays/audits/research-design-review-NNN.md` (flagged questions, suggested reformulations, premature narrowing flags).
+**Error handling:** If the agent fails to produce output, the research skill proceeds with its questions (graceful degradation). Flagged questions surface at the epistemic gate for user judgment.
+**Owned by:** Research Skill owns dispatch timing; Research Methods Reviewer Agent owns the review methodology.
+
+### Orchestrator → Susceptibility Snapshot Evaluator Agent (dispatch) — NEW in v11.0
+**Protocol:** The orchestrator dispatches the Susceptibility Snapshot Evaluator Agent at every phase boundary (between skills). The agent receives the AID cycle's recorded susceptibility signals from the preceding phase, evaluates them in isolated context, and writes a Susceptibility Snapshot artifact. The snapshot's findings are acted on via the Grounding Reframe pattern (ADR-059) — not dismissible without engagement.
+**Shared types:** Input: recorded susceptibility signals (assertion density, narrowing trajectory, framing adoption, confidence markers, alternative engagement). Output: Susceptibility Snapshot artifact (observed signals, interpretation, Grounding Reframe recommendation if warranted).
+**Error handling:** If the agent fails, the orchestrator notes the gap and proceeds. The unconditional floor (ADR-058) has reduced coverage but other Tier 1 mechanisms remain.
+**Owned by:** Orchestrator owns dispatch timing; Susceptibility Snapshot Evaluator Agent owns the evaluation methodology.
+
+### Argument Auditor Agent (framing audit extension) — AMENDED in v11.0
+**Protocol:** Extended from v10.0. The argument auditor now receives the artifact AND its source material (the full evidence base the artifact drew from). It produces a two-section output: (1) argument audit (existing — inferential chain verification), (2) framing audit (new — alternative framing identification, negative-space analysis, belief-mapping applied to dominant framing).
+**Shared types:** Input: artifact + source material file paths. Output: two-section audit artifact (argument audit + framing audit, each with P1/P2/P3 issues).
+**Error handling:** If framing audit section fails, argument audit section alone is produced (graceful degradation to v10.0 behavior).
+**Owned by:** Argument Auditor Agent owns both sections; dispatching skill owns the dispatch decision.
+
 ### Feed-Forward Contract (ADR-004)
 **Protocol:** Conversational. In single-session cycles, the user's epistemic responses are in conversation history. In multi-session cycles, the orchestrator's status table summarizes key responses.
 **Shared types:** Natural language in conversation context.
@@ -877,6 +955,21 @@ The play skill writes:
 | Refactoring committed as structure change | Refactor skill instruction specifies `refactor:` commit prefix | Commit guidance present | ADR-052; Essay 011 §5 |
 | Plugin installs with all components including new skills | Plugin loads 12 skills (was 10), 6 agents, 5 hooks | All components registered | ADR-034; ADR-048 |
 | Orchestrator Available Skills includes debug and refactor | rdd/SKILL.md Available Skills table has rows for both | Both rows present | ADR-048 |
+| Inversion Principle uses belief-mapping form | All skill EPISTEMIC GATE sections and Orchestrator cross-cutting; ADR-010 amendment note present | Belief-mapping framing present; adversarial framing absent as default | ADR-055; ADR-010 (amended) |
+| AID cycle deploys six question forms | Orchestrator protocol and all phase skill gates reference question toolkit | All 6 forms available; phase-specific mapping documented | ADR-056 |
+| Question forms are non-formulaic | Gate prompts compose forms with specific artifact content | No template recitation; each instance references specific content | ADR-056 (hard constraint) |
+| AID Attend reads susceptibility signals | Orchestrator AID protocol includes assertion density, narrowing, framing adoption, embedded conclusions | Susceptibility signals listed alongside engagement signals | ADR-057 |
+| Susceptibility Snapshot produced at every phase boundary | Orchestrator dispatches susceptibility-snapshot-evaluator at phase transitions | Dispatch present at all phase boundaries (Tier 1) | ADR-057; ADR-058 |
+| Susceptibility Snapshot outputs handled via Grounding Reframe | Orchestrator processes snapshot findings as actionable fork | Not dismissible without engagement | ADR-057; ADR-058; ADR-059 |
+| Tier 1 mechanisms fire unconditionally | Specialist audits, susceptibility snapshots, research methods review | Not subject to context-dependent relaxation | ADR-058 |
+| Tier 2 mechanisms adapt to context | Question form selection, constraint intensity, assertion-aware observation | Calibrated by multidimensional rubric | ADR-058 |
+| Grounding Reframe offers concrete actions | Orchestrator pattern: names uncertainty + offers grounding actions + makes visible cost of proceeding | Pattern present; not a disclaimer | ADR-059 |
+| Research Methods Subagent fires before each loop | Research Skill dispatches before first loop AND after substantial revision | Multi-loop dispatch present | ADR-060 |
+| Argument Auditor produces two-section output | Agent system prompt includes argument audit + framing audit | Both sections specified | ADR-061 |
+| Framing audit asks three structural questions | Alternative framings, absent truths, dominant framing inversion | All 3 questions present | ADR-061 |
+| Assertion-aware observation is semantic | AID Attend includes embedded conclusion detection; no lexical pattern matching | Semantic assessment present; no confidence-marker patterns | ADR-062 |
+| Essay is checkpoint for RESEARCH phase | Research Skill enforces essay revision before pipeline advances after substantial reframing | Essay revision + re-audit loop present | DECIDE gate; Essay 013 §6 |
+| Plugin installs with 8 agents | `claude --plugin-dir ./rdd` loads all agents including research-methods-reviewer and susceptibility-snapshot-evaluator | All 8 agents registered | ADR-032; ADR-060; ADR-057 |
 
 ## Test Architecture
 
@@ -973,7 +1066,7 @@ The play skill writes:
 
 See [`./docs/roadmap.md`](./docs/roadmap.md) for the current roadmap — work packages, classified dependencies, transition states, and open decision points.
 
-Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, conformance, scoped cycles), Cycle 2 (ADRs 027-030: synthesis enrichment), Cycle 3 (ADRs 031-036: plugin architecture), Cycle 4 (ADRs 037-039: interaction specs, play, gamemaster), Cycle 5 (ADRs 040-042: adaptive gates, reflection time, rdd-about), Cycle 6a (ADRs 043-047: code review). Current work packages address ADRs 048-054 (composable skill family: build revamp, debug, refactor, skill composition).
+Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, conformance, scoped cycles), Cycle 2 (ADRs 027-030: synthesis enrichment), Cycle 3 (ADRs 031-036: plugin architecture), Cycle 4 (ADRs 037-039: interaction specs, play, gamemaster), Cycle 5 (ADRs 040-042: adaptive gates, reflection time, rdd-about), Cycle 6a (ADRs 043-047: code review), Cycle 6b (ADRs 048-054: composable skill family). Current work packages address ADRs 055-062 (Cycle 9: sycophancy resistance architecture).
 
 ## Design Amendment Log
 
@@ -990,3 +1083,4 @@ Prior cycles completed: Cycle 1 (ADRs 022-026: roadmap, field guide, sizing, con
 | 10 | 2026-03-30 | Adaptive gates, reflection time naming, and /rdd-about utility. Added 1 new module: About Skill (version reporting, methodology overview, depth-calibrated elaboration — utility, not pipeline phase). Updated 3 existing modules: Orchestrator (gate protocol becomes AID cycle with five pedagogical moves; adds pace regulator framing; Available Skills includes /rdd-about; optionally offers /rdd-about for fresh projects), Epistemic Gate Enforcer Hook (recognizes AID adaptive prompts), all 6 phase skills (EPISTEMIC GATE sections updated from fixed templates to AID cycle; user-facing dialogue uses "reflection time"). Added 5 architectural drivers (amended Invariant 4, AID cycle, reflection time naming, Inversion Principle at gates, anti-sycophancy). Added 16-row responsibility matrix section (Adaptive Gate Concepts). Updated invariant enforcement tests (Invariant 4 amended — productive not brief). Supersedes ADR-003 (fixed-assignment prompt table replaced by AID cycle; ADR-003's prompts become candidate library). Conformance scan: 19 implementation-layer violations mapped with resolution sequence. | ADRs 040-042 (essay 009 adaptive gates cycle) | ADR-040 (AID cycle), ADR-041 (reflection time naming), ADR-042 (/rdd-about utility); Essay 009; Invariant 4 (Amendment 13 — productive not brief); Invariant 0 (understanding is the purpose); Inversion Principle (7th location at gates) | Proposed |
 | 11 | 2026-04-02 | Composable skill family. Added 2 new modules: Debug Skill (hypothesis-trace-understand-fix cycle), Refactor Skill (three-level diagnostic-remediation with AI Smell Taxonomy). Amended 2 existing modules: Build Skill (rewritten as outer loop with Context Gathering protocol, context-reconstructive mode, work decomposition, session artifacts, time budget, mode-shift composition — replaces monolithic build), Review Skill (mode-shift composition from build supersedes ADR-046 callout). Updated Orchestrator (Available Skills includes debug and refactor; plugin count 10→12). Added 9 architectural drivers. Added 19-row responsibility matrix section (Composable Skill Family Concepts). Updated dependency graph (mode-shift edges within build; debug and refactor as standalone skills). Added 3 integration contracts (mode-shift composition, Context Gathering protocol, session artifacts). Added 17 fitness criteria. Added 16 boundary integration tests. Updated invariant enforcement (Invariant 0 extended via context-reconstructive mode and debug naming). Updated acceptance scenario count (228→~278). | ADRs 048-054 (essay 011 composable skill family cycle) | ADR-048 (composable skill family), ADR-049 (Context Gathering protocol), ADR-050 (session artifacts), ADR-051 (work decomposition), ADR-052 (AI smell detection), ADR-053 (time budget), ADR-054 (mode-shift composition); Essay 011; DECIDE gate: "mode shifts not dispatch; the thread is understanding" | Proposed |
 | 9 | 2026-03-26 | Play phase and interaction specification layer. Added 1 new module: Play Skill (three-movement experiential discovery with gamemaster mode, field notes production — no specialist subagents, no separate epistemic gate). Updated 4 existing modules: Decide Skill (produces interaction specs after scenarios), Orchestrator (pipeline includes PLAY after BUILD, state tracking, artifact summary, cross-phase integration for play feedback), Product Discovery Skill (update mode reads field notes), Synthesis Skill (reads field notes in artifact trail mining). Added 6 architectural drivers. Added 16-row responsibility matrix section (Play and Interaction Specification Concepts). Updated dependency graph (inter-skill artifact flow includes interaction-specs.md and field-notes.md with feedback loop). Added 4 integration contracts (Orchestrator→Play, Decide→Play via interaction-specs, Play→Discover/Decide/Research via field-notes, Play→Synthesis via field-notes). Added 14 fitness criteria. Added 12 boundary integration tests. Updated invariant enforcement tests (play serves Invariant 0 experiential dimension; gamemaster boundary for Invariant 3). Updated test layers and acceptance scenario count (192 → 228). Updated inversion principle locations from 5 to 6. | ADRs 037-039 (essay 008 play/interaction-spec cycle) | ADR-037 (interaction specification layer), ADR-038 (play phase), ADR-039 (agent as gamemaster); Essay 008; Invariant 0 (experiential authority dimension), Invariant 3 (gamemaster boundary) | Proposed |
+| 12 | 2026-04-06 | Sycophancy resistance architecture. Added 2 new specialist subagent modules: Research Methods Reviewer Agent (pre-execution research design review with belief-mapping, fires before each research loop after substantial revision — ADR-060), Susceptibility Snapshot Evaluator Agent (isolated evaluation of AID susceptibility signals at phase boundaries — ADR-057). Amended 3 existing modules: Orchestrator (AID protocol extended with susceptibility signals + question toolkit + assertion-aware observation; two-tier sycophancy resistance principle; Grounding Reframe pattern; belief-mapping as Inversion Principle form; essay-as-checkpoint for RESEARCH; agent dispatch updated 6→8 subagents), Research Skill (essay-as-checkpoint enforcement; dispatches research-methods-reviewer before each loop; argument-auditor dispatch now includes framing audit), Argument Auditor Agent (scope extended with framing audit — three structural questions surfacing alternative framings, absent truths, dominant framing inversion). Added 10 architectural drivers (belief-mapping form, question toolkit, AID susceptibility, two-tier resistance, Grounding Reframe, research methods subagent, framing audit, assertion-aware observation, essay as checkpoint). Added 22-row responsibility matrix section (Sycophancy Resistance Concepts from Essay 013 / ADRs 055-062). Updated dependency graph (2 new agents, 2 new dispatch edges). Added 3 integration contracts (Research→Research Methods Reviewer, Orchestrator→Susceptibility Snapshot Evaluator, Argument Auditor framing audit extension). Added 16 fitness criteria. Updated Inversion Principle locations (6→still 6, but form specified as belief-mapping). No new invariants; Authority concept annotated with limitation transparency. Key architectural property: two-tier resistance — Tier 1 unconditional (subagent audits, snapshots, research methods review) fires regardless of context; Tier 2 context-responsive (question form selection, constraint intensity, assertion-aware observation) calibrated by multidimensional rubric. The agent cannot self-exempt from Tier 1. ADR-062 revised during DECIDE from hook to AID observation based on user challenge (semantic assessment > lexical matching; accepted limitation named). Essay as checkpoint: the essay is where understanding crystallizes — every substantial change circles back to essay revision before pipeline advances. | ADRs 055-062 (essay 013 sycophancy and RDD reflexivity cycle) | ADR-055 (belief-mapping operationalization of Inversion Principle), ADR-056 (question toolkit for AID), ADR-057 (AID susceptibility extension), ADR-058 (unconditional architectural floor), ADR-059 (Grounding Reframe), ADR-060 (Research Methods Subagent), ADR-061 (framing audit as argument auditor extension), ADR-062 (assertion-aware observation in AID — revised from hook); Essay 013; Invariant 0 (limitation transparency annotation); DECIDE gate: essay as checkpoint + loop as defense + research phase iterability; MODEL gate: context-dependent performative/genuine classification + unconditional floor + grounding reframe | Proposed |

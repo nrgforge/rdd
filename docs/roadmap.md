@@ -1,70 +1,133 @@
 # Roadmap: Pedagogical RDD
 
-**Generated:** 2026-04-02
-**Derived from:** System Design v10.0, ADRs 048-054
+**Generated:** 2026-04-06
+**Derived from:** System Design v11.0, ADRs 055-062
 
 ## Work Packages
 
-*No active work packages — Cycle 7 complete.*
+### WP-A: New Specialist Subagents
+
+**Objective:** Create the two new specialist subagent modules that Tier 1 mechanisms depend on.
+
+**Changes:**
+- Create `agents/research-methods-reviewer.md` — system prompt with belief-mapping question review, embedded conclusion detection, premature narrowing flags, artifact output format
+- Create `agents/susceptibility-snapshot-evaluator.md` — system prompt with susceptibility signal evaluation, snapshot artifact format, Grounding Reframe recommendation logic
+
+**Scenarios covered:** Research Methods Subagent (ADR-060) scenarios, Susceptibility Snapshot (ADR-057) scenarios
+
+**Dependencies:** None — agents are self-contained files with no inter-agent dependencies
+
+---
+
+### WP-B: Argument Auditor Framing Extension
+
+**Objective:** Extend the argument auditor's scope with the framing audit section (three questions, source material reading, two-section output).
+
+**Changes:**
+- Amend `agents/argument-auditor.md` — add framing audit instructions (three questions: alternative framings, absent truths, dominant framing inversion); update output format to two-section artifact; add source material reading instruction
+
+**Scenarios covered:** Framing Audit (ADR-061) scenarios
+
+**Dependencies:** None — amendment to existing agent file
+
+---
+
+### WP-C: AID Cycle Extension (Orchestrator + All Phase Skills)
+
+**Objective:** Extend the AID cycle with susceptibility signal observation, question toolkit, assertion-aware observation, and belief-mapping as Inversion Principle form.
+
+**Changes:**
+- Amend orchestrator `skills/rdd/SKILL.md` — AID protocol extended with susceptibility signal list, question toolkit reference (six forms with phase mapping), assertion-aware observation instruction, belief-mapping operationalization of Inversion Principle, two-tier resistance principle, Grounding Reframe pattern, essay-as-checkpoint for RESEARCH phase
+- Amend all phase skills' EPISTEMIC GATE sections — reference question toolkit, add susceptibility signal observation to Attend phase, add assertion-aware observation instruction
+- Amend `skills/research/SKILL.md` — add Research Methods Subagent dispatch before each loop, essay-as-checkpoint enforcement, framing audit in argument audit dispatch
+- Amend ADR-010 — amendment note for PLAY + SYNTHESIS scope expansion and belief-mapping form (already done during DECIDE)
+
+**Scenarios covered:** Belief-mapping (ADR-055), question toolkit (ADR-056), AID susceptibility (ADR-057), unconditional floor (ADR-058), Grounding Reframe (ADR-059), assertion-aware observation (ADR-062), essay-as-checkpoint scenarios
+
+**Dependencies:** WP-A (hard — susceptibility snapshot evaluator must exist before orchestrator can reference dispatch); WP-B (implied — framing audit extension should exist before research skill references it, but the instruction could reference the to-be-created agent)
+
+---
+
+### WP-D: Orchestrator Integration
+
+**Objective:** Update orchestrator agent dispatch protocol, Available Skills table, plugin discovery count, cross-cutting principles.
+
+**Changes:**
+- Amend orchestrator — agent dispatch protocol updated (6→8 subagents), plugin discovery expectation (12 skills, 8 agents, 5 hooks), cross-cutting principles include two-tier resistance and Grounding Reframe
+
+**Scenarios covered:** Integration scenarios (full stack at phase boundary, standalone invocation)
+
+**Dependencies:** WP-A (hard — agents must exist), WP-C (hard — AID extensions must be in place)
+
+---
+
+### WP-E: Verification Pass
+
+**Objective:** Run conformance scan, verify all scenarios, check fitness criteria, confirm plugin discovery.
+
+**Changes:**
+- Dispatch conformance-scanner against updated skill files and ADRs 055-062
+- Verify ~45 new scenarios against skill text
+- Check 16 new fitness criteria
+- Confirm plugin discovers 12 skills, 8 agents, 5 hooks
+
+**Scenarios covered:** All Cycle 9 scenarios
+
+**Dependencies:** WP-A, WP-B, WP-C, WP-D (hard — all must be complete)
 
 ## Dependency Graph
 
 ```
-WP-A (Protocol + Conformance Fixes)
-       │
-  hard dependency
-       │
-       ├──────────────────────────┐
+WP-A (New Agents)          WP-B (Framing Audit Extension)
        │                          │
-WP-B (Debug Skill)        WP-C (Refactor Skill)
-  open choice                 open choice
+  open choice                open choice
        │                          │
-       └──── implied logic ───────┘
+       └──────── hard dep ────────┘
                     │
-             WP-D (Build Rewrite)
+             WP-C (AID Extension)
                     │
                hard dependency
                     │
-             WP-E (Orchestrator)
+             WP-D (Orchestrator)
                     │
                hard dependency
                     │
-             WP-F (Verification)
+             WP-E (Verification)
 ```
 
 **Classification key:**
-- **Hard dependency:** WP-B and WP-C need the protocol from WP-A. WP-E needs the skills to exist. WP-F needs everything.
-- **Implied logic:** WP-D is simpler to write after B and C exist (mode-shift descriptions can reference actual skill text), but the descriptions could be written from the ADRs alone.
-- **Open choice:** WP-B and WP-C are genuinely independent — build debug or refactor first, builder's choice.
+- **Hard dependency:** WP-C needs agents from WP-A and framing audit from WP-B to reference. WP-D needs AID extensions. WP-E needs everything.
+- **Open choice:** WP-A and WP-B are genuinely independent — new agents and framing audit extension can be built in either order.
 
 ## Transition States
 
-### TS-1: Protocol Defined, Conformance Fixed (after WP-A)
+### TS-1: Agents Available (after WP-A + WP-B)
 
-The Context Gathering protocol reference exists. The two standalone conformance violations (interaction-specs.md, /rdd-play) are fixed in the existing build skill. No new user-facing skills yet, but the foundation for all four is in place.
+The two new specialist subagents and the extended argument auditor exist as agent files. No skill file changes yet — agents are buildable and testable in isolation. The plugin would discover 8 agents.
 
-### TS-2: Standalone Skills Available (after WP-A + WP-B and/or WP-C)
+### TS-2: AID Extended (after WP-A + WP-B + WP-C)
 
-At least one new standalone skill is usable: `/rdd-debug` for debugging with epistemic care, `/rdd-refactor` for structured refactoring with AI smell awareness. Each operates in both modes (pipeline and context-reconstructive). The build skill is still monolithic — no mode-shift composition yet.
+The AID cycle is extended with susceptibility signals, question toolkit, and assertion-aware observation across all phase skills. The research skill dispatches the Research Methods Subagent and enforces essay-as-checkpoint. The Grounding Reframe pattern is specified. The sycophancy resistance architecture is functionally complete but not yet reflected in the orchestrator's dispatch protocol and Available Skills.
 
-### TS-3: Composable Build Functional (after WP-A + WP-B + WP-C + WP-D)
+### TS-3: Fully Integrated (after all)
 
-The build skill is rewritten as the outer loop. Mode shifts to debug, refactor, and review work seamlessly. Context-reconstructive mode serves the Everyday Developer. Session artifacts survive context compression. The composable skill family is functionally complete, though not yet listed in the orchestrator.
-
-### TS-4: Fully Integrated (after all)
-
-All skills listed in the orchestrator. Plugin discovers 12 skills. All scenarios, fitness criteria, and boundary tests verified.
+Orchestrator updated with 8-agent dispatch, updated plugin discovery, cross-cutting resistance principles. All scenarios verified, fitness criteria checked.
 
 ## Open Decision Points
 
-- **Session artifact location:** The `session/` directory could be at the project root (`./session/`) or within `./docs/` (`./docs/session/`). The builder decides based on gitignore conventions.
-- **Context Gathering protocol reference location:** Could be a section in the orchestrator's cross-phase integration rules, a standalone reference file in the plugin, or inline in each skill with cross-references. The builder decides based on maintainability.
-- **Build skill rewrite approach:** Could be an incremental rewrite (preserve existing pipeline mode, add context-reconstructive mode alongside) or a clean rewrite (start from the ADRs and scenarios). The builder decides based on how tangled the existing skill is.
-- **Mode-shift language calibration:** The ADRs and scenarios use "mode shift" language. The actual skill text needs to describe what happens from the developer's perspective without referencing skill boundaries. The builder decides the concrete phrasing.
+- **Susceptibility signal thresholds:** What constitutes "increasing" assertion density or "declining" alternative engagement is unspecified. Calibration should emerge from practice across real cycles — the first implementation should log signals without committing to thresholds.
+- **Framing audit source material scope:** The argument auditor now reads source material alongside the artifact. For essays, this means the research log. For ADRs, this means the essay + prior ADRs. The builder decides how to specify the source material path in the dispatch instruction.
+- **Non-formulaic verification:** The non-formulaic requirement (question forms composed with context, not templates) is a hard constraint but not mechanically verifiable. The conformance scan can flag stylistic repetition but cannot guarantee contextual composition. The builder decides how to encode the spirit-over-letter instruction in skill text.
 
 ---
 
 ## Completed Work Log
+
+### Cycle 8: Pair-RDD (paused)
+
+*Cycle 8 research complete (Essay 012). Cycle paused — Cycle 9 (sycophancy) took priority.*
+
+---
 
 ### Cycle 7: Composable Skill Family
 

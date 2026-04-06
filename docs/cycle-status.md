@@ -1,7 +1,7 @@
 # Active RDD Cycle: Sycophancy and RDD Reflexivity
 
 **Started:** 2026-04-04
-**Current phase:** MODEL (next)
+**Current phase:** BUILD (next)
 **Artifact base:** ./docs/
 **Essay:** 013-sycophancy-and-rdd-reflexivity.md
 
@@ -11,11 +11,10 @@
 |-------|--------|----------|----------------------|-------|
 | RESEARCH | ✅ Complete | Essay 013 (updated with §7 spike evidence), research log (updated with Question 5), 1 lit review, citation audit, argument audit, reflection, spike experiment (16 runs, 4 scoring reports, experiment design, findings) | **Three design implications + spike findings.** (A) Heavier framing architecture in early phases — same genuine mechanisms deployed earlier, not different ones. (B) Every phase transition evaluated through sycophancy lens — framing stability as a signal. (C) Retrospective sycophancy audit on prior corpuses with measurable proxies. **Spike:** Adversarial framing ("strongest case against") overcorrects; belief-mapping framing ("what would I need to believe") achieves near-zero divergence. The Inversion Principle operationalized as epistemic question, not adversarial demand. Bias compounds through sequential artifacts. | 4 research loops, 1 lit review, 16+ web searches, 16 spike runs across 2 topics × 3 constraints × 2 leans. All P1/P2 audit fixes applied. |
 | DISCOVER | ✅ Complete | product-discovery.md (updated) | **Multidimensional rubric + research-grounded question toolkit.** (A) Phase vulnerability × engagement quality × content trajectory as the three dimensions for calibrating sycophancy resistance — not one-size-fits-all, paralleling AID's evolution from uniform gates to contextual calibration. (B) Six research-grounded question forms (belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing) serve triple duty: sycophancy resistance + confidence diagnosis + epistemic advancement. Not overhead — the gates working better. (C) Inline observation + isolated evaluation separation: AID notices susceptibility signals, but evaluation happens in an isolated context producing a susceptibility snapshot artifact. (D) Earned confidence as testable criterion: the user's response to belief-mapping questions is the evidence, not their feeling of confidence. (E) Limitation transparency as mitigation: authority (Invariant 0) includes knowing where the process is weakest. The honest framing is itself a mitigation. (F) Non-formulaic requirement: question forms are types the agent composes with phase content and conversation state, not scripts. Spirit over letter. | Update mode: 3 stakeholder updates, 6 new/updated jobs, 5 new value tensions (3 new + 2 sharpened), 9 new assumption inversions, 7 new vocabulary terms. |
-| MODEL | ☐ Pending | — | — | — |
-| DECIDE | ☐ Pending | — | — | — |
-| ARCHITECT | ☐ Pending | — | — | — |
-| BUILD | ☐ Pending | — | — | — |
-| INTEGRATE | ☐ Pending | — | — | — |
+| MODEL | ✅ Complete | domain-model.md (Amendment #16) | **Context-dependent characterization + unconditional floor + grounding reframe.** (A) The performative/genuine distinction is context-dependent, not mechanism-fixed — the same constraint shifts character as empirical grounding increases through the pipeline and across modes (standalone vs. pipeline). (B) Context-dependence applies to calibrating *how much* structural constraint, not *whether* — architectural mechanisms are unconditional, conversational mechanisms are context-responsive. The agent cannot self-exempt. (C) When sycophancy risk is unassessable, the agent reframes toward a concrete grounding action rather than disclaiming and proceeding — converts a dischargeable obligation into an actionable fork. (D) Three escape hatches identified and constrained: context-as-rationalization (constrained by unconditional architectural floor), user-as-grounding-source inverting safety model (constrained by susceptibility snapshot still running), limitation-naming-as-checkbox (addressed by Grounding Reframe). | 18 new concepts, 6 updated concepts, 5 new actions, 41 new relationships, 7 new open questions, 18 synonym aliases. No invariant wording changes. |
+| DECIDE | ✅ Complete | 8 ADRs (055-062), 45 scenarios (12 features), interaction specs (3 stakeholder sections), argument audit (12 issues, all P1/P2 fixed) | **Essay as checkpoint + loop as defense + research phase iterability.** (A) The essay is where understanding crystallizes — every substantial change circles back to essay revision before the pipeline advances. Not the audit, not the conversation — the essay. (B) The framing audit doesn't need to be perfect in one pass — it needs to give the loop material. Each pass through question→investigate→write→audit→revise is another chance for consequential omissions to surface. (C) The research phase's structural advantage is its iterability — the only phase where multiple passes happen before advancing. Heaviest safeguards belong here because the loop can exploit them repeatedly. (D) ADR-062 revised from hook to AID observation based on user challenge — semantic assessment beats lexical matching. Accepted limitation named transparently. | ADR-010 amended (PLAY+SYNTHESIS scope, belief-mapping form). Research Methods Subagent fires on each loop after substantial revision, not just first. |
+| ARCHITECT | ✅ Complete | system-design.md (v11.0, Amendment #12), roadmap.md (5 WPs) | **Research weight is proportional to consequences.** The research skill's structural weight (3 subagent dispatches, essay-as-checkpoint loop) reflects the sycophancy gradient: RESEARCH is where foundational framing gets established, everything downstream inherits it. The weight protects the value proposition — understanding through genuine engagement. Three subagent dispatches aren't overhead; they're the research phase taking itself seriously. | 2 new subagent modules, 3 amended modules, 10 drivers, 22 matrix rows, 3 contracts, 16 fitness criteria. |
+| BUILD | ☐ Next | — | — | 5 WPs: A (new agents), B (framing audit extension), C (AID extension across all skills), D (orchestrator integration), E (verification) |
 | PLAY | ☐ Optional | — | — | — |
 | SYNTHESIZE | ☐ Optional | — | — | — |
 
@@ -54,16 +53,66 @@
 8. **The methodology author's stake** — this investigation is shaped by the author's investment in finding that RDD works. The mixed finding (genuine + performative mechanisms) is both the most likely truth and the most sycophancy-compatible truth. External researcher replication with same proxies would be the strongest test.
 9. **Downstream consistency flags** — (a) domain model: "earned confidence," "content selection," "sycophancy gradient," "susceptibility snapshot" are candidate domain concepts; (b) ADR-010 (Inversion Principle governance) may need amendment for belief-mapping operationalization; (c) the AID susceptibility extension needs its own ADR.
 
+### From MODEL
+1. **Context-dependent performative/genuine classification** — the same mechanism shifts from performative to genuine as empirical grounding increases through the pipeline and across modes. The sycophancy gradient is also a characterization gradient. DECIDE should specify mechanisms with their phase-context behavior, not as universally performative or genuine.
+2. **Unconditional architectural floor** — architectural mechanisms (hooks, isolated evaluation, framing audits) fire regardless of context. Conversational mechanisms (question form, constraint intensity) adapt. The agent cannot unilaterally determine that context is "safe enough" to skip structural mechanisms. This is the principle constraining the context-dependence provision.
+3. **Grounding Reframe as operational pattern** — when sycophancy risk is unassessable, the agent reframes toward concrete grounding actions rather than disclaiming and proceeding. "The ground is soft here — here's what would change that." Converts limitation-naming from dischargeable obligation to actionable fork. DECIDE should specify the Grounding Reframe as a named behavior, not leave it to ad hoc judgment.
+4. **Three escape hatches identified and constrained** — (a) context-as-rationalization (constrained by unconditional architectural floor), (b) user-as-grounding-source inverting safety model (constrained by susceptibility snapshot still running), (c) limitation-naming-as-checkbox (addressed by Grounding Reframe). DECIDE should encode these constraints in ADRs.
+5. **Earned Confidence has an unassessable floor state** — where neither belief-mapping nor empirical contact is available, earned confidence cannot be assessed. The Grounding Reframe is the agent's response in this state. DECIDE should specify what triggers this state and what grounding actions are available per phase.
+6. **Self-Correction Blind Spot and Architectural Isolation now named** — the mechanistic explanation for why subagent dispatch works (not just that it works). DECIDE should reference these when specifying new subagents (research methods, framing audit extension).
+7. **DISCOVER downstream consistency flags confirmed** — (a) all vocabulary candidates (earned confidence, content selection, sycophancy gradient, susceptibility snapshot) are now domain concepts; (b) ADR-010 (Inversion Principle) still needs belief-mapping amendment; (c) AID susceptibility extension still needs its own ADR. These are DECIDE deliverables.
+
+### From DECIDE
+1. **Two-tier sycophancy resistance architecture** — Tier 1 unconditional (subagent audits, susceptibility snapshots, research methods review) fires regardless of context and handles outputs via Grounding Reframe. Tier 2 context-responsive (question form selection, constraint intensity, assertion-aware observation) calibrated by multidimensional rubric. ARCHITECT should map these tiers to specific module responsibilities.
+2. **Essay as checkpoint** — the essay is the artifact where research understanding crystallizes. Every substantial change (from framing audit, discovery feedback, reflection) circles back to essay revision before advancing. ARCHITECT should reflect this in the research skill's module design — the essay is not an output of research but a living artifact within the research loop.
+3. **Research Methods Subagent fires on each loop** — not just before the first research loop, but before any loop following substantial revision. ARCHITECT should account for this in the subagent dispatch model.
+4. **ADR-062 reclassification** — assertion detection moved from hook to AID inline observation. ARCHITECT should reflect this: no new hook in the hook configuration, assertion-aware observation is an AID Attend responsibility.
+5. **Eight specialist subagents** — citation-auditor, argument-auditor (with framing audit extension), lit-reviewer, conformance-scanner, orientation-writer, spike-runner, susceptibility-snapshot evaluator, research-methods-reviewer. ARCHITECT should allocate these in the responsibility matrix.
+6. **Grounding Reframe as behavioral pattern** — applies at the output stage of Tier 1 mechanisms and when Earned Confidence is unassessable. ARCHITECT should specify where in the skill architecture this pattern is triggered.
+7. **Spike evidence is directional, not conclusive** — ADRs carry "Known limitation" notes. ARCHITECT should not treat the spike findings as validated design parameters.
+8. **Non-formulaic requirement** — question forms are types composed with phase content, not templates. This constrains how skill files specify question deployment — spirit over letter.
+
 ## Context for Resumption
 
-- Cycle 9 investigates whether RDD's anti-sycophancy mechanisms provide genuine structural resistance or performative anti-sycophancy
-- RESEARCH complete with essay 013, audited, reflection recorded, and spike experiment integrated
-- DISCOVER complete — product-discovery.md updated with sycophancy findings: 3 stakeholder updates, 6 new/updated jobs, 5 value tensions (3 new + 2 sharpened), 9 assumption inversions, 7 vocabulary terms
-- The central finding: a testable distinction between performative and genuine structural resistance, a sycophancy gradient showing early phases are most vulnerable, and three design implications (heavier early framing architecture, phase-transition sycophancy evaluation, retrospective corpus audit)
-- **Spike experiment:** 16 isolated pipeline runs across 2 topics × 3 constraint conditions × 2 user leans. Key result: belief-mapping framing ("what would I need to believe?") achieves near-zero divergence; adversarial framing ("strongest case against") overcorrects by 2-6×. Essay updated with §7 (spike evidence), §8 and §10 updated with cross-references. Research log updated with Question 5.
-- **DISCOVER's key design contributions for DECIDE:** (a) multidimensional sycophancy rubric (phase vulnerability × engagement quality × content trajectory) for contextual constraint selection, (b) six research-grounded question forms as a toolkit — belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing — each serving triple duty (sycophancy resistance + confidence diagnosis + epistemic advancement), (c) phase-specific question mapping (initial, needs DECIDE refinement), (d) inline observation + isolated evaluation separation for susceptibility assessment (needs ADR), (e) earned confidence as testable criterion, (f) limitation transparency as mitigation (Invariant 0 includes knowing process weaknesses)
-- **Carried forward from RESEARCH for DECIDE:** (a) belief-mapping framing for the Inversion Principle — operationalize as "what would I need to believe?" not "argue against this," (b) research methods subagent — pre-execution research design review with cross-cycle pattern detection, narrowest useful first version, (c) orchestrator assertion-detection hook — UserPromptSubmit hook that flags embedded conclusions at phase boundaries using Dubois et al. detection heuristics, (d) framing audit concept — extended argument auditor comparing essay against full evidence base
-- **Downstream consistency flags:** (a) domain model candidates: earned confidence, content selection, sycophancy gradient, susceptibility snapshot; (b) ADR-010 (Inversion Principle) may need belief-mapping amendment; (c) AID susceptibility extension needs its own ADR
-- **Non-formulaic requirement** is a hard design constraint from the user — question forms are types the agent composes with phase content, not scripts to recite. Spirit over letter.
-- The briefing document (sycophancy-and-rdd-reflexivity.md) can be removed once confirmed that all content is in the research log and essay
-- Spike artifacts preserved in `docs/essays/research-logs/spike-sycophancy/` (experiment design, findings, 16 run directories, 4 scoring reports, 4 blinding keys)
+**To resume: invoke `/rdd` and say "resume Cycle 9 — BUILD phase."** The orchestrator will read this cycle status and pick up at BUILD.
+
+### What Cycle 9 is about
+- Investigates whether RDD's anti-sycophancy mechanisms provide genuine structural resistance or performative anti-sycophancy
+- Central finding: a testable distinction (performative = satisfiable without addressing content selection; genuine = makes absence visible) + a sycophancy gradient (RESEARCH most vulnerable → BUILD most resistant) + belief-mapping > adversarial framing (spike: near-zero divergence vs. 2-6× overcorrection)
+
+### What's been decided (ADRs 055-062)
+- **ADR-055:** Belief-mapping operationalization of Inversion Principle (amends ADR-010)
+- **ADR-056:** Six research-grounded question forms as AID toolkit (non-formulaic requirement is hard constraint)
+- **ADR-057:** AID susceptibility extension — inline observation + isolated evaluation producing Susceptibility Snapshot
+- **ADR-058:** Unconditional architectural floor — Tier 1 (subagent audits, snapshots, research methods review) fires unconditionally; Tier 2 (question forms, constraint intensity, assertion-aware observation) adapts to context. Agent cannot self-exempt from Tier 1.
+- **ADR-059:** Grounding Reframe — when sycophancy risk is unassessable, name uncertainty and offer concrete grounding actions (not disclaim and proceed)
+- **ADR-060:** Research Methods Subagent — fires before each research loop after substantial revision. 8th specialist subagent.
+- **ADR-061:** Framing Audit as argument auditor extension — three questions surfacing alternative framings, absent truths, dominant framing inversion
+- **ADR-062:** Assertion-Aware Observation in AID (revised from hook during DECIDE — semantic detection beats lexical matching; accepted limitation: no Architectural Isolation)
+- **Argument audit:** 12 issues found (3 P1, 5 P2, 4 P3), all P1/P2 fixed. ADR-010 amended with PLAY+SYNTHESIS scope and belief-mapping form.
+
+### What's been designed (system-design.md v11.0)
+- 2 new subagent modules (research-methods-reviewer, susceptibility-snapshot-evaluator)
+- 3 amended modules (Orchestrator, Research Skill, Argument Auditor Agent)
+- Two-tier sycophancy resistance as organizing architectural principle
+- Roadmap: 5 work packages (WP-A: new agents, WP-B: framing audit, WP-C: AID extension, WP-D: orchestrator, WP-E: verification)
+
+### Key epistemic gate contributions (feed-forward for BUILD)
+- **MODEL:** Context-dependent performative/genuine classification; unconditional architectural floor; Grounding Reframe; three escape hatches identified and constrained
+- **DECIDE:** Essay as checkpoint (every substantial change circles back to essay revision); the loop is the defense (each pass is another chance); research phase's structural advantage is its iterability; ADR-062 revised from hook to AID observation
+- **ARCHITECT:** Research skill's weight is proportional to consequences — 3 subagent dispatches + essay-as-checkpoint loop reflects the sycophancy gradient. The weight protects the value proposition.
+
+### Build instructions
+- Read `./docs/system-design.md` (v11.0) as primary context — it's the compiled rollup
+- Read `./docs/roadmap.md` for work packages and dependency graph
+- Start with WP-A (new agents) and WP-B (framing audit extension) in parallel — they're genuinely independent
+- Then WP-C (AID extension across all skills — the heaviest WP), WP-D (orchestrator integration), WP-E (verification)
+- ~45 scenarios in `./docs/scenarios.md` cover the Cycle 9 features
+- Interaction specs in `./docs/interaction-specs.md` cover sycophancy-aware stakeholder interactions
+- **Non-formulaic requirement** is a hard design constraint — question forms are types the agent composes with phase content, not scripts to recite. Spirit over letter.
+
+### Housekeeping
+- The briefing document (`docs/sycophancy-and-rdd-reflexivity.md`) can be removed — all content is in the research log and essay
+- Spike artifacts preserved in `docs/essays/research-logs/spike-sycophancy/`
+- ADR-010 already amended (PLAY+SYNTHESIS scope, belief-mapping form) — no further amendment needed
+- Domain model at Amendment #16 (18 new concepts, 6 updated, 41 relationships)
