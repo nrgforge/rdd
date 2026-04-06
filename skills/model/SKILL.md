@@ -110,14 +110,22 @@ After presenting the domain model, run the Attend-Interpret-Decide cycle before 
 
 Then run the three-phase cycle:
 
-**1. Attend.** Read the cycle's conversation history for engagement signals specific to the modeling phase:
+**1. Attend.** Read the cycle's conversation history for two categories of signal:
 
+*Engagement signals specific to the modeling phase:*
 - Did the user engage with concept definitions or accept vocabulary without discussion?
 - Did the user challenge relationship definitions or propose alternatives?
 - Did the user connect domain concepts to their mental model of how the system works?
 - Did the user notice missing concepts, synonyms, or ambiguities?
 - Did the user engage with invariant changes (amendments) or accept them?
 - Cross-gate signals from prior phases (especially DISCOVER — did the user provide rich product knowledge that should show up in the model?)
+
+*Susceptibility signals (record for Susceptibility Snapshot — do NOT evaluate inline):*
+- Assertion density: did the user's declarative conclusions about domain structure increase while questions decreased?
+- Solution-space narrowing: did the vocabulary converge without examining alternative conceptualizations?
+- Framing adoption: did the agent adopt the user's domain framing without surfacing alternatives?
+- Confidence markers: shift toward certainty about concept relationships without empirical grounding?
+- Declining alternative engagement: did exploration of alternative domain structures become shallower?
 
 **2. Interpret.** Form a hypothesis about the user's engagement:
 
@@ -127,9 +135,9 @@ Then run the three-phase cycle:
 - **Confused** — responses misalign with the model's definitions, inconsistent use of terms, avoidance of relationship questions.
 - **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue. If thin throughout, the domain vocabulary may be overwhelming — shift toward teaching.
 
-**3. Decide.** Select a pedagogical move:
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type.
 
-- **Deep engagement → Challenge.** "The model defines [concept X] as related to [concept Y] this way. Where does this model break? What edge case or real-world scenario would stress this relationship?" Or reframe: "The model organizes concepts around [principle]. Is there a different organizing principle that would reveal something the current structure hides?"
+- **Deep engagement → Challenge.** Use warrant elicitation: "What makes you confident that [concept X] relates to [concept Y] this way — what evidence grounds that?" Or belief-mapping: "What would you need to believe for a different organizing principle to reveal something this structure hides?" Do not praise. Build on what the user demonstrated.
 - **Adequate engagement → Probe.** "You engaged with [concept] during the discussion — what makes that concept central to how you think about this system? What would you explain first to a colleague?"
 - **Surface engagement → Teach.** Identify the most load-bearing relationship in the model — the one that most constrains downstream decisions — and explain why it matters: "The relationship between [X] and [Y] is the most important because [reason]. Here's how it shapes what comes next. Does this match your intuition?" Teach first, then ask.
 - **Confusion → Clarify.** "It sounds like the relationship between [concept X] and [concept Y] doesn't match your mental model. Let me walk through how the model connects them." Then re-approach.

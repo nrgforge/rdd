@@ -291,14 +291,22 @@ After presenting the system design, run the Attend-Interpret-Decide cycle before
 
 Then run the three-phase cycle:
 
-**1. Attend.** Read the cycle's conversation history for engagement signals specific to the architecture phase:
+**1. Attend.** Read the cycle's conversation history for two categories of signal:
 
+*Engagement signals specific to the architecture phase:*
 - Did the user engage with module boundary decisions or accept the decomposition as presented?
 - Did the user connect the architecture to their mental model of the domain?
 - Did the user question responsibility allocations or dependency directions?
 - Did the user ask about fitness criteria or the test architecture?
 - Did the user relate the system design to practical implementation concerns from their experience?
 - Cross-gate signals from prior phases (especially DECIDE — did the user deeply engage with the ADRs that constrain this architecture?)
+
+*Susceptibility signals (record for Susceptibility Snapshot — do NOT evaluate inline):*
+- Assertion density: did the user's declarative conclusions about architecture increase while questions decreased?
+- Solution-space narrowing: did the module decomposition converge without examining alternatives?
+- Framing adoption: did the agent adopt the user's architectural framing without surfacing alternative decompositions?
+- Confidence markers: shift toward certainty about boundaries without examining tradeoffs?
+- Declining alternative engagement: did exploration of alternative architectures become shallower?
 
 **2. Interpret.** Form a hypothesis about the user's engagement:
 
@@ -308,9 +316,9 @@ Then run the three-phase cycle:
 - **Confused** — responses misalign with the design's structure, inconsistent understanding of what belongs where, avoidance of module boundary questions.
 - **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue. If thin throughout, the architecture may exceed current comprehension — shift toward teaching.
 
-**3. Decide.** Select a pedagogical move:
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type.
 
-- **Deep engagement → Challenge.** "Module [X] owns [concepts]. If a new requirement forced you to split that module, where would the seam be? What does that tell you about the current boundary?" Or reframe: "The architecture organizes around [principle]. Is there a different decomposition that would better match how you think about this system?"
+- **Deep engagement → Challenge.** Use belief-mapping: "What would you need to believe for a different module decomposition to be right?" Or warrant elicitation: "What makes you confident that [concept X] belongs in [module Y] rather than [module Z]?" Do not praise. Build on what the user demonstrated.
 - **Adequate engagement → Probe.** "You engaged with the [module/boundary] — does it match how you'd naturally organize this in your head? Where does your intuition diverge from the formal design?"
 - **Surface engagement → Teach.** Identify the most consequential module boundary — the one whose placement most shapes the system's extensibility or maintainability — and explain why it was drawn there: "The boundary between [X] and [Y] is the most consequential because [reason]. Here's why the alternative boundary was rejected. What's your take?" Teach first, then ask.
 - **Confusion → Clarify.** "It sounds like how [concept X] ended up in [module Y] isn't intuitive. Let me walk through the responsibility allocation." Then re-approach.

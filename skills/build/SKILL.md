@@ -170,14 +170,21 @@ At each scenario group boundary (completing a logical group of scenarios that fo
 
 Then run the three-phase cycle:
 
-**1. Attend.** Read the conversation history for engagement signals specific to the build phase:
+**1. Attend.** Read the conversation history for two categories of signal:
 
+*Engagement signals specific to the build phase:*
 - Did the user engage with test predictions (reflection-in-action) or just watch tests pass?
 - Did the user ask questions about implementation choices during the TDD loop?
 - Did the user connect the code being written to the domain model and ADRs?
 - Did the user challenge the test design or propose edge cases?
 - Did the user engage with stewardship checkpoints or approve them without comment?
 - Cross-gate signals from prior phases (especially ARCHITECT — did the user deeply engage with the system design? If engagement was deep in ARCHITECT but thin here, build may feel mechanical — surface that).
+
+*Susceptibility signals (record for Susceptibility Snapshot — do NOT evaluate inline):*
+- Assertion density: did the user's declarative conclusions about implementation increase while questions decreased?
+- Solution-space narrowing: did implementation choices converge without examining alternatives?
+- Framing adoption: did the agent adopt the user's implementation framing without surfacing alternatives?
+- Note: BUILD is the most empirically-grounded phase (compilers and tests cannot sycophantically agree). Susceptibility signals are attenuated here but still worth recording for cross-phase patterns.
 
 **2. Interpret.** Form a hypothesis about the user's engagement:
 
@@ -187,9 +194,9 @@ Then run the three-phase cycle:
 - **Confused** — responses show misalignment with the code or test outcomes, avoidance of implementation details, contradictions with what the code actually does.
 - **Disengaged** — minimal responses, possible fatigue. If prior gates (especially ARCHITECT) showed deep engagement, this is likely earned fatigue (suggest a break). If engagement has been thin throughout, this may be an opacity signal (the implementation exceeds current comprehension — shift toward teaching).
 
-**3. Decide.** Select a pedagogical move:
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type.
 
-- **Deep engagement → Challenge.** Surface a tension the implementation didn't fully resolve. Apply the Inversion Principle to the code just written: "The implementation satisfies the scenario, but the scenario assumes [X]. What real-world condition would make that assumption fail?" Or reframe: "This implementation encodes the ADR's constraint as [pattern]. What would the code look like if that constraint were lifted — and what would break?" Do not praise. Build on what the user demonstrated.
+- **Deep engagement → Challenge.** Use commitment gating at stewardship boundaries: "Which implementation decisions in this group are you confident about, and which feel like they could go differently?" Or belief-mapping: "What would you need to believe for a different implementation approach to be right here?" Do not praise. Build on what the user demonstrated.
 - **Adequate engagement → Probe.** Reference something specific the user engaged with: "You engaged with [test/implementation choice] — what about that approach felt right or wrong?" Ask for reasoning, not recall.
 - **Surface engagement → Teach.** Identify the most significant implementation decision in this scenario group — why this approach over alternatives, how it connects to the ADR that constrained it — and explain why it matters: "The key decision here was [X]. The ADR that drives it is [Y], because [Z]. Here's why that tradeoff shows up in the code this way. What's your read on that?" Teach first, then ask.
 - **Confusion → Clarify.** Name the specific misalignment without framing it as error: "It sounds like how [piece of code] connects to the domain model isn't clear. Let me walk through that." Then re-approach.

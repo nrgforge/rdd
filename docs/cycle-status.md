@@ -1,7 +1,7 @@
 # Active RDD Cycle: Sycophancy and RDD Reflexivity
 
 **Started:** 2026-04-04
-**Current phase:** BUILD (next)
+**Current phase:** BUILD complete — PLAY and SYNTHESIZE optional next
 **Artifact base:** ./docs/
 **Essay:** 013-sycophancy-and-rdd-reflexivity.md
 
@@ -14,7 +14,7 @@
 | MODEL | ✅ Complete | domain-model.md (Amendment #16) | **Context-dependent characterization + unconditional floor + grounding reframe.** (A) The performative/genuine distinction is context-dependent, not mechanism-fixed — the same constraint shifts character as empirical grounding increases through the pipeline and across modes (standalone vs. pipeline). (B) Context-dependence applies to calibrating *how much* structural constraint, not *whether* — architectural mechanisms are unconditional, conversational mechanisms are context-responsive. The agent cannot self-exempt. (C) When sycophancy risk is unassessable, the agent reframes toward a concrete grounding action rather than disclaiming and proceeding — converts a dischargeable obligation into an actionable fork. (D) Three escape hatches identified and constrained: context-as-rationalization (constrained by unconditional architectural floor), user-as-grounding-source inverting safety model (constrained by susceptibility snapshot still running), limitation-naming-as-checkbox (addressed by Grounding Reframe). | 18 new concepts, 6 updated concepts, 5 new actions, 41 new relationships, 7 new open questions, 18 synonym aliases. No invariant wording changes. |
 | DECIDE | ✅ Complete | 8 ADRs (055-062), 45 scenarios (12 features), interaction specs (3 stakeholder sections), argument audit (12 issues, all P1/P2 fixed) | **Essay as checkpoint + loop as defense + research phase iterability.** (A) The essay is where understanding crystallizes — every substantial change circles back to essay revision before the pipeline advances. Not the audit, not the conversation — the essay. (B) The framing audit doesn't need to be perfect in one pass — it needs to give the loop material. Each pass through question→investigate→write→audit→revise is another chance for consequential omissions to surface. (C) The research phase's structural advantage is its iterability — the only phase where multiple passes happen before advancing. Heaviest safeguards belong here because the loop can exploit them repeatedly. (D) ADR-062 revised from hook to AID observation based on user challenge — semantic assessment beats lexical matching. Accepted limitation named transparently. | ADR-010 amended (PLAY+SYNTHESIS scope, belief-mapping form). Research Methods Subagent fires on each loop after substantial revision, not just first. |
 | ARCHITECT | ✅ Complete | system-design.md (v11.0, Amendment #12), roadmap.md (5 WPs) | **Research weight is proportional to consequences.** The research skill's structural weight (3 subagent dispatches, essay-as-checkpoint loop) reflects the sycophancy gradient: RESEARCH is where foundational framing gets established, everything downstream inherits it. The weight protects the value proposition — understanding through genuine engagement. Three subagent dispatches aren't overhead; they're the research phase taking itself seriously. | 2 new subagent modules, 3 amended modules, 10 drivers, 22 matrix rows, 3 contracts, 16 fitness criteria. |
-| BUILD | ☐ Next | — | — | 5 WPs: A (new agents), B (framing audit extension), C (AID extension across all skills), D (orchestrator integration), E (verification) |
+| BUILD | ✅ Complete | 2 new agents, 1 amended agent, 7 amended skills, 28 scenarios verified, 16 fitness criteria checked | **Pragmatic multi-pronged testing.** The mechanisms won't be perfect but the multi-pronged approach means any single mechanism can underperform without the whole failing. The framing audit surfacing things the user wouldn't have seen otherwise is the key signal. Practice across different contexts will generate the real calibration data. | 5 WPs delivered: A (new agents), B (framing audit), C (AID extension), D (orchestrator), E (verification) |
 | PLAY | ☐ Optional | — | — | — |
 | SYNTHESIZE | ☐ Optional | — | — | — |
 
@@ -74,7 +74,7 @@
 
 ## Context for Resumption
 
-**To resume: invoke `/rdd` and say "resume Cycle 9 — BUILD phase."** The orchestrator will read this cycle status and pick up at BUILD.
+**BUILD is complete.** PLAY and SYNTHESIZE are available as optional next phases. To invoke: `/rdd-play` for experiential discovery or `/rdd-synthesize` to extract publishable insight from the cycle.
 
 ### What Cycle 9 is about
 - Investigates whether RDD's anti-sycophancy mechanisms provide genuine structural resistance or performative anti-sycophancy

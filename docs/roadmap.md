@@ -1,82 +1,34 @@
 # Roadmap: Pedagogical RDD
 
-**Generated:** 2026-04-06
+**Updated:** 2026-04-06
 **Derived from:** System Design v11.0, ADRs 055-062
 
-## Work Packages
+## Completed Work Log
 
-### WP-A: New Specialist Subagents
+### Cycle 9: Sycophancy Resistance Architecture
 
-**Objective:** Create the two new specialist subagent modules that Tier 1 mechanisms depend on.
+**Derived from:** ADRs 055-062, Essay 013
 
-**Changes:**
-- Create `agents/research-methods-reviewer.md` — system prompt with belief-mapping question review, embedded conclusion detection, premature narrowing flags, artifact output format
-- Create `agents/susceptibility-snapshot-evaluator.md` — system prompt with susceptibility signal evaluation, snapshot artifact format, Grounding Reframe recommendation logic
+| WP | Title | Status |
+|----|-------|--------|
+| A | New Specialist Subagents (research-methods-reviewer, susceptibility-snapshot-evaluator) | Complete |
+| B | Argument Auditor Framing Extension | Complete |
+| C | AID Cycle Extension (Orchestrator + All Phase Skills) | Complete |
+| D | Orchestrator Integration | Complete |
+| E | Verification Pass | Complete |
 
-**Scenarios covered:** Research Methods Subagent (ADR-060) scenarios, Susceptibility Snapshot (ADR-057) scenarios
+**Summary:**
+- Created research-methods-reviewer agent (belief-mapping question review, embedded conclusion detection, premature narrowing flags)
+- Created susceptibility-snapshot-evaluator agent (isolated signal evaluation, Grounding Reframe recommendations)
+- Extended argument auditor with framing audit (three structural questions, source material reading, two-section output)
+- Extended AID cycle across orchestrator + 6 phase skills: susceptibility signal observation, Question Toolkit with goal-first composition (6 research-grounded forms), assertion-aware observation, belief-mapping as Inversion Principle form
+- Added Two-Tier Sycophancy Resistance (Tier 1 unconditional: subagent audits, snapshots, research methods review; Tier 2 context-responsive: question forms, constraint intensity, assertion-aware observation)
+- Added Grounding Reframe pattern, essay-as-checkpoint enforcement, commitment gating
+- Updated cross-phase integration rules for new mechanisms
+- Verification: 28 scenarios verified (6 gaps found and fixed during first pass), 16 fitness criteria checked
+- Full RDD cycle: research (Essay 013, spike experiment, citation/argument audited) → discover (product discovery updated) → model (18 concepts, Amendment 16) → decide (8 ADRs, ~45 scenarios, interaction specs) → architect (system design v11.0, roadmap) → build (2 agents created, 1 agent amended, 7 skill files amended)
 
-**Dependencies:** None — agents are self-contained files with no inter-agent dependencies
-
----
-
-### WP-B: Argument Auditor Framing Extension
-
-**Objective:** Extend the argument auditor's scope with the framing audit section (three questions, source material reading, two-section output).
-
-**Changes:**
-- Amend `agents/argument-auditor.md` — add framing audit instructions (three questions: alternative framings, absent truths, dominant framing inversion); update output format to two-section artifact; add source material reading instruction
-
-**Scenarios covered:** Framing Audit (ADR-061) scenarios
-
-**Dependencies:** None — amendment to existing agent file
-
----
-
-### WP-C: AID Cycle Extension (Orchestrator + All Phase Skills)
-
-**Objective:** Extend the AID cycle with susceptibility signal observation, question toolkit, assertion-aware observation, and belief-mapping as Inversion Principle form.
-
-**Changes:**
-- Amend orchestrator `skills/rdd/SKILL.md` — AID protocol extended with susceptibility signal list, question toolkit reference (six forms with phase mapping), assertion-aware observation instruction, belief-mapping operationalization of Inversion Principle, two-tier resistance principle, Grounding Reframe pattern, essay-as-checkpoint for RESEARCH phase
-- Amend all phase skills' EPISTEMIC GATE sections — reference question toolkit, add susceptibility signal observation to Attend phase, add assertion-aware observation instruction
-- Amend `skills/research/SKILL.md` — add Research Methods Subagent dispatch before each loop, essay-as-checkpoint enforcement, framing audit in argument audit dispatch
-- Amend ADR-010 — amendment note for PLAY + SYNTHESIS scope expansion and belief-mapping form (already done during DECIDE)
-
-**Scenarios covered:** Belief-mapping (ADR-055), question toolkit (ADR-056), AID susceptibility (ADR-057), unconditional floor (ADR-058), Grounding Reframe (ADR-059), assertion-aware observation (ADR-062), essay-as-checkpoint scenarios
-
-**Dependencies:** WP-A (hard — susceptibility snapshot evaluator must exist before orchestrator can reference dispatch); WP-B (implied — framing audit extension should exist before research skill references it, but the instruction could reference the to-be-created agent)
-
----
-
-### WP-D: Orchestrator Integration
-
-**Objective:** Update orchestrator agent dispatch protocol, Available Skills table, plugin discovery count, cross-cutting principles.
-
-**Changes:**
-- Amend orchestrator — agent dispatch protocol updated (6→8 subagents), plugin discovery expectation (12 skills, 8 agents, 5 hooks), cross-cutting principles include two-tier resistance and Grounding Reframe
-
-**Scenarios covered:** Integration scenarios (full stack at phase boundary, standalone invocation)
-
-**Dependencies:** WP-A (hard — agents must exist), WP-C (hard — AID extensions must be in place)
-
----
-
-### WP-E: Verification Pass
-
-**Objective:** Run conformance scan, verify all scenarios, check fitness criteria, confirm plugin discovery.
-
-**Changes:**
-- Dispatch conformance-scanner against updated skill files and ADRs 055-062
-- Verify ~45 new scenarios against skill text
-- Check 16 new fitness criteria
-- Confirm plugin discovers 12 skills, 8 agents, 5 hooks
-
-**Scenarios covered:** All Cycle 9 scenarios
-
-**Dependencies:** WP-A, WP-B, WP-C, WP-D (hard — all must be complete)
-
-## Dependency Graph
-
+**Dependency graph (as-built):**
 ```
 WP-A (New Agents)          WP-B (Framing Audit Extension)
        │                          │
@@ -95,33 +47,7 @@ WP-A (New Agents)          WP-B (Framing Audit Extension)
              WP-E (Verification)
 ```
 
-**Classification key:**
-- **Hard dependency:** WP-C needs agents from WP-A and framing audit from WP-B to reference. WP-D needs AID extensions. WP-E needs everything.
-- **Open choice:** WP-A and WP-B are genuinely independent — new agents and framing audit extension can be built in either order.
-
-## Transition States
-
-### TS-1: Agents Available (after WP-A + WP-B)
-
-The two new specialist subagents and the extended argument auditor exist as agent files. No skill file changes yet — agents are buildable and testable in isolation. The plugin would discover 8 agents.
-
-### TS-2: AID Extended (after WP-A + WP-B + WP-C)
-
-The AID cycle is extended with susceptibility signals, question toolkit, and assertion-aware observation across all phase skills. The research skill dispatches the Research Methods Subagent and enforces essay-as-checkpoint. The Grounding Reframe pattern is specified. The sycophancy resistance architecture is functionally complete but not yet reflected in the orchestrator's dispatch protocol and Available Skills.
-
-### TS-3: Fully Integrated (after all)
-
-Orchestrator updated with 8-agent dispatch, updated plugin discovery, cross-cutting resistance principles. All scenarios verified, fitness criteria checked.
-
-## Open Decision Points
-
-- **Susceptibility signal thresholds:** What constitutes "increasing" assertion density or "declining" alternative engagement is unspecified. Calibration should emerge from practice across real cycles — the first implementation should log signals without committing to thresholds.
-- **Framing audit source material scope:** The argument auditor now reads source material alongside the artifact. For essays, this means the research log. For ADRs, this means the essay + prior ADRs. The builder decides how to specify the source material path in the dispatch instruction.
-- **Non-formulaic verification:** The non-formulaic requirement (question forms composed with context, not templates) is a hard constraint but not mechanically verifiable. The conformance scan can flag stylistic repetition but cannot guarantee contextual composition. The builder decides how to encode the spirit-over-letter instruction in skill text.
-
 ---
-
-## Completed Work Log
 
 ### Cycle 8: Pair-RDD (paused)
 

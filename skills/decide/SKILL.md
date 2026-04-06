@@ -213,14 +213,22 @@ After presenting the complete set (ADRs + scenarios + interaction specifications
 
 Then run the three-phase cycle:
 
-**1. Attend.** Read the cycle's conversation history for engagement signals specific to the decision phase:
+**1. Attend.** Read the cycle's conversation history for two categories of signal:
 
+*Engagement signals specific to the decision phase:*
 - Did the user engage with rejected ADR alternatives or accept decisions without question?
 - Did the user ask about implications of decisions for downstream phases (architecture, build)?
 - Did the user connect decisions to their domain experience or prior project knowledge?
 - Did the user challenge any scenario's Given/When/Then or propose additional scenarios?
 - Did the user engage with interaction specifications or accept them as presented?
 - Cross-gate signals from prior phases (especially MODEL — did the user deeply engage with the vocabulary that these decisions use?)
+
+*Susceptibility signals (record for Susceptibility Snapshot — do NOT evaluate inline):*
+- Assertion density: did the user's declarative conclusions about design choices increase while questions decreased?
+- Solution-space narrowing: did alternatives drop away without examination?
+- Framing adoption: did the agent adopt the user's preferred approach without surfacing the rejected alternatives substantively?
+- Confidence markers: shift toward certainty about decisions without examining tradeoffs?
+- Declining alternative engagement: did exploration of rejected ADR alternatives become shallower?
 
 **2. Interpret.** Form a hypothesis about the user's engagement:
 
@@ -230,9 +238,9 @@ Then run the three-phase cycle:
 - **Confused** — responses misalign with ADR rationale, inconsistent positions on tradeoffs, avoidance of specific decisions.
 - **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue. If thin throughout, the decision space may be overwhelming — shift toward teaching.
 
-**3. Decide.** Select a pedagogical move:
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type.
 
-- **Deep engagement → Challenge.** "ADR-NNN rejected [alternative]. If you had to argue FOR that rejected alternative, what would you say? What would the system look like?" Apply the Inversion Principle to the decisions themselves. Or reframe: "These decisions collectively assume [frame]. Is there a different frame that would lead to different decisions?"
+- **Deep engagement → Challenge.** Use rebuttal elicitation: "What's the strongest reason someone would disagree with ADR-NNN?" Or belief-mapping on rejected alternatives: "What would you need to believe for [rejected alternative] to be the right choice?" Do not use adversarial framing ("argue FOR that rejected alternative") as the default — belief-mapping achieves better balance. Do not praise. Build on what the user demonstrated.
 - **Adequate engagement → Probe.** "You asked about [decision/scenario] — what about that decision feels most consequential for what you're building?"
 - **Surface engagement → Teach.** Identify the most consequential ADR — the one whose trade-off most shapes downstream architecture — and explain why the rejected alternative was rejected: "The key decision is [ADR-NNN]. The alternative was [X], rejected because [Y]. Here's why that matters for what gets built. What's your take on that tradeoff?" Teach first, then ask.
 - **Confusion → Clarify.** "It sounds like the tradeoff in ADR-NNN between [option A] and [option B] isn't clear. Let me walk through the reasoning." Then re-approach.

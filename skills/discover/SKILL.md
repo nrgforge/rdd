@@ -232,8 +232,9 @@ This gate has a unique property: the user likely knows more about their stakehol
 
 Then run the three-phase cycle:
 
-**1. Attend.** Read the cycle's conversation history for engagement signals specific to the product discovery phase:
+**1. Attend.** Read the cycle's conversation history for two categories of signal:
 
+*Engagement signals specific to the product discovery phase:*
 - Did the user provide substantive stakeholder knowledge or let the AI fill in?
 - Did the user challenge or extend the stakeholder map — adding stakeholders, correcting jobs, refining mental models?
 - Did the user engage with value tensions or accept them without discussion?
@@ -241,6 +242,13 @@ Then run the three-phase cycle:
 - Did the user correct product vocabulary or suggest new terms?
 - If the user's language reveals business-first framing ("our sales team needs...") rather than user-first framing ("admins experience..."), note the framing orientation as signal
 - Cross-gate signals from prior phases (especially RESEARCH — did the user deeply engage with the essay that feeds this phase?)
+
+*Susceptibility signals (record for Susceptibility Snapshot — do NOT evaluate inline):*
+- Assertion density: did the user's declarative conclusions increase while questions decreased?
+- Solution-space narrowing: did the product scope narrow without examination of alternatives?
+- Framing adoption: did the agent adopt the user's stakeholder framing without surfacing alternatives?
+- Confidence markers: shift toward certainty about stakeholder needs without evidence?
+- Declining alternative engagement: did exploration of alternative stakeholder perspectives become shallower?
 
 **2. Interpret.** Form a hypothesis about the user's engagement:
 
@@ -250,9 +258,9 @@ Then run the three-phase cycle:
 - **Confused** — responses misalign with the stakeholder map, avoidance of specific tensions, contradictions about who the system serves.
 - **Disengaged** — minimal responses. If prior gates showed deep engagement, likely earned fatigue (suggest break). If thin throughout, the product domain may be unfamiliar or overwhelming — shift toward teaching.
 
-**3. Decide.** Select a pedagogical move:
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type.
 
-- **Deep engagement → Challenge.** "The product discovery assumes [stakeholder X] has [need Y]. From your experience — is that actually how they work? What would change if that assumption were wrong?" Apply the Inversion Principle to the user's own product knowledge. Or reframe: "The stakeholder map focuses on [perspective]. Is there a stakeholder we haven't named who would see this system completely differently?"
+- **Deep engagement → Challenge.** Use belief-mapping: "What would you need to believe for [stakeholder X] to have a fundamentally different need than what the discovery describes?" Or commitment gating: "Which of these stakeholder assumptions are you confident enough to build on, and which remain open?" Do not use adversarial framing as the default. Do not praise. Build on what the user demonstrated.
 - **Adequate engagement → Probe.** "You added [term/tension/inversion] — what makes that important for what you're building? How would you explain that tension to a colleague?"
 - **Surface engagement → Teach.** Identify the most consequential value tension — the one that most shapes downstream decisions — and explain why it matters: "The tension between [X] and [Y] is the most consequential because it constrains [downstream decisions]. Here's why. What's your take — does this feel right?" Teach first, then ask.
 - **Confusion → Clarify.** Name the specific misalignment: "It sounds like how [stakeholder X] relates to [stakeholder Y] isn't clear. Let me walk through what the artifact describes." Then re-approach.

@@ -52,6 +52,21 @@ Before researching, clarify with the user:
 
 Present a research plan (search terms, lit-reviewer dispatch, or spike-runner dispatch) and get approval before proceeding.
 
+### Step 1b: Research Design Review
+
+Before executing the first research loop, dispatch the **research-methods-reviewer** specialist subagent. Provide it with:
+- The research question set (the questions from Step 1)
+- Prior research context (existing essays or research logs from prior cycles, if available)
+- An output path for the review artifact (e.g., `./docs/essays/audits/research-design-review-NNN.md`)
+
+The agent reviews each question for embedded conclusions, applies belief-mapping ("What would the researcher need to believe for a different question to be more productive?"), and flags premature narrowing in the question set.
+
+After the agent completes, read the review:
+- **Flagged questions** — present reformulations to the user. The user decides whether to adopt, adapt, or keep the original.
+- **Premature narrowing** — surface the concern. The user may expand the question set or proceed with awareness.
+
+This is a Tier 1 unconditional mechanism — it fires before every research phase. After any substantial essay revision (from framing audit findings, discovery feedback, or reflections), dispatch the research-methods-reviewer again before the next research loop.
+
 ### Step 2: Research
 
 For each question, choose the appropriate method:
@@ -148,21 +163,34 @@ After the agent completes, read the audit report:
 
 The essay is the foundation for all downstream phases — bad citations here propagate through the entire pipeline.
 
-### Step 4b: Argument Audit
+### Step 4b: Argument Audit (with Framing Audit)
 
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
-- The essay file path
-- The research log file path (as evidence trail)
+- The essay file path (primary document)
+- The research log file path (source material — the full evidence base the essay drew from)
 - An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-NNN.md`)
 
-The agent runs on Sonnet in an isolated context, maps inferential chains from evidence to conclusions, and writes a structured audit report.
+The agent runs on Sonnet in an isolated context and produces a **two-section** audit report:
+1. **Argument audit** — maps inferential chains from evidence to conclusions (existing)
+2. **Framing audit** — surfaces alternative framings the evidence supported but the essay didn't choose, identifies findings from the research log that are absent or underrepresented, and inverts the dominant framing to reveal what it conceals
 
-After the agent completes, read the audit report and apply fixes before presenting to the user at the epistemic gate:
+Both sections are Tier 1 unconditional mechanisms — they run on every essay.
+
+After the agent completes, read the audit report and apply fixes:
+
+**Argument audit issues:**
 1. **P1 issues:** Fix logical gaps, soften overreaching claims, resolve contradictions
 2. **P2 issues:** Make hidden assumptions explicit, note where evidence is thin
 3. **P3 issues:** Clarify justifications, tighten language
 
-The essay that enters the epistemic gate should be citation-audited and argument-audited. Downstream phases inherit whatever the essay asserts — catching problems here is far cheaper than discovering them during DECIDE or BUILD.
+**Framing audit issues:**
+1. **P1 issues:** Consequential omissions — findings from the research log that would change the essay's conclusions. Revise the essay to address them.
+2. **P2 issues:** Underrepresented alternatives — acknowledge in the essay or explicitly explain why the chosen framing is preferred.
+3. **P3 issues:** Minor framing choices that could be more balanced.
+
+**Essay-as-checkpoint:** If the framing audit surfaces substantial alternative framings or consequential omissions, revise the essay to absorb, reframe, or explicitly reject the alternatives. Then re-dispatch the argument auditor on the revised essay. The pipeline does not advance past RESEARCH with unaddressed framing audit findings. The research phase's structural advantage is its iterability — each pass through question → investigate → write → audit → revise is another chance for consequential omissions to surface.
+
+The essay that enters the epistemic gate should be citation-audited, argument-audited, and framing-audited. Downstream phases inherit whatever the essay asserts — catching problems here is far cheaper than discovering them during DECIDE or BUILD.
 
 ### EPISTEMIC GATE
 
@@ -172,14 +200,22 @@ After presenting the essay, run the Attend-Interpret-Decide cycle before proceed
 
 Then run the three-phase cycle:
 
-**1. Attend.** Read the cycle's conversation history for engagement signals specific to the research phase:
+**1. Attend.** Read the cycle's conversation history for two categories of signal:
 
+*Engagement signals specific to the research phase:*
 - Did the user ask follow-up questions during research iterations, or accept findings without discussion?
 - Did the user propose new research directions or reframe the question?
 - Did the user push back on any finding or challenge a conclusion?
 - Did the user connect research findings to their own domain experience or prior knowledge?
 - Did the user engage with the research plan before it ran, or approve it without comment?
 - If this is not the first gate in the cycle, read cross-gate signals: has engagement been deepening, steady, or declining across prior gates?
+
+*Susceptibility signals (record for Susceptibility Snapshot — do NOT evaluate inline):*
+- Assertion density: did the user's declarative conclusions increase while questions decreased?
+- Solution-space narrowing: did alternatives drop away without the user initiating the narrowing?
+- Framing adoption: did the agent adopt the user's framing without examining alternatives?
+- Confidence markers: shift toward certainty language?
+- Declining alternative engagement: did exploration of alternatives become shallower?
 
 **2. Interpret.** Form a hypothesis about the user's engagement:
 
@@ -189,9 +225,9 @@ Then run the three-phase cycle:
 - **Confused** — responses show misalignment with essay content, avoidance of specific topics, contradictions.
 - **Disengaged** — minimal responses, possible fatigue. If prior gates showed deep engagement, this is likely earned fatigue (suggest a break). If engagement has been thin throughout, this may be an opacity signal (the material exceeds current comprehension — shift toward teaching).
 
-**3. Decide.** Select a pedagogical move:
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type.
 
-- **Deep engagement → Challenge.** Surface a tension the essay didn't fully resolve, apply the Inversion Principle ("The essay argues X — what would change if X were wrong?"), or reframe: "The research explored the problem through lens A. From your domain experience, is there a lens B that the research missed?" Do not praise. Build on what the user demonstrated.
+- **Deep engagement → Challenge.** Surface a tension the essay didn't fully resolve. Use belief-mapping ("What would you need to believe for a different problem framing to be right?") or pre-mortem ("Assume this essay led the project astray — what would have caused that?"). Reference specific claims or framings from the essay. Do not use adversarial framing ("argue against this") as the default — belief-mapping achieves better balance without triggering compliance dynamics. Do not praise. Build on what the user demonstrated.
 - **Adequate engagement → Probe.** Reference something specific the user engaged with: "You asked about [topic] during research — how does the essay's conclusion on that connect to what you're building?" Ask for reasoning, not recall.
 - **Surface engagement → Teach.** Identify the most consequential finding in the essay — the one that most shapes downstream decisions — and explain why it matters: "The finding that [X] is consequential because it constrains [Y] in the domain model. Here's why that matters for what you're building. What's your take on that tradeoff?" Teach first, then ask.
 - **Confusion → Clarify.** Name the specific misalignment without framing it as error: "It sounds like the relationship between [finding A] and [finding B] isn't clear. Let me walk through how they connect." Then re-approach.
@@ -210,8 +246,10 @@ After the epistemic gate conversation, capture any substantive observations — 
 Write reflections to `./docs/essays/reflections/NNN-descriptive-name.md`, using the same numbering as the corresponding essay (e.g., reflection `002-color-palettes.md` corresponds to essay `002-color-palettes-as-creative-environment.md`). Create the `./docs/essays/reflections/` directory if it doesn't exist.
 
 **Feed-back from reflections.** If a reflection surfaces a new insight or unanswered question:
-- **New research question** — offer to loop back into the research cycle (Step 1–3) before proceeding. The reflection becomes the next question.
+- **New research question** — offer to loop back into the research cycle (Step 1–3) before proceeding. The reflection becomes the next question. Dispatch the **research-methods-reviewer** on the revised question set before the next loop.
 - **Open question without a clear research path** — note it for the domain model. When `/rdd-model` runs, these open questions should appear in a dedicated **Open Questions** section of the domain model, so they are visible to downstream phases rather than lost between sessions.
+
+**Essay-as-checkpoint from reflections.** If a reflection surfaces a reframing substantial enough to change the essay's central argument or dominant framing, the essay must be revised before the pipeline advances. Revise the essay, then re-dispatch the argument auditor (with framing audit) on the revised essay.
 
 Then ask whether to proceed to the next phase, revise the essay, or loop back to research.
 

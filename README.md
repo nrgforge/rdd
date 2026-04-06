@@ -16,7 +16,7 @@ At the end of an RDD cycle, you should be able to explain the system's design ra
 
 ## The Pipeline
 
-- **Research** — Investigate the problem space. Produce a citation-audited essay. The research often reframes the problem in ways that change what you'd build.
+- **Research** — Investigate the problem space. Produce a citation-audited, argument-audited, and framing-audited essay. A research methods review catches embedded conclusions and premature narrowing before execution. The research often reframes the problem in ways that change what you'd build.
 - **Discover** — Surface who this is for and what you're assuming. Invert every major assumption before it becomes architecture.
 - **Model** — Name things precisely. Extract the vocabulary of concepts, actions, relationships, and invariants.
 - **Decide** — Make architectural decisions, write refutable behavior scenarios, and produce interaction specifications — the workflow-level mechanics of how each stakeholder works with the system. Each decision traces to research.
@@ -26,7 +26,7 @@ At the end of an RDD cycle, you should be able to explain the system's design ra
 - **Synthesize** — Write about what you built — not a summary, but an act of inquiry. New research questions may loop back into a new cycle.
 - **Graduate** — Fold the durable knowledge into native docs. Archive the RDD artifacts. The scaffolding comes down.
 
-Each phase ends with reflection time — a conversation that adapts to how you've been engaging. The agent teaches when there's a gap, challenges when you're ready, and steps back when you need a break. A full cycle is a mindful process of making — depending on the problem, it can take several hours across multiple sessions.
+Each phase ends with reflection time — a conversation that adapts to how you've been engaging. The agent teaches when there's a gap, challenges when you're ready, and steps back when you need a break. A two-tier sycophancy resistance architecture works beneath the surface: unconditional structural mechanisms (isolated audits, susceptibility snapshots, research design review) ensure content selection is honest, while context-responsive mechanisms (belief-mapping questions, assertion-aware observation) adapt to the conversation. A full cycle is a mindful process of making — depending on the problem, it can take several hours across multiple sessions.
 
 ## When to Use RDD
 
@@ -81,8 +81,8 @@ You can also invoke phases directly:
 
 RDD is a four-layer Claude Code plugin:
 
-- **Skills** (14) — orchestrate phases, composable build/debug/refactor/review family, utility skills, adaptive reflection time
-- **Agents** (6) — specialist subagents for citation auditing, argument auditing, literature review, conformance scanning, orientation writing, and code spikes
+- **Skills** (15) — orchestrate phases, composable build/debug/refactor/review family, utility skills, adaptive reflection time
+- **Agents** (8) — specialist subagents for citation auditing, argument auditing (with framing audit), literature review, conformance scanning, orientation writing, code spikes, research methods review, and susceptibility snapshot evaluation
 - **Hooks** (5) — passive enforcement of invariants, reflection time, document sizing, and orientation regeneration
 
 Agents follow an artifact-mediated communication pattern: they read input files, perform analysis in isolation, and write structured output files. Every finding is durable and inspectable.
@@ -95,7 +95,7 @@ The plugin implements the methodology through specific mechanisms — an Attend-
 
 ## Built With RDD
 
-This plugin was built using RDD. The full artifact trail — eleven research essays, 54 architectural decisions, ~280 behavior scenarios, a domain model, system design, and product discovery document — lives in the `docs/` directory.
+This plugin was built using RDD. The full artifact trail — thirteen research essays, 62 architectural decisions, ~325 behavior scenarios, a domain model, system design, and product discovery document — lives in the `docs/` directory.
 
 ## License
 

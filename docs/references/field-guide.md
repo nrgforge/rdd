@@ -1,7 +1,7 @@
 # Field Guide: Pedagogical RDD
 
-**Generated:** 2026-03-12
-**Derived from:** System Design v4.0, current implementation (SKILL.md files)
+**Updated:** 2026-04-06
+**Derived from:** System Design v11.0, current implementation (SKILL.md files, agent files)
 
 ## How to Use This Guide
 
@@ -27,6 +27,11 @@ This guide maps the system design's modules to their current implementation stat
 | Document Sizing Heuristics | Five cascading heuristics | SKILL.md §IMPORTANT PRINCIPLES |
 | Scoped Cycle | Scoped Cycles section | SKILL.md §Scoped Cycles |
 | Deep Work Tool (framing) | Opening paragraph | SKILL.md line 10 |
+| Question Toolkit (six forms) | Six research-grounded question forms with goal-first composition process | SKILL.md §Question Toolkit |
+| Two-Tier Sycophancy Resistance | Tier 1 (unconditional architectural) + Tier 2 (context-responsive) separation | SKILL.md §Two-Tier Sycophancy Resistance |
+| Grounding Reframe (pattern) | Three-step naming/offering/making-visible pattern | SKILL.md §Grounding Reframe |
+| Essay-as-checkpoint (cross-cutting) | Enforces essay revision before pipeline advances past RESEARCH | SKILL.md §Essay as Research Phase Checkpoint |
+| Susceptibility Snapshot Dispatch | Tier 1 dispatch of susceptibility-snapshot-evaluator at every phase boundary | SKILL.md §Susceptibility Snapshot Dispatch |
 
 ### Design Rationale
 
@@ -46,7 +51,7 @@ The "compiled rollup" principle means the system design absorbs upstream context
 
 **Implementation state:** Complete
 **Code location:** `skills/research/SKILL.md`
-**Stability:** Settled — core research loop stable; citation and argument audit steps added in Essay 005 cycle
+**Stability:** In flux — Cycle 9 added research methods review dispatch, framing audit, essay-as-checkpoint
 
 ### Domain Concepts in Code
 
@@ -59,6 +64,9 @@ The "compiled rollup" principle means the system design absorbs upstream context
 | Argument Audit (invocation) | Step 4b: invoke `/argument-audit` | SKILL.md §Step 4b |
 | Epistemic Gate | EPISTEMIC GATE section with reflection prompts | SKILL.md §EPISTEMIC GATE |
 | Reflection (artifact) | Step 5: Record Reflections with feed-back loop | SKILL.md §Step 5 |
+| Research Methods Review (invocation) | Step 1b: dispatch research-methods-reviewer before every research loop | SKILL.md §Step 1b |
+| Argument Audit with Framing Audit (invocation) | Step 4b: framing audit runs unconditionally alongside argument audit | SKILL.md §Step 4b |
+| Essay-as-checkpoint (enforcement) | Framing audit P1 issues block pipeline advance; re-audit after revision | SKILL.md §Step 4b, §Step 5 |
 
 ### Design Rationale
 
@@ -275,3 +283,83 @@ Distinct from product conformance (ADR-008, `/rdd-discover` backward mode), whic
 - All SKILL.md files (input) — reads skill files to determine expected artifact structure
 - All artifact files (input) — reads corpus to compare against expectations
 - Orchestrator — listed in Available Skills table
+
+---
+
+## Module: Research Methods Reviewer Agent
+
+**Implementation state:** Complete
+**Code location:** `agents/research-methods-reviewer.md`
+**Stability:** In flux — NEW in v11.0; will be calibrated through practice
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Belief-Mapping (question evaluation) | Per-question: "What would the researcher need to believe for a different question to be more productive?" | agents/research-methods-reviewer.md §Belief-Mapping |
+| Embedded Conclusion Detection | Flags questions presupposing their answer; suggests reformulation | agents/research-methods-reviewer.md §Embedded Conclusion Detection |
+| Premature Narrowing (question set) | Flags when the question set as a whole narrows prematurely | agents/research-methods-reviewer.md §Premature Narrowing |
+
+### Design Rationale
+
+Architectural Isolation is the point: the reviewer runs in a fresh context before research executes, with no stake in the questions it evaluates. Tier 1 unconditional mechanism — fires before every research loop and again after substantial essay revision. Output is a structured review artifact at `./docs/essays/audits/research-design-review-NNN.md`; the user decides whether to adopt, adapt, or keep original formulations.
+
+### Key Integration Points
+
+- Research Skill (caller) — dispatched at Step 1b and after substantial revisions
+- Research log and prior essays (input) — provides prior research context
+
+---
+
+## Module: Susceptibility Snapshot Evaluator Agent
+
+**Implementation state:** Complete
+**Code location:** `agents/susceptibility-snapshot-evaluator.md`
+**Stability:** In flux — NEW in v11.0; will be calibrated through practice
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Susceptibility Signals (six) | Assertion density, narrowing, framing adoption, confidence markers, declining alternative engagement, embedded conclusions | agents/susceptibility-snapshot-evaluator.md §Input |
+| Signal Assessment (three dimensions) | Strength × Trajectory × Phase Context (sycophancy gradient) | agents/susceptibility-snapshot-evaluator.md §Signal Assessment |
+| Pattern Interpretation | Earned confidence vs. sycophantic reinforcement distinction | agents/susceptibility-snapshot-evaluator.md §Pattern Interpretation |
+| Grounding Reframe Recommendation | Recommends when multiple signals converge + early phase + downstream inheritance | agents/susceptibility-snapshot-evaluator.md §Grounding Reframe Recommendation |
+| Self-Correction Blind Spot (exploit) | Fresh context treats prior output as external input | agents/susceptibility-snapshot-evaluator.md §opening |
+
+### Design Rationale
+
+The agent's isolation is its entire value proposition. The in-conversation agent cannot reliably self-assess sycophancy because it is inside the conversation. The snapshot evaluator runs at every phase boundary (Tier 1 unconditional), reads recorded signals as external input, and produces a structured advisory artifact. It does not block pipeline advancement — it informs via the Grounding Reframe pattern. Grounding action outcomes feed back into subsequent evaluations.
+
+### Key Integration Points
+
+- Orchestrator (caller) — dispatched at every phase boundary
+- Phase skills (standalone caller) — each skill handles its own dispatch when invoked outside the orchestrator
+- Prior snapshots (input) — reads earlier snapshots for trajectory assessment
+
+---
+
+## Module: Argument Auditor Agent
+
+**Implementation state:** Complete
+**Code location:** `agents/argument-auditor.md`
+**Stability:** Settled — AMENDED in v11.0: framing audit added as unconditional second section
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Argument Audit (Section 1) | Maps inferential chains, verifies logical soundness, hidden assumptions, scope accuracy | agents/argument-auditor.md §Process |
+| Framing Audit (Section 2) | Three structural questions: alternative framings, absent truths, dominant framing inversion | agents/argument-auditor.md §Section 2 |
+| Source Material Reading | Reads the full evidence base alongside the artifact for framing comparison | agents/argument-auditor.md §Input |
+| Belief-Mapping (framing) | "What would the reader need to believe for this alternative framing to be right?" | agents/argument-auditor.md §Question 1 |
+
+### Design Rationale
+
+The two-section output is a Tier 1 unconditional mechanism. The framing audit makes the negative space of content selection visible — what the evidence supported but the artifact didn't choose. Both sections run on every dispatch; the framing audit is not optional. Known limitation (P3-B): the framing auditor is itself subject to content selection; architectural isolation reduces but does not eliminate this.
+
+### Key Integration Points
+
+- Research Skill (caller) — dispatched after citation audit on essays
+- Decide Skill (caller) — dispatched after ADRs written
+- Synthesis Skill (caller) — dispatched after citation audit on outlines

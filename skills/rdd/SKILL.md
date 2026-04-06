@@ -18,7 +18,7 @@ $ARGUMENTS
 
 | Skill | Purpose | Invoke with |
 |-------|---------|-------------|
-| `/rdd-research` | Ideation → research/spike loop → citation-audited and argument-audited essay | Topic or question |
+| `/rdd-research` | Ideation → research/spike loop → citation-audited, argument-audited, and framing-audited essay | Topic or question |
 | `/rdd-discover` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay |
 | `/rdd-model` | Extract domain vocabulary from essay + product discovery | Essay + product discovery artifact |
 | `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
@@ -106,15 +106,11 @@ Phase 5: BUILD
 └── /rdd-build — BDD → TDD → working software
     [Epistemic gate: User reflects on each completed scenario group.]
 
-Phase 6: INTEGRATE
-└── /rdd-build Step 5 — Integration verification
-    [Gate: New components verified against real neighbors, not just stubs.]
-
-Phase 7: PLAY (optional)
+Phase 6: PLAY (optional)
 └── /rdd-play — Stakeholder inhabitation → gamemaster-facilitated exploration → field notes
     [No separate gate: the three-movement activity (inhabit → explore → reflect) IS the epistemic act. Practitioner generates at every step.]
 
-Phase 8: SYNTHESIZE (optional)
+Phase 7: SYNTHESIZE (optional)
 └── /rdd-synthesize — Artifact trail mining → synthesis conversation → essay outline
     [No separate gate: the three-phase conversation (journey review, novelty surfacing, framing) IS the epistemic gate. Writer generates at every step.]
 ```
@@ -175,15 +171,20 @@ Between every phase, you MUST run the Attend-Interpret-Decide (AID) cycle. No ga
 
 1. **Present the artifact** — summarize the phase artifact clearly
 2. **Introduce reflection time** — "Before we move on — reflection time."
-3. **Attend** — read the cycle's conversation history for engagement signals: questions the user asked during the phase, concepts they engaged with or avoided, challenges they raised, connections they made to prior knowledge or domain experience, and patterns of approval versus substantive response. Read across prior gates too — has engagement been deepening, steady, or declining? This cross-gate awareness enables earned fatigue detection.
+3. **Attend** — read the cycle's conversation history for two categories of signal:
+
+   **Engagement signals:** questions the user asked during the phase, concepts they engaged with or avoided, challenges they raised, connections they made to prior knowledge or domain experience, and patterns of approval versus substantive response. Read across prior gates too — has engagement been deepening, steady, or declining? This cross-gate awareness enables earned fatigue detection.
+
+   **Susceptibility signals:** assertion density (did the user's declarative conclusions increase while questions decreased?), solution-space narrowing (did alternatives drop away without examination?), framing adoption (did the agent adopt the user's framing without surfacing alternatives?), confidence markers (shift toward certainty language — "clearly," "obviously," "the right approach is"), and declining alternative engagement (did exploration of alternatives become shallower?). Record these signals — they are NOT evaluated inline. At the phase boundary, they are dispatched to the **susceptibility-snapshot-evaluator** agent for isolated assessment (see Susceptibility Snapshot Dispatch below).
 4. **Interpret** — form a hypothesis about the user's engagement:
    - *Deeply engaged* — asked questions, challenged choices, connected to their domain, referenced specific artifact content
    - *Adequately engaged* — followed along with some specificity, but didn't initiate questions or challenges
    - *Surface-engaged* — approved without engaging, brief responses, no specificity
    - *Confused* — contradictions, avoidance of specific topics, misalignment with artifact
    - *Disengaged* — minimal responses. Distinguish earned fatigue (deep engagement earlier, now fading → suggest a break) from opacity disengagement (thin engagement throughout → shift toward teaching)
-5. **Decide** — select a pedagogical move calibrated to the interpretation:
-   - **Deep engagement → Challenge**: surface a tension, apply the Inversion Principle, reframe the problem space. Do not praise. Build on what the user demonstrated.
+5. **Decide** — select a pedagogical move calibrated to the interpretation. Use the Question Toolkit (see below) to compose each question: first determine the epistemic goal ("what do I need to understand by asking this?"), then review conversation history and artifacts for material, then compose the question from goal + context. Evaluate the response against the goal — if it doesn't address the question substantively, reframe.
+
+   - **Deep engagement → Challenge**: surface a tension using a question from the toolkit — belief-mapping ("What would you need to believe for [alternative] to be right?"), pre-mortem ("Assume this [artifact] led the project astray — what would have caused that?"), or reframe from the problem space. Do not praise. Build on what the user demonstrated.
    - **Adequate engagement → Probe**: reference something specific the user engaged with. Ask for reasoning, not recall.
    - **Surface engagement → Teach**: identify the most consequential choice in the artifact, explain why it matters and why alternatives were rejected, then ask for the user's take.
    - **Confusion → Clarify**: name the specific misalignment without framing it as error. Walk through the connection. Then re-approach.
@@ -193,7 +194,78 @@ Between every phase, you MUST run the Attend-Interpret-Decide (AID) cycle. No ga
 8. **Note discrepancies** — if the user's response contains a factual discrepancy with the artifact, note it without framing as error ("The artifact describes X as Y — your take was Z. Worth revisiting?")
 9. **Ask whether to proceed** — offer to proceed, revise, or go back to an earlier phase. Never auto-advance without explicit user confirmation
 
+10. **Assertion-aware observation** — during the gate conversation (and during the phase itself at artifact-production moments), notice when the user's input embeds a design conclusion rather than posing an open question. Detect this semantically — not by pattern-matching confidence markers, but by assessing whether the statement presupposes a conclusion that should be examined. When detected at an artifact-production moment, deploy open-question reframing: "What's the open question behind [the specific assertion]?" The reframing is composed from the assertion's specific content — not from a template. Do NOT flag harmless implementation confidence ("this test should pass once we fix the null check") — only embedded conclusions that would crystallize into artifacts. This is a Tier 2 mechanism — the agent exercises judgment about when to intervene. Accepted limitation: assertion-aware observation operates inside the conversation without Architectural Isolation. The structural backstops are the Susceptibility Snapshot (isolated evaluation) and the Framing Audit (isolated content analysis).
+11. **Commitment gating** — before advancing to the next phase, ask the user to distinguish settled premises from open questions: "Which premises are you building on, and which remain open?" Record the response in the cycle status for downstream feed-forward.
+
+**Susceptibility Snapshot Dispatch.** After the gate conversation completes and before the next phase begins, dispatch the **susceptibility-snapshot-evaluator** agent with the susceptibility signals recorded during the Attend step. The agent evaluates the signals in an isolated context and produces a Susceptibility Snapshot artifact. This is a Tier 1 mechanism — it fires at every phase boundary regardless of context. If the snapshot recommends a Grounding Reframe, present it to the user before entering the next phase: name what is uncertain, offer concrete grounding actions (run a spike, write a test, consult a domain expert, belief-map the specific assumption), and make visible what the user would be building on without grounding. The user decides whether to pursue grounding or proceed — but the decision is visible, not silent.
+
 The time spent at each gate must be productive, not merely brief (Invariant 4, amended). Productive teaching that resolves a comprehension gap is the methodology working. Formulaic exchanges that build no understanding are waste. Earned fatigue from deep engagement is a signal to take a break, not a signal that the methodology is too heavy.
+
+### Question Toolkit
+
+Six research-grounded question forms available to the AID cycle. These are question *types* the agent composes with phase content and conversation state — not scripts to recite. The non-formulaic requirement is a hard constraint: each question instance must reference specific content from the current artifact and conversation.
+
+**Composition process (goal-first):**
+1. Determine the epistemic goal — "What do I need to understand by asking this question?"
+2. Review conversation history and artifacts for the current phase position
+3. Select the question type that serves the goal
+4. Compose the question from goal + context + type
+5. Evaluate the user's response against the goal — if it doesn't address the question substantively, reframe
+
+**The six forms:**
+
+| Form | Mechanism | Primary phases | Example goal |
+|------|-----------|---------------|-------------|
+| **Belief-mapping** | "What would you need to believe for [alternative] to be right?" Sidesteps compliance dynamics — maps the belief space rather than arguing a position. Primary form for the Inversion Principle. | All phases, especially DISCOVER, DECIDE | Surface unexamined assumptions behind a preferred approach |
+| **Pre-mortem** | "Assume this [artifact] led the project astray — what would have caused that?" Exploits prospective hindsight (Mitchell et al. 1989). | RESEARCH, DECIDE | Identify consequential risks the artifact doesn't address |
+| **Warrant elicitation** | "What makes you confident that [claim]?" Surfaces the reasoning behind a stated position. | MODEL, ARCHITECT | Test whether confidence is earned (grounded in evidence) or assumed |
+| **Rebuttal elicitation** | "What's the strongest reason someone would disagree with [decision]?" | DECIDE | Surface rejected alternatives that may not have been fully examined |
+| **Commitment gating** | "Which premises are you building on, and which remain open?" | All phase boundaries | Distinguish settled ground from open questions before advancing |
+| **Open-question reframing** | "What's the open question behind [assertion]?" Used for assertion-aware observation. | All phases (triggered by embedded conclusions) | Convert embedded conclusions into examinable questions |
+
+**Triple duty:** Every question from the toolkit simultaneously serves as sycophancy resistance evidence (did the user engage alternatives?), confidence diagnosis (is their confidence earned?), and epistemic advancement (did the user's understanding deepen?). The response to a belief-mapping question IS the test of earned confidence — a user who engages the alternative substantively has demonstrated grounded understanding.
+
+**Phase-specific emphasis:** RESEARCH (pre-mortem + open-question), DISCOVER (belief-mapping + commitment gating), MODEL (warrant elicitation), DECIDE (rebuttal elicitation + belief-mapping on rejected alternatives), BUILD (commitment gating at stewardship). These are starting points for composition, not constraints — the agent selects based on the epistemic goal.
+
+**Adversarial framing on explicit request:** When the user explicitly requests adversarial framing ("argue against this," "play devil's advocate"), the agent may use it as a deliberate rhetorical choice. The belief-mapping constraint applies to agent-initiated challenge moves, not to user-requested debate.
+
+**Content balance in belief-mapping:** When belief-mapping surfaces an alternative, address both the user's position and the alternative with comparable substantive depth. The recommendation may still favor the user's preferred position — content balance is independent of recommendation direction. A perfunctory mention of an alternative does not satisfy belief-mapping; the alternative must receive genuine analytical engagement.
+
+### Two-Tier Sycophancy Resistance
+
+Sycophancy operates through content selection — which truths get surfaced, not tone (Cheng et al. 2026). The resistance architecture has two tiers:
+
+**Tier 1 — Unconditional architectural mechanisms.** These fire regardless of context. The agent cannot self-exempt. User-provided domain knowledge is additional evidence; it does not replace or defer Tier 1 structural mechanisms.
+- Specialist subagent audits (citation audit, argument audit with framing audit, research methods review) — Architectural Isolation exploits the Self-Correction Blind Spot
+- Susceptibility Snapshot evaluation at every phase boundary — isolated assessment of conversation signals
+- Research Methods Subagent before each research loop after substantial revision
+
+**Tier 2 — Context-responsive conversational mechanisms.** These adapt based on the multidimensional rubric (phase vulnerability × engagement quality × content trajectory).
+- Question form selection from the toolkit — calibrated to interpretation
+- Constraint intensity — deeper probing in high-vulnerability phases (RESEARCH, DISCOVER, MODEL), lighter touch in empirically-grounded phases (BUILD)
+- Assertion-aware observation — semantic detection of embedded conclusions at artifact-production moments
+
+**The boundary:** Tier 1 mechanisms are unconditional because they exploit Architectural Isolation — a fresh context treats prior output as external input, reactivating dormant correction. Tier 2 mechanisms adapt because they operate inside the conversation where the agent's own susceptibility may be in play.
+
+### Grounding Reframe
+
+When sycophancy risk is unassessable — no belief-mapping test, no empirical contact available — the agent does not disclaim and proceed. Instead:
+
+1. **Name** what is uncertain: "The ground is soft here because [specific reason]."
+2. **Offer** concrete grounding actions: run a spike, write a test, consult a domain expert, belief-map the specific assumption.
+3. **Make visible** what the user would be building on without grounding.
+
+The user decides whether to pursue grounding or proceed. If they proceed without grounding, the decision is recorded visibly and noted in the Susceptibility Snapshot at the next phase boundary. If the user pursues the suggested grounding action and it produces evidence, note the evidence explicitly so the next Susceptibility Snapshot can record the assumption as grounded — the Earned Confidence for that specific assumption becomes assessable.
+
+Each Grounding Reframe is composed for the specific situation — not a template recitation.
+
+**Standalone invocation.** When a phase skill is invoked standalone (not via the orchestrator), the skill itself handles Susceptibility Snapshot dispatch and Grounding Reframe presentation at its gate. Tier 2 mechanisms operate with reduced calibration data (no prior gate signals to compare). If risk is unassessable, the Grounding Reframe names the limitation and offers grounding actions.
+
+### Essay as Research Phase Checkpoint
+
+The essay is where research understanding crystallizes. Every substantial change — from framing audit findings, discovery feedback, or reflections — circles back to essay revision before the pipeline advances past RESEARCH. The essay that enters downstream phases is audited and revised, not a first draft.
+
+This is enforced by the research skill: if a substantial framing change is identified (by the framing audit, the user, or discovery feedback), the pipeline does not advance until the essay is revised and re-audited. The research phase's structural advantage is its iterability — multiple passes happen before advancing, and each pass is another chance for consequential omissions to surface.
 
 ### State Tracking
 
@@ -210,7 +282,6 @@ Maintain a running status table:
 | DECIDE | /rdd-decide | ☐ Pending | — | — | — |
 | ARCHITECT | /rdd-architect | ☐ Pending | — | — | — |
 | BUILD | /rdd-build | ☐ Pending | — | — | — |
-| INTEGRATE | /rdd-build Step 5 | ☐ Pending | — | — | — |
 | PLAY | /rdd-play | ☐ Optional | — | — | — |
 | SYNTHESIZE | /rdd-synthesize | ☐ Optional | — | — | — |
 ```
@@ -308,7 +379,9 @@ The four composable skills — `/rdd-build`, `/rdd-debug`, `/rdd-refactor`, `/rd
 ### Cross-Phase Integration
 
 Findings from earlier phases inform later ones:
-- `/rdd-research` runs `/rdd-citation-audit` and `/rdd-argument-audit` on the essay before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, and claims don't overreach evidence. The essay that enters downstream phases is audited.
+- `/rdd-research` dispatches the **research-methods-reviewer** agent before the first research loop and before each subsequent loop after substantial revision — reviews question framing, embedded conclusions, and premature narrowing (Tier 1 unconditional, ADR-060)
+- `/rdd-research` runs citation audit and argument audit (with framing audit) on the essay before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, claims don't overreach evidence, and alternative framings are surfaced. The framing audit makes the negative space of content selection visible. The essay that enters downstream phases is citation-audited, argument-audited, and framing-audited.
+- `/rdd-research` enforces essay-as-checkpoint: if the framing audit, discovery feedback, or reflections surface substantial reframing, the essay is revised and re-audited before the pipeline advances past RESEARCH
 - `/rdd-research` essay provides context for `/rdd-discover` product discovery and `/rdd-model` vocabulary extraction
 - `/rdd-discover` stakeholder maps and jobs inform `/rdd-model` vocabulary extraction — the Product Vocabulary Table feeds the Product Origin provenance column in the domain model
 - `/rdd-discover` value tensions propagate as open questions into the domain model
@@ -340,6 +413,8 @@ Findings from earlier phases inform later ones:
 - `/rdd-synthesize` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
 - `/rdd-synthesize` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
 - The synthesis essay, when written by the user, serves as a **narrative context rollup** — the orchestrator should treat it as a primary context source when bootstrapping new sessions for the project. It answers "what was discovered, and why does it matter?" where structured artifacts answer "what was decided?"
+- At every phase boundary, the orchestrator dispatches the **susceptibility-snapshot-evaluator** agent with the AID cycle's recorded susceptibility signals — producing a Susceptibility Snapshot artifact for isolated assessment (Tier 1 unconditional, ADR-057). Snapshot findings are acted on via Grounding Reframe (ADR-059).
+- All argument audit dispatches now include framing audit (ADR-061) — the agent reads source material alongside the artifact and produces a two-section output. This applies to `/rdd-research`, `/rdd-decide`, and `/rdd-synthesize` dispatches.
 
 ### Artifacts Summary
 
