@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.6.0
+
+Sycophancy resistance as structural architecture — not just conversational discipline.
+
+### Cycle 9: Sycophancy Resistance Architecture
+- **Research Methods Reviewer agent (NEW)** — specialist subagent that reviews research design before execution; applies belief-mapping to each question ("what would the researcher need to believe for a different question to be more productive?"); flags embedded conclusions and premature narrowing; Tier 1 unconditional — fires before every research loop
+- **Susceptibility Snapshot Evaluator agent (NEW)** — specialist subagent that evaluates sycophancy susceptibility signals in isolated context at phase boundaries; produces advisory snapshot with signal assessment, pattern interpretation, and Grounding Reframe recommendation; exploits the Self-Correction Blind Spot (fresh context treats prior output as external input)
+- **Argument Auditor framing extension** — now produces two-section output: argument audit (logical structure) + framing audit (content selection visibility); three structural questions surface alternative framings, absent truths, and dominant framing inversion; reads source material alongside the artifact; Tier 1 unconditional
+- **Question Toolkit** — six research-grounded question forms (belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing) with goal-first composition: determine epistemic goal → review context → select type → compose; non-formulaic requirement is a hard constraint
+- **Two-Tier Sycophancy Resistance** — Tier 1 unconditional architectural mechanisms (subagent audits, susceptibility snapshots, research methods review) fire regardless of context; Tier 2 context-responsive conversational mechanisms (question forms, constraint intensity, assertion-aware observation) adapt to engagement quality; the agent cannot self-exempt from Tier 1
+- **Grounding Reframe** — when sycophancy risk is unassessable, the agent names what is uncertain, offers concrete grounding actions, and makes visible what the user would be building on without grounding; not a disclaimer — an actionable fork
+- **Belief-mapping as Inversion Principle form** — replaces adversarial framing as the default; "what would you need to believe for the alternative to be right?" achieves near-zero preference-driven divergence vs. adversarial framing's 2-6× overcorrection (spike evidence, Essay 013)
+- **AID susceptibility extension** — Attend phase reads susceptibility signals (assertion density, narrowing, framing adoption, confidence markers, declining alternative engagement) alongside engagement signals; signals recorded for isolated Susceptibility Snapshot evaluation, not evaluated inline
+- **Assertion-aware observation** — semantic detection of embedded conclusions at artifact-production moments; deploys open-question reframing; Tier 2 (agent exercises judgment); accepted limitation: no Architectural Isolation
+- **Essay-as-checkpoint** — every substantial change (framing audit, discovery feedback, reflection) circles back to essay revision before the pipeline advances past RESEARCH; the research phase's iterability is its structural advantage
+- **8 specialist subagents** (was 6), **62 ADRs** (was 54), **~325 scenarios** (was ~280), **13 essays** (was 11)
+
+### Cycle 8: Pair-RDD (research artifacts)
+- **Essay 012** — "Trading Fours" — Pair-RDD research (citation-audited, argument-audited); paused at MODEL boundary
+- **Product discovery updated** — pair-RDD stakeholder additions
+
 ## v0.5.0
 
 AI in the loop — not human in the loop. Composable skill family for everyday building.
