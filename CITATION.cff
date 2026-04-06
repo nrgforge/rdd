@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this methodology or software, please cite it as below."
+type: software
+title: "RDD — Research-Driven Development"
+abstract: >-
+  A methodology for building software you understand. AI in the loop — not
+  human in the loop. RDD wraps BDD and TDD in a research layer that changes
+  what you build, not just how you build it.
+authors:
+  - family-names: Green
+    given-names: Nathaniel
+    orcid: "https://orcid.org/0000-0003-0157-7744"
+repository-code: "https://github.com/nrgforge/rdd"
+url: "https://nrgforge.github.io/rdd/"
+license: MIT
+doi: "10.5281/zenodo.19445147"
+keywords:
+  - research-driven development
+  - AI-assisted development
+  - methodology
+  - behavior-driven development
+  - test-driven development
+  - domain modeling

@@ -1,5 +1,7 @@
 # RDD — Research-Driven Development
 
+[![DOI](https://zenodo.org/badge/1186547898.svg)](https://doi.org/10.5281/zenodo.19445147)
+
 A methodology for building software you understand. AI in the loop — not human in the loop.
 
 **[Read the manifesto](https://nrgforge.github.io/rdd/)**
