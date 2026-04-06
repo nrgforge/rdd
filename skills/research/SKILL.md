@@ -176,19 +176,19 @@ The agent runs on Sonnet in an isolated context and produces a **two-section** a
 
 Both sections are Tier 1 unconditional mechanisms — they run on every essay.
 
-After the agent completes, read the audit report and apply fixes:
+After the agent completes, read the audit report. The two sections are handled differently:
 
-**Argument audit issues:**
+**Argument audit issues — agent corrects these directly:**
 1. **P1 issues:** Fix logical gaps, soften overreaching claims, resolve contradictions
 2. **P2 issues:** Make hidden assumptions explicit, note where evidence is thin
 3. **P3 issues:** Clarify justifications, tighten language
 
-**Framing audit issues:**
-1. **P1 issues:** Consequential omissions — findings from the research log that would change the essay's conclusions. Revise the essay to address them.
-2. **P2 issues:** Underrepresented alternatives — acknowledge in the essay or explicitly explain why the chosen framing is preferred.
-3. **P3 issues:** Minor framing choices that could be more balanced.
+**Framing audit issues — surface these to the user at the gate. Do NOT auto-correct.** The framing audit exists to make the negative space of content selection visible. These are judgment calls about what the essay chose to foreground — the user needs to see them and decide:
+1. **P1 issues:** Consequential omissions — findings from the research log that could change the essay's conclusions. Present to the user: "The framing audit found [X] in the research log that the essay doesn't address. This could change the conclusions. What's your take?"
+2. **P2 issues:** Underrepresented alternatives — framings the evidence supported but the essay didn't choose. Present to the user for their judgment.
+3. **P3 issues:** Minor framing choices. Note for the user's awareness.
 
-**Essay-as-checkpoint:** If the framing audit surfaces substantial alternative framings or consequential omissions, revise the essay to absorb, reframe, or explicitly reject the alternatives. Then re-dispatch the argument auditor on the revised essay. The pipeline does not advance past RESEARCH with unaddressed framing audit findings. The research phase's structural advantage is its iterability — each pass through question → investigate → write → audit → revise is another chance for consequential omissions to surface.
+**Essay-as-checkpoint:** After the user reviews the framing audit findings, if they identify substantial alternative framings or consequential omissions that should be addressed, revise the essay to absorb, reframe, or explicitly reject the alternatives. Then re-dispatch the argument auditor on the revised essay. The pipeline does not advance past RESEARCH with unaddressed framing audit findings. The research phase's structural advantage is its iterability — each pass through question → investigate → write → audit → revise is another chance for consequential omissions to surface.
 
 The essay that enters the epistemic gate should be citation-audited, argument-audited, and framing-audited. Downstream phases inherit whatever the essay asserts — catching problems here is far cheaper than discovering them during DECIDE or BUILD.
 

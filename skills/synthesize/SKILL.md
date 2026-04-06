@@ -235,11 +235,17 @@ The agent verifies cited works exist, quotes are accurate, and no hallucinated s
 #### Argument Audit
 
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
-- The outline file path (narrative structure as the argument)
-- The pre-populated references (as the evidence base)
+- The outline file path (primary document — narrative structure as the argument)
+- The full artifact trail file paths (source material — the evidence base the outline draws from)
 - An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-synthesis-NNN.md`)
 
-The agent treats the narrative structure (central question, turns, threads) as the argument and verifies logical soundness — the same standard as the argument audit on ADRs, applied to the narrative genre. After the agent completes, read the audit report. If it finds overreaching framing or hidden assumptions, revise the outline before presenting it to the writer.
+The agent produces a **two-section** audit report: argument audit (narrative arc logical soundness) and framing audit (alternative narrative framings the material could support).
+
+After the agent completes, read the audit report. The two sections are handled differently:
+
+**Argument audit issues — agent corrects these directly.** If it finds overreaching framing or hidden assumptions in the argumentative backbone, revise the outline before presenting it to the writer.
+
+**Framing audit issues — surface these to the writer. Do NOT auto-correct.** The framing audit surfaces alternative narrative framings the material could support. These are the writer's judgment calls — the whole point is making the narrative negative space visible so the writer can choose their framing with awareness of what they're not choosing.
 
 #### Outline Location
 

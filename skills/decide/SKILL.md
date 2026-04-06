@@ -84,17 +84,24 @@ Present ADRs to the user for approval before proceeding.
 ### Step 3: Argument Audit
 
 After ADRs are written, dispatch the **argument-auditor** specialist subagent. Provide it with:
-- The essay file path (evidence/reasoning layer)
-- The new ADR file paths and any prior ADRs they depend on (decision/conclusion layer)
+- The new ADR file paths and any prior ADRs they depend on (primary document)
+- The essay file path (source material — the evidence base ADR decisions rest on)
 - An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-decide-NNN.md`)
 
-The agent runs on Sonnet in an isolated context, maps inferential chains from essay evidence to ADR decisions, and writes a structured audit report.
+The agent runs on Sonnet in an isolated context and produces a **two-section** audit report: argument audit (logical consistency of ADR chains) and framing audit (alternative framings the evidence supported but the ADRs didn't choose).
 
-After the agent completes, read the audit report and apply fixes:
+After the agent completes, read the audit report. The two sections are handled differently:
+
+**Argument audit issues — agent corrects these directly:**
 1. **P1 issues (before accepting ADRs):** Fix logical gaps, soften overreaching claims, resolve contradictions
 2. **P2 issues (before building):** Make hidden assumptions explicit, address missing counterarguments
 3. **P3 issues (nice to have):** Clarify justifications, note interactions between mechanisms
-4. **Update prior documents** if the audit reveals inconsistencies in existing ADRs or domain model — evaluate whether the new work or the prior work needs to change
+4. **Update prior documents** if the audit reveals inconsistencies in existing ADRs or domain model
+
+**Framing audit issues — surface these to the user at the gate. Do NOT auto-correct.** These are judgment calls about which decision framings the ADRs chose to foreground:
+1. **P1 issues:** Alternative decision framings the evidence would support — present to the user
+2. **P2 issues:** Underrepresented considerations in rejected alternatives — present for user judgment
+3. **P3 issues:** Minor framing observations — note for user awareness
 
 ### Step 3.5: Conformance Audit
 
