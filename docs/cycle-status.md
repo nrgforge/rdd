@@ -1,7 +1,7 @@
 # Active RDD Cycle: Specification-Execution Gap in Prompt-Based Methodology
 
 **Started:** 2026-04-06
-**Current phase:** RESEARCH ✅ complete; DISCOVER next
+**Current phase:** RESEARCH ✅ complete; DISCOVER ✅ complete; MODEL next
 **Artifact base:** ./docs/
 **Essay:** [014-specification-execution-gap.md](./essays/014-specification-execution-gap.md)
 **Plugin version during cycle:** v0.6.3
@@ -11,7 +11,7 @@
 | Phase | Status | Artifact | Key Epistemic Response |
 |-------|--------|----------|----------------------|
 | RESEARCH | ✅ Complete | [014-specification-execution-gap.md](./essays/014-specification-execution-gap.md) | Sharpened diagnostic: *mechanisms anchored to concrete workflow steps execute reliably (100% coverage); mechanisms whose dispatch depends on orchestrator contextual judgment do not (0% coverage for susceptibility snapshot)*. Recommendation: hook-based architecture (PostToolUse on Agent + Stop hook with per-phase manifest) as defense-in-depth on top of a primary skill-structure fix (add concrete dispatch sites for mechanisms that lack them). Honest scope: covers 4 of 6 observed failure modes; items 5–6 require a user-tooling layer (named, not designed here). Closing stance: *"know it when they see it"* — verification cannot prove mechanism effectiveness but creates observable conditions for contextual judgment. |
-| DISCOVER | ▶ Next | — | — |
+| DISCOVER | ✅ Complete | [updated `product-discovery.md`](./product-discovery.md) | Cycle 10 additions interleaved across all 5 sections; per-entry Grounding Reframe pass applied (3 removals, 1 rewrite, 1 keep, 1 split-edit) per discover-phase snapshot recommendation. Discover-phase snapshot at [`./essays/audits/susceptibility-snapshot-014-discover.md`](./essays/audits/susceptibility-snapshot-014-discover.md). |
 | MODEL | ☐ Pending | — | — |
 | DECIDE | ☐ Pending | — | — |
 | ARCHITECT | ☐ Pending | — | — |
@@ -37,6 +37,15 @@
   - [`./essays/audits/citation-audit-014.md`](./essays/audits/citation-audit-014.md) + `-reaudit.md` (clean)
   - [`./essays/audits/argument-audit-014.md`](./essays/audits/argument-audit-014.md) + `-reaudit.md` + `-reaudit-2.md` (all clean)
   - [`./essays/audits/susceptibility-snapshot-014-research.md`](./essays/audits/susceptibility-snapshot-014-research.md) — Tier 1 unconditional snapshot at research → discover boundary
+
+## Discover Phase Artifact Trail
+
+- **Updated artifact:** [`./product-discovery.md`](./product-discovery.md) — Cycle 10 additions interleaved across all five sections (stakeholder map, jobs/mental models, value tensions, assumption inversions, product vocabulary). Initial pass applied 12 edits. Grounding Reframe pass per snapshot recommendation: three removals (interim-harness-layer sentence, framework-vs-model attribution job, ceremonial-vs-operational vocabulary entry, 80% reliability floor vocabulary entry), one rewrite (framework-vs-model tension reframed as "Scope transparency vs. limitation as disclaimer"), one keep (ceremonial-vs-operational tension), one split-edit on the line-9 stakeholder description.
+- **Susceptibility snapshot:** [`./essays/audits/susceptibility-snapshot-014-discover.md`](./essays/audits/susceptibility-snapshot-014-discover.md) — second instance of the susceptibility-snapshot mechanism firing in the project's entire history. Both firings during Cycle 10, both under ceremonial conditions. Snapshot identified one load-bearing finding ("framing adoption has propagated, not reversed") which drove the per-entry Grounding Reframe pass.
+- **Reflexive observations:**
+  - The snapshot dispatch failed twice with API 529 (overloaded) on the default model; succeeded on Opus retry. The orchestrator did not silently fall back to in-context evaluation between attempts — exactly the failure mode Cycle 10's #2 finding predicts. This is not a methodology gap (the methodology's response was correct) but suggests the susceptibility-snapshot-evaluator default model may warrant calibration if 529s recur. Recorded as observation, not active risk.
+  - The user surfaced the question *"what is the snapshot actually for?"* mid-pass, which reframed the methodological response from a feed-forward problem (which would have required designing a new mechanism) to a Grounding Reframe protocol enhancement (which requires strengthening an existing mechanism). The reframing is captured as DECIDE commitment #5 below.
+  - The per-entry Grounding Reframe pass is itself the cycle's clearest in-action demonstration of what the new commitment specifies: a snapshot finding drove course-correction of the current phase's artifacts at the boundary where the snapshot was produced, rather than feeding forward to bias subsequent phases.
 
 ## Feed-Forward Signals
 
@@ -65,6 +74,26 @@
 3. **Possible ADR — "No new Tier 1 mechanism without a concrete dispatch site"** as a methodology-level rule. Would turn Cycle 10's recommendation from retroactive fix into a durable constraint on future mechanism additions.
 4. **Possible ADR — the three-tier categorization** (skill-structure layer / harness layer / user-tooling layer) as a methodology-level classification system for Tier 1 mechanisms going forward.
 
+### From DISCOVER
+
+**Settled premises (the user is building on these going into model):**
+
+1. **Product-discovery.md describes intended state.** Reflections capture transitional state and current-cycle observations. Conformance audits flag the delta between the two. This division of labor is now an explicit operating principle for future cycles.
+2. **The framework cannot objectively distinguish framework-attributable from model-attributable failures within its own scope.** That distinction requires external comparison work (parallel processes with different models, controlled comparisons across users) that is empirical research, not a framework feature. Encoding it as a stakeholder need creates an obligation the framework cannot meet.
+3. **Vocabulary table is for user-facing language, not internal methodology framing.** System vocabulary belongs in the domain model glossary (MODEL phase) or the system design. Cycle 10 vocabulary additions that drifted toward methodology framing have been removed from product-discovery.md.
+4. **Snapshot findings drive in-cycle course correction at their own boundary, not feed-forward to subsequent phases.** Each phase boundary handles its own findings via the Grounding Reframe; subsequent phases trust the boundary's decision and do their own work. This preserves clean separation of phase responsibility and avoids ambiguity about which phase owns the response to a finding.
+5. **Hook architecture scope is surgical, not broad.** The user's belief-mapping answer at the discover gate: for the broad/hooks-heavy reading to be right, the conversational aspect of the methodology would need to be fundamentally flawed; that is the extreme end. Mitigations + defense in depth + user steering can handle the worst cases. The hook architecture ADR DECIDE writes should be scoped to the four specific failure modes named in the essay, not as a new default for any structural mechanism going forward. The cycle's contribution has two distinct levels of intervention — *calibration* (skill-structure fix at concrete dispatch sites for the existing successful mechanisms) and *defense-in-depth* (hooks for the residual cases where calibration alone is insufficient). DECIDE should inherit both, in that order.
+
+**Open questions (the user is holding these open going into model):**
+
+1. How to apply the intended-state-vs-transitional-state principle retroactively to pre-Cycle-10 product discovery content. Out of scope for this cycle; future scope.
+2. Whether the rewritten "Scope transparency vs. limitation as disclaimer" tension warrants vocabulary entries at MODEL, or whether it lives only as a tension.
+3. Whether the susceptibility-snapshot-evaluator default model needs calibration given the API 529 failures observed in this phase. Likely a configuration question, not a methodology question.
+
+**Additional specific commitment carried forward to DECIDE:**
+
+5. **Grounding Reframe protocol enhancement.** The Grounding Reframe protocol should fire for any significant snapshot finding with in-cycle course-correction implications, not only for unassessable risk. Each significant finding should produce a Reframe with concrete decision options for the current phase's artifacts. Possible amendment to ADR-059. Rationale grounded in Cycle 10's discover-phase application: the per-entry pass on six flagged lines is the cycle's clearest in-action demonstration of what this commitment specifies. The research-phase snapshot at the research → discover boundary did not produce a Grounding Reframe on the four documented adoption moments — only on the HB2 complexity tradeoff — and the discover-phase finding was the downstream consequence of that gap.
+
 ### Active risk register
 
 - **Until the hook architecture is built, the susceptibility-snapshot dispatch rate is expected to return to 0% in any new cycle that does not have ceremonial attention on the dispatch.** The snapshot at this phase boundary fired because the user and agent jointly tracked whether it would fire; this is not the condition the methodology needs to reproduce at scale. The user is effectively the harness layer in the interim.
@@ -78,9 +107,11 @@ The susceptibility snapshot surfaced a "softer than sycophancy but real" pattern
 
 This cycle is a direct follow-up to Cycle 9 (`013-sycophancy-and-rdd-reflexivity.md` + ADRs 055–062). Cycle 9 added the Tier 1 resistance architecture; Cycle 10 investigates why that architecture sometimes fails to fire. The issue that seeded Cycle 10 is [nrgforge/rdd#9](https://github.com/nrgforge/rdd/issues/9), filed the same day Cycle 9's architecture shipped as v0.6.0.
 
-**If resuming in a new session:** read [`./essays/014-specification-execution-gap.md`](./essays/014-specification-execution-gap.md) as context, then [`./essays/reflections/014-specification-execution-gap.md`](./essays/reflections/014-specification-execution-gap.md) for the gate-level observations and downstream commitments. Continue to `/rdd-discover`.
+**If resuming in a new session:** read [`./essays/014-specification-execution-gap.md`](./essays/014-specification-execution-gap.md) as context, then [`./essays/reflections/014-specification-execution-gap.md`](./essays/reflections/014-specification-execution-gap.md) for the research-phase gate observations and the four original DECIDE commitments. Then read [`./product-discovery.md`](./product-discovery.md) for the discover-phase additions (post per-entry-pass state) and [`./essays/audits/susceptibility-snapshot-014-discover.md`](./essays/audits/susceptibility-snapshot-014-discover.md) for the discover-phase snapshot's findings. The cycle status above captures the discover-phase per-entry pass disposition, the new operating principles (intended-state vs. transitional state; vocabulary register; snapshot-as-course-correction), the surgical-not-broad hook scope, and the new DECIDE commitment #5. Continue to `/rdd-model`.
 
-**Reflexive note about this cycle:** Cycle 10 investigates whether the methodology's Tier 1 mechanisms actually fire under task load. The susceptibility-snapshot dispatch at the research → discover boundary was the first instance in the project's corpus of that specific mechanism firing. It fired because the cycle had explicitly set the expectation that it would fire and the user was actively present to track the dispatch. In other words: the cycle's own execution is a data point *inside* the asymmetry table it documents. This is noted so downstream phases do not over-interpret "the snapshot fired" as evidence of methodology reliability — it is evidence of ceremonial reliability, not operational reliability.
+**Deferred framings the user surfaced but declined to crystallize:** During the discover-phase gate, the user offered *"not the easiest car to drive, but maybe a really powerful one"* as a possible characterization of RDD's character emerging from this cycle. The agent declined to encode this in the artifact at the time, citing the cycle's own findings about synthesis-moment adoption. Worth revisiting after MODEL/DECIDE if the framing still carries weight — possible home in cycle 11 vocabulary or in a later synthesis essay.
+
+**Reflexive note about this cycle:** Cycle 10 investigates whether the methodology's Tier 1 mechanisms actually fire under task load. The susceptibility-snapshot dispatch at the research → discover boundary was the first instance in the project's corpus of that specific mechanism firing. The discover-phase dispatch (second instance) failed twice with API 529 on the default model and succeeded on Opus retry; the orchestrator did not silently fall back to in-context evaluation between attempts — exactly the failure mode Cycle 10's #2 finding predicts. Both successful dispatches occurred under ceremonial conditions (joint user/agent attention on whether the dispatch would happen). This is noted so downstream phases do not over-interpret "the snapshot fired" as evidence of operational methodology reliability — it is evidence of ceremonial reliability, which is the very distinction Cycle 10's diagnostic identifies.
 
 ## Candidate follow-up cycles
 
