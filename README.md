@@ -76,7 +76,8 @@ You can also invoke phases directly:
 | `/rdd-refactor` | Refactor with the AI Smell Taxonomy — smells → patterns → methodology |
 | `/rdd-play` | Play with what you built as different users, discover what specs missed |
 | `/rdd-synthesize` | Write about what you built and what you discovered |
-| `/rdd-conform` | Audit artifact corpus, detect drift, graduate knowledge |
+| `/rdd-graduate` | Fold durable knowledge into native docs, archive the RDD artifacts |
+| `/rdd-conform` | Audit artifact corpus against the current skill version, detect drift |
 | `/rdd-about` | Learn what RDD is, check version, explore the methodology |
 
 ## Architecture
