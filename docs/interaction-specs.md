@@ -224,3 +224,57 @@
 ### Task: Review research design before execution
 
 **Interaction mechanics:** Before the first research loop, the Research Methods Subagent reads the research question set. It applies belief-mapping to each question, flags embedded conclusions and premature narrowing, and produces a research design review artifact with flagged questions and suggested reformulations. In the future version, it reads prior cycle research logs to detect cross-cycle methodological patterns.
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Housekeeping Migration and Advisory Mode)
+
+**Super-Objective:** "Update RDD to the latest version without being forced into immediate corpus restructuring, and opt into compound-check enforcement when ready"
+
+### Task: Encounter advisory mode after plugin update
+
+**Interaction mechanics:** The developer updates the RDD plugin to a version shipping Cycle 10's structural ADRs (063–070). They begin their next session and start working normally. At the first phase boundary, the Stop hook detects that `docs/housekeeping/` does not exist in the corpus and emits a non-blocking stderr notice identifying the corpus as pre-migration. The notice names the plugin version, explains that compound-check verification is disabled, names `/rdd-conform migrate` as the opt-in path to enforcement, and includes a short explanation that the methodology continues to work without verification. The developer reads the notice. Their cycle continues without interruption. They can ignore the notice indefinitely and keep working with advisory-mode degradation; they lose no functionality beyond harness-layer verification of Tier 1 dispatches.
+
+### Task: Run `/rdd-conform migrate` to transition to enforcement mode
+
+**Interaction mechanics:** The developer decides to migrate. They invoke `/rdd-conform migrate`. The command first checks whether `docs/housekeeping/.migration-version` already exists; if so, it reports "already migrated" and exits. Otherwise, it checks `git status` for uncommitted changes to `skills/` or `docs/` and refuses to run if any are present (directing the user to commit or stash). When clean, it creates `docs/housekeeping/audits/` and `docs/housekeeping/gates/`, moves all files from `docs/essays/audits/` into the housekeeping audits subdirectory, moves `docs/cycle-status.md` to `docs/housekeeping/cycle-status.md`, runs the mechanical reference-update substitution across prior ADRs, the Cycle 10 essay, spike reports, skill files, the manifest, the domain model, and ORIENTATION, writes `docs/housekeeping/.migration-version` with the current plugin version, and appends `docs/housekeeping/dispatch-log.jsonl` to `.gitignore`. A summary report lists every file moved and every file whose references were updated. The developer reviews the diff with `git diff`, confirms the changes match expectations, and commits. On their next session, the Stop hook detects the marker file, enters enforcement mode, and the compound check activates.
+
+### Task: Decide not to migrate
+
+**Interaction mechanics:** The developer reads the advisory notice but chooses not to migrate — perhaps they are mid-cycle, or do not want to take on the migration work at this moment, or never plan to migrate. They continue working. Their cycles complete normally. Each new session produces one advisory notice at the first phase boundary and then suppresses subsequent notices for the rest of the session. The methodology provides competent first-order analysis, Tier 2 conversational mechanisms, and Skill-Structure Layer dispatch enforcement (the existing 100% coverage mechanisms — citation, argument, research-methods auditors). They lose only the Harness Layer's compound check. This is a legitimate operating state indefinitely.
+
+### Task: Read and act on a revision-aware re-audit reminder
+
+**Interaction mechanics:** After revising their essay during a research phase, the developer reaches phase-end. The Stop hook runs, detects that the essay's mtime is newer than the most recent dispatch log entry for the argument-auditor, and emits a model-visible reminder (alongside its `allow` decision — not a block). The reminder names the audited document, the last audit dispatch timestamp, and the document modification timestamp, and asks whether the modification is substantial enough to warrant re-auditing. The agent surfaces the reminder to the developer. The developer reads it and decides: if the modification was a typo fix, they say "no re-audit needed, proceeding"; if it was a section rewrite, they say "yes, run re-audit" and the orchestrator dispatches the argument-auditor again. The substantiality judgment is epistemic; the hook surfaces the condition but the developer and agent together decide.
+
+---
+
+## Stakeholder: AI Agent (Orchestrator, Cycle 10 Structural Extensions)
+
+**Super-Objective:** "Execute Tier 1 mechanism dispatches with canonical prompt skeleton, respond to susceptibility snapshot findings via the extended Grounding Reframe, and produce gate reflection notes at phase boundaries — in alignment with Invariant 8's anchoring requirement"
+
+### Task: Dispatch a Tier 1 subagent with canonical prompt skeleton
+
+**Interaction mechanics:** At the concrete workflow step specified by the phase skill (e.g., "after the essay is written" for the citation auditor, "at phase-end" for the susceptibility snapshot), the orchestrator constructs the dispatch prompt using the canonical skeleton from ADR-065: a brief describing the subagent's task, followed by a literal `Output path: <resolved canonical path>` line where `{cycle}` is substituted with the current cycle number from `docs/housekeeping/cycle-status.md`'s `**Cycle number:** NNN` field (or from the essay-prefix fallback if the field is absent). The orchestrator invokes the Task tool with the subagent_type and prompt. The PostToolUse hook fires automatically, extracts the output path via regex, and writes a JSONL entry to the dispatch log. The orchestrator does not interact with the log directly; it is harness-managed.
+
+### Task: Produce a gate reflection note at a phase boundary
+
+**Interaction mechanics:** At phase-end, after the AID cycle conversation has run, the orchestrator composes a gate reflection note at `docs/housekeeping/gates/{cycle}-{phase-from}-to-{phase-to}.md`. The note contains five required sections: the composed belief-mapping question, the user's verbatim response, the selected pedagogical move (named without the interpretation that drove selection), and the commitment gating outputs (settled premises, open questions, specific commitments carried forward). The orchestrator writes the note before declaring the phase complete. The Stop hook's manifest check verifies the note exists at the canonical path with all required headers and fields before allowing phase transition. If the note is missing or malformed, the Stop hook blocks the transition in enforcement mode (or emits a non-blocking advisory notice in advisory mode).
+
+### Task: Respond to a significant susceptibility snapshot finding via extended Grounding Reframe
+
+**Interaction mechanics:** At a phase boundary, the orchestrator dispatches the susceptibility-snapshot-evaluator per the per-phase dispatch instruction in the current phase skill. The subagent returns its snapshot artifact with findings. For each finding, the orchestrator applies the three significance properties from ADR-068: specificity (does the finding name specific artifacts?), actionability (is a concrete grounding action composable in response?), and in-cycle applicability (can the action be applied at this boundary?). Findings meeting all three trigger the Grounding Reframe protocol — the orchestrator names what is uncertain, offers concrete grounding actions, and makes the cost visible to the user. Findings not meeting all three are recorded as feed-forward signals in the cycle status. The orchestrator does not evaluate significance mechanically — the three properties are calibration tools for a judgment the orchestrator makes at snapshot-read time.
+
+### Task: Classify a new mechanism proposal per the four-step decision procedure
+
+**Interaction mechanics:** When a future cycle proposes a new unconditional structural mechanism, the orchestrator runs ADR-067's four-step decision procedure. Step 1: does the mechanism have a concrete, mechanically-unavoidable workflow step? If yes, it anchors at the Skill-Structure Layer (ADR-065 pattern) and the relevant skill file gains a dispatch instruction. Step 2: is the mechanism's trigger a tool-call or phase-end event, or does its failure mode include silent dispatch fallback? If yes, it anchors at the Harness Layer (ADR-063/064 pattern) and a manifest entry is added. Step 3: is the mechanism conversational with a natural artifact moment? If yes, it anchors at the User-Tooling Layer (ADR-066 pattern) via the Graduate Conversational Mechanism action. Step 4: none of the above — the mechanism cannot be Tier 1 and must be specified as best-effort or explicitly contingent per Invariant 8. The orchestrator records the decision in the proposing ADR's provenance chain.
+
+---
+
+## Stakeholder: Plugin Maintainer (Hook Failure Issue Response)
+
+**Super-Objective:** "Receive diagnostic information about hook failures from users in the field, diagnose the root cause, and ship fixes that resolve the failure mode"
+
+### Task: Receive a hook failure GitHub issue with pre-populated diagnostic
+
+**Interaction mechanics:** A user whose hook script encountered an internal error has clicked the GitHub issue link from the Fails-Safe-to-Allow stderr notice. The link opens a pre-populated issue at `https://github.com/nrgforge/rdd/issues/new?template=hook-failure.md` with the hook name, diagnostic line, plugin version, OS/shell environment, and (if available) a sanitized copy of the hook input JSON. The user fills in any additional context and submits. The maintainer receives the issue, reproduces the failure locally using the diagnostic data, fixes the hook script, and ships the fix in the next plugin release. The user updates the plugin on their schedule; their corpus continues to work in advisory mode during the gap. The maintainer's work is enabled by structured diagnostic data that the user contributed without being required to debug the plugin themselves.

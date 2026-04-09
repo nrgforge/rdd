@@ -2337,3 +2337,403 @@
 **When** the orchestrator considers advancing to the next phase
 **Then** the orchestrator does not advance until the essay has been revised to reflect the change
 **And** the revised essay has passed a fresh argument audit and framing audit
+
+## Feature: Per-Phase Manifest Format (ADR-063)
+
+### Scenario: Manifest loads successfully from canonical location
+**Given** a YAML manifest file exists at `hooks/manifests/tier1-phase-manifest.yaml`
+**When** the Stop hook reads the manifest at phase-end
+**Then** the hook parses the `phases` dictionary and loads the current phase's `required_mechanisms` list
+**And** the hook identifies each mechanism by its canonical name matching the `subagent_type` identifier
+
+### Scenario: Manifest resolves `{cycle}` token from cycle-status field
+**Given** `docs/cycle-status.md` contains a `**Cycle number:** 014` field
+**When** the Stop hook resolves the `{cycle}` token in a manifest `path_template`
+**Then** the hook substitutes `014` for `{cycle}` and produces the resolved path
+**And** the resolution is canonical (cycle-status field), not inferred from essay prefixes
+
+### Scenario: Manifest resolves `{cycle}` token via fallback inference
+**Given** `docs/cycle-status.md` exists but does not contain a `**Cycle number:**` field
+**When** the Stop hook resolves the `{cycle}` token
+**Then** the hook falls back to inferring the cycle from the highest `NNN-` prefix in `docs/essays/`
+**And** the fallback path is logged to stderr as a notice
+
+### Scenario: Manifest catches missing required mechanism at phase end
+**Given** the current phase is `research`
+**And** the manifest specifies `susceptibility-snapshot-evaluator` as a required mechanism with path `docs/housekeeping/audits/susceptibility-snapshot-014-research.md`
+**When** the Stop event fires and the snapshot file does not exist
+**Then** the hook emits `block` with a reason naming the missing artifact
+**And** the agent sees the block reason as model-visible context on its next turn
+
+### Scenario: Manifest catches stubbed fabricated audit via size floor
+**Given** the current phase is `research`
+**And** the argument-auditor's canonical path exists but contains only 50 bytes of content
+**And** the manifest specifies `min_bytes: 1500` for the argument auditor
+**When** the Stop event fires and the Stop hook checks the artifact
+**Then** the hook emits `block` with a reason naming the size floor failure
+**And** the agent is directed not to fabricate audit output in its own context
+
+## Feature: Compound Check at Phase Boundaries (ADR-064)
+
+### Scenario: PostToolUse hook logs Tier 1 dispatch with canonical path
+**Given** a skill file contains a Tier 1 dispatch instruction with an `Output path:` line naming `docs/essays/audits/argument-audit-014.md`
+**When** the orchestrator dispatches the `argument-auditor` via the Task tool
+**Then** the PostToolUse hook matches `tool_name == "Agent"` and `subagent_type == "argument-auditor"`
+**And** the hook extracts the expected path from `tool_input.prompt` via regex matching the canonical `Output path:` line
+**And** the hook appends a JSONL entry to `docs/housekeeping/dispatch-log.jsonl` containing `{timestamp, session_id, mechanism, subagent_type, expected_path, tool_use_id}`
+
+### Scenario: PostToolUse hook ignores non-Tier-1 dispatches
+**Given** the orchestrator dispatches a subagent whose `subagent_type` is not in the Tier 1 set
+**When** the PostToolUse hook fires
+**Then** the hook exits silently with `allow` and does not write to the dispatch log
+**And** the Tier 1 dispatch log remains unmodified
+
+### Scenario: Compound check catches sophisticated State C via dispatch log cross-reference
+**Given** an artifact at the expected audit path exists with all required headers and fields
+**And** the artifact's content was fabricated in-context by a task-immersed orchestrator (not produced by an isolated subagent dispatch)
+**And** the dispatch log contains no entry matching the mechanism and expected path
+**When** the Stop hook runs the compound check
+**Then** the hook emits `block` with a reason "artifact exists but no corresponding dispatch was logged; this may indicate fabricated audit output"
+**And** the agent is instructed not to fabricate audit artifacts
+
+### Scenario: Compound check distinguishes subagent failure from no-dispatch
+**Given** the dispatch log contains an entry for `citation-auditor` with expected path `docs/essays/audits/citation-audit-014.md`
+**And** the artifact at that path does not exist (subagent failed to write)
+**When** the Stop hook runs the compound check
+**Then** the hook emits `block` with a reason "mechanism was dispatched but did not produce its expected artifact"
+**And** the reason is distinct from the "never dispatched" reason
+
+### Scenario: Compound check passes when dispatch log and artifact agree
+**Given** the dispatch log contains an entry for `argument-auditor` with expected path matching the manifest's `path_template`
+**And** the artifact at that path exists with all required headers, required fields, and size above the floor
+**When** the Stop hook runs the compound check
+**Then** the hook emits `allow` and the phase transition proceeds
+**And** no reason is injected into the agent's next-turn context
+
+### Scenario: Compound check's structural guarantee holds only in enforcement mode
+**Given** the corpus has no `docs/housekeeping/` directory (pre-migration state)
+**When** the Stop hook runs
+**Then** the hook enters advisory mode and does not perform the compound cross-reference
+**And** fabricated audit artifacts can exist at the expected paths without being caught
+**And** the structural guarantee from ADR-064 does not hold in this state
+
+### Scenario: Compound check structural guarantee holds post-migration
+**Given** the corpus has been migrated and `docs/housekeeping/.migration-version` exists with the current plugin version
+**When** the Stop hook runs the compound check
+**Then** sophisticated State C fabrication is structurally impossible because fabricating both an artifact and a matching dispatch log entry would require injecting a fake PostToolUse event
+**And** the agent cannot inject hook events
+
+## Feature: Advisory Mode for Pre-Migration Corpora (ADR-064)
+
+### Scenario: Hook enters advisory mode when housekeeping directory is absent
+**Given** `docs/housekeeping/` does not exist in the project
+**When** the Stop hook runs at phase-end
+**Then** the hook emits `allow` without running the compound check
+**And** the hook emits a stderr notice directing the user to `/rdd-conform` for migration
+**And** the notice fires once per session (session-scoped suppression marker)
+
+### Scenario: Hook enters advisory mode when marker file is absent
+**Given** `docs/housekeeping/` exists but `docs/housekeeping/.migration-version` does not
+**When** the Stop hook runs at phase-end
+**Then** the hook enters advisory mode (migration in progress or incomplete)
+**And** the methodology continues to function without harness-layer verification
+
+### Scenario: Hook enters enforcement mode when marker file is present
+**Given** `docs/housekeeping/.migration-version` exists containing a plugin version string
+**When** the Stop hook runs at phase-end
+**Then** the hook enters enforcement mode and runs the compound check as specified in ADR-064
+
+### Scenario: Advisory notice respects user position as non-maintainer
+**Given** the Stop hook emits an advisory-mode notice
+**When** the user reads the notice
+**Then** the notice does not block the agent session
+**And** the notice does not require the user to debug plugin internals
+**And** the notice links to `/rdd-conform` as the opt-in path to enforcement
+
+## Feature: Fails-Safe-to-Allow with GitHub Issue Surfacing (ADR-064)
+
+### Scenario: Hook internal error fails safe with GitHub issue notice
+**Given** the Stop hook encounters an internal error (YAML parse failure, missing file, shell error)
+**When** the hook exits
+**Then** the hook emits `allow` and does not block the agent
+**And** the hook prints a non-blocking stderr notice naming the hook and the diagnostic
+**And** the notice includes a pre-populated GitHub issue URL at `https://github.com/nrgforge/rdd/issues/new?template=hook-failure.md`
+**And** the methodology continues to function with verification unavailable for that turn
+
+### Scenario: User ignoring the GitHub issue notice continues to work
+**Given** the Stop hook has emitted a GitHub issue notice due to an internal error
+**When** the user ignores the notice and continues working
+**Then** subsequent phases of the cycle complete normally
+**And** the methodology does not degrade beyond the loss of harness-layer verification for that turn
+
+## Feature: Revision-Aware Re-Audit Reminder (ADR-064)
+
+### Scenario: Reminder fires when audited document modified after last dispatch
+**Given** `docs/essays/014-specification-execution-gap.md` was modified at timestamp T2
+**And** the dispatch log contains a `citation-auditor` entry at timestamp T1 where T1 < T2
+**And** the manifest entry for `citation-auditor` includes `audited_documents: ["docs/essays/{cycle}-*.md"]`
+**When** the Stop hook runs the revision-aware reminder
+**Then** the hook emits a model-visible notice alongside its `allow` decision (not a block)
+**And** the notice names the audited document, the last dispatch timestamp, and the document modification timestamp
+**And** the notice asks the agent to determine whether the modification is substantial enough to warrant re-auditing
+
+### Scenario: Reminder does not fire when document unchanged since last dispatch
+**Given** the audited document's mtime is earlier than the most recent dispatch log entry for its auditor
+**When** the Stop hook runs the revision-aware reminder
+**Then** the hook emits `allow` without a notice
+**And** no reminder is injected into the agent's context
+
+### Scenario: Reminder substantiality judgment is human, not mechanical
+**Given** the reminder has fired and the agent has surfaced it to the user
+**When** the user assesses whether the modification is substantial
+**Then** the agent and user together decide whether re-audit is warranted
+**And** the decision is epistemic, not enforced mechanically by the hook
+
+## Feature: Anchor Dispatch — Skill-Structure Fix (ADR-065)
+
+### Scenario: Phase skill contains structurally privileged susceptibility snapshot dispatch
+**Given** a phase skill file at `skills/research/SKILL.md`
+**When** the rdd-conform dispatch prompt format audit runs
+**Then** the audit finds a "Phase Boundary: Susceptibility Snapshot Dispatch" subsection
+**And** the subsection is located in the bottom third of the skill file (phase-end position)
+**And** the subsection contains the canonical prompt skeleton with `Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md`
+
+### Scenario: Canonical dispatch prompt contains Output path line
+**Given** a Tier 1 dispatch instruction in any phase skill
+**When** the PostToolUse hook parses `tool_input.prompt` via regex
+**Then** the regex matches `^Output path: (.+)$` and extracts the canonical path
+**And** the extracted path is logged to the dispatch log as `expected_path`
+
+### Scenario: PostToolUse hook handles missing Output path line gracefully
+**Given** a Tier 1 dispatch prompt that does not contain an `Output path:` line (pre-ADR-065 state)
+**When** the PostToolUse hook parses `tool_input.prompt`
+**Then** the regex fails to match and the hook logs `expected_path: null`
+**And** the compound cross-reference degrades to "dispatch happened, path unknown"
+
+### Scenario: Position audit detects middle-third dispatch sites
+**Given** a phase skill file with a Tier 1 dispatch instruction at line 250 of a 500-line file
+**When** the rdd-conform dispatch prompt format audit runs
+**Then** the audit flags the dispatch site as being in the middle third (lost-in-the-middle zone)
+**And** the finding recommends relocation to top or bottom third
+
+### Scenario: Each phase skill carries phase-specific brief content for the snapshot
+**Given** each of the eight phase skills (research, discover, model, decide, architect, build, play, synthesize)
+**When** the orchestrator reaches phase-end in any phase
+**Then** that phase skill's susceptibility snapshot dispatch instruction provides phase-specific brief content (what signals to pass, what boundary is being crossed, what prior snapshots to reference)
+**And** the phase brief is composed for the specific phase, not templated generically
+
+## Feature: User-Tooling Layer — AID Gate Reflection Note (ADR-066)
+
+### Scenario: Gate reflection note is produced at phase-end before phase completes
+**Given** the orchestrator is at a phase boundary with an AID cycle conversation completed
+**When** the orchestrator prepares to declare the phase complete
+**Then** a gate reflection note is written to `docs/housekeeping/gates/{cycle}-{phase-from}-to-{phase-to}.md`
+**And** the note contains the composed belief-mapping question, the user's response, the selected pedagogical move, and the commitment gating outputs
+
+### Scenario: Gate reflection note omits engagement interpretation
+**Given** a gate reflection note is being produced
+**When** the orchestrator writes the note content
+**Then** the note captures the pedagogical move selected (e.g., "Challenge", "Probe", "Teach")
+**And** the note does not narrate the engagement interpretation that drove move selection
+**And** the note respects the AID Interpret privacy principle across media
+
+### Scenario: Stop hook manifest verification blocks phase without gate reflection note
+**Given** the corpus is in enforcement mode and the current phase requires a gate reflection note per the manifest
+**And** no file exists at the canonical gate reflection path for this phase boundary
+**When** the Stop hook runs
+**Then** the hook emits `block` with a reason naming the missing gate reflection note
+**And** the agent cannot complete the phase until the note is written
+
+### Scenario: Reframe-derailed gate passes structural verification but limitation is acknowledged
+**Given** the agent has adopted a significant user reframe at face value during the gate conversation
+**And** the gate reflection note captures the reframe faithfully with all required structural elements
+**When** the Stop hook's manifest check runs
+**Then** the manifest check passes (the artifact is well-formed)
+**And** the reframe-derailed gate is a named limitation of the User-Tooling Layer that the manifest check cannot detect
+**And** the Susceptibility Snapshot at the same phase boundary is the complementary defense
+
+## Feature: Compound Defense at Phase Boundaries (ADR-066)
+
+### Scenario: Compound defense has three components covering non-overlapping failure modes
+**Given** the engagement-degradation threat model is active at a phase boundary
+**When** the compound defense components fire
+**Then** the manifest check (User-Tooling Layer) catches the structural floor (no substantive artifact produced)
+**And** the susceptibility snapshot catches the content ceiling (artifact well-formed but encodes incongruent framings)
+**And** belief-mapping catches the pre-artifact zone (unexamined assumptions before commitment)
+
+### Scenario: Compound defense is extensible without renaming
+**Given** a future cycle identifies an additional failure mode not covered by the current three components
+**When** the methodology adds a new defense component to the compound defense
+**Then** the new component joins the compound defense as a fourth component
+**And** the compound defense's name remains unchanged (the umbrella is count-extensible)
+
+## Feature: Three-Tier Enforcement Classification (ADR-067)
+
+### Scenario: Decision procedure routes step-anchorable mechanism to Skill-Structure Layer
+**Given** a proposed unconditional structural mechanism has a concrete, mechanically-unavoidable workflow step
+**When** the mechanism is classified per ADR-067's four-step decision procedure
+**Then** the mechanism is routed to the Skill-Structure Layer (ADR-065 pattern)
+**And** the skill file gains a dispatch instruction at a structurally privileged position with a canonical prompt skeleton
+
+### Scenario: Decision procedure routes phase-boundary mechanism to Harness Layer
+**Given** a proposed mechanism whose trigger is a phase boundary, not a tool call
+**When** the mechanism is classified per the decision procedure
+**Then** the mechanism is routed to the Harness Layer (ADR-063/064 pattern)
+**And** a manifest entry is added with the canonical path and structural assertions
+
+### Scenario: Decision procedure routes conversational mechanism to User-Tooling Layer
+**Given** a proposed mechanism that is conversational with a natural artifact moment
+**When** the mechanism is classified per the decision procedure
+**Then** the mechanism is routed to the User-Tooling Layer (ADR-066 pattern)
+**And** the Graduate Conversational Mechanism action produces a canonical-path artifact requirement
+
+### Scenario: Decision procedure step 4 prevents Tier 1 status for unclassifiable mechanism
+**Given** a proposed mechanism with no step-anchorable form, no tool-call trigger, and no natural artifact moment
+**When** the mechanism is classified per the decision procedure
+**Then** the mechanism reaches step 4 and cannot be specified as unconditional
+**And** the mechanism is specified as Tier 2 best-effort per ADR-058 with honest transparency about its non-structural character
+
+## Feature: Grounding Reframe Extension (ADR-068)
+
+### Scenario: Grounding Reframe fires on unassessable sycophancy risk
+**Given** the agent encounters a situation where sycophancy risk cannot be assessed (no belief-mapping or empirical contact available)
+**When** the agent applies the Grounding Reframe protocol
+**Then** the agent names what is uncertain, offers concrete grounding actions, and makes the cost visible
+**And** the trigger condition is ADR-059's original scope (unassessable risk)
+
+### Scenario: Grounding Reframe fires on significant snapshot finding with in-cycle implications
+**Given** a susceptibility snapshot returns a finding that names specific artifacts in the current phase
+**And** the finding is concrete enough to drive an actionable grounding action
+**And** the action can be applied at the current phase boundary
+**When** the agent reads the snapshot finding
+**Then** the agent fires the Grounding Reframe protocol (extended trigger from ADR-068)
+**And** the finding drives in-cycle course correction rather than feeding forward as advisory
+
+### Scenario: Finding not meeting significance properties feeds forward instead
+**Given** a susceptibility snapshot returns a finding that is general rather than specific
+**Or** the finding's best response is "note and move on" rather than an actionable action
+**When** the agent reads the finding
+**Then** the finding is recorded as feed-forward in the cycle status
+**And** the Grounding Reframe protocol does not fire for this finding
+
+## Feature: Methodology Scope-of-Claim (ADR-069)
+
+### Scenario: Methodology does not promise independent second-order critique by agent
+**Given** a user reads the methodology's scope-of-claim documentation
+**When** the user asks what the methodology guarantees
+**Then** the methodology promises competent first-order analysis, structural resistance via Tier 1 mechanisms, and conversational mechanisms inviting user second-order engagement
+**And** the methodology explicitly does not promise that the agent will independently generate second-order critique of its own output
+
+### Scenario: Future Tier 1 mechanism proposals cite the scope-of-claim as their rationale
+**Given** a future ADR proposes a new isolated evaluator, conversational challenge, or structural backstop
+**When** the ADR documents its rationale
+**Then** the ADR cites ADR-069's negative scope-of-claim as the reason the mechanism fills a gap
+**And** the mechanism's purpose is explicitly framed as filling the independent-second-order-critique gap
+
+## Feature: Housekeeping Directory Migration (ADR-070)
+
+### Scenario: Migration moves audits from essays subdirectory to housekeeping
+**Given** `docs/essays/audits/` contains audit report files for cycles 001–014
+**When** `/rdd-conform migrate` runs
+**Then** all files under `docs/essays/audits/` are moved to `docs/housekeeping/audits/` preserving subdirectory structure
+**And** `docs/essays/audits/` no longer exists after migration
+
+### Scenario: Migration moves cycle-status to housekeeping
+**Given** `docs/cycle-status.md` exists at the corpus root
+**When** `/rdd-conform migrate` runs
+**Then** the file is moved to `docs/housekeeping/cycle-status.md`
+**And** its content is unchanged
+
+### Scenario: Migration creates gates directory empty
+**Given** no `docs/housekeeping/gates/` directory exists before migration
+**When** `/rdd-conform migrate` runs
+**Then** `docs/housekeeping/gates/` is created as an empty directory
+**And** subsequent gate reflection notes land at this location
+
+### Scenario: Migration writes version marker file
+**Given** the migration operation completes successfully
+**When** the marker file is written
+**Then** `docs/housekeeping/.migration-version` contains the plugin version string that performed the migration
+**And** the Stop hook's subsequent runs enter enforcement mode on reading this marker
+
+### Scenario: Migration updates path references across corpus mechanically
+**Given** prior ADRs, the Cycle 10 essay, spike reports, skill files, the manifest, the domain model, and ORIENTATION all reference pre-migration paths
+**When** `/rdd-conform migrate` runs the reference update pass
+**Then** all occurrences of `docs/essays/audits/` are replaced with `docs/housekeeping/audits/` in every affected file
+**And** all occurrences of `docs/cycle-status.md` are replaced with `docs/housekeeping/cycle-status.md`
+**And** a summary report lists every file touched
+
+### Scenario: Migration is idempotent on migrated corpus
+**Given** a corpus already has `docs/housekeeping/.migration-version` matching the current plugin version
+**When** `/rdd-conform migrate` runs
+**Then** the operation detects the marker and no-ops
+**And** no files are moved or modified
+
+### Scenario: Migration refuses to run with uncommitted skill file changes
+**Given** the user has uncommitted modifications to files under `skills/`
+**When** the user runs `/rdd-conform migrate`
+**Then** the operation refuses to run and reports the uncommitted files
+**And** the user is directed to commit or stash the changes before migrating
+
+### Scenario: Migration does not touch cycle-archive
+**Given** `docs/cycle-archive/` contains archived cycles from prior work
+**When** the migration runs
+**Then** files under `docs/cycle-archive/` are not modified
+**And** their internal references to pre-migration paths are preserved
+
+## Feature: rdd-conform Scope Extension (ADR-070)
+
+### Scenario: Housekeeping directory organization audit detects missing directory
+**Given** a pre-migration corpus with no `docs/housekeeping/` directory
+**When** the user runs `/rdd-conform` (audit mode)
+**Then** the audit reports that the housekeeping directory is absent and suggests running `/rdd-conform migrate`
+**And** the audit does not auto-correct; it produces a finding report
+
+### Scenario: Gate reflection note template alignment audit detects missing header
+**Given** a file at `docs/housekeeping/gates/014-research-to-discover.md` exists but does not contain the `## Belief-mapping question composed for this gate` header
+**When** the gate reflection note template alignment audit runs
+**Then** the audit reports a missing required header
+**And** the audit does not audit content substance — only template alignment
+
+### Scenario: Dispatch prompt format audit flags missing Output path line
+**Given** a phase skill contains a Tier 1 dispatch instruction without an `Output path:` line
+**When** the dispatch prompt format audit runs
+**Then** the audit reports the dispatch site as non-compliant with ADR-065's canonical skeleton
+**And** the audit does not auto-correct; the user edits the skill file manually
+
+### Scenario: Conform audit does not auto-correct findings
+**Given** any of the three new conform audit scopes finds a debt item
+**When** the audit completes
+**Then** the audit produces a structured finding report with file:line references and suggested remediations
+**And** the audit does not modify any files
+**And** the user reads the report and decides what to act on
+
+## Feature: Integration — Cycle 10 Mechanisms Compose Across ADRs
+
+### Scenario: Compound check and canonical prompt skeleton integrate at dispatch time
+**Given** a phase skill with a Tier 1 dispatch instruction containing the canonical `Output path:` line (ADR-065)
+**And** the hooks in ADR-064 are installed and the manifest is present
+**When** the orchestrator dispatches the Tier 1 subagent via the Task tool
+**Then** the PostToolUse hook extracts the output path from the prompt and logs the dispatch
+**And** at phase-end the Stop hook cross-references the dispatch log against the manifest and the artifact
+**And** the compound check verifies the dispatch was genuine and the artifact was produced by an isolated subagent
+
+### Scenario: Grounding Reframe extension triggered by susceptibility snapshot at User-Tooling Layer boundary
+**Given** the orchestrator produces a gate reflection note at a phase boundary (ADR-066)
+**And** the susceptibility snapshot at the same boundary returns Finding 1 "framing adoption has propagated to the reflection note's content"
+**When** the agent reads the snapshot finding
+**Then** the agent fires the extended Grounding Reframe (ADR-068) on the specific framing adoption
+**And** the agent performs in-cycle course correction on the gate reflection note before the phase completes
+
+### Scenario: Three-substrate decision procedure applied to a new mechanism proposal
+**Given** a future cycle proposes a new structural mechanism
+**When** the mechanism is classified per ADR-067's four-step decision procedure
+**Then** the mechanism is assigned to Skill-Structure Layer (ADR-065), Harness Layer (ADR-063/064), User-Tooling Layer (ADR-066), or step 4 (cannot be Tier 1)
+**And** the mechanism's ADR names the substrate explicitly per Invariant 8's anchoring requirement
+
+### Scenario: Housekeeping migration enables enforcement-mode compound check
+**Given** a pre-migration corpus in advisory mode
+**When** the user runs `/rdd-conform migrate` and the migration completes
+**Then** `docs/housekeeping/.migration-version` is written and the corpus transitions to enforcement mode on the next session
+**And** the compound check's structural guarantee against sophisticated State C becomes active
+**And** the Stop hook emits `block` on missing required artifacts rather than advisory notices
