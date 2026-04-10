@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.7.1
+
+Housekeeping migration and post-migration path alignment.
+
+- **`/rdd-conform migrate` subcommand (NEW)** — one-shot, opt-in operation that moves infrastructure artifacts (`docs/essays/audits/` → `docs/housekeeping/audits/`, `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`), creates `docs/housekeeping/gates/` for gate reflection notes, performs mechanical path substitutions across the corpus, writes `docs/housekeeping/.migration-version` to enable enforcement mode, and produces a rollback manifest + summary report. Idempotent, refuses uncommitted skill changes, excludes cycle-archive and centered prose (ADR-070)
+- **Post-migration canonical paths** — all skill file `Output path:` lines and manifest `path_template` values updated from `docs/essays/audits/` to `docs/housekeeping/audits/`. Ships atomically with the migration tool per ADR-070's lockstep requirement. Pre-migration corpora continue to work in advisory mode
+- **Stop hook dual path support** — checks both `docs/cycle-status.md` (pre-migration) and `docs/housekeeping/cycle-status.md` (post-migration) for phase and cycle detection
+- **Three new `/rdd-conform` audit scopes (NEW):** housekeeping directory organization audit (detects pre-migration state, orphaned files), gate reflection note template alignment audit (ADR-066 template compliance), dispatch prompt format audit (ADR-065 canonical skeleton and position verification). All produce finding reports without auto-correcting
+- **Conform skill expanded to 7 operations** (was 3): audit, remediation, drift detection + migrate, housekeeping audit, gate note audit, dispatch prompt audit
+
 ## v0.7.0
 
 Structural enforcement for Invariant 8 — mechanism execution must be structurally anchored.
