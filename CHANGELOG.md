@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.7.0
+
+Structural enforcement for Invariant 8 — mechanism execution must be structurally anchored.
+
+### Cycle 10: Specification-Execution Gap (WP-A through WP-D)
+
+- **Per-Phase Manifest (NEW)** — YAML manifest at `hooks/manifests/tier1-phase-manifest.yaml` declares required Tier 1 artifacts per phase with canonical paths, size floors, required headers/fields, and audited document references; consumed by the Stop hook for verification; format version 1 with `{cycle}` and `{phase}` token substitution (ADR-063)
+- **Compound Check hooks (NEW)** — two hooks implementing the Harness Layer: PostToolUse hook logs every Tier 1 subagent dispatch to `docs/housekeeping/dispatch-log.jsonl` with mechanism, path, and timestamp; Stop hook cross-references dispatch log against manifest to catch State B (missing artifact), State C (fabricated audit), and subagent failure; four distinct failure-mode reasons in block messages (ADR-064)
+- **Advisory/enforcement mode split** — Stop hook detects `docs/housekeeping/.migration-version` marker; pre-migration corpora run in advisory mode (non-blocking stderr notice, once per session); migrated corpora run enforcement mode with compound check blocking; Fails-Safe-to-Allow with GitHub issue template surfacing on hook-script errors (ADR-064)
+- **Revision-aware re-audit reminder** — Stop hook compares audited document mtime against dispatch log timestamps; fires non-blocking model-visible reminder when documents modified after last audit dispatch; substantiality judgment remains human (ADR-064)
+- **Per-phase susceptibility snapshot dispatch** — all 8 phase skills gain a "Phase Boundary: Susceptibility Snapshot Dispatch" subsection at the bottom-third position with phase-specific briefs grounded in Cycle 10 findings; replaces orchestrator-centralized dispatch instruction; the primary fix for the 0% historical coverage gap (ADR-065)
+- **Canonical `Output path:` lines** — all Tier 1 dispatch prompts in research, decide, and synthesize skills updated with regex-parseable `Output path:` lines; the skill-hook contract enabling PostToolUse extraction (ADR-065)
+- **Gate reflection note protocol (NEW)** — AID cycle at phase boundaries graduated from conversational to artifact-producing; gate reflection note written to `docs/housekeeping/gates/{cycle}-{phase}-gate.md` with required structure (belief-mapping question, user response, pedagogical move, commitment gating outputs); AID Interpret privacy preserved across media; 6 gated phases (play/synthesize exempt per ADR-016/038); manifest entries enforce note existence (ADR-066)
+- **Compound defense documented** — three components at phase boundaries covering non-overlapping failure modes: manifest check (structural floor), susceptibility snapshot (content ceiling), belief-mapping (pre-artifact zone); count-extensible pattern; reframe-derailed gate limitation named as load-bearing (ADR-066)
+- **Three-Tier Enforcement Classification** — methodology-level taxonomy with four-step decision procedure: Skill-Structure Layer (step-anchorable) → Harness Layer (hook-verifiable) → User-Tooling Layer (artifact-producible) → step 4 (cannot be Tier 1); not a priority hierarchy; mechanisms may use multiple substrates (ADR-067)
+- **Grounding Reframe Extension** — protocol now fires on two triggers: unassessable sycophancy risk (ADR-059 original) and significant snapshot finding with in-cycle course-correction implications; three significance properties (specificity, actionability, in-cycle applicability); routing between feed-forward and Reframe (ADR-068)
+- **Methodology Scope-of-Claim** — positive scope (competent first-order analysis, Tier 1 structural resistance, conversational mechanisms, compound defense, provenance via architectural drivers) and negative scope (agent does not independently generate second-order critique; "independent" is load-bearing; guarantee rests on mechanisms firing); advisory-mode enforcement-conditional noted (ADR-069)
+- **Centered-vs-Infrastructure framing** — centered artifacts (essays, ADRs, system-design) vs. infrastructure artifacts (audit reports, dispatch log, cycle-status, gate notes); `docs/housekeeping/` groups infrastructure; corpus-visible, not hidden (ADR-064)
+- **8 phase-specific snapshot briefs** in system design Appendix A, each grounded in concrete Cycle 10 findings
+- **8 new ADRs** (063-070), **~45 new scenarios** (2341-2739), **Essay 014** (Specification-Execution Gap), **Invariant 8** added at MODEL, **domain model Amendment 17**
+
+### Cycle 10 research artifacts
+- **Essay 014** — "The Specification-Execution Gap in Prompt-Based Methodology" (citation-audited, argument-audited, framing-audited)
+- **4 spike reports** — hook feasibility (S1), acceptance criteria with reference Stop hook (S2), corpus base-rate audit (S3), text hardening negative result (S4)
+- **2 literature reviews** — instruction-following degradation, telemetry acceptance criteria
+- **5 susceptibility snapshots** — one per phase boundary through ARCHITECT, all ceremonial under Invariant 8's own diagnostic
+
 ## v0.6.3
 
 - **AID Interpret step is now strictly private** — the AID cycle was designed with Attend and Interpret as private calibration steps (the agent reads engagement signals, forms a hypothesis, adjusts its response) but skill text was narrating interpretations back to the user ("You asked about X", "You engaged with Y") as preambles to probes. This is content-level sycophancy dressed as observation — the user already knows how engaged they've been, so telling them is praise-as-observation, functionally identical to "Great question!" It also corrupts the AID architecture by leaking private calibration into the user-facing conversation, creating conformity pressure. Updated orchestrator AID protocol and all six phase skill gate sections. Probes and challenges now reference specific artifact content directly ("The essay's conclusion on X rests on Y", "ADR-NNN trades A against B") rather than characterizing the user's prior engagement. Explicit anti-pattern note added to the orchestrator's Anti-sycophancy step and Decide step preamble.
