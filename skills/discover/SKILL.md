@@ -297,7 +297,7 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the discover → model boundary. Product discovery crystallizes user-facing language (stakeholder maps, value tensions, assumption inversions, product vocabulary) into an artifact that model and decide both inherit. The canonical failure mode at this boundary was documented in Cycle 10's own discover phase (susceptibility-snapshot-014-discover.md Finding 1): research-phase framings propagating into product vocabulary and value tensions without attribution. Evaluate the attached AID signals for two specific patterns: (a) research-essay framings inherited into product-facing language without being tested against user voice, and (b) value tensions that surfaced as spectra but collapsed into binary framings without the alternatives being examined. The product discovery artifact entering model phase should read in user voice, not methodology voice.
 >
-> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-discover.md
+> Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-discover.md
 
 ---
 

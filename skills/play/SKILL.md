@@ -157,7 +157,7 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the play → synthesize boundary (or play → [next cycle] if synthesize is deferred). Play produces field notes from stakeholder inhabitation and gamemaster-facilitated exploration. The specific risk at this boundary is that field notes flatten from observation into advocacy — discoveries that "confirm the design" crowd out discoveries that challenge it. Two signal patterns matter most for this phase: (a) selection bias in the six-category classification (are categories being applied asymmetrically to suppress challenging observations?), and (b) gamemaster/player role blur under task load, where the same agent proposes inversions AND inhabits — the inversions may be selected to serve the inhabitation rather than challenge it. Evaluate the attached AID signals for framing adoption in field note language (user voice vs. methodology voice) and for declining alternative engagement on discoveries that would challenge the design. The field notes entering synthesize should read as observation, not endorsement.
 >
-> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-play.md
+> Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-play.md
 
 ---
 

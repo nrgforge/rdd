@@ -86,7 +86,7 @@ Present ADRs to the user for approval before proceeding.
 After ADRs are written, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The new ADR file paths and any prior ADRs they depend on (primary document)
 - The essay file path (source material — the evidence base ADR decisions rest on)
-Output path: docs/essays/audits/argument-audit-decide-{cycle}.md
+Output path: docs/housekeeping/audits/argument-audit-decide-{cycle}.md
 
 The agent runs on Sonnet in an isolated context and produces a **two-section** audit report: argument audit (logical consistency of ADR chains) and framing audit (alternative framings the evidence supported but the ADRs didn't choose).
 
@@ -280,7 +280,7 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the decide → architect boundary. Decide phase produces ADRs, behavior scenarios, and interaction specifications. The primary risk is that ADR framings originate from agent synthesis during drafting rather than from architectural drivers (research findings, domain model concepts, prior ADRs). Cycle 10's ADRs 063-070 introduced the provenance check subsection pattern specifically to make drafting-time synthesis visible as labeled content — so the absence of a provenance check from an ADR whose framings are not driver-derived is itself a signal. Evaluate the attached AID signals for rebuttal-elicitation failures on rejected alternatives, and for cross-ADR compositions where one ADR's framing was adopted by another within the same cycle without being independently tested. Check whether each ADR's core framing traces to its driver chain or to drafting-time composition.
 >
-> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-decide.md
+> Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-decide.md
 
 ---
 

@@ -16,7 +16,14 @@ set -uo pipefail
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-.}"
 MANIFEST_PATH="${PLUGIN_ROOT}/hooks/manifests/tier1-phase-manifest.yaml"
 REPO_ROOT="$(pwd)"
-CYCLE_STATUS="${REPO_ROOT}/docs/cycle-status.md"
+CYCLE_STATUS_POST="${REPO_ROOT}/docs/housekeeping/cycle-status.md"
+CYCLE_STATUS_PRE="${REPO_ROOT}/docs/cycle-status.md"
+# Post-migration path takes precedence
+if [[ -f "$CYCLE_STATUS_POST" ]]; then
+    CYCLE_STATUS="$CYCLE_STATUS_POST"
+else
+    CYCLE_STATUS="$CYCLE_STATUS_PRE"
+fi
 DISPATCH_LOG="${REPO_ROOT}/docs/housekeeping/dispatch-log.jsonl"
 MIGRATION_MARKER="${REPO_ROOT}/docs/housekeeping/.migration-version"
 ADVISORY_MARKER="/tmp/rdd-advisory-notice-$$"

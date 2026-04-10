@@ -476,7 +476,7 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the architect → build boundary. Architect phase composes modules from the domain model, ADRs, and scenarios. The specific risk is that module boundaries and responsibility allocations encode unexamined assumptions — particularly the assumption that a boundary serves the developer's mental model when it should serve the user's. The Inversion Principle check at architecture is the designed counterweight but can be performed pro forma. Evaluate the attached AID signals for solution-space narrowing on boundary choices and framing adoption from DECIDE-phase ADRs (the system design inherits ADR framings — was the inheritance examined or automatic?). Check whether the proposed module boundaries would survive a product-facing reading: do they track user mental models or only developer convenience?
 >
-> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-architect.md
+> Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-architect.md
 
 ---
 

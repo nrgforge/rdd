@@ -35,7 +35,7 @@ $IS_TIER1 || exit 0
 
 # --- Extract Output path from prompt -----------------------------------------
 # The canonical prompt skeleton (ADR-065) includes a line:
-#   Output path: docs/essays/audits/some-artifact.md
+#   Output path: docs/housekeeping/audits/some-artifact.md
 # Extract it via regex. If absent, log with expected_path: null.
 PROMPT="$(printf '%s' "$INPUT" | jq -r '.tool_input.prompt // empty' 2>/dev/null)"
 EXPECTED_PATH="$(printf '%s' "$PROMPT" | grep -oE '^Output path: .+$' | head -1 | sed 's/^Output path: //' || true)"

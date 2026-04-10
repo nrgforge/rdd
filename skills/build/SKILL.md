@@ -607,7 +607,7 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the build phase boundary (typically build → play or build → [cycle end]). Build is the most empirically grounded phase per the sycophancy gradient — test execution grounds commitments in observable outcomes, which resists framing adoption more structurally than earlier phases. The residual risks are in the spaces tests do not reach: stewardship-checkpoint commitments that adopt rejected-alternative framings without surfacing them, debug hypotheses that absorb a "this must be because X" framing without belief-mapping X, and mode-shift transitions (debug/refactor/review) where the user's mental model may drift without being tested. Evaluate the attached AID signals with build's empirical grounding as the baseline — concerning signals here are patterns the tests did not catch. Pay particular attention to any work package commitment that closed without examining an alternative the scenarios did not specify.
 >
-> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-build.md
+> Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-build.md
 
 ---
 

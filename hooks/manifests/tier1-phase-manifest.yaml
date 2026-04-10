@@ -34,7 +34,7 @@ phases:
       at the research-to-discover boundary.
     required_mechanisms:
       - mechanism: research-methods-reviewer
-        path_template: docs/essays/audits/research-design-review-{cycle}.md
+        path_template: docs/housekeeping/audits/research-design-review-{cycle}.md
         min_bytes: 2000
         required_headers:
           - "# Research Design Review"
@@ -42,7 +42,7 @@ phases:
         required_fields:
           - "Belief-mapping"
       - mechanism: citation-auditor
-        path_template: docs/essays/audits/citation-audit-{cycle}.md
+        path_template: docs/housekeeping/audits/citation-audit-{cycle}.md
         audited_documents:
           - "docs/essays/{cycle}-*.md"
         min_bytes: 1500
@@ -54,7 +54,7 @@ phases:
           - "Verified:"
           - "Audited document:"
       - mechanism: argument-auditor
-        path_template: docs/essays/audits/argument-audit-{cycle}.md
+        path_template: docs/housekeeping/audits/argument-audit-{cycle}.md
         audited_documents:
           - "docs/essays/{cycle}-*.md"
         min_bytes: 1500
@@ -66,7 +66,7 @@ phases:
           - "Issues found:"
           - "Audited document:"
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-research.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -95,7 +95,7 @@ phases:
       discover-to-model boundary must exist.
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-discover.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-discover.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -124,7 +124,7 @@ phases:
       model-to-decide boundary must exist.
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-model.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-model.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -154,7 +154,7 @@ phases:
       snapshot for the decide-to-architect boundary must also exist.
     required_mechanisms:
       - mechanism: argument-auditor
-        path_template: docs/essays/audits/argument-audit-decide-{cycle}.md
+        path_template: docs/housekeeping/audits/argument-audit-decide-{cycle}.md
         audited_documents:
           - "docs/decisions/adr-*.md"
         min_bytes: 1500
@@ -165,7 +165,7 @@ phases:
           - "Argument chains mapped:"
           - "Issues found:"
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-decide.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-decide.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -194,7 +194,7 @@ phases:
       architect-to-build boundary must exist.
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-architect.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-architect.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -223,7 +223,7 @@ phases:
       build boundary must exist.
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-build.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-build.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -252,7 +252,7 @@ phases:
       play boundary must exist.
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-play.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-play.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -268,7 +268,7 @@ phases:
       the synthesize boundary must also exist.
     required_mechanisms:
       - mechanism: citation-auditor
-        path_template: docs/essays/audits/citation-audit-synthesize-{cycle}.md
+        path_template: docs/housekeeping/audits/citation-audit-synthesize-{cycle}.md
         audited_documents:
           - "docs/synthesis/{cycle}-*-outline.md"
         min_bytes: 1500
@@ -280,7 +280,7 @@ phases:
           - "Verified:"
           - "Audited document:"
       - mechanism: argument-auditor
-        path_template: docs/essays/audits/argument-audit-synthesize-{cycle}.md
+        path_template: docs/housekeeping/audits/argument-audit-synthesize-{cycle}.md
         audited_documents:
           - "docs/synthesis/{cycle}-*-outline.md"
         min_bytes: 1500
@@ -291,7 +291,7 @@ phases:
           - "Argument chains mapped:"
           - "Issues found:"
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-synthesize.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-synthesize.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"

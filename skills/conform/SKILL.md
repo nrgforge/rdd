@@ -18,13 +18,17 @@ $ARGUMENTS
 
 ## OPERATIONS
 
-This skill provides three operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
+This skill provides seven operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
 
 | Operation | When to use |
 |-----------|-------------|
 | **Audit** | Check whether the artifact corpus matches current skill expectations |
 | **Remediation** | Generate missing artifacts or sections identified by the audit |
 | **Drift Detection** | Check whether artifacts still match the implementation |
+| **Migrate** | Move infrastructure artifacts to `docs/housekeeping/` and enable enforcement mode |
+| **Housekeeping Audit** | Verify housekeeping directory structure and detect pre-migration state |
+| **Gate Note Audit** | Verify gate reflection notes match the ADR-066 template |
+| **Dispatch Prompt Audit** | Verify skill file dispatch prompts follow the ADR-065 skeleton |
 
 If the user's request is ambiguous, ask which operation they need. If they describe a situation ("I just updated the RDD skills"), map it to the appropriate operation.
 
@@ -211,10 +215,158 @@ For each drift finding, the user chooses:
 
 ---
 
+## Operation 4: Migrate (ADR-070)
+
+### Purpose
+
+Move infrastructure artifacts from pre-migration locations to `docs/housekeeping/`, update path references across the corpus, and write the migration version marker that transitions the Stop hook from advisory to enforcement mode.
+
+> **This is a one-shot, opt-in operation.** The methodology works without migration (advisory mode). Migration enables the compound check's enforcement mode. Run this when ready to enable harness-layer verification.
+
+### Prerequisites
+
+- All skill file changes from v0.7.0 must be installed (the plugin update delivers these)
+- No uncommitted modifications to files under `skills/` (the migration refuses to run if `git status` shows unstaged changes)
+- Recommended timing: at a phase boundary or between cycles, not mid-phase
+
+### Process
+
+#### Step 1: Idempotency Check
+
+Check whether `docs/housekeeping/.migration-version` exists and matches the current plugin version.
+- If present and matching → report "already migrated" and stop (no-op)
+- If absent or mismatched → proceed
+
+#### Step 2: Uncommitted Changes Check
+
+Run `git status` and check for uncommitted modifications to files under `skills/`.
+- If unstaged changes found → refuse to run, report the files, direct the user to commit or stash
+- If clean → proceed
+
+#### Step 3: Create Housekeeping Directory Structure
+
+Create the following directories if they do not exist:
+- `docs/housekeeping/`
+- `docs/housekeeping/audits/`
+- `docs/housekeeping/gates/`
+
+#### Step 4: Move Audit Reports
+
+Move all files and subdirectories from `docs/essays/audits/` to `docs/housekeeping/audits/`, preserving structure. If `docs/essays/audits/` is empty after the move, remove it.
+
+**Do not touch:**
+- `docs/cycle-archive/` — archived cycles are frozen
+- `docs/essays/reflections/` — centered research prose
+- `docs/essays/research-logs/` — centered research prose
+
+#### Step 5: Move Cycle Status
+
+Move `docs/cycle-status.md` to `docs/housekeeping/cycle-status.md`.
+
+#### Step 6: Reference Updates
+
+Perform mechanical path substitutions across the corpus. For each affected file, replace:
+- `docs/essays/audits/` → `docs/housekeeping/audits/`
+- `./docs/essays/audits/` → `./docs/housekeeping/audits/`
+- `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`
+- `./docs/cycle-status.md` → `./docs/housekeeping/cycle-status.md`
+
+**Files to update:**
+- `docs/decisions/*.md` (prior ADRs)
+- `docs/essays/014-*.md` (Cycle 10 essay — adjust pattern for the active cycle's essay)
+- `docs/essays/research-logs/*.md` (spike reports)
+- `docs/domain-model.md` (Amendment Log references)
+- `docs/ORIENTATION.md` (Section 4 artifact map)
+
+**Do not update:**
+- `docs/cycle-archive/**` — archived cycles retain their original paths
+- Skill files — already updated to post-migration paths in the plugin release
+
+#### Step 7: Write Version Marker
+
+Write the current plugin version string to `docs/housekeeping/.migration-version` (single line, no metadata). This transitions the Stop hook from advisory to enforcement mode on the next session.
+
+#### Step 8: Write Rollback Manifest
+
+Write `docs/housekeeping/.migration-rollback.json` listing every file moved and every reference updated. This is for forensics — automated reversal is not supported; use `git checkout` to revert.
+
+#### Step 9: Append .gitignore
+
+If `docs/housekeeping/dispatch-log.jsonl` is not already in `.gitignore`, append it. (Note: this line may have already been removed per user preference for committed dispatch logs — check before appending.)
+
+#### Step 10: Summary Report
+
+Present a summary listing:
+- Files moved (with from → to paths)
+- Files whose references were updated (with count of substitutions per file)
+- Version marker content
+- Rollback manifest location
+- Next step: "Review the diff with `git diff`, then commit when satisfied."
+
+---
+
+## Operation 5: Housekeeping Directory Organization Audit (ADR-070)
+
+### Purpose
+
+Verify the housekeeping directory structure matches expectations. Detects pre-migration state, incomplete migrations, and orphaned files.
+
+### Checks
+
+- `docs/housekeeping/` exists as a directory
+- `docs/housekeeping/audits/` exists and contains audit files (if any audits exist in the project)
+- `docs/housekeeping/gates/` exists
+- `docs/housekeeping/cycle-status.md` exists (if a cycle is active)
+- `docs/housekeeping/.migration-version` exists and matches the current plugin version
+- No orphaned audit files remain at `docs/essays/audits/` (pre-migration remnant)
+- No orphaned `docs/cycle-status.md` remains at the top level (pre-migration remnant)
+
+Findings are reported; the user decides whether to run `/rdd-conform migrate` to resolve them. **Do not auto-correct.**
+
+---
+
+## Operation 6: Gate Reflection Note Template Alignment Audit (ADR-066/070)
+
+### Purpose
+
+Verify gate reflection notes at `docs/housekeeping/gates/` match the canonical template from ADR-066.
+
+### Checks
+
+For each file in `docs/housekeeping/gates/`:
+- File matches canonical naming pattern (`{cycle}-{phase}-gate.md`)
+- Required headers present: `# Gate Reflection:`, `## Belief-mapping question composed for this gate`, `## User's response`, `## Pedagogical move selected`, `## Commitment gating outputs`
+- Required fields present: `**Phase boundary:**`, `**Settled premises`, `**Open questions`, `**Specific commitments`
+- Minimum size floor (800 bytes)
+- **Does not audit content substance** — template alignment is structural, not semantic. The reframe-derailed gate limitation (ADR-066) applies.
+
+Findings are reported with file:line references and suggested remediations. **Do not auto-correct.**
+
+---
+
+## Operation 7: Dispatch Prompt Format Audit (ADR-065/070)
+
+### Purpose
+
+Verify skill file dispatch prompts follow the canonical skeleton from ADR-065.
+
+### Checks
+
+For each skill file (`skills/**/SKILL.md`):
+- Every Tier 1 dispatch instruction contains the canonical prompt skeleton: `Dispatch the <subagent-type> subagent with the following brief:` + brief content + `Output path: <canonical path>`
+- The `Output path:` line uses post-migration paths (`docs/housekeeping/audits/` or `docs/housekeeping/gates/`)
+- The dispatch instruction is placed at a structurally privileged position (top third or bottom third of the skill file) — flag any middle-third placements per Spike S4's position-effect finding
+- **Does not audit brief content** — audit is format-level, not content-level
+
+Findings are reported with file:line references and suggested remediations. **Do not auto-correct.**
+
+---
+
 ## IMPORTANT PRINCIPLES
 
-- **Pragmatic, not epistemic:** All four operations are pragmatic actions. The agent produces reports and generates content; the user decides and validates. No epistemic gate.
+- **Pragmatic, not epistemic:** All operations are pragmatic actions. The agent produces reports and generates content; the user decides and validates. No epistemic gate.
 - **Structural over format:** Structural gaps matter because they block work. Format gaps are nice-to-have. Never treat a format gap as urgent.
 - **Derive, don't invent:** Remediation generates content from existing artifacts and code. If there isn't enough source material, say so — don't fill templates with placeholder text.
 - **Drift detection is best-effort:** Semantic comparison between documentation and code is inherently imperfect. Be transparent about what you couldn't assess.
 - **User drives every decision:** Present findings and recommendations. Never auto-fix or auto-remediate.
+- **Migration is opt-in:** The methodology works without migration (advisory mode). Never pressure the user to migrate.
