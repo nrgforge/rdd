@@ -199,7 +199,48 @@ Between every phase, you MUST run the Attend-Interpret-Decide (AID) cycle. No ga
 10. **Assertion-aware observation** — during the gate conversation (and during the phase itself at artifact-production moments), notice when the user's input embeds a design conclusion rather than posing an open question. Detect this semantically — not by pattern-matching confidence markers, but by assessing whether the statement presupposes a conclusion that should be examined. When detected at an artifact-production moment, deploy open-question reframing: "What's the open question behind [the specific assertion]?" The reframing is composed from the assertion's specific content — not from a template. Do NOT flag harmless implementation confidence ("this test should pass once we fix the null check") — only embedded conclusions that would crystallize into artifacts. This is a Tier 2 mechanism — the agent exercises judgment about when to intervene. Accepted limitation: assertion-aware observation operates inside the conversation without Architectural Isolation. The structural backstops are the Susceptibility Snapshot (isolated evaluation) and the Framing Audit (isolated content analysis).
 11. **Commitment gating** — before advancing to the next phase, ask the user to distinguish settled premises from open questions: "Which premises are you building on, and which remain open?" Record the response in the cycle status for downstream feed-forward.
 
-**Susceptibility Snapshot Dispatch.** After the gate conversation completes and before the next phase begins, dispatch the **susceptibility-snapshot-evaluator** agent with the susceptibility signals recorded during the Attend step. The agent evaluates the signals in an isolated context and produces a Susceptibility Snapshot artifact. This is a Tier 1 mechanism — it fires at every phase boundary regardless of context. If the snapshot recommends a Grounding Reframe, present it to the user before entering the next phase: name what is uncertain, offer concrete grounding actions (run a spike, write a test, consult a domain expert, belief-map the specific assumption), and make visible what the user would be building on without grounding. The user decides whether to pursue grounding or proceed — but the decision is visible, not silent.
+**Susceptibility Snapshot Dispatch.** Each phase skill contains a "Phase Boundary: Susceptibility Snapshot Dispatch" subsection at the phase-end position with a phase-specific brief and canonical output path. The dispatch is step-anchored in the skill text — it fires as part of the phase-end workflow, not as a contextual judgment the orchestrator must remember. This is a Tier 1 mechanism (ADR-065, Invariant 8). If the snapshot recommends a Grounding Reframe, present it to the user before entering the next phase: name what is uncertain, offer concrete grounding actions (run a spike, write a test, consult a domain expert, belief-map the specific assumption), and make visible what the user would be building on without grounding. The user decides whether to pursue grounding or proceed — but the decision is visible, not silent.
+
+**Gate Reflection Note (ADR-066).** After the gate conversation completes and before the phase is declared complete, produce a gate reflection note at `docs/housekeeping/gates/{cycle}-{phase}-gate.md`. Create the `docs/housekeeping/gates/` directory if it does not exist. This is a Tier 1 mechanism — the manifest check verifies the note exists at phase-end.
+
+The note captures evidence of gate activity without narrating engagement back to the user. Required structure:
+
+```markdown
+# Gate Reflection: {cycle-title} {phase-from} → {phase-to}
+
+**Date:** YYYY-MM-DD
+**Phase boundary:** {phase-from} → {phase-to}
+**Cycle:** {cycle-title}
+
+## Belief-mapping question composed for this gate
+
+<The specific question composed for this phase boundary.>
+
+## User's response
+
+<The user's actual response, in full.>
+
+## Pedagogical move selected
+
+<Challenge, Probe, Teach, Clarify, or Re-anchor. Name the move.
+Do NOT include the engagement interpretation that drove selection —
+the Interpret step is private, across all media including files.>
+
+## Commitment gating outputs
+
+**Settled premises (the user is building on these going into {phase-to}):**
+- ...
+
+**Open questions (the user is holding these open going into {phase-to}):**
+- ...
+
+**Specific commitments carried forward to {phase-to}:**
+- ...
+```
+
+**Reframe-derailed gate limitation.** A well-formed gate reflection note can still encode framings the user does not fully own — if the agent adopted a significant user reframe at face value during the gate conversation, the note captures the exchange faithfully but the epistemic thread may be lost. The manifest check sees a well-formed artifact; neither it nor the note can verify epistemic substance. This is a load-bearing limitation of the User-Tooling Layer (ADR-066). The Susceptibility Snapshot at the same phase boundary is the complementary defense — together with the manifest check and belief-mapping, they form the **compound defense** at phase boundaries (three components covering non-overlapping failure modes: structural floor, content ceiling, pre-artifact zone).
+
+**Play and synthesize are exempt** from the gate reflection note requirement. Both subsume their gates — the activity itself is the epistemic act (ADR-016, ADR-038). The manifest does not include `aid-cycle-gate-reflection` entries for those phases.
 
 The time spent at each gate must be productive, not merely brief (Invariant 4, amended). Productive teaching that resolves a comprehension gap is the methodology working. Formulaic exchanges that build no understanding are waste. Earned fatigue from deep engagement is a signal to take a break, not a signal that the methodology is too heavy.
 
@@ -251,7 +292,12 @@ Sycophancy operates through content selection — which truths get surfaced, not
 
 ### Grounding Reframe
 
-When sycophancy risk is unassessable — no belief-mapping test, no empirical contact available — the agent does not disclaim and proceed. Instead:
+The Grounding Reframe fires on two triggers (ADR-059, extended by ADR-068):
+
+1. **Unassessable sycophancy risk** — no belief-mapping test, no empirical contact available. The agent cannot determine whether user confidence is earned or reinforced.
+2. **Significant susceptibility snapshot finding with in-cycle course-correction implications** — the snapshot returns a finding that is (a) specific (names concrete artifacts, decisions, or commitments), (b) actionable (a concrete grounding action can be composed), and (c) in-cycle applicable (the action can be applied at the current phase boundary, not only downstream).
+
+In either case, the agent does not disclaim and proceed. Instead:
 
 1. **Name** what is uncertain: "The ground is soft here because [specific reason]."
 2. **Offer** concrete grounding actions: run a spike, write a test, consult a domain expert, belief-map the specific assumption.
@@ -259,9 +305,61 @@ When sycophancy risk is unassessable — no belief-mapping test, no empirical co
 
 The user decides whether to pursue grounding or proceed. If they proceed without grounding, the decision is recorded visibly and noted in the Susceptibility Snapshot at the next phase boundary. If the user pursues the suggested grounding action and it produces evidence, note the evidence explicitly so the next Susceptibility Snapshot can record the assumption as grounded — the Earned Confidence for that specific assumption becomes assessable.
 
+**Routing between feed-forward and Grounding Reframe:** Snapshot findings meeting all three significance properties trigger the Grounding Reframe. Findings that are general rather than specific, advisory rather than actionable, or applicable only downstream feed forward in the cycle status without triggering the protocol.
+
 Each Grounding Reframe is composed for the specific situation — not a template recitation.
 
 **Standalone invocation.** When a phase skill is invoked standalone (not via the orchestrator), the skill itself handles Susceptibility Snapshot dispatch and Grounding Reframe presentation at its gate. Tier 2 mechanisms operate with reduced calibration data (no prior gate signals to compare). If risk is unassessable, the Grounding Reframe names the limitation and offers grounding actions.
+
+### Three-Tier Enforcement Classification (ADR-067, Invariant 8)
+
+Any unconditional structural mechanism must be anchored to one of three substrates. The classification is the methodology-level taxonomy for operationalizing Invariant 8.
+
+| Substrate | Mechanism type | Enforcement technique | Example |
+|-----------|---------------|----------------------|---------|
+| **Skill-Structure Layer** | Concrete workflow step in a named skill | Dispatch instruction at structurally privileged position with canonical `Output path:` line | Citation auditor at "after the essay is written" |
+| **Harness Layer** | Phase-boundary verification, silent-fallback detection | PostToolUse dispatch log + Stop hook manifest compound check | Revision-aware re-audit reminder; compound check against fabrication |
+| **User-Tooling Layer** | Conversational mechanism with a natural artifact moment | Graduate to artifact-producing form at canonical path; verify via manifest | AID gate reflection note |
+
+**Unified principle (Essay 014 §7):** Anchor the mechanism to a concrete, mechanically-unavoidable step with observable output. The technique differs; the principle is invariant.
+
+**Not a priority hierarchy.** Each substrate is primary in its domain. A mechanism fits the substrate whose technique matches its type. Mechanisms may legitimately use more than one substrate simultaneously (e.g., the susceptibility snapshot is Skill-Structure Layer primary + Harness Layer defense-in-depth).
+
+**Four-step decision procedure for classifying new mechanism proposals:**
+
+1. Does the mechanism have a concrete, mechanically-unavoidable workflow step? → **Skill-Structure Layer** (ADR-065).
+2. Is the trigger a tool-call or phase-end event a hook can observe? → **Harness Layer** (ADR-063/064).
+3. Is the mechanism conversational with a natural artifact moment? → **User-Tooling Layer** (ADR-066).
+4. None of the above → **cannot be specified as unconditional.** Specify as Tier 2 best-effort with honest transparency about its non-structural character.
+
+### Centered-vs-Infrastructure Framing (ADR-064)
+
+The RDD corpus distinguishes two categories of artifact:
+
+- **Centered artifacts** — designed to be read, shared, or referenced by users: essays, system-design, product-discovery, roadmap, ORIENTATION, ADRs, domain-model. The public face of the methodology's work.
+- **Infrastructure artifacts** — underpin framework operation without being designed for direct user reading: audit reports (surfaced by the agent at gates), cycle-status (parsed by hooks), dispatch log (machine-only), gate reflection notes. Users can read these if they choose, but the workflow does not center them.
+
+The distinction is about what the methodology *centers*, not what is technically readable. `docs/housekeeping/` groups infrastructure artifacts; the name signals "come look under the hood" rather than "stay out."
+
+### Methodology Scope-of-Claim (ADR-069)
+
+**The methodology explicitly does not guarantee independent second-order critique by the agent alone.**
+
+**Positive scope (what the methodology provides):**
+
+1. Competent first-order analysis — essays, ADRs, scenarios, domain models, system designs that are substantively correct and internally consistent.
+2. Structural resistance to sycophancy via Tier 1 mechanisms (ADR-058) — specialist subagent dispatches in isolated contexts provide second-order critique the in-context agent cannot generate independently.
+3. Conversational mechanisms inviting user second-order engagement — AID cycle, Question Toolkit, belief-mapping, assertion-aware observation, Grounding Reframe.
+4. Compound defense at phase boundaries — manifest check, susceptibility snapshot, belief-mapping covering non-overlapping failure modes.
+5. Provenance via architectural drivers as the primary attribution mechanism — provenance check subsections used selectively when content is not from the driver chain.
+
+**Negative scope (what it does not provide):**
+
+1. The agent does not independently generate second-order critique of its own output. Cycle 10 documents seven failure-mode instances across four phases.
+2. "Independent" is load-bearing — second-order critique appears when the user operates in second-order mode or when an isolated evaluator runs. The agent-in-conversation does not generate it alone.
+3. The methodology's guarantee rests on the mechanisms firing, not on the agent's independent judgment. If Tier 1 mechanisms fail to fire (the pattern Invariant 8 addresses), sycophancy resistance degrades to "competent first-order analysis" alone.
+
+**Advisory-mode enforcement-conditional.** The compound check's structural guarantee against sophisticated State C holds only in enforcement mode (post-migration corpora with `docs/housekeeping/.migration-version`). Pre-migration corpora operate with the Skill-Structure Layer fix but without harness-layer compound verification.
 
 ### Essay as Research Phase Checkpoint
 
@@ -415,7 +513,7 @@ Findings from earlier phases inform later ones:
 - `/rdd-synthesize` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
 - `/rdd-synthesize` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
 - The synthesis essay, when written by the user, serves as a **narrative context rollup** — the orchestrator should treat it as a primary context source when bootstrapping new sessions for the project. It answers "what was discovered, and why does it matter?" where structured artifacts answer "what was decided?"
-- At every phase boundary, the orchestrator dispatches the **susceptibility-snapshot-evaluator** agent with the AID cycle's recorded susceptibility signals — producing a Susceptibility Snapshot artifact for isolated assessment (Tier 1 unconditional, ADR-057). Snapshot findings are acted on via Grounding Reframe (ADR-059).
+- At every phase boundary, the phase skill's "Phase Boundary: Susceptibility Snapshot Dispatch" subsection fires the **susceptibility-snapshot-evaluator** with a phase-specific brief (ADR-065, Invariant 8). The dispatch is step-anchored in each phase skill, not orchestrator-centralized. Snapshot findings are acted on via Grounding Reframe (ADR-059).
 - All argument audit dispatches now include framing audit (ADR-061) — the agent reads source material alongside the artifact and produces a two-section output. This applies to `/rdd-research`, `/rdd-decide`, and `/rdd-synthesize` dispatches.
 
 ### Artifacts Summary

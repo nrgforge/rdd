@@ -1,0 +1,301 @@
+# Tier 1 Phase Manifest — which artifacts must exist at each phase boundary
+# Consumed by: hooks/scripts/tier1-phase-manifest-check.sh (Stop hook)
+# Logged by:   hooks/scripts/tier1-verify-dispatch.sh (PostToolUse hook)
+# Format version: 1
+#
+# Path templates use literal tokens {cycle} for the current cycle/essay
+# number (zero-padded three digits) and {phase} for the current phase name.
+# The hook substitutes both at check time.
+#
+# min_bytes is a size floor. It catches State B (empty) and trivial State C
+# (brief fabricated stub). It is NOT a reliable discriminator of a well-faked
+# in-context fabrication — see ADR-064 compound check for that defense.
+#
+# audited_documents lists the source documents each mechanism audits. The
+# Stop hook uses this for revision-aware re-audit reminders (mtime comparison).
+# Glob patterns with {cycle} are expanded at check time.
+#
+# Calibration note: required_headers and required_fields are derived from each
+# agent's output template (agents/*.md). If an agent's output format changes,
+# update the corresponding entries here. The rdd-conform dispatch prompt format
+# audit can detect drift between manifest assertions and actual agent output.
+
+format_version: 1
+
+phases:
+
+  research:
+    description: >
+      Before a research phase may complete, the current cycle must have:
+      a research design review (from research-methods-reviewer, dispatched
+      BEFORE the first research loop), a citation audit, an argument audit
+      (the latter two dispatched after the essay is written and after any
+      revision in response to audit findings), and a susceptibility snapshot
+      at the research-to-discover boundary.
+    required_mechanisms:
+      - mechanism: research-methods-reviewer
+        path_template: docs/essays/audits/research-design-review-{cycle}.md
+        min_bytes: 2000
+        required_headers:
+          - "# Research Design Review"
+          - "## Per-question audit"
+        required_fields:
+          - "Belief-mapping"
+      - mechanism: citation-auditor
+        path_template: docs/essays/audits/citation-audit-{cycle}.md
+        audited_documents:
+          - "docs/essays/{cycle}-*.md"
+        min_bytes: 1500
+        required_headers:
+          - "# Citation Audit Report"
+          - "## Summary"
+        required_fields:
+          - "Total references checked:"
+          - "Verified:"
+          - "Audited document:"
+      - mechanism: argument-auditor
+        path_template: docs/essays/audits/argument-audit-{cycle}.md
+        audited_documents:
+          - "docs/essays/{cycle}-*.md"
+        min_bytes: 1500
+        required_headers:
+          - "# Argument Audit Report"
+          - "## Summary"
+        required_fields:
+          - "Argument chains mapped:"
+          - "Issues found:"
+          - "Audited document:"
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-research.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+      - mechanism: aid-cycle-gate-reflection
+        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        min_bytes: 800
+        required_headers:
+          - "# Gate Reflection:"
+          - "## Belief-mapping question composed for this gate"
+          - "## User's response"
+          - "## Pedagogical move selected"
+          - "## Commitment gating outputs"
+        required_fields:
+          - "**Phase boundary:**"
+          - "**Settled premises"
+          - "**Open questions"
+          - "**Specific commitments"
+
+  discover:
+    description: >
+      Before discover may complete, a susceptibility snapshot for the
+      discover-to-model boundary must exist.
+    required_mechanisms:
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-discover.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+      - mechanism: aid-cycle-gate-reflection
+        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        min_bytes: 800
+        required_headers:
+          - "# Gate Reflection:"
+          - "## Belief-mapping question composed for this gate"
+          - "## User's response"
+          - "## Pedagogical move selected"
+          - "## Commitment gating outputs"
+        required_fields:
+          - "**Phase boundary:**"
+          - "**Settled premises"
+          - "**Open questions"
+          - "**Specific commitments"
+
+  model:
+    description: >
+      Before model may complete, a susceptibility snapshot for the
+      model-to-decide boundary must exist.
+    required_mechanisms:
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-model.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+      - mechanism: aid-cycle-gate-reflection
+        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        min_bytes: 800
+        required_headers:
+          - "# Gate Reflection:"
+          - "## Belief-mapping question composed for this gate"
+          - "## User's response"
+          - "## Pedagogical move selected"
+          - "## Commitment gating outputs"
+        required_fields:
+          - "**Phase boundary:**"
+          - "**Settled premises"
+          - "**Open questions"
+          - "**Specific commitments"
+
+  decide:
+    description: >
+      Before decide may complete, the ADRs for this cycle must have been
+      argument-audited (and re-audited after any revision). A susceptibility
+      snapshot for the decide-to-architect boundary must also exist.
+    required_mechanisms:
+      - mechanism: argument-auditor
+        path_template: docs/essays/audits/argument-audit-decide-{cycle}.md
+        audited_documents:
+          - "docs/decisions/adr-*.md"
+        min_bytes: 1500
+        required_headers:
+          - "# Argument Audit Report"
+          - "## Summary"
+        required_fields:
+          - "Argument chains mapped:"
+          - "Issues found:"
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-decide.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+      - mechanism: aid-cycle-gate-reflection
+        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        min_bytes: 800
+        required_headers:
+          - "# Gate Reflection:"
+          - "## Belief-mapping question composed for this gate"
+          - "## User's response"
+          - "## Pedagogical move selected"
+          - "## Commitment gating outputs"
+        required_fields:
+          - "**Phase boundary:**"
+          - "**Settled premises"
+          - "**Open questions"
+          - "**Specific commitments"
+
+  architect:
+    description: >
+      Before architect may complete, a susceptibility snapshot for the
+      architect-to-build boundary must exist.
+    required_mechanisms:
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-architect.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+      - mechanism: aid-cycle-gate-reflection
+        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        min_bytes: 800
+        required_headers:
+          - "# Gate Reflection:"
+          - "## Belief-mapping question composed for this gate"
+          - "## User's response"
+          - "## Pedagogical move selected"
+          - "## Commitment gating outputs"
+        required_fields:
+          - "**Phase boundary:**"
+          - "**Settled premises"
+          - "**Open questions"
+          - "**Specific commitments"
+
+  build:
+    description: >
+      Before build may complete, a susceptibility snapshot for the
+      build boundary must exist.
+    required_mechanisms:
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-build.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+      - mechanism: aid-cycle-gate-reflection
+        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        min_bytes: 800
+        required_headers:
+          - "# Gate Reflection:"
+          - "## Belief-mapping question composed for this gate"
+          - "## User's response"
+          - "## Pedagogical move selected"
+          - "## Commitment gating outputs"
+        required_fields:
+          - "**Phase boundary:**"
+          - "**Settled premises"
+          - "**Open questions"
+          - "**Specific commitments"
+
+  play:
+    description: >
+      Before play may complete, a susceptibility snapshot for the
+      play boundary must exist.
+    required_mechanisms:
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-play.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"
+
+  synthesize:
+    description: >
+      Before synthesize may complete, the synthesis outline must have been
+      citation-audited and argument-audited. A susceptibility snapshot for
+      the synthesize boundary must also exist.
+    required_mechanisms:
+      - mechanism: citation-auditor
+        path_template: docs/essays/audits/citation-audit-synthesize-{cycle}.md
+        audited_documents:
+          - "docs/synthesis/{cycle}-*-outline.md"
+        min_bytes: 1500
+        required_headers:
+          - "# Citation Audit Report"
+          - "## Summary"
+        required_fields:
+          - "Total references checked:"
+          - "Verified:"
+          - "Audited document:"
+      - mechanism: argument-auditor
+        path_template: docs/essays/audits/argument-audit-synthesize-{cycle}.md
+        audited_documents:
+          - "docs/synthesis/{cycle}-*-outline.md"
+        min_bytes: 1500
+        required_headers:
+          - "# Argument Audit Report"
+          - "## Summary"
+        required_fields:
+          - "Argument chains mapped:"
+          - "Issues found:"
+      - mechanism: susceptibility-snapshot-evaluator
+        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-synthesize.md
+        min_bytes: 400
+        required_headers:
+          - "# Susceptibility Snapshot"
+        required_fields:
+          - "Phase evaluated:"
+          - "## Observed Signals"
+          - "## Recommendation"

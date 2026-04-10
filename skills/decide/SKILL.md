@@ -86,7 +86,7 @@ Present ADRs to the user for approval before proceeding.
 After ADRs are written, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The new ADR file paths and any prior ADRs they depend on (primary document)
 - The essay file path (source material — the evidence base ADR decisions rest on)
-- An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-decide-NNN.md`)
+Output path: docs/essays/audits/argument-audit-decide-{cycle}.md
 
 The agent runs on Sonnet in an isolated context and produces a **two-section** audit report: argument audit (logical consistency of ADR chains) and framing audit (alternative framings the evidence supported but the ADRs didn't choose).
 
@@ -271,6 +271,16 @@ Then ask whether to proceed to the next phase, revise the ADRs, or revisit resea
 - **Stop at uncertainty**: If a decision or scenario depends on something unknown, surface it. Don't speculate past what the research established.
 - **Scenarios are a contract**: They define what `/rdd-build` will implement. Be precise enough that someone could write a test from each scenario without ambiguity.
 - **Domain vocabulary is mandatory**: Every term in scenarios and ADR context must come from the glossary. If you need a new term, the domain model needs updating first.
+
+---
+
+## Phase Boundary: Susceptibility Snapshot Dispatch
+
+Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
+
+> This is the decide → architect boundary. Decide phase produces ADRs, behavior scenarios, and interaction specifications. The primary risk is that ADR framings originate from agent synthesis during drafting rather than from architectural drivers (research findings, domain model concepts, prior ADRs). Cycle 10's ADRs 063-070 introduced the provenance check subsection pattern specifically to make drafting-time synthesis visible as labeled content — so the absence of a provenance check from an ADR whose framings are not driver-derived is itself a signal. Evaluate the attached AID signals for rebuttal-elicitation failures on rejected alternatives, and for cross-ADR compositions where one ADR's framing was adopted by another within the same cycle without being independently tested. Check whether each ADR's core framing traces to its driver chain or to drafting-time composition.
+>
+> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-decide.md
 
 ---
 

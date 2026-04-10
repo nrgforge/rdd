@@ -57,7 +57,7 @@ Present a research plan (search terms, lit-reviewer dispatch, or spike-runner di
 Before executing the first research loop, dispatch the **research-methods-reviewer** specialist subagent. Provide it with:
 - The research question set (the questions from Step 1)
 - Prior research context (existing essays or research logs from prior cycles, if available)
-- An output path for the review artifact (e.g., `./docs/essays/audits/research-design-review-NNN.md`)
+Output path: docs/essays/audits/research-design-review-{cycle}.md
 
 The agent reviews each question for embedded conclusions, applies belief-mapping ("What would the researcher need to believe for a different question to be more productive?"), and flags premature narrowing in the question set.
 
@@ -152,7 +152,7 @@ Present the essay to the user. If invariant tensions were found, highlight them 
 After the essay is written, dispatch the **citation-auditor** specialist subagent. Provide it with:
 - The essay file path
 - The research log file path (as evidence trail)
-- An output path for the audit report (e.g., `./docs/essays/audits/citation-audit-NNN.md`)
+Output path: docs/essays/audits/citation-audit-{cycle}.md
 
 The agent runs on Sonnet in an isolated context, reads the input files, verifies all references and factual claims, and writes a structured audit report to the output path.
 
@@ -168,7 +168,7 @@ The essay is the foundation for all downstream phases — bad citations here pro
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The essay file path (primary document)
 - The research log file path (source material — the full evidence base the essay drew from)
-- An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-NNN.md`)
+Output path: docs/essays/audits/argument-audit-{cycle}.md
 
 The agent runs on Sonnet in an isolated context and produces a **two-section** audit report:
 1. **Argument audit** — maps inferential chains from evidence to conclusions (existing)
@@ -273,6 +273,16 @@ This ensures each log is explicitly associated with its essay and the archival h
 - **User drives the questions**: You facilitate and research; the user decides what matters and when understanding is sufficient.
 - **Stop at uncertainty**: If a question leads to more questions, surface them. Don't speculate past what the evidence supports.
 - **Verification is mandatory**: For factual claims (library capabilities, API behavior, performance characteristics), verify through search or spike. Don't assert what you haven't confirmed.
+
+---
+
+## Phase Boundary: Susceptibility Snapshot Dispatch
+
+Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
+
+> This is the research → discover boundary. Research carries the highest sycophancy gradient in the methodology (Essay 013; Cycle 9). The primary risk at this boundary is framing adoption at essay crystallization moments — the "softer than sycophancy but real" pattern documented four times in Cycle 10's own research phase (see susceptibility-snapshot-014-research.md). The AID cycle's recorded signals for this phase are attached. Evaluate whether the essay that is about to enter downstream phases has been shaped by framings absorbed at synthesis moments without competing frames being independently surfaced — particularly where the essay's argumentative backbone crystallized. Pay attention to moments where user-provided framings became load-bearing without belief-mapping against alternatives.
+>
+> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-research.md
 
 ---
 

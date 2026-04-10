@@ -228,7 +228,7 @@ The writer should not need to hunt for supporting material — it is already in 
 
 Before finalizing the outline, dispatch the **citation-auditor** specialist subagent. Provide it with:
 - The outline file path (with its pre-populated references)
-- An output path for the audit report (e.g., `./docs/essays/audits/citation-audit-synthesis-NNN.md`)
+Output path: docs/essays/audits/citation-audit-synthesize-{cycle}.md
 
 The agent verifies cited works exist, quotes are accurate, and no hallucinated sources reach the writer's outline. After the agent completes, read the audit report. Correct or remove problematic references before proceeding.
 
@@ -237,7 +237,7 @@ The agent verifies cited works exist, quotes are accurate, and no hallucinated s
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The outline file path (primary document — narrative structure as the argument)
 - The full artifact trail file paths (source material — the evidence base the outline draws from)
-- An output path for the audit report (e.g., `./docs/essays/audits/argument-audit-synthesis-NNN.md`)
+Output path: docs/essays/audits/argument-audit-synthesize-{cycle}.md
 
 The agent produces a **two-section** audit report: argument audit (narrative arc logical soundness) and framing audit (alternative narrative framings the material could support).
 
@@ -382,6 +382,16 @@ When re-entry occurs:
 ### Most Cycles Terminate Normally
 
 Re-entry is the exception, not the rule. Most synthesis cycles produce an outline and stop. The re-entry mechanism exists because structural experimentation is a genuine discovery process — trying on a form can reveal what deliberation cannot — but the natural outcome of a healthy cycle is a completed outline.
+
+---
+
+## Phase Boundary: Susceptibility Snapshot Dispatch
+
+Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
+
+> This is the synthesize phase boundary (typically terminal for the cycle; or synthesize → research re-entry if structural experiments surface new questions). Synthesis is the canonical location where the "softer than sycophancy but real" framing-adoption pattern was first named in Cycle 10 — narrative framings composed at synthesis moments carry the highest risk because they shape what the cycle will be remembered as. The four-dimension framing navigation (discovery type, narrative form, audience constraint, epistemic posture) provides structural scaffolding, but the framings that emerge can still be shaped by synthesis-moment adoption. Evaluate the attached AID signals with particular emphasis on framing adoption and declining alternative engagement during the framing conversation. The outline about to become the writer's essay should carry framings the writer owns, not framings they inherited from agent composition or from the artifact trail without examining the alternatives.
+>
+> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-synthesize.md
 
 ---
 

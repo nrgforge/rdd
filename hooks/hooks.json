@@ -19,6 +19,14 @@
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/epistemic-gate.sh\" \"$INPUT\""
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tier1-phase-manifest-check.sh\" \"$INPUT\""
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -47,6 +55,15 @@
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/sizing-check.sh\" \"$INPUT\""
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tier1-verify-dispatch.sh\" \"$INPUT\""
           }
         ]
       }

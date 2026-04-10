@@ -151,6 +151,16 @@ No timebox or stakeholder-count limit is imposed. Individual play sessions are t
 
 ---
 
+## Phase Boundary: Susceptibility Snapshot Dispatch
+
+Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
+
+> This is the play → synthesize boundary (or play → [next cycle] if synthesize is deferred). Play produces field notes from stakeholder inhabitation and gamemaster-facilitated exploration. The specific risk at this boundary is that field notes flatten from observation into advocacy — discoveries that "confirm the design" crowd out discoveries that challenge it. Two signal patterns matter most for this phase: (a) selection bias in the six-category classification (are categories being applied asymmetrically to suppress challenging observations?), and (b) gamemaster/player role blur under task load, where the same agent proposes inversions AND inhabits — the inversions may be selected to serve the inhabitation rather than challenge it. Evaluate the attached AID signals for framing adoption in field note language (user voice vs. methodology voice) and for declining alternative engagement on discoveries that would challenge the design. The field notes entering synthesize should read as observation, not endorsement.
+>
+> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-play.md
+
+---
+
 ## NEXT PHASE
 
 When play concludes, **`/rdd-synthesize`** is available as an optional phase. Field notes from play contribute experiential discoveries — especially delights and surprises — as candidate novelty signals for the synthesis agent to mine alongside the full artifact trail. If the user does not want synthesis, the play phase may be terminal.

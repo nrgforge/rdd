@@ -163,6 +163,16 @@ Then ask whether to proceed to the next phase or revise the model.
 
 ---
 
+## Phase Boundary: Susceptibility Snapshot Dispatch
+
+Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
+
+> This is the model → decide boundary. Model phase extracts domain vocabulary and, when consequential, amends invariants — the highest-stakes commitment type in the methodology because invariants constrain every downstream artifact. The canonical failure mode at this boundary was documented in Cycle 10's own MODEL phase (susceptibility-snapshot-014-model.md Finding 1): an invariant commitment moved from flag to acceptance in two exchanges; user-stated preference preceded implications analysis; alternatives were not engaged at comparable depth. Evaluate the attached AID signals for warrant-elicitation failures and preference-accelerated commitments. For any invariant amendment or consequential concept addition in this phase, check whether belief-mapping was performed before adoption — not after. The test is whether the user could name what they would need to believe for a different commitment to be right.
+>
+> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-model.md
+
+---
+
 ## NEXT PHASE
 
 When the domain model is approved and the user is ready to proceed, advance to **`/rdd-decide`**. The decision phase uses the glossary as binding vocabulary for ADRs and behavior scenarios.

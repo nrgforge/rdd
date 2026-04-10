@@ -470,6 +470,16 @@ Each entry records: what changed, what triggered the change (a build discovery, 
 
 ---
 
+## Phase Boundary: Susceptibility Snapshot Dispatch
+
+Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
+
+> This is the architect → build boundary. Architect phase composes modules from the domain model, ADRs, and scenarios. The specific risk is that module boundaries and responsibility allocations encode unexamined assumptions — particularly the assumption that a boundary serves the developer's mental model when it should serve the user's. The Inversion Principle check at architecture is the designed counterweight but can be performed pro forma. Evaluate the attached AID signals for solution-space narrowing on boundary choices and framing adoption from DECIDE-phase ADRs (the system design inherits ADR framings — was the inheritance examined or automatic?). Check whether the proposed module boundaries would survive a product-facing reading: do they track user mental models or only developer convenience?
+>
+> Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-architect.md
+
+---
+
 ## NEXT PHASE
 
 When the system design is approved and the user is ready to proceed, advance to **`/rdd-build`**. The build phase reads the system design as its primary context document and implements scenarios through BDD acceptance tests and TDD inner loops.

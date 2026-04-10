@@ -51,7 +51,7 @@ If the signals are ambiguous or consistent with earned confidence, note this wit
 
 ## Output
 
-Write your snapshot to the output file path provided. Use this structure:
+Write your snapshot to the output file path provided in the dispatch prompt (the `Output path:` line). Each phase skill provides a phase-keyed path — e.g., `docs/essays/audits/susceptibility-snapshot-014-research.md` for the research phase. Use this structure:
 
 ```markdown
 # Susceptibility Snapshot
