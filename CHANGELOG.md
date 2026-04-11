@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.7.2
+
+Cycle 10 WP-F verification-surfaced remediation. Nine latent defects in the v0.7.0/v0.7.1 hook infrastructure caught by the methodology running against its own corpus in enforcement mode. All fixes land in this release. Invariant 8's compound defense is now operational end-to-end on any corpus that runs the plugin.
+
+### Hook infrastructure fixes
+
+- **All RDD hook scripts now read input from stdin**, not `$1`. Since v0.6.0, every input-dependent hook (`invariant-reminder.sh`, `orientation-trigger.sh`, `sizing-check.sh`, `epistemic-gate.sh`, `tier1-verify-dispatch.sh`) has been silently non-functional in Claude Code's actual runtime because `hooks.json` passed input via `$INPUT` (expected as a shell variable) while Claude Code delivers the JSON payload via stdin. Synthetic tests masked the divergence by invoking scripts directly with `$1`. Only `tier1-phase-manifest-check.sh` worked by accident — it reads `cycle-status.md` from disk and falls through on empty input — and that accidental functionality was precisely what caught the gap during WP-F. `hooks.json` drops the `"$INPUT"` argument from every command; scripts read stdin when `$1` is empty and stdin is not a terminal (backward compatible with direct invocation for test harnesses)
+- **PostToolUse Tier 1 hook strips plugin namespace prefix** before matching against `TIER1_MECHANISMS`. Claude Code dispatches plugin-provided subagents with the `<plugin>:<name>` form (e.g., `rdd:susceptibility-snapshot-evaluator`), but the mechanism list used bare names. Every prefixed dispatch silently skipped logging, breaking the compound check's cross-reference entirely. `${SUBAGENT_TYPE#*:}` normalizes the name; the original prefixed form is preserved in the dispatch log's `subagent_type` field for forensic record
+- **Stop hook schema conformance** — replaced `{"decision":"allow",...}` with plain-text stdout (advisory mode, matching the convention of the project's other stdout-based hooks) and schema-valid `{"decision":"block",...}` (enforcement mode). Claude Code's Stop hook schema only accepts `"approve" | "block"` for the `decision` field; emitting `"allow"` failed JSON validation every invocation and the advisory notice never reached the agent
+- **Stop hook E1 dispatch detection is cycle-sensitive.** Matches on mechanism name AND substituted `expected_path`, mirroring the enforcement-mode compound check. Without this, prior-cycle dispatch log residue produced misleading "dispatched but no artifact" messages at the current cycle's phase boundary
+- **PostToolUse hook emits JSON `null` (not string `"null"`)** for missing Output path lines. `jq --argjson` replaces `jq --arg` when the path is absent, so downstream queries like `jq '.expected_path == null'` work correctly
+- **Distinguish user-tooling mechanisms from subagent dispatches.** The manifest supports a `mechanism_type: user-tooling` field for `aid-cycle-gate-reflection` entries. In enforcement mode, the compound check's dispatch-log cross-reference no longer applies to user-tooling mechanisms — gate reflection notes are produced by the orchestrator in-context, not by an isolated subagent dispatch, so they have no dispatch log entry by design. The structural floor (E1/S1/S2/S3) still applies; the Susceptibility Snapshot at the same phase boundary is the complementary content-level defense
+
+### Migrate subcommand fixes
+
+- **`/rdd-conform migrate` Step 6 includes `docs/system-design.md`** in its mechanical path substitution file list. The system design document contains multiple pre-migration path references (Appendix A per-phase susceptibility snapshot briefs, Test Architecture table, Integration Contracts notes) that were previously not updated by the migration operation, leaving the file in an inconsistent mix post-migration
+- **`/rdd-conform migrate` Step 5 rewrites internal relative links in the moved `cycle-status.md`.** When the file moves from `docs/` to `docs/housekeeping/`, its own `./essays/...`, `./product-discovery.md`, `./domain-model.md`, `./system-design.md`, and `./roadmap.md` references need to be rewritten for the new directory depth. Order matters: `./essays/audits/` → `./audits/` must run before `./essays/` → `../essays/`
+
+### Verification evidence
+
+- **First live operational Tier 1 dispatch in project history.** The build-phase susceptibility snapshot fired via the ADR-065 Skill-Structure anchor without ceremonial attention, produced a substantive artifact, was logged by the PostToolUse hook, cross-referenced by the Stop hook compound check, and cleared the build phase boundary block. ARCHITECT phase open question 1 (does the per-phase dispatch actually fire under task load?) is answered empirically: **yes**, and the harness layer captures it
+- **First gate reflection note.** The User-Tooling Layer graduated-artifact mechanism (ADR-066) produced its first real artifact at `docs/housekeeping/gates/014-build-gate.md` with all five required headers and four required fields, successfully satisfying the manifest check
+- **Three preserved historical snapshots** at `docs/housekeeping/audits/` — `.pre-prefix-fix.md` (first live dispatch that surfaced Finding #7), `.post-prefix-pre-stdin.md` (second dispatch that surfaced Finding #9), and the canonical build snapshot (third, through the fully-fixed chain). The preservation pattern is itself a methodology commitment: Option B (preserve-and-re-dispatch) is the right remediation for artifact/log provenance gaps discovered at enforcement boundaries
+
+### Cycle 10 full closure
+
+- **57 scenarios verified** across two releases (44 v0.7.0 + 13 v0.7.1). All PASS
+- **Nine remediation commits** during WP-F verification, each numbered in `docs/housekeeping/cycle-status.md`
+- **Cycle 11 candidate research question surfaced:** *what categories of behavior are structurally unreachable by specification-conformant synthetic tests, and which warrant runtime-level testing infrastructure?* A runtime smoke test that fires an actual subagent dispatch and verifies the dispatch log is populated would have caught Findings #7 and #9 before WP-F
+
 ## v0.7.1
 
 Housekeeping migration and post-migration path alignment.

@@ -245,6 +245,53 @@ Both are surfaced in WP-F as observations and should become a separate backlog i
 
 ## Completed Work Log
 
+### Cycle 10: Specification-Execution Gap in Prompt-Based Methodology
+
+**Derived from:** ADRs 063-070, Essay 014, Invariant 8
+**Shipped across:** v0.7.0 (WP-A/B/C/D), v0.7.1 (WP-E), v0.7.2 (WP-F verification + remediation)
+
+| WP | Title | Status | Release |
+|----|-------|--------|---------|
+| A | Harness Layer — Manifest + Compound Check Hooks (ADRs 063/064) | Complete | v0.7.0 |
+| B | Skill-Structure Layer — Anchor Dispatch (ADR-065) | Complete | v0.7.0 |
+| C | User-Tooling Layer — Gate Reflection Note (ADR-066) | Complete | v0.7.0 |
+| D | Three-Tier Classification + Grounding Reframe Extension + Methodology Scope-of-Claim (ADRs 067/068/069) | Complete | v0.7.0 |
+| E | Housekeeping Migration — `/rdd-conform migrate` Subcommand (ADR-070) | Complete | v0.7.1 |
+| F | Verification Pass — behavioral + migration dogfood + remediation | Complete | v0.7.2 |
+
+**Summary:**
+- Added **Invariant 8** (mechanism execution must be structurally anchored) via domain model Amendment 17, with broad scope covering any unconditional structural mechanism the methodology specifies
+- Built the three-substrate enforcement architecture: Skill-Structure Layer (per-phase susceptibility snapshot dispatch at bottom-third position in all 8 phase skills with canonical prompt skeleton), Harness Layer (YAML manifest + PostToolUse dispatch logger + Stop hook compound check against per-phase manifest, with advisory/enforcement mode split and Fails-Safe-to-Allow), User-Tooling Layer (AID gate reflection note graduated from conversational form to artifact at canonical path)
+- Added `/rdd-conform migrate` 10-step subcommand that moves `docs/essays/audits/` → `docs/housekeeping/audits/`, `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`, creates `docs/housekeeping/gates/`, mechanically substitutes path references across the corpus (including `docs/system-design.md` per Finding #4), writes `docs/housekeeping/.migration-version` to transition the Stop hook to enforcement mode, and produces rollback manifest and summary report
+- Added three new `/rdd-conform` audit scopes (housekeeping directory organization, gate reflection note template alignment, dispatch prompt format) and the `mechanism_type: user-tooling` manifest field for distinguishing in-context orchestrator artifacts from isolated-subagent-produced artifacts
+- Verified 57 Cycle 10 scenarios (44 v0.7.0 + 13 v0.7.1) with WP-F surfacing **nine latent defects** in the hook infrastructure that the synthetic test suite had missed. All nine fixes committed inline during verification: Stop hook schema, E1 cycle-sensitivity, JSON null vs string, migrate file list, mechanism_type distinction, migrate internal link rewrite, plugin namespace prefix matching, plugin cache drift (documented manual sync procedure), and stdin input delivery across all hooks (the deepest defect — every input-dependent RDD hook had been silently non-functional in Claude Code's actual runtime since v0.6.0 because synthetic tests invoked scripts directly with `$1` while the runtime delivers payload via stdin)
+- **First live operational Tier 1 dispatch in project history** at the build phase boundary: the ADR-065 Skill-Structure anchor fired without ceremonial attention, produced a substantive snapshot, was logged by the PostToolUse hook, cross-referenced by the Stop hook compound check, and cleared the enforcement-mode block. ARCHITECT phase open question 1 answered empirically
+- **First gate reflection note** produced by the User-Tooling Layer graduated-artifact mechanism at `docs/housekeeping/gates/014-build-gate.md`
+- **Three preserved historical snapshots** at `docs/housekeeping/audits/` (`.pre-prefix-fix.md`, `.post-prefix-pre-stdin.md`, and canonical `susceptibility-snapshot-014-build.md`) document the defect surfacing through WP-F verification
+- Migration dogfood: the RDD plugin's own corpus migrated successfully (58 files changed — 40 moves + 15 reference updates + 2 new infrastructure files + 1 cycle-status move). The methodology is the first user of its own migration tool
+- Full RDD cycle: research (Essay 014, 4 spike reports, 2 literature reviews, 5 ceremonial susceptibility snapshots, citation/argument/framing audited) → discover (product discovery updated with per-entry Grounding Reframe pass) → model (22 new concepts, Invariant 8, Amendment 17) → decide (8 ADRs, ~45 scenarios, interaction specs) → architect (system design v12.0 Amendment #13, Appendix A with 8 per-phase briefs, roadmap Cycle 10) → build (manifest + 2 new hooks + 6 phase skill amendments + 4 WP-D orchestrator amendments + /rdd-conform migrate 10-step subcommand + 9 verification-driven remediation fixes)
+
+**Dependency graph (as-built):**
+```
+WP-A (Harness Layer)     WP-B (Skill-Structure)     WP-C (User-Tooling)     WP-D (Orchestrator)
+       │                         │                         │                       │
+  open choice              open choice                open choice             open choice
+       │                         │                         │                       │
+       └─────────────────────────┴─────────────────────────┴───────────────────────┘
+                                               │
+                                          hard dep
+                                               │
+                                WP-E (Migrate Subcommand, v0.7.1 atomic)
+                                               │
+                                          hard dep
+                                               │
+                                WP-F (Verification — v0.7.2 remediation)
+```
+
+**Observed pattern:** WP-F verification produced six commits worth of remediation that the synthetic test suite had missed, all surfacing because the methodology's own enforcement held under runtime conditions. The methodology caught its own implementation defects running against itself — both the catastrophic implementation quality signal (nine latent defects shipped) and the vindicating methodology design signal (the enforcement architecture detected them) are true simultaneously.
+
+---
+
 ### Cycle 9: Sycophancy Resistance Architecture
 
 **Derived from:** ADRs 055-062, Essay 013

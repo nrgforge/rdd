@@ -1,11 +1,11 @@
 # Field Guide: Pedagogical RDD
 
-**Updated:** 2026-04-06
-**Derived from:** System Design v11.0, current implementation (SKILL.md files, agent files)
+**Updated:** 2026-04-11
+**Derived from:** System Design v12.0 Amendment #13, current implementation (SKILL.md files, agent files, Harness Layer hook scripts and manifest)
 
 ## How to Use This Guide
 
-This guide maps the system design's modules to their current implementation state. Each module is a single SKILL.md file — the "code" in this meta-project is prompt text that instructs an AI agent. For the overall architecture, read the system design. For routing to the right document, read ORIENTATION.md.
+This guide maps the system design's modules to their current implementation state. Each skill module is a single SKILL.md file — the "code" in this meta-project is prompt text that instructs an AI agent. Each Harness Layer module is a bash or YAML file operating at the Claude Code runtime level. For the overall architecture, read the system design. For routing to the right document, read ORIENTATION.md.
 
 ---
 
@@ -257,31 +257,37 @@ Unique architectural property: the three-phase conversation subsumes the epistem
 
 ## Module: Conformance Audit Skill
 
-**Implementation state:** Complete
+**Implementation state:** Complete (7 operations as of v0.7.1)
 **Code location:** `skills/conform/SKILL.md`
-**Stability:** In flux — first implementation; graduation operation is "open design territory" per the skill text
+**Stability:** In flux — graduation operation is "open design territory" per the skill text; migrate subcommand (Operation 4) is new in v0.7.1 and had its Step 5 (internal link rewrite) and Step 6 (system-design.md in file list) refined in v0.7.2 after the WP-F dogfood
 
 ### Domain Concepts in Code
 
 | Concept | Code Manifestation | Location |
 |---------|-------------------|----------|
-| Conformance Audit (four operations) | Operations table + four operation sections | SKILL.md §OPERATIONS |
+| Conformance Audit (seven operations) | Operations table + seven operation sections | SKILL.md §OPERATIONS |
 | Audit (template alignment) | Operation 1: scan corpus against skill files | SKILL.md §Operation 1 |
 | Remediation | Operation 2: generate missing content for structural gaps | SKILL.md §Operation 2 |
 | Documentation Drift (detection) | Operation 3: compare artifacts vs. implementation | SKILL.md §Operation 3 |
-| Graduation (knowledge migration) | Operation 4: durable/scaffolding/ambiguous classification | SKILL.md §Operation 4 |
-| Documentation Fatigue (signal) | Referenced in graduation context | SKILL.md §Operation 4 |
+| Housekeeping Migration | Operation 4: 10-step migrate subcommand (ADR-070) | SKILL.md §Operation 4 |
+| Housekeeping Directory Organization Audit | Operation 5: detect pre-migration state and orphans | SKILL.md §Operation 5 |
+| Gate Reflection Note Template Alignment Audit | Operation 6: ADR-066 template compliance | SKILL.md §Operation 6 |
+| Dispatch Prompt Format Audit | Operation 7: ADR-065 canonical skeleton and position verification | SKILL.md §Operation 7 |
 
 ### Design Rationale
 
-This is NOT a pipeline phase — it's a utility invoked as needed. All four operations are pragmatic actions (Invariant 3). The two-level severity classification (structural/format) prevents format obsession from blocking real work. Graduation is explicitly flagged as "open design territory" — the framework will be refined through practice.
+This is NOT a pipeline phase — it's a utility invoked as needed. All seven operations are pragmatic actions (Invariant 3). The two-level severity classification (structural/format) prevents format obsession from blocking real work. Migration (Operation 4) is opt-in and one-shot — the methodology works without migration in advisory mode, and migrate transitions the corpus to enforcement mode by writing `docs/housekeeping/.migration-version`. The three new audit scopes (Operations 5-7) are paired with Operation 4's migration surface — they verify structural conformance to the post-migration layout, the ADR-066 gate reflection note template, and the ADR-065 canonical dispatch prompt skeleton.
 
 Distinct from product conformance (ADR-008, `/rdd-discover` backward mode), which checks product assumptions against user needs.
 
 ### Key Integration Points
 
-- All SKILL.md files (input) — reads skill files to determine expected artifact structure
+- All SKILL.md files (input) — reads skill files to determine expected artifact structure, verifies canonical dispatch skeleton in Operation 7
 - All artifact files (input) — reads corpus to compare against expectations
+- `docs/essays/audits/` → `docs/housekeeping/audits/` (move source/target) — Operation 4 migration
+- `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md` (move source/target, with internal relative link rewrite) — Operation 4 migration Step 5
+- `docs/housekeeping/.migration-version` (write) — Operation 4 marker that transitions Stop hook to enforcement mode
+- `docs/housekeeping/.migration-rollback.json` (write) — Operation 4 forensic record
 - Orchestrator — listed in Available Skills table
 
 ---
@@ -363,3 +369,116 @@ The two-section output is a Tier 1 unconditional mechanism. The framing audit ma
 - Research Skill (caller) — dispatched after citation audit on essays
 - Decide Skill (caller) — dispatched after ADRs written
 - Synthesis Skill (caller) — dispatched after citation audit on outlines
+
+---
+
+## Module: Tier 1 Phase Manifest (NEW in v0.7.0, updated v0.7.2)
+
+**Implementation state:** Complete
+**Code location:** `hooks/manifests/tier1-phase-manifest.yaml`
+**Stability:** Settled — format version 1; schema stable after v0.7.2 `mechanism_type` field addition
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Per-Phase Manifest | Top-level `phases:` dictionary keyed by phase name | tier1-phase-manifest.yaml §phases |
+| Required Mechanism | Entry with `mechanism`, `path_template`, `min_bytes`, `required_headers`, `required_fields` | tier1-phase-manifest.yaml per mechanism |
+| Structural Assertion (S1 size floor) | `min_bytes` field | per mechanism |
+| Structural Assertion (S2 required headers) | `required_headers` list | per mechanism |
+| Structural Assertion (S3 required fields) | `required_fields` list | per mechanism |
+| Audited Documents (revision-aware reminder) | `audited_documents` glob list | citation/argument auditor entries |
+| Mechanism Type (subagent vs user-tooling) | `mechanism_type: user-tooling` field (default: subagent) | aid-cycle-gate-reflection entries |
+| Token Substitution | `{cycle}` and `{phase}` placeholders in `path_template` | per mechanism |
+
+### Design Rationale
+
+The manifest is the single source of truth for phase-boundary Tier 1 obligations. It is consumed by the Stop hook's compound check (`tier1-phase-manifest-check.sh`). Advisory mode and enforcement mode read the same manifest; the difference is whether failures block or merely notify. Play and synthesize phases are deliberately exempt from `aid-cycle-gate-reflection` entries because both subsume their gates (ADR-016, ADR-038). The `mechanism_type: user-tooling` distinction was added in v0.7.2 after WP-F verification revealed that the compound check's isolation assumption does not apply to artifacts produced in-context by the orchestrator (ADR-066).
+
+### Key Integration Points
+
+- `tier1-phase-manifest-check.sh` (consumer) — parses YAML at Stop event time
+- `tier1-verify-dispatch.sh` (consumer) — writes dispatch log entries that the Stop hook cross-references
+- `/rdd-conform migrate` (Operation 4) — path templates track post-migration paths from v0.7.1 onward
+
+---
+
+## Module: Tier 1 Dispatch Logger Hook (NEW in v0.7.0, fixed in v0.7.2)
+
+**Implementation state:** Complete (fully functional after v0.7.2 stdin + prefix fixes)
+**Code location:** `hooks/scripts/tier1-verify-dispatch.sh`
+**Stability:** Settled after v0.7.2
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| PostToolUse Hook (Agent matcher) | Fires on every Agent tool call | hooks/hooks.json §PostToolUse |
+| Tier 1 Mechanism Filter | `TIER1_MECHANISMS` space-separated list | tier1-verify-dispatch.sh:20 |
+| Plugin Namespace Stripping | `${SUBAGENT_TYPE#*:}` parameter expansion | tier1-verify-dispatch.sh §normalize |
+| Output Path Extraction | Regex match on `^Output path: ` in tool prompt | tier1-verify-dispatch.sh §extract |
+| Dispatch Log Entry | JSONL append with timestamp, session, mechanism (stripped), subagent_type (preserved), expected_path, tool_use_id | tier1-verify-dispatch.sh §append |
+| Fails-Safe-to-Allow | `|| true` on jq write; `exit 0` on errors | tier1-verify-dispatch.sh §append |
+| stdin Input Delivery | Reads stdin if `$1` is empty and stdin is not a terminal | tier1-verify-dispatch.sh §input |
+
+### Design Rationale
+
+Append-only verification infrastructure. This hook NEVER blocks — it only records evidence of dispatch events for the Stop hook's compound check to consume. The Fails-Safe-to-Allow discipline is critical: a broken dispatch logger must never wedge the agent. The plugin namespace stripping (v0.7.2) is required because Claude Code dispatches plugin-provided subagents with the `<plugin>:<name>` form, but the manifest uses bare names. The stdin delivery (v0.7.2) aligns with Claude Code's actual runtime contract, which synthetic tests using direct `$1` invocation had missed.
+
+### Key Integration Points
+
+- Tier 1 Phase Manifest (indirect) — defines which mechanisms warrant logging
+- Dispatch Log (`docs/housekeeping/dispatch-log.jsonl`) — append target
+- `tier1-phase-manifest-check.sh` (downstream consumer) — cross-references log entries in compound check
+
+---
+
+## Module: Tier 1 Phase Manifest Check Hook (NEW in v0.7.0, fixed in v0.7.2)
+
+**Implementation state:** Complete (fully functional after v0.7.2 fixes)
+**Code location:** `hooks/scripts/tier1-phase-manifest-check.sh`
+**Stability:** Settled after v0.7.2
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Stop Hook (manifest verification) | Fires on every Stop event | hooks/hooks.json §Stop |
+| Advisory/Enforcement Mode Detection | Checks for `docs/housekeeping/.migration-version` marker | tier1-phase-manifest-check.sh §mode |
+| Phase Detection (canonical) | Reads `**Phase:** <name>` from cycle-status | tier1-phase-manifest-check.sh §phase |
+| Phase Detection (fallback) | Parses `**Current phase:**` for `next`/`▶`/`In Progress` markers | tier1-phase-manifest-check.sh §phase |
+| Cycle Detection (canonical) | Reads `**Cycle number:** NNN` from cycle-status | tier1-phase-manifest-check.sh §cycle |
+| Cycle Detection (fallback) | Highest `NNN-` prefix in `docs/essays/` | tier1-phase-manifest-check.sh §cycle |
+| Dual cycle-status Path Support | Checks `docs/housekeeping/cycle-status.md` then `docs/cycle-status.md` | tier1-phase-manifest-check.sh §cycle_status |
+| Structural Assertion Loop | Iterates over `required_mechanisms` and applies E1/S1/S2/S3 checks | tier1-phase-manifest-check.sh §iterate |
+| Mechanism Type Branching | Skips compound check for `mechanism_type: user-tooling` | tier1-phase-manifest-check.sh §compound_check |
+| Cycle-Sensitive E1 Dispatch Detection | Matches on mechanism + substituted `expected_path` | tier1-phase-manifest-check.sh §e1 |
+| Compound Check (ADR-064) | Cross-references artifact presence against dispatch log entry | tier1-phase-manifest-check.sh §compound_check |
+| Revision-Aware Re-Audit Reminder | mtime comparison between audited documents and last dispatch | tier1-phase-manifest-check.sh §reminder |
+| Fails-Safe-to-Allow | stderr diagnostic + `exit 0` on internal errors | tier1-phase-manifest-check.sh §die_open |
+| Schema-Valid Output | Plain-text stdout for advisory, `{"decision":"block"}` JSON for enforcement | tier1-phase-manifest-check.sh §emit |
+| stdin Input Delivery | Reads stdin if `$1` is empty and stdin is not a terminal | tier1-phase-manifest-check.sh §input |
+
+### Design Rationale
+
+This is the structural floor of the compound defense at phase boundaries. Every structural assertion (E1/S1/S2/S3) and the compound check (cross-reference against dispatch log in enforcement mode) verify the manifest's contract mechanically without judgment. In advisory mode (pre-migration), failures produce plain-text stdout notices that inject into the agent's context without blocking. In enforcement mode (post-migration marker present), failures produce schema-valid `{"decision":"block"}` JSON that forces the agent to continue working until the Tier 1 obligations are met — the mechanism that caught seven of the nine WP-F defects. The `mechanism_type: user-tooling` branching (v0.7.2) exempts aid-cycle-gate-reflection from the dispatch log cross-reference because the note is produced by the orchestrator in-context, not by an isolated subagent. The Susceptibility Snapshot at the same phase boundary remains the complementary content-level defense.
+
+### Key Integration Points
+
+- Tier 1 Phase Manifest (input) — parsed at every Stop event
+- Dispatch Log (input) — cross-referenced in enforcement mode compound check
+- `docs/housekeeping/cycle-status.md` (input) — phase and cycle detection
+- `docs/housekeeping/.migration-version` (input) — advisory/enforcement mode toggle
+- Agent conversation (output) — advisory notice (stdout) or block reason (JSON) surface to the model's context
+
+---
+
+## Module: Hook Failure Issue Template (NEW in v0.7.0)
+
+**Implementation state:** Complete
+**Code location:** `.github/ISSUE_TEMPLATE/hook-failure.md`
+**Stability:** Settled
+
+### Design Rationale
+
+Fails-Safe-to-Allow means a broken hook does not wedge the agent, but it also means silent failures can accumulate without user awareness. The Stop hook's `die_open` path emits a stderr notice linking to this issue template so users can report hook script failures with pre-populated fields (plugin version, hook name, stderr diagnostic, OS/shell environment, sanitized hook input JSON). This is the v1 surfacing strategy — per ADR-064 the "SessionStart self-test", "per-session suppression", and "rdd-doctor" alternatives are deferred unless the baseline proves insufficient.
