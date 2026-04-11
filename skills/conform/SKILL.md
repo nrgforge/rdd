@@ -277,6 +277,7 @@ Perform mechanical path substitutions across the corpus. For each affected file,
 - `docs/essays/research-logs/*.md` (spike reports)
 - `docs/domain-model.md` (Amendment Log references)
 - `docs/ORIENTATION.md` (Section 4 artifact map)
+- `docs/system-design.md` (Test Architecture table, Integration Contracts, and Appendix A — per-phase susceptibility snapshot briefs)
 
 **Do not update:**
 - `docs/cycle-archive/**` — archived cycles retain their original paths
