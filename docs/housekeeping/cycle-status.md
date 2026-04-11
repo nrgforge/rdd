@@ -317,7 +317,7 @@ The `/rdd-conform migrate` 10-step operation was executed on the RDD plugin's ow
 
 ### Cycle 10 WP-F — Total Fix Count (2026-04-11)
 
-WP-F surfaced 6 defects total, all remediated inline as numbered `fix:` commits during verification:
+WP-F surfaced **nine** defects total, all remediated inline as numbered `fix:` commits during verification. The list grew as each fix unblocked the next layer of the hook chain, and the final defects were only reachable after prior ones had been fixed.
 
 1. **f6a7fc1** — Stop hook schema rejection (decision:"allow" → plain-text stdout)
 2. **0bbbe95** — E1 dispatch detection cycle-insensitive (match on mechanism + expected_path)
@@ -325,8 +325,26 @@ WP-F surfaced 6 defects total, all remediated inline as numbered `fix:` commits 
 4. **04c36bb** — migrate: include docs/system-design.md in Step 6 file list
 5. **243a927** — distinguish user-tooling mechanisms from subagent dispatches (mechanism_type field)
 6. **8066f49** — migrate Step 5 rewrites internal relative links in moved cycle-status.md
+7. **6692f8a** — PostToolUse strips plugin namespace prefix (surfaced by first live build-phase dispatch)
+8. **Cache sync (not a commit)** — manual `cp` from source to `~/.claude/plugins/cache/nrgforge/rdd/0.7.1/` after discovering that Claude Code's runtime uses the cached plugin install, not the source repo. The v0.7.1-shipped hooks diverged from source because all prior WP-F fixes were committed locally without a release cycle. V0.7.1-original hook scripts preserved as `.v0.7.1-orig` backups in the cache for rollback.
+9. **7ce6426** — ALL RDD hook scripts read `$INPUT` from stdin, not command-line argument. hooks.json drops the `"$INPUT"` argument. Since v0.6.0, every input-dependent hook (`invariant-reminder.sh`, `orientation-trigger.sh`, `sizing-check.sh`, `epistemic-gate.sh`, `tier1-verify-dispatch.sh`) has been silently non-functional in Claude Code's actual runtime. Only `tier1-phase-manifest-check.sh` worked, by accident — it reads cycle-status from disk and falls through on empty input. That accidental functionality was precisely what caught Finding #9: its enforcement block held while the Tier 1 dispatch logger was failing to populate the log, making the gap observable.
 
-Five of six defects affected the Harness Layer infrastructure (hook scripts + manifest + migrate subcommand). One (#5) was a User-Tooling Layer + Harness Layer interaction defect. The compound defense is now operational with correct schema validation, cycle-aware dispatch detection, substrate-appropriate message language, and link-preserving migration. Cycle 10 exits in enforcement mode on its own corpus.
+**Three susceptibility snapshot artifacts preserved** at `docs/housekeeping/audits/`:
+- `susceptibility-snapshot-014-build.pre-prefix-fix.md` — first live operational dispatch in project history (first proof that the Skill-Structure anchor fires under task load; also the moment Finding #7 surfaced)
+- `susceptibility-snapshot-014-build.post-prefix-pre-stdin.md` — second dispatch, after cache sync + prefix fix; still no dispatch log entry because Finding #9 was latent
+- `susceptibility-snapshot-014-build.md` — canonical final dispatch, through the fully-fixed hook chain. Dispatch log entry populated with real Claude Code session_id, tool_use_id, and stripped mechanism name.
+
+**ARCHITECT phase open question 1 is answered empirically: YES, the per-phase dispatch fires under task load, AND the harness layer correctly logs it — but only after the hook scripts are fixed at multiple layers. The diagnostic gap Cycle 10 investigated turned out to be broader than Essay 014 named: not only "does the dispatch fire" but also "does the end-to-end loop carry evidence through protocol layers."**
+
+The compound defense is now operational with correct schema validation, cycle-aware dispatch detection, substrate-appropriate message language, link-preserving migration, plugin-namespace-aware matching, and stdin input delivery. Cycle 10 exits in enforcement mode on its own corpus, with all nine defects caught by the methodology's own enforcement infrastructure running against itself.
+
+### WP-F Build Phase Closure (2026-04-11)
+
+The build-phase susceptibility snapshot and gate reflection note are both present and structurally valid. Stop hook exit 0 with empty output — no block, no advisory. The dispatch log contains the canonical entry for the third dispatch, cross-referenced against the manifest. Invariant 8's compound defense (manifest check + susceptibility snapshot + gate reflection) is fully engaged at the build phase boundary.
+
+**Gate reflection note:** [`./gates/014-build-gate.md`](./gates/014-build-gate.md) — captures the belief-mapping question on Essay 014's claim, the user's response that broke the Stop-hook-block loop, the pedagogical move (Probe), and five settled premises + four open questions + five commitments carried forward.
+
+**Cycle 11 candidate research question (surfaced during WP-F):** *What categories of behavior are structurally unreachable by specification-conformant synthetic tests, and which warrant runtime-level testing infrastructure?* Concrete instantiation: a smoke test that fires an actual subagent dispatch against the real runtime and verifies the dispatch log is populated. Such a test would have caught Findings #7 and #9 before WP-F. The entire test suite in Cycle 10 operated within the specification layer; the runtime layer was unreached until WP-F executed through it.
 
 ### Active risk register
 
