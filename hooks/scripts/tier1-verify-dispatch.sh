@@ -36,10 +36,9 @@ $IS_TIER1 || exit 0
 # --- Extract Output path from prompt -----------------------------------------
 # The canonical prompt skeleton (ADR-065) includes a line:
 #   Output path: docs/housekeeping/audits/some-artifact.md
-# Extract it via regex. If absent, log with expected_path: null.
+# Extract it via regex. If absent, log with expected_path: null (JSON null).
 PROMPT="$(printf '%s' "$INPUT" | jq -r '.tool_input.prompt // empty' 2>/dev/null)"
 EXPECTED_PATH="$(printf '%s' "$PROMPT" | grep -oE '^Output path: .+$' | head -1 | sed 's/^Output path: //' || true)"
-[[ -z "$EXPECTED_PATH" ]] && EXPECTED_PATH="null"
 
 # --- Extract identifiers -----------------------------------------------------
 SESSION_ID="$(printf '%s' "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)"
@@ -50,15 +49,25 @@ TIMESTAMP="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 mkdir -p "$(dirname "$DISPATCH_LOG")" 2>/dev/null || exit 0
 
 # --- Append JSONL entry ------------------------------------------------------
-# Use jq to produce valid JSON (handles escaping)
+# Use jq to produce valid JSON (handles escaping). expected_path is emitted as
+# JSON null when the prompt did not contain an "Output path:" line, so that
+# downstream queries (e.g., `jq '.expected_path == null'`) work as expected.
+if [[ -n "$EXPECTED_PATH" ]]; then
+    EP_ARG=(--arg ep "$EXPECTED_PATH")
+    EP_EXPR='$ep'
+else
+    EP_ARG=(--argjson ep 'null')
+    EP_EXPR='$ep'
+fi
+
 jq -nc \
     --arg ts "$TIMESTAMP" \
     --arg sid "$SESSION_ID" \
     --arg mech "$SUBAGENT_TYPE" \
     --arg sat "$SUBAGENT_TYPE" \
-    --arg ep "$EXPECTED_PATH" \
+    "${EP_ARG[@]}" \
     --arg tuid "$TOOL_USE_ID" \
-    '{timestamp:$ts, session_id:$sid, mechanism:$mech, subagent_type:$sat, expected_path:$ep, tool_use_id:$tuid}' \
+    "{timestamp:\$ts, session_id:\$sid, mechanism:\$mech, subagent_type:\$sat, expected_path:${EP_EXPR}, tool_use_id:\$tuid}" \
     >> "$DISPATCH_LOG" 2>/dev/null || true
 
 exit 0
