@@ -180,10 +180,14 @@ while IFS= read -r mech; do
 
     # E1: file exists
     if [[ ! -f "$full_path" ]]; then
-        # Check dispatch log for cross-reference
+        # Check dispatch log for cross-reference. Match on mechanism AND the
+        # substituted expected_path — matching on mechanism alone produces
+        # misleading "dispatched but no artifact" messages when a prior-cycle
+        # dispatch for the same mechanism exists in the log.
         DISPATCHED=false
         if [[ -f "$DISPATCH_LOG" ]]; then
-            if grep -q "\"mechanism\":\"${mechanism}\"" "$DISPATCH_LOG" 2>/dev/null; then
+            if grep "\"mechanism\":\"${mechanism}\"" "$DISPATCH_LOG" 2>/dev/null \
+                | grep -q "\"expected_path\":\"${path}\"" 2>/dev/null; then
                 DISPATCHED=true
             fi
         fi
