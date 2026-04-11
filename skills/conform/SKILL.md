@@ -263,6 +263,22 @@ Move all files and subdirectories from `docs/essays/audits/` to `docs/housekeepi
 
 Move `docs/cycle-status.md` to `docs/housekeeping/cycle-status.md`.
 
+**Rewrite internal relative links in the moved file.** The file's depth in the tree changes from `docs/` to `docs/housekeeping/`, so any `./` relative link inside the file is now wrong. Apply in this order (order matters — the more specific pattern first):
+
+- `./essays/audits/` → `./audits/` (audits are now siblings of cycle-status within `docs/housekeeping/`)
+- `./essays/` → `../essays/` (non-audit essays remain under `docs/essays/`)
+- `./product-discovery.md` → `../product-discovery.md`
+- `./domain-model.md` → `../domain-model.md`
+- `./system-design.md` → `../system-design.md`
+- `./roadmap.md` → `../roadmap.md`
+- `./ORIENTATION.md` → `../ORIENTATION.md`
+- `./scenarios.md` → `../scenarios.md`
+- `./interaction-specs.md` → `../interaction-specs.md`
+- `./decisions/` → `../decisions/`
+- `./references/` → `../references/`
+
+Audit report files (moved in Step 4) are short structured artifacts and typically have no internal relative links, so no in-file rewrite is applied to them. If a future audit output introduces internal links, extend this step.
+
 #### Step 6: Reference Updates
 
 Perform mechanical path substitutions across the corpus. For each affected file, replace:
