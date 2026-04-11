@@ -23,10 +23,22 @@ TIER1_MECHANISMS="research-methods-reviewer citation-auditor argument-auditor su
 SUBAGENT_TYPE="$(printf '%s' "$INPUT" | jq -r '.tool_input.subagent_type // empty' 2>/dev/null)"
 [[ -z "$SUBAGENT_TYPE" ]] && exit 0
 
+# --- Normalize plugin namespace prefix ---------------------------------------
+# Claude Code dispatches plugin-provided subagents using a namespaced form
+# such as "rdd:susceptibility-snapshot-evaluator". The canonical Tier 1
+# mechanism name in the manifest and in the tier1-phase-manifest-check.sh
+# Stop hook's matching logic is the bare form ("susceptibility-snapshot-
+# evaluator"). Strip the plugin prefix so the mechanism name stored in the
+# dispatch log matches what downstream verification expects. The original
+# subagent_type is preserved in a separate field for forensic purposes.
+MECHANISM="${SUBAGENT_TYPE#*:}"
+# If no colon was present (bare name), parameter expansion returns the
+# original string unchanged, so both forms work.
+
 # --- Check if this is a Tier 1 dispatch --------------------------------------
 IS_TIER1=false
 for m in $TIER1_MECHANISMS; do
-    if [[ "$SUBAGENT_TYPE" == "$m" ]]; then
+    if [[ "$MECHANISM" == "$m" ]]; then
         IS_TIER1=true
         break
     fi
@@ -63,7 +75,7 @@ fi
 jq -nc \
     --arg ts "$TIMESTAMP" \
     --arg sid "$SESSION_ID" \
-    --arg mech "$SUBAGENT_TYPE" \
+    --arg mech "$MECHANISM" \
     --arg sat "$SUBAGENT_TYPE" \
     "${EP_ARG[@]}" \
     --arg tuid "$TOOL_USE_ID" \
