@@ -75,6 +75,7 @@ phases:
           - "## Observed Signals"
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
+        mechanism_type: user-tooling
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -104,6 +105,7 @@ phases:
           - "## Observed Signals"
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
+        mechanism_type: user-tooling
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -133,6 +135,7 @@ phases:
           - "## Observed Signals"
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
+        mechanism_type: user-tooling
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -174,6 +177,7 @@ phases:
           - "## Observed Signals"
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
+        mechanism_type: user-tooling
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -203,6 +207,7 @@ phases:
           - "## Observed Signals"
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
+        mechanism_type: user-tooling
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -232,6 +237,7 @@ phases:
           - "## Observed Signals"
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
+        mechanism_type: user-tooling
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:

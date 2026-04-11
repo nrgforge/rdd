@@ -168,6 +168,11 @@ REMINDERS=()
 
 while IFS= read -r mech; do
     mechanism="$(printf '%s' "$mech" | jq -r '.mechanism')"
+    # mechanism_type: "subagent" (default, artifact from isolated Agent dispatch)
+    # or "user-tooling" (artifact produced by the orchestrator in-context, e.g.
+    # the AID cycle gate reflection note — no dispatch log entry expected,
+    # compound check does not apply).
+    mechanism_type="$(printf '%s' "$mech" | jq -r '.mechanism_type // "subagent"')"
     path_tmpl="$(printf '%s' "$mech" | jq -r '.path_template')"
     min_bytes="$(printf '%s' "$mech" | jq -r '.min_bytes // 500')"
 
@@ -180,22 +185,26 @@ while IFS= read -r mech; do
 
     # E1: file exists
     if [[ ! -f "$full_path" ]]; then
-        # Check dispatch log for cross-reference. Match on mechanism AND the
-        # substituted expected_path — matching on mechanism alone produces
-        # misleading "dispatched but no artifact" messages when a prior-cycle
-        # dispatch for the same mechanism exists in the log.
-        DISPATCHED=false
-        if [[ -f "$DISPATCH_LOG" ]]; then
-            if grep "\"mechanism\":\"${mechanism}\"" "$DISPATCH_LOG" 2>/dev/null \
-                | grep -q "\"expected_path\":\"${path}\"" 2>/dev/null; then
-                DISPATCHED=true
-            fi
-        fi
-
-        if $DISPATCHED; then
-            FAILURES+=("${mechanism}: mechanism was dispatched but did not produce its expected artifact at ${path}")
+        if [[ "$mechanism_type" == "user-tooling" ]]; then
+            FAILURES+=("${mechanism}: note was not produced at expected path ${path}")
         else
-            FAILURES+=("${mechanism}: mechanism was not dispatched at all; expected artifact at ${path}")
+            # Check dispatch log for cross-reference. Match on mechanism AND the
+            # substituted expected_path — matching on mechanism alone produces
+            # misleading "dispatched but no artifact" messages when a prior-cycle
+            # dispatch for the same mechanism exists in the log.
+            DISPATCHED=false
+            if [[ -f "$DISPATCH_LOG" ]]; then
+                if grep "\"mechanism\":\"${mechanism}\"" "$DISPATCH_LOG" 2>/dev/null \
+                    | grep -q "\"expected_path\":\"${path}\"" 2>/dev/null; then
+                    DISPATCHED=true
+                fi
+            fi
+
+            if $DISPATCHED; then
+                FAILURES+=("${mechanism}: mechanism was dispatched but did not produce its expected artifact at ${path}")
+            else
+                FAILURES+=("${mechanism}: mechanism was not dispatched at all; expected artifact at ${path}")
+            fi
         fi
         continue
     fi
@@ -226,7 +235,14 @@ while IFS= read -r mech; do
     done <<< "$required_fields"
 
     # --- Compound check (ADR-064) — enforcement mode only -------------------
-    if $ENFORCEMENT_MODE; then
+    # User-tooling mechanisms (e.g., aid-cycle-gate-reflection) are produced
+    # in-context by the orchestrator, not by an isolated subagent dispatch,
+    # so they have no dispatch log entry and the compound check's isolation
+    # assumption does not apply. The structural floor (E1/S1/S2/S3) is the
+    # complete check for these mechanisms; the Susceptibility Snapshot at the
+    # same phase boundary is the complementary content-level defense
+    # (orchestrator SKILL.md, "compound defense at phase boundaries").
+    if $ENFORCEMENT_MODE && [[ "$mechanism_type" != "user-tooling" ]]; then
         DISPATCH_LOGGED=false
         if [[ -f "$DISPATCH_LOG" ]]; then
             # Check for a dispatch log entry matching both mechanism and path
