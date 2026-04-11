@@ -10,7 +10,7 @@ Are the six failures reported in Issue #9 representative of typical Cycle 9 mech
 Walked four directories with `ls -la` and `Glob`/`Grep`:
 
 - `/Users/nathangreen/Development/rdd/docs/essays/` (essays 001–013)
-- `/Users/nathangreen/Development/rdd/docs/essays/audits/` (all audit-type artifacts)
+- `/Users/nathangreen/Development/rdd/docs/housekeeping/audits/` (all audit-type artifacts)
 - `/Users/nathangreen/Development/rdd/docs/essays/reflections/` (paired with essays)
 - `/Users/nathangreen/Development/rdd/docs/decisions/` (ADRs 001–062)
 - `/Users/nathangreen/Development/rdd/docs/cycle-archive/`
@@ -42,7 +42,7 @@ No code was needed; the corpus is small enough to inspect by hand.
 
 Note: essays 001–007 share an mtime cluster of Mar 24, suggesting they were imported or backfilled together rather than authored sequentially in real time. Audits start sharply at essay 008 (Mar 25). This is consistent with the methodology being self-applied starting from essay 008.
 
-### Audits (in `docs/essays/audits/`)
+### Audits (in `docs/housekeeping/audits/`)
 
 **Citation audits (essay-paired):** 008, 009, 010, 011, 012, 013 — six files
 

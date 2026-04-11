@@ -17,7 +17,7 @@ Read the two prior Cycle 10 lit reviews. Read the actual dispatch-site text in `
 > Before executing the first research loop, dispatch the **research-methods-reviewer** specialist subagent. Provide it with:
 > - The research question set (the questions from Step 1)
 > - Prior research context (existing essays or research logs from prior cycles, if available)
-> - An output path for the review artifact (e.g., `./docs/essays/audits/research-design-review-NNN.md`)
+> - An output path for the review artifact (e.g., `./docs/housekeeping/audits/research-design-review-NNN.md`)
 >
 > The agent reviews each question for embedded conclusions, applies belief-mapping […], and flags premature narrowing in the question set.
 >

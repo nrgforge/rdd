@@ -89,7 +89,7 @@ Following NIST conformance testing methodology, each assertion is one observable
 
 ### research-methods-reviewer
 
-Expected path: `docs/essays/audits/research-design-review-{cycle}.md`.
+Expected path: `docs/housekeeping/audits/research-design-review-{cycle}.md`.
 
 **Existence assertions (detect State B):**
 - E1: File exists at the expected path.
@@ -107,7 +107,7 @@ Expected path: `docs/essays/audits/research-design-review-{cycle}.md`.
 
 ### citation-auditor
 
-Expected path: `docs/essays/audits/citation-audit-{cycle}.md`.
+Expected path: `docs/housekeeping/audits/citation-audit-{cycle}.md`.
 
 **Existence assertions:**
 - E1: File exists at expected path.
@@ -128,7 +128,7 @@ Expected path: `docs/essays/audits/citation-audit-{cycle}.md`.
 
 ### argument-auditor
 
-Expected paths: `docs/essays/audits/argument-audit-{cycle}.md` (research) or `docs/essays/audits/argument-audit-decide-{cycle}.md` (decide). The decide variant is distinguished because argument audits on ADRs are a separate dispatch site.
+Expected paths: `docs/housekeeping/audits/argument-audit-{cycle}.md` (research) or `docs/housekeeping/audits/argument-audit-decide-{cycle}.md` (decide). The decide variant is distinguished because argument audits on ADRs are a separate dispatch site.
 
 **Existence assertions:**
 - E1: File exists at expected path.
@@ -149,7 +149,7 @@ Expected paths: `docs/essays/audits/argument-audit-{cycle}.md` (research) or `do
 
 ### susceptibility-snapshot-evaluator
 
-Expected path: **proposed convention** `docs/essays/audits/susceptibility-snapshot-{cycle}-{phase}.md`. (The current ADR-057 and SKILL.md do not fix a path; S1 flagged this as a softspot. This spike proposes the convention above: cycle number + phase name so one snapshot exists per phase boundary.)
+Expected path: **proposed convention** `docs/housekeeping/audits/susceptibility-snapshot-{cycle}-{phase}.md`. (The current ADR-057 and SKILL.md do not fix a path; S1 flagged this as a softspot. This spike proposes the convention above: cycle number + phase name so one snapshot exists per phase boundary.)
 
 **Existence assertions:**
 - E1: File exists at the phase-specific path.
@@ -202,7 +202,7 @@ phases:
 
 Design properties:
 
-- **Per-phase structure.** The top-level `phases` dictionary is keyed by the phase names used in `docs/cycle-status.md` (`research`, `discover`, `model`, `decide`, `architect`, `build`, `play`, `synthesize`). The hook looks up the current phase and iterates only that phase's requirements. Adding a new phase means adding a new key.
+- **Per-phase structure.** The top-level `phases` dictionary is keyed by the phase names used in `docs/housekeeping/cycle-status.md` (`research`, `discover`, `model`, `decide`, `architect`, `build`, `play`, `synthesize`). The hook looks up the current phase and iterates only that phase's requirements. Adding a new phase means adding a new key.
 - **Per-mechanism encoding.** Each required mechanism lists the canonical name (matching the `subagent_type` the PostToolUse hook checks), the path template, a size floor, and assertion lists. This keeps each mechanism's obligations in one place and makes the PostToolUse-side and Stop-side checks use the same identifiers.
 - **Cycle-aware via template substitution.** The `{cycle}` token in path templates resolves to the current cycle number at check time. The hook infers the cycle from `ls docs/essays/` taking the highest `NNN-` prefix. This is fragile if essays can be started out of order but matches the project's current convention.
 - **Extensible.** Adding a new Tier 1 mechanism is a single new entry under the relevant phase(s). Adding a new phase is a new top-level key.
@@ -223,7 +223,7 @@ phases:
       any revision in response to audit findings).
     required_mechanisms:
       - mechanism: research-methods-reviewer
-        path_template: docs/essays/audits/research-design-review-{cycle}.md
+        path_template: docs/housekeeping/audits/research-design-review-{cycle}.md
         min_bytes: 2000
         required_headers:
           - "# Research Design Review"
@@ -231,7 +231,7 @@ phases:
         required_fields:
           - "Belief-mapping"
       - mechanism: citation-auditor
-        path_template: docs/essays/audits/citation-audit-{cycle}.md
+        path_template: docs/housekeeping/audits/citation-audit-{cycle}.md
         min_bytes: 1500
         required_headers:
           - "# Citation Audit Report"
@@ -241,7 +241,7 @@ phases:
           - "Verified:"
           - "Audited document:"
       - mechanism: argument-auditor
-        path_template: docs/essays/audits/argument-audit-{cycle}.md
+        path_template: docs/housekeeping/audits/argument-audit-{cycle}.md
         min_bytes: 1500
         required_headers:
           - "# Argument Audit Report"
@@ -251,7 +251,7 @@ phases:
           - "Issues found:"
           - "Audited document:"
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-research.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -266,7 +266,7 @@ phases:
       snapshot for the decide phase transition must also exist.
     required_mechanisms:
       - mechanism: argument-auditor
-        path_template: docs/essays/audits/argument-audit-decide-{cycle}.md
+        path_template: docs/housekeeping/audits/argument-audit-decide-{cycle}.md
         min_bytes: 1500
         required_headers:
           - "# Argument Audit Report"
@@ -275,7 +275,7 @@ phases:
           - "Argument chains mapped:"
           - "Issues found:"
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-decide.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-decide.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -286,7 +286,7 @@ phases:
   discover:
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-discover.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-discover.md
         min_bytes: 400
         required_headers: ["# Susceptibility Snapshot"]
         required_fields: ["Phase:"]
@@ -294,7 +294,7 @@ phases:
   model:
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-model.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-model.md
         min_bytes: 400
         required_headers: ["# Susceptibility Snapshot"]
         required_fields: ["Phase:"]
@@ -302,7 +302,7 @@ phases:
   architect:
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-architect.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-architect.md
         min_bytes: 400
         required_headers: ["# Susceptibility Snapshot"]
         required_fields: ["Phase:"]
@@ -310,7 +310,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-build.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-build.md
         min_bytes: 400
         required_headers: ["# Susceptibility Snapshot"]
         required_fields: ["Phase:"]
@@ -318,7 +318,7 @@ phases:
   play:
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-play.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-play.md
         min_bytes: 400
         required_headers: ["# Susceptibility Snapshot"]
         required_fields: ["Phase:"]
@@ -326,11 +326,11 @@ phases:
   synthesize:
     required_mechanisms:
       - mechanism: argument-auditor
-        path_template: docs/essays/audits/argument-audit-synthesize-{cycle}.md
+        path_template: docs/housekeeping/audits/argument-audit-synthesize-{cycle}.md
         min_bytes: 1500
         required_headers: ["# Argument Audit Report"]
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/essays/audits/susceptibility-snapshot-{cycle}-synthesize.md
+        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-synthesize.md
         min_bytes: 400
         required_headers: ["# Susceptibility Snapshot"]
         required_fields: ["Phase:"]
@@ -364,7 +364,7 @@ set -uo pipefail
 
 MANIFEST_PATH="${CLAUDE_PLUGIN_ROOT:-.}/hooks/manifests/tier1-phase-manifest.yaml"
 REPO_ROOT="$(pwd)"
-CYCLE_STATUS="${REPO_ROOT}/docs/cycle-status.md"
+CYCLE_STATUS="${REPO_ROOT}/docs/housekeeping/cycle-status.md"
 
 # --- Fail-safe wrappers ------------------------------------------------------
 die_open() {
@@ -499,7 +499,7 @@ The complete test harness is in the spike's scratch directory (now deleted); rep
 
 **What happened:** The orchestrator dispatched argument-auditor / citation-auditor, the Task tool call (apparently) failed or was never made, and the agent produced audit-shaped output in its own context. The user's confidence that the mechanism had fired was false.
 
-**State B coverage (did it fire at all):** **fully caught.** If no file exists at `docs/essays/audits/argument-audit-014.md`, the Stop hook's E1 check fails and emits a block naming the missing file. The test harness's Case 2 demonstrates this concretely.
+**State B coverage (did it fire at all):** **fully caught.** If no file exists at `docs/housekeeping/audits/argument-audit-014.md`, the Stop hook's E1 check fails and emits a block naming the missing file. The test harness's Case 2 demonstrates this concretely.
 
 **State C coverage (fired-but-fake):** **partially caught, honestly.** A brief in-context summary (a few hundred bytes, no structural headers, no field labels) fails the size floor and structural assertions — test harness's Case 3 demonstrates this for 7-byte stubs. A full-effort fabrication by a task-immersed agent, though, would likely satisfy the current structural assertions because an agent under task immersion producing audit-shaped output is drawing on its memory of prior audits in the repo and can reasonably reproduce the heading/field patterns. **The manifest's structural assertions raise the bar from "agent writes three sentences and calls it done" to "agent has to reproduce the full skeleton" — a meaningful increase in friction, but not a proof of isolation.** The only complete State C defense is the compound check (PostToolUse-dispatch-log AND Stop-manifest-check) that S1 recommends; the manifest on its own is half of that compound.
 
@@ -514,7 +514,7 @@ The complete test harness is in the spike's scratch directory (now deleted); rep
 **Concretely,** the block reason would be:
 > Tier 1 manifest check failed for phase 'discover' (cycle 014). The phase cannot complete until the following artifacts are produced by their dispatched specialist subagents:
 >
->   - susceptibility-snapshot-evaluator: expected artifact missing at docs/essays/audits/susceptibility-snapshot-014-discover.md
+>   - susceptibility-snapshot-evaluator: expected artifact missing at docs/housekeeping/audits/susceptibility-snapshot-014-discover.md
 >
 > Do NOT fabricate these artifacts in your own context. The mechanism's value is that the artifact comes from an isolated subagent dispatch...
 
@@ -536,7 +536,7 @@ The following need to be resolved before the manifest+hook approach is productio
 
 **Q1. How does the Stop hook determine the current phase?**
 
-The spike's hook reads `docs/cycle-status.md` for a `**Phase:**` line, but this depends on the project's convention of keeping that file current. If phase transitions lag the status file, the hook checks the wrong phase's requirements. Alternatives:
+The spike's hook reads `docs/housekeeping/cycle-status.md` for a `**Phase:**` line, but this depends on the project's convention of keeping that file current. If phase transitions lag the status file, the hook checks the wrong phase's requirements. Alternatives:
 - Require the orchestrator to write the phase marker *before* any other phase work (tightening the `cycle-status.md` convention into a hard precondition).
 - Pass the phase explicitly in the Stop hook input via a `sessionMessage` the orchestrator emits at phase-start. The Claude Code hooks spec does not currently propagate custom session messages this way; this would need a design.
 - Infer the phase from the most recently edited artifact in the current cycle's directory, which is heuristic and fragile.

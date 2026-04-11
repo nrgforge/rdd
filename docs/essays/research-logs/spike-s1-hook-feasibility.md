@@ -83,13 +83,13 @@ One practical observation from reading the existing scripts: the project already
 ### 1. research-methods-reviewer dispatch
 
 **Trigger:** Before the first research loop; after substantial essay revision, before the next research loop. ADR-060, Tier 1.
-**Expected artifact:** `./docs/essays/audits/research-design-review-NNN.md`.
+**Expected artifact:** `./docs/housekeeping/audits/research-design-review-NNN.md`.
 **Dispatched via:** Task tool, `subagent_type: "research-methods-reviewer"`.
 
 **Hook event candidate:** `PostToolUse` with matcher `Agent`, filtered in-script on `subagent_type`.
 
 **Implementation sketch:**
-1. On every `PostToolUse` where `tool_name == "Agent"` and `tool_input.subagent_type == "research-methods-reviewer"`, extract the expected output path from `tool_input.prompt` (a grep or regex for `./docs/essays/audits/research-design-review-*.md`).
+1. On every `PostToolUse` where `tool_name == "Agent"` and `tool_input.subagent_type == "research-methods-reviewer"`, extract the expected output path from `tool_input.prompt` (a grep or regex for `./docs/housekeeping/audits/research-design-review-*.md`).
 2. `test -f` the path.
 3. If missing, return JSON with `decision: "block"`, a `reason` instructing the model not to proceed with in-context fallback, and `hookSpecificOutput.additionalContext` naming the missing path explicitly.
 4. Optionally also verify structural properties of the file (non-empty; contains the expected section headings) — this is a bonus, not load-bearing.
@@ -101,7 +101,7 @@ One practical observation from reading the existing scripts: the project already
 ### 2. citation-auditor dispatch
 
 **Trigger:** After the essay is written, before the epistemic gate. Tier 1.
-**Expected artifact:** `./docs/essays/audits/citation-audit-NNN.md`.
+**Expected artifact:** `./docs/housekeeping/audits/citation-audit-NNN.md`.
 **Dispatched via:** Task tool, `subagent_type: "citation-auditor"`.
 
 **Hook event candidate:** `PostToolUse` with matcher `Agent`, filtered in-script on `subagent_type`. Identical architecture to item 1.
@@ -111,7 +111,7 @@ One practical observation from reading the existing scripts: the project already
 ### 3. argument-auditor dispatch (research and decide)
 
 **Trigger:** After citation audit passes in research. After ADRs written in decide. Both require mandatory re-audit after any revision. Tier 1.
-**Expected artifact:** `./docs/essays/audits/argument-audit-NNN.md` (research) or `./docs/decisions/audits/argument-audit-NNN.md` (decide).
+**Expected artifact:** `./docs/housekeeping/audits/argument-audit-NNN.md` (research) or `./docs/decisions/audits/argument-audit-NNN.md` (decide).
 **Dispatched via:** Task tool, `subagent_type: "argument-auditor"`.
 
 **Hook event candidate:** `PostToolUse` with matcher `Agent`. Same architecture.
@@ -130,7 +130,7 @@ One practical observation from reading the existing scripts: the project already
 
 - **Stop hook with phase-state inference.** When the agent stops, inspect recent transcript / file-system state to determine whether a phase boundary was just crossed, and whether a susceptibility snapshot artifact was produced since the last snapshot. If a phase boundary was crossed without a new snapshot, return `decision: "block"` — which genuinely prevents stopping and forces the agent to continue. This is the strongest available enforcement for item 4 and is broadly a watchdog/dead-man-switch in exactly the Fowler sense: the snapshot file is the "pet the watchdog" signal; its absence during a stop-at-phase-boundary is the alert condition.
 
-- **PostToolUse on a phase-marker tool.** If phase transitions are marked by a specific `Edit` or `Write` to `docs/cycle-status.md` (which they appear to be in this project), a `PostToolUse` matcher on `Edit|Write` plus an in-script check that the target path is `cycle-status.md` and the content indicates a phase transition could fire a snapshot-missing check at the moment of the transition. This is the AOP-style join point approach — it weaves the check into the structural operation that *is* the phase boundary.
+- **PostToolUse on a phase-marker tool.** If phase transitions are marked by a specific `Edit` or `Write` to `docs/housekeeping/cycle-status.md` (which they appear to be in this project), a `PostToolUse` matcher on `Edit|Write` plus an in-script check that the target path is `cycle-status.md` and the content indicates a phase transition could fire a snapshot-missing check at the moment of the transition. This is the AOP-style join point approach — it weaves the check into the structural operation that *is* the phase boundary.
 
 - **FileChanged hook on cycle-status.md.** Purer watchdog form. The hook fires independently of whether the agent chose to interact with it, as long as the file is in its watched set. Useful if phase boundaries are ever marked by tools outside the agent's direct `Edit`/`Write` calls.
 
@@ -179,7 +179,7 @@ The lit review prescribes three design principles: Dapper transparency (instrume
 
 **Watchdog / dead-man-switch.** Strong for items 1–3 and partial for item 4. The watchdog pattern wants an affirmative signal on the "happy path" and an alarm on its absence. The PostToolUse `test -f` check is exactly the watchdog reset condition: the artifact file is the heartbeat; its absence is the alarm. The inversion from "fire on failure" to "fire on absence of success" is what makes this better than text hardening — the hook is checking the positive signal, not waiting for a negative one. Item 4's `Stop` hook variant is the purest watchdog form: the session cannot end without the expected snapshot file, and the absence of the file prevents the stop. This is architecturally identical to a hardware watchdog timer preventing the CPU from entering idle until the kernel has acknowledged the last tick.
 
-**AOP weaving.** Partial. AOP weaves cross-cutting concerns at framework-level join points *without module cooperation*. The Claude Code hook system is explicitly an AOP-style weaving mechanism — matchers are pointcuts, hook scripts are advice, and the harness performs the weaving. This is genuinely analogous to classical AOP. The limitation is which join points are exposed. Tool-call boundaries are exposed (every tool call is a join point). Phase boundaries in the methodological sense are not exposed — the methodology's phases are a higher-level abstraction the harness does not know about. For AOP to weave at the phase boundary, the phase boundary must be made structurally visible at a level the harness can see. Currently, the closest structural anchor is `docs/cycle-status.md` edits, which is a conventional — not enforced — anchor. The AOP principle is satisfiable only to the extent the methodology commits to structural phase markers.
+**AOP weaving.** Partial. AOP weaves cross-cutting concerns at framework-level join points *without module cooperation*. The Claude Code hook system is explicitly an AOP-style weaving mechanism — matchers are pointcuts, hook scripts are advice, and the harness performs the weaving. This is genuinely analogous to classical AOP. The limitation is which join points are exposed. Tool-call boundaries are exposed (every tool call is a join point). Phase boundaries in the methodological sense are not exposed — the methodology's phases are a higher-level abstraction the harness does not know about. For AOP to weave at the phase boundary, the phase boundary must be made structurally visible at a level the harness can see. Currently, the closest structural anchor is `docs/housekeeping/cycle-status.md` edits, which is a conventional — not enforced — anchor. The AOP principle is satisfiable only to the extent the methodology commits to structural phase markers.
 
 **The honest headline.** Hooks satisfy Dapper at the call layer, watchdog at the artifact layer, and AOP at the tool-boundary layer. They do not satisfy any of the three principles at the "phase boundary without a tool call" or "conversational event" layers — which is exactly the boundary where items 4 (partially), 5, and 6 live. The hook layer is strictly stronger than the text layer but strictly weaker than a true framework-level enforcement layer that could enforce at arbitrary join points.
 

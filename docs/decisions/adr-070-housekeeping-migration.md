@@ -4,13 +4,13 @@
 
 ## Context
 
-ADR-064 established the centered-vs-infrastructure framing for the RDD corpus: centered artifacts are documents designed to be read, shared, or referenced directly by users (essays, ADRs, domain model, product discovery, roadmap, field guide, ORIENTATION); infrastructure artifacts underpin framework operation without being centered for direct user reading (dispatch log, audit reports, cycle-status). The distinction is about what the methodology centers for user attention, not a hard binary on technical readability — any file can be opened and read, but the workflow does not expect users to browse infrastructure artifacts directly. ADR-064 committed to the framing, placed `docs/housekeeping/dispatch-log.jsonl` as the first concrete instance, and explicitly deferred two migrations to a separate ADR: **`docs/essays/audits/` → `docs/housekeeping/audits/`** and **`docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`**.
+ADR-064 established the centered-vs-infrastructure framing for the RDD corpus: centered artifacts are documents designed to be read, shared, or referenced directly by users (essays, ADRs, domain model, product discovery, roadmap, field guide, ORIENTATION); infrastructure artifacts underpin framework operation without being centered for direct user reading (dispatch log, audit reports, cycle-status). The distinction is about what the methodology centers for user attention, not a hard binary on technical readability — any file can be opened and read, but the workflow does not expect users to browse infrastructure artifacts directly. ADR-064 committed to the framing, placed `docs/housekeeping/dispatch-log.jsonl` as the first concrete instance, and explicitly deferred two migrations to a separate ADR: **`docs/housekeeping/audits/` → `docs/housekeeping/audits/`** and **`docs/housekeeping/cycle-status.md` → `docs/housekeeping/cycle-status.md`**.
 
 ADR-066 added a third housekeeping location: **`docs/housekeeping/gates/`** for AID cycle gate reflection notes. This directory is new — there is no pre-migration equivalent — so it needs creation, not migration.
 
 ADR-064 also specified a **version marker file** at `docs/housekeeping/.migration-version` that the Stop hook reads to distinguish pre-migration from migrated corpora. The Stop hook's advisory mode fires on pre-migration corpora; enforcement mode fires when the marker is present. The marker is written by the migration process this ADR specifies.
 
-ADR-065 introduced a requirement on skill-file dispatch prompts (canonical format with `Output path:` line) that the PostToolUse hook in ADR-064 consumes. The audit subagents currently write to `docs/essays/audits/` per their existing skill-file instructions and prompt formats. The migration must update both the canonical paths in the manifest and the canonical prompt format in skill files.
+ADR-065 introduced a requirement on skill-file dispatch prompts (canonical format with `Output path:` line) that the PostToolUse hook in ADR-064 consumes. The audit subagents currently write to `docs/housekeeping/audits/` per their existing skill-file instructions and prompt formats. The migration must update both the canonical paths in the manifest and the canonical prompt format in skill files.
 
 This ADR is the mechanical execution of the centered-vs-infrastructure framing. It is the least architecturally interesting of Cycle 10's eight DECIDE ADRs but the one that makes ADRs 063–066 operational.
 
@@ -24,15 +24,15 @@ The migration moves the following from pre-migration locations to the housekeepi
 
 | From | To | Notes |
 |---|---|---|
-| `docs/essays/audits/*` | `docs/housekeeping/audits/*` | All files and subdirectories preserved; cycle-keyed naming unchanged |
-| `docs/cycle-status.md` | `docs/housekeeping/cycle-status.md` | Single file move; no content changes |
+| `docs/housekeeping/audits/*` | `docs/housekeeping/audits/*` | All files and subdirectories preserved; cycle-keyed naming unchanged |
+| `docs/housekeeping/cycle-status.md` | `docs/housekeeping/cycle-status.md` | Single file move; no content changes |
 
 The following are created during migration:
 
 | Path | Purpose | Content |
 |---|---|---|
 | `docs/housekeeping/` | Root of housekeeping directory | (directory only) |
-| `docs/housekeeping/audits/` | Audit reports migrated from `docs/essays/audits/` | (populated by move) |
+| `docs/housekeeping/audits/` | Audit reports migrated from `docs/housekeeping/audits/` | (populated by move) |
 | `docs/housekeeping/gates/` | AID cycle gate reflection notes (per ADR-066) | (empty at creation; populated by future gate reflections) |
 | `docs/housekeeping/.migration-version` | Version marker file read by the Stop hook (per ADR-064 advisory mode detection) | Plugin version string, e.g., `0.7.0` |
 | `.gitignore` entry for `docs/housekeeping/dispatch-log.jsonl` | Session-scoped dispatch log exclusion (per ADR-064) | Append single line to existing `.gitignore` |
@@ -52,23 +52,23 @@ The distinction is governed by the centered-vs-infrastructure framing from ADR-0
 The migration updates references across the corpus that point at pre-migration paths. The updates are mechanical path substitutions — no content changes, no ADR supersessions:
 
 **In `docs/decisions/*.md` (prior ADRs):**
-- Occurrences of `docs/essays/audits/` → `docs/housekeeping/audits/`
-- Occurrences of `./docs/essays/audits/` → `./docs/housekeeping/audits/`
-- Occurrences of `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`
-- Occurrences of `./docs/cycle-status.md` → `./docs/housekeeping/cycle-status.md`
+- Occurrences of `docs/housekeeping/audits/` → `docs/housekeeping/audits/`
+- Occurrences of `./docs/housekeeping/audits/` → `./docs/housekeeping/audits/`
+- Occurrences of `docs/housekeeping/cycle-status.md` → `docs/housekeeping/cycle-status.md`
+- Occurrences of `./docs/housekeeping/cycle-status.md` → `./docs/housekeeping/cycle-status.md`
 
 **In `docs/essays/014-specification-execution-gap.md` (Cycle 10 essay):**
 - Same substitutions as above. The essay references spike reports and audit reports; these references become stale if not updated.
 
 **In `docs/essays/research-logs/*.md` (Cycle 10 spike reports):**
-- Same substitutions. Spike S2's reference implementation uses `docs/essays/audits/...` paths throughout; these must be updated to match the new canonical locations.
+- Same substitutions. Spike S2's reference implementation uses `docs/housekeeping/audits/...` paths throughout; these must be updated to match the new canonical locations.
 
 **In `skills/**/SKILL.md` (all phase skills and orchestrator skill):**
-- Dispatch instructions that name output paths (`docs/essays/audits/...`) are updated to housekeeping paths
+- Dispatch instructions that name output paths (`docs/housekeeping/audits/...`) are updated to housekeeping paths
 - The canonical prompt skeleton from ADR-065 is applied to each Tier 1 dispatch that does not already use it
 
 **In `hooks/manifests/tier1-phase-manifest.yaml` (the ADR-063 manifest):**
-- Every `path_template` value that references `docs/essays/audits/` is updated to `docs/housekeeping/audits/`
+- Every `path_template` value that references `docs/housekeeping/audits/` is updated to `docs/housekeeping/audits/`
 - Gate reflection note entries from ADR-066 use `docs/housekeeping/gates/` paths
 
 **In `docs/domain-model.md`:**
@@ -85,8 +85,8 @@ Before the migration operation runs, the plugin release must include the skill-f
 **Atomic shipping unit.** The plugin release that introduces the compound check (ADRs 063–066) must treat ADR-065's skill edits and ADR-070's path updates as a **single atomic change**. Shipping ADR-063/064/065 without ADR-070 (the migration) is acceptable — the corpus stays in advisory mode until migration runs, which is the designed graceful degradation from ADR-064. Shipping ADR-070 without ADR-065's skill edits is not acceptable — the manifest would reference housekeeping paths while skill files still dispatched to pre-migration paths, producing false negatives on every phase boundary.
 
 **Transitional state between ADR-065 shipping and ADR-070 migration running.** The plugin release containing ADR-063/064/065 but without the migration run is a legitimate state. In this state:
-- Skill files specify `Output path: docs/essays/audits/...` (pre-migration paths).
-- The manifest's `path_template` values reference `docs/essays/audits/...` (matching the skill files).
+- Skill files specify `Output path: docs/housekeeping/audits/...` (pre-migration paths).
+- The manifest's `path_template` values reference `docs/housekeeping/audits/...` (matching the skill files).
 - The PostToolUse hook can extract paths correctly; the Stop hook finds artifacts at the expected locations.
 - The corpus has no `docs/housekeeping/` directory, so the Stop hook runs in advisory mode per ADR-064.
 - Users can run `/rdd-conform migrate` at their convenience to transition to enforcement mode.
@@ -99,9 +99,9 @@ The migration is a **one-shot operation** triggered by `/rdd-conform migrate`. T
 
 1. Checks whether `docs/housekeeping/.migration-version` exists. If present and matching the current plugin version, no-op (already migrated).
 2. Creates `docs/housekeeping/` and subdirectories (`audits/`, `gates/`) if absent.
-3. Moves `docs/essays/audits/*` → `docs/housekeeping/audits/*` preserving subdirectory structure.
-4. Moves `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`.
-5. Performs the reference updates specified above. Uses mechanical `sed`-style substitution on each affected file; the substitutions are unambiguous because the source paths (`docs/essays/audits/`, `docs/cycle-status.md`) are specific enough not to collide with other content.
+3. Moves `docs/housekeeping/audits/*` → `docs/housekeeping/audits/*` preserving subdirectory structure.
+4. Moves `docs/housekeeping/cycle-status.md` → `docs/housekeeping/cycle-status.md`.
+5. Performs the reference updates specified above. Uses mechanical `sed`-style substitution on each affected file; the substitutions are unambiguous because the source paths (`docs/housekeeping/audits/`, `docs/housekeeping/cycle-status.md`) are specific enough not to collide with other content.
 6. Writes `docs/housekeeping/.migration-version` with the current plugin version string.
 7. Adds `docs/housekeeping/dispatch-log.jsonl` to `.gitignore` if not already present.
 8. Produces a summary report listing every file moved, every file whose references were updated, and the marker file content.
@@ -122,8 +122,8 @@ The `rdd-conform` skill gains three new audit scopes alongside its existing arti
 - `docs/housekeeping/gates/` exists
 - `docs/housekeeping/cycle-status.md` exists (if a cycle is active)
 - `docs/housekeeping/.migration-version` exists and matches the current plugin version
-- No orphaned audit files remain at `docs/essays/audits/` (pre-migration detection)
-- No orphaned `docs/cycle-status.md` remains at the top level (pre-migration detection)
+- No orphaned audit files remain at `docs/housekeeping/audits/` (pre-migration detection)
+- No orphaned `docs/housekeeping/cycle-status.md` remains at the top level (pre-migration detection)
 
 Findings are reported; the user decides whether to run `/rdd-conform migrate` to resolve them.
 

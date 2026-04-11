@@ -33,7 +33,7 @@ On every `PostToolUse` where `tool_name == "Agent"`, the hook:
 3. Extracts the expected output path from `tool_input.prompt` via regex, matching the canonical path patterns specified in the manifest's `path_template` entries (with `{cycle}` resolved to the current cycle).
 4. Appends a structured entry to the session-scoped dispatch log at `docs/housekeeping/dispatch-log.jsonl`:
    ```json
-   {"timestamp": "2026-04-08T15:42:11Z", "session_id": "...", "mechanism": "argument-auditor", "subagent_type": "argument-auditor", "expected_path": "docs/essays/audits/argument-audit-014.md", "tool_use_id": "..."}
+   {"timestamp": "2026-04-08T15:42:11Z", "session_id": "...", "mechanism": "argument-auditor", "subagent_type": "argument-auditor", "expected_path": "docs/housekeeping/audits/argument-audit-014.md", "tool_use_id": "..."}
    ```
 5. Exits allow (never blocks the tool call — verification is append-only; the dispatch already ran).
 
@@ -49,8 +49,8 @@ The `docs/housekeeping/` directory is introduced in this ADR as a new structural
 
 The reference implementation from Spike S2, extended with compound-check cross-referencing:
 
-1. Reads `docs/cycle-status.md` for the current phase; if absent or unparseable, emits `allow` (fails safe).
-2. Reads the current cycle number from the `**Cycle number:** NNN` field in `docs/cycle-status.md` (canonical mechanism per ADR-063). If that field is absent or unparseable, falls back to inferring the cycle from the highest `NNN-` prefix in `docs/essays/`. If neither is available, emits `allow`.
+1. Reads `docs/housekeeping/cycle-status.md` for the current phase; if absent or unparseable, emits `allow` (fails safe).
+2. Reads the current cycle number from the `**Cycle number:** NNN` field in `docs/housekeeping/cycle-status.md` (canonical mechanism per ADR-063). If that field is absent or unparseable, falls back to inferring the cycle from the highest `NNN-` prefix in `docs/essays/`. If neither is available, emits `allow`.
 3. Loads the manifest from `hooks/manifests/tier1-phase-manifest.yaml` (per ADR-063); if absent or unparseable, emits allow with GitHub-issue surfacing (see §"Fails-Safe-to-Allow").
 4. Looks up the current phase entry; if the phase has no obligations, emits `allow`.
 5. For each required mechanism in the phase entry, runs the three structural assertions from ADR-063 (file existence, size floor, required headers, required fields) AND checks the dispatch log at `docs/housekeeping/dispatch-log.jsonl` for a matching entry whose `mechanism` matches and whose `expected_path` matches the resolved path template.
@@ -120,7 +120,7 @@ The notice is model-visible — the agent sees it on its next turn and is obliga
 
 ```yaml
 - mechanism: argument-auditor
-  path_template: docs/essays/audits/argument-audit-{cycle}.md
+  path_template: docs/housekeeping/audits/argument-audit-{cycle}.md
   audited_documents:
     - "docs/essays/{cycle}-*.md"
   min_bytes: 1500
@@ -157,8 +157,8 @@ The `docs/housekeeping/` directory groups infrastructure artifacts together so u
 
 This ADR commits to the position that audit reports and cycle-status belong in the infrastructure category (underpin framework operation; findings surfaced by the agent rather than browsed directly by users). The actual migration mechanics — physical file moves, manifest `path_template` updates in ADR-063, path references in prior ADRs, skill-file dispatch instructions, Spike S2 reference implementation path updates — are separated into ADR-070 (Housekeeping directory migration). The separation is because the migration touches many files across the corpus and requires careful handling of in-flight Cycle 10 audits; bundling it into ADR-064 would violate the one-decision-per-ADR principle and produce an unreviewably large diff.
 
-- **`docs/essays/audits/` → `docs/housekeeping/audits/`**: audit reports are output of verification subagents; the agent reads them at gates and surfaces findings on the user's behalf (as happened for the three framing concerns at this DECIDE gate). Users can read audits directly if they want, but the workflow does not center them for direct reading. Migration mechanics in ADR-070.
-- **`docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`**: cycle-status is parsed by the Stop hook for phase detection and is occasionally read by users resuming a cycle. Primarily infrastructure; occasionally centered. Same deferral to ADR-070.
+- **`docs/housekeeping/audits/` → `docs/housekeeping/audits/`**: audit reports are output of verification subagents; the agent reads them at gates and surfaces findings on the user's behalf (as happened for the three framing concerns at this DECIDE gate). Users can read audits directly if they want, but the workflow does not center them for direct reading. Migration mechanics in ADR-070.
+- **`docs/housekeeping/cycle-status.md` → `docs/housekeeping/cycle-status.md`**: cycle-status is parsed by the Stop hook for phase detection and is occasionally read by users resuming a cycle. Primarily infrastructure; occasionally centered. Same deferral to ADR-070.
 
 **Related scope for rdd-conform (three new audit scopes specified in ADR-070):** The conformance audit skill should be extended with three new audit scopes: (1) **housekeeping directory organization audit** — verifies that audit files are organized by cycle with canonical naming, that infrastructure artifacts haven't drifted to the wrong locations, and that the centered-vs-infrastructure distinction is being honored by placement; (2) **gate reflection note template alignment audit** (per ADR-066) — verifies gate reflection notes match their canonical template; (3) **dispatch prompt format audit** (per ADR-065) — verifies skill-file dispatch prompts follow the canonical skeleton with the `Output path:` line so the PostToolUse hook can extract expected paths. All three are within `rdd-conform`'s existing template-alignment mandate, applied to new directory patterns and skill-file patterns.
 
@@ -202,7 +202,7 @@ What this ADR establishes as durable: the specific advisory-mode mechanism for A
 
 **Coupling to ADR-070.** The migration process in ADR-070 is responsible for: (a) moving files from pre-migration paths to housekeeping paths, (b) writing the marker file with the current plugin version, (c) handling edge cases like cycle-in-progress states and partial migrations. The Stop hook logic in this ADR is coupled to the marker file's existence; ADR-070 is coupled to its creation. The coupling is minimal — one file, existence check — but both must ship together for the transition to be clean.
 
-**Note on Cycle 10's own corpus.** The corpus currently writing these ADRs is itself pre-migration (Cycle 10's audits live at `docs/essays/audits/`). When the plugin version shipping ADRs 063–065 and 070 is released, Cycle 10's own corpus will enter advisory mode on that plugin until `rdd-conform` is run to migrate it. This is the expected behavior — the methodology's first user of the new pattern is the methodology itself, and it will experience the graceful degradation like any other user.
+**Note on Cycle 10's own corpus.** The corpus currently writing these ADRs is itself pre-migration (Cycle 10's audits live at `docs/housekeeping/audits/`). When the plugin version shipping ADRs 063–065 and 070 is released, Cycle 10's own corpus will enter advisory mode on that plugin until `rdd-conform` is run to migrate it. This is the expected behavior — the methodology's first user of the new pattern is the methodology itself, and it will experience the graceful degradation like any other user.
 
 ### Scope — surgical, not general
 
@@ -253,8 +253,8 @@ Tracing each major claim to its source:
 - **The compound-check architecture (PostToolUse dispatch log + Stop manifest cross-reference):** Essay 014 §6 line 149 ("The complete defense is a compound check… State C then requires fabricating both the artifact and somehow inducing a fake PostToolUse event — structurally impossible because the agent cannot inject hook events") and Spike S2 §"Validation Against Issue #9" line 504 ("The only complete State C defense is the compound check (PostToolUse-dispatch-log AND Stop-manifest-check) that S1 recommends"). Not agent synthesis.
 - **The PostToolUse dispatch schema and `{description, prompt, subagent_type, model}` access:** Spike S1 §"Implementation precisions" and §"Per-Mechanism Feasibility Analysis" items 1–4. Not agent synthesis.
 - **The Stop hook's reference implementation (phase from cycle-status, cycle from essay numbering, structural assertions):** Spike S2's reference implementation script. Not agent synthesis.
-- **The surgical scope discipline (four failure modes, not general default):** DISCOVER settled premise 5 as recorded in `docs/cycle-status.md` feed-forward signals. Not agent synthesis.
-- **The Fails-Safe-to-Allow sufficiency analysis (silent-fail indistinguishable from no-hook):** Research-phase Commitment 1 as recorded in `docs/cycle-status.md`. Not agent synthesis.
+- **The surgical scope discipline (four failure modes, not general default):** DISCOVER settled premise 5 as recorded in `docs/housekeeping/cycle-status.md` feed-forward signals. Not agent synthesis.
+- **The Fails-Safe-to-Allow sufficiency analysis (silent-fail indistinguishable from no-hook):** Research-phase Commitment 1 as recorded in `docs/housekeeping/cycle-status.md`. Not agent synthesis.
 - **The GitHub-issue surfacing design (stderr notice with issue template URL, non-blocking, ignorable, maintainer-vs-user distinction):** DECIDE phase conversation 2026-04-08 (this cycle, this turn). The user named the product principle — "the user is in no position to fix the error unless they are me" — and the resulting design (non-blocking stderr notice directing to GitHub issue, no SessionStart self-test, no per-session suppression at v1) was composed in direct response to that framing. **User-surfaced at DECIDE gate 2026-04-08; agent composed the specific stderr-notice format in response.** This is a hybrid provenance similar to the User-Tooling Layer pattern from MODEL: the principle is user-surfaced, the structural encoding is agent-composed. The encoding carries explicit attribution here.
 - **The "rdd targets developers who are not the methodology maintainer" product principle:** user-surfaced at DECIDE phase 2026-04-08, same conversation. Shapes the entire Fails-Safe-to-Allow sufficiency analysis. Attribution carried.
 - **Revision-aware re-audit reminder (non-blocking mtime comparison, substantiality-is-human-judgment framing):** user-surfaced at DECIDE gate 2026-04-08. The user rejected pure deferral of re-audit temporal tracking ("not a hard blocker but we do want to re-audit if we make substantial revisions"), and the agent composed the reminder-rather-than-block design in response. The principle — mechanical detection, epistemic decision — is the agent's composition, but the requirement to include *some* revision-aware mechanism in v1 rather than deferring entirely is user-surfaced. Attribution carried in the Decision section.

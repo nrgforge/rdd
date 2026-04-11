@@ -1,0 +1,217 @@
+{
+  "migration_version": "0.7.1",
+  "migrated_at": "2026-04-11T06:20:31Z",
+  "plugin_version": "0.7.1",
+  "moves": [
+    {
+      "from": "docs/essays/audits/argument-audit-008.md",
+      "to": "docs/housekeeping/audits/argument-audit-008.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-009.md",
+      "to": "docs/housekeeping/audits/argument-audit-009.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-010.md",
+      "to": "docs/housekeeping/audits/argument-audit-010.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-011.md",
+      "to": "docs/housekeeping/audits/argument-audit-011.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-012.md",
+      "to": "docs/housekeeping/audits/argument-audit-012.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-013.md",
+      "to": "docs/housekeeping/audits/argument-audit-013.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-014-reaudit-2.md",
+      "to": "docs/housekeeping/audits/argument-audit-014-reaudit-2.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-014-reaudit.md",
+      "to": "docs/housekeeping/audits/argument-audit-014-reaudit.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-014.md",
+      "to": "docs/housekeeping/audits/argument-audit-014.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-010.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-010.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-014-reaudit-2.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-014-reaudit-2.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-014-reaudit-3.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-014-reaudit-3.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-014-reaudit-4.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-014-reaudit-4.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-014-reaudit-5.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-014-reaudit-5.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-014-reaudit.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-014-reaudit.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-014.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-014.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-037-039.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-037-039.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-040-042.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-040-042.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-048-054.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-048-054.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-decide-055-062.md",
+      "to": "docs/housekeeping/audits/argument-audit-decide-055-062.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-manifesto-v2.md",
+      "to": "docs/housekeeping/audits/argument-audit-manifesto-v2.md"
+    },
+    {
+      "from": "docs/essays/audits/argument-audit-manifesto.md",
+      "to": "docs/housekeeping/audits/argument-audit-manifesto.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-008.md",
+      "to": "docs/housekeeping/audits/citation-audit-008.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-009.md",
+      "to": "docs/housekeeping/audits/citation-audit-009.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-010.md",
+      "to": "docs/housekeeping/audits/citation-audit-010.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-011.md",
+      "to": "docs/housekeeping/audits/citation-audit-011.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-012.md",
+      "to": "docs/housekeeping/audits/citation-audit-012.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-013.md",
+      "to": "docs/housekeeping/audits/citation-audit-013.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-014-reaudit.md",
+      "to": "docs/housekeeping/audits/citation-audit-014-reaudit.md"
+    },
+    {
+      "from": "docs/essays/audits/citation-audit-014.md",
+      "to": "docs/housekeeping/audits/citation-audit-014.md"
+    },
+    {
+      "from": "docs/essays/audits/conformance-scan-040-042.md",
+      "to": "docs/housekeeping/audits/conformance-scan-040-042.md"
+    },
+    {
+      "from": "docs/essays/audits/conformance-scan-048-054.md",
+      "to": "docs/housekeeping/audits/conformance-scan-048-054.md"
+    },
+    {
+      "from": "docs/essays/audits/conformance-scan-build-verification.md",
+      "to": "docs/housekeeping/audits/conformance-scan-build-verification.md"
+    },
+    {
+      "from": "docs/essays/audits/conformance-scan-decide-014.md",
+      "to": "docs/housekeeping/audits/conformance-scan-decide-014.md"
+    },
+    {
+      "from": "docs/essays/audits/research-design-review-014.md",
+      "to": "docs/housekeeping/audits/research-design-review-014.md"
+    },
+    {
+      "from": "docs/essays/audits/susceptibility-snapshot-014-architect.md",
+      "to": "docs/housekeeping/audits/susceptibility-snapshot-014-architect.md"
+    },
+    {
+      "from": "docs/essays/audits/susceptibility-snapshot-014-decide.md",
+      "to": "docs/housekeeping/audits/susceptibility-snapshot-014-decide.md"
+    },
+    {
+      "from": "docs/essays/audits/susceptibility-snapshot-014-discover.md",
+      "to": "docs/housekeeping/audits/susceptibility-snapshot-014-discover.md"
+    },
+    {
+      "from": "docs/essays/audits/susceptibility-snapshot-014-model.md",
+      "to": "docs/housekeeping/audits/susceptibility-snapshot-014-model.md"
+    },
+    {
+      "from": "docs/essays/audits/susceptibility-snapshot-014-research.md",
+      "to": "docs/housekeeping/audits/susceptibility-snapshot-014-research.md"
+    },
+    {
+      "from": "docs/cycle-status.md",
+      "to": "docs/housekeeping/cycle-status.md"
+    }
+  ],
+  "directories_created": [
+    "docs/housekeeping",
+    "docs/housekeeping/audits",
+    "docs/housekeeping/gates"
+  ],
+  "directories_removed": [
+    "docs/essays/audits"
+  ],
+  "reference_updates": {
+    "substitutions": [
+      {
+        "from": "./docs/essays/audits/",
+        "to": "./docs/housekeeping/audits/"
+      },
+      {
+        "from": "docs/essays/audits/",
+        "to": "docs/housekeeping/audits/"
+      },
+      {
+        "from": "./docs/cycle-status.md",
+        "to": "./docs/housekeeping/cycle-status.md"
+      },
+      {
+        "from": "docs/cycle-status.md",
+        "to": "docs/housekeeping/cycle-status.md"
+      }
+    ],
+    "files_updated": [
+      "docs/decisions/adr-060-research-methods-subagent.md",
+      "docs/decisions/adr-063-per-phase-manifest-format.md",
+      "docs/decisions/adr-064-compound-check-hooks.md",
+      "docs/decisions/adr-065-anchor-dispatch-skill-structure-fix.md",
+      "docs/decisions/adr-067-three-tier-enforcement-classification.md",
+      "docs/decisions/adr-068-grounding-reframe-extension.md",
+      "docs/decisions/adr-069-methodology-scope-of-claim.md",
+      "docs/decisions/adr-070-housekeeping-migration.md",
+      "docs/domain-model.md",
+      "docs/essays/research-logs/014-specification-execution-gap.md",
+      "docs/essays/research-logs/spike-s1-hook-feasibility.md",
+      "docs/essays/research-logs/spike-s2-acceptance-criteria.md",
+      "docs/essays/research-logs/spike-s3-base-rate-audit.md",
+      "docs/essays/research-logs/spike-s4-fail-loud-dispatch.md",
+      "docs/system-design.md"
+    ]
+  },
+  "note": "Automated reversal is not supported. Use git checkout / git reset to revert."
+}

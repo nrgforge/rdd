@@ -5,7 +5,7 @@
 
 **Planned essay:** `014-specification-execution-gap.md` (working title — may shift if research surfaces a sharper frame)
 
-**Reviewer audit:** [`./docs/essays/audits/research-design-review-014.md`](../audits/research-design-review-014.md) — Tier 1 dispatch executed in isolation, returned substantive findings, did not silently fall back.
+**Reviewer audit:** [`./docs/housekeeping/audits/research-design-review-014.md`](../audits/research-design-review-014.md) — Tier 1 dispatch executed in isolation, returned substantive findings, did not silently fall back.
 
 ---
 
@@ -350,12 +350,12 @@ Structural heuristics (file existence + size floor + required headers + required
 
 #### The most important deliverable: the YAML manifest
 
-A per-phase manifest with `format_version: 1`, keyed by phase name (research, discover, model, decide, architect, build, play, synthesize), each with `required_mechanisms` listing canonical subagent name, `path_template` with `{cycle}` substitution token, `min_bytes` floor, `required_headers`, and `required_fields`. The reference Stop hook reads `docs/cycle-status.md` for current phase, takes the highest `NNN-` essay number for current cycle, loads the manifest, and iterates required artifacts.
+A per-phase manifest with `format_version: 1`, keyed by phase name (research, discover, model, decide, architect, build, play, synthesize), each with `required_mechanisms` listing canonical subagent name, `path_template` with `{cycle}` substitution token, `min_bytes` floor, `required_headers`, and `required_fields`. The reference Stop hook reads `docs/housekeeping/cycle-status.md` for current phase, takes the highest `NNN-` essay number for current cycle, loads the manifest, and iterates required artifacts.
 
 Example entry from the concrete manifest (research phase, citation-auditor):
 ```yaml
 - mechanism: citation-auditor
-  path_template: docs/essays/audits/citation-audit-{cycle}.md
+  path_template: docs/housekeeping/audits/citation-audit-{cycle}.md
   min_bytes: 1500
   required_headers:
     - "# Citation Audit Report"
@@ -461,7 +461,7 @@ I had items 5 and 6 (AID cycle, belief-mapping at user pushback) classified as "
 
 User's concrete proposal: *"Is there an enforced part of the epistemic gate that runs a question generation skill?"* Currently, no. The Question Toolkit exists as question *forms* the orchestrator is supposed to compose from at the gate, but the gate itself is agent-executed — the exact Tier 2 category not hook-enforceable.
 
-**But the question points at a new architectural move:** *convert Tier 2 conversational mechanisms into Tier 1 artifact-producing mechanisms by making them produce a file.* If the gate was required to produce a written belief-mapping note (e.g., `docs/essays/audits/gate-reflection-{cycle}-{phase}.md` containing the question asked, the response, and the orchestrator's pedagogical interpretation), then:
+**But the question points at a new architectural move:** *convert Tier 2 conversational mechanisms into Tier 1 artifact-producing mechanisms by making them produce a file.* If the gate was required to produce a written belief-mapping note (e.g., `docs/housekeeping/audits/gate-reflection-{cycle}-{phase}.md` containing the question asked, the response, and the orchestrator's pedagogical interpretation), then:
 
 - The gate's execution becomes hook-verifiable (Stop hook checks for the file)
 - The same structural-enforcement logic applies (manifest entry, artifact existence, structural assertions)

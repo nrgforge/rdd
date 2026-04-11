@@ -58,22 +58,22 @@ Dispatch the susceptibility-snapshot-evaluator subagent with the following brief
 the phase boundary being crossed, the next phase being entered,
 and any cross-phase signals from prior snapshots.>
 
-Output path: docs/essays/audits/susceptibility-snapshot-{cycle}-{phase}.md
+Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-{phase}.md
 ```
 
 The `{phase}` token resolves to this phase's name (`research`, `discover`, `model`, `decide`, `architect`, `build`, `play`, `synthesize`). The `{cycle}` token resolves to the current cycle number as inferred by the hook.
 
-**Path note for ADR-070 migration:** The canonical path is currently `docs/essays/audits/susceptibility-snapshot-{cycle}-{phase}.md`. When ADR-070 executes the housekeeping migration, this path becomes `docs/housekeeping/audits/susceptibility-snapshot-{cycle}-{phase}.md`. The skill edits in this ADR and the path updates in ADR-070 must ship together to avoid a period where the skill text references a location different from where the hook and the subagent expect to find the artifact.
+**Path note for ADR-070 migration:** The canonical path is currently `docs/housekeeping/audits/susceptibility-snapshot-{cycle}-{phase}.md`. When ADR-070 executes the housekeeping migration, this path becomes `docs/housekeeping/audits/susceptibility-snapshot-{cycle}-{phase}.md`. The skill edits in this ADR and the path updates in ADR-070 must ship together to avoid a period where the skill text references a location different from where the hook and the subagent expect to find the artifact.
 
 **Fix 2: verify prompt format for existing step-anchored mechanisms.**
 
 The citation auditor, argument auditor, and research-methods reviewer already have concrete dispatch sites per Spike S3's corpus audit. This ADR requires that their existing dispatch prompts be audited against the canonical skeleton and updated if any of them omit the `Output path:` line or use a non-parseable form.
 
 Expected state (to be verified during implementation):
-- `skills/research/SKILL.md` — citation-auditor dispatch at the "after the essay is written" step, with canonical path `docs/essays/audits/citation-audit-{cycle}.md`.
-- `skills/research/SKILL.md` — argument-auditor dispatch at the "after the essay is written" step, with canonical path `docs/essays/audits/argument-audit-{cycle}.md`.
-- `skills/research/SKILL.md` — research-methods-reviewer dispatch at the "before the first research loop" step, with canonical path `docs/essays/audits/research-design-review-{cycle}.md`.
-- `skills/decide/SKILL.md` — argument-auditor dispatch at "after ADRs are written," with canonical path `docs/essays/audits/argument-audit-decide-{cycle}.md`.
+- `skills/research/SKILL.md` — citation-auditor dispatch at the "after the essay is written" step, with canonical path `docs/housekeeping/audits/citation-audit-{cycle}.md`.
+- `skills/research/SKILL.md` — argument-auditor dispatch at the "after the essay is written" step, with canonical path `docs/housekeeping/audits/argument-audit-{cycle}.md`.
+- `skills/research/SKILL.md` — research-methods-reviewer dispatch at the "before the first research loop" step, with canonical path `docs/housekeeping/audits/research-design-review-{cycle}.md`.
+- `skills/decide/SKILL.md` — argument-auditor dispatch at "after ADRs are written," with canonical path `docs/housekeeping/audits/argument-audit-decide-{cycle}.md`.
 
 Implementation verifies each of these against the canonical skeleton; any that omit `Output path:` or use a paraphrase are updated to the canonical form. This is a mechanical audit, not a design decision.
 
@@ -109,7 +109,7 @@ This is Invariant 8's three-substrate requirement, operationalized. No mechanism
 - **Every phase skill gains a Susceptibility Snapshot Dispatch subsection.** Eight phase skills × roughly 15 lines each = 120 additional lines across the skill corpus. Phase skills get longer. Mitigation: the subsection sits at the bottom-third position (phase-end transition), where it does not compete with the phase's primary work instructions.
 - **The canonical prompt format is load-bearing for ADR-064.** If the format drifts or is paraphrased by future skill-file edits, the PostToolUse hook's regex extraction breaks and the compound check degrades to partial (dispatch logged, path unknown). This is a coupling risk between this ADR and ADR-064. Mitigation: the `Output path:` line is visually distinctive and unusual enough that a skill-file edit would be unlikely to delete it accidentally; `rdd-conform` can be extended to verify the format as part of its template-alignment audit.
 - **Per-phase briefs for the susceptibility snapshot are not specified in this ADR.** Each phase skill's snapshot dispatch subsection needs phase-specific brief content (what signals to pass, what boundary is being crossed, what prior snapshots to reference). This ADR names the requirement; the brief content is implementation work that happens at skill-file edit time. The briefs are not controversial design decisions — they follow the template from the existing orchestrator `SKILL.md` Susceptibility Snapshot Dispatch section, specialized per phase.
-- **Coupling to ADR-070 (housekeeping migration) for path values.** Until ADR-070 ships, the canonical paths use `docs/essays/audits/`. After ADR-070, they use `docs/housekeeping/audits/`. The skill edits in this ADR and the path updates in ADR-070 must be coordinated to avoid mid-transition inconsistency where skill text and hook manifest disagree on the canonical path.
+- **Coupling to ADR-070 (housekeeping migration) for path values.** Until ADR-070 ships, the canonical paths use `docs/housekeeping/audits/`. After ADR-070, they use `docs/housekeeping/audits/`. The skill edits in this ADR and the path updates in ADR-070 must be coordinated to avoid mid-transition inconsistency where skill text and hook manifest disagree on the canonical path.
 
 **Neutral:**
 
