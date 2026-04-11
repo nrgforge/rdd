@@ -32,6 +32,14 @@ INPUT="${1:-}"
 
 # --- Fail-safe wrappers ------------------------------------------------------
 
+# Output conventions (Claude Code hook semantics):
+#   - plain stdout + exit 0      → advisory context injection, no schema check
+#   - empty stdout + exit 0      → silent allow
+#   - {"decision":"block",...}   → schema-validated blocking output
+# The decision field accepts only "approve" | "block"; emitting "allow"
+# fails schema validation (Claude Code rejects the entire envelope and the
+# advisory notice is lost).
+
 die_open() {
     local msg="$1"
     cat >&2 <<EOF
@@ -41,15 +49,14 @@ please file an issue if convenient:
   https://github.com/nrgforge/rdd/issues/new?template=hook-failure.md
 diagnostic: $msg
 EOF
-    printf '{"decision":"allow"}\n'
     exit 0
 }
 
-allow() { printf '{"decision":"allow"}\n'; exit 0; }
+allow() { exit 0; }
 
 allow_with_message() {
     local msg="$1"
-    jq -nc --arg r "$msg" '{"decision":"allow","reason":$r}'
+    printf '%s\n' "$msg"
     exit 0
 }
 
