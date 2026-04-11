@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/invariant-reminder.sh\" \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/invariant-reminder.sh\""
           }
         ]
       }
@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/epistemic-gate.sh\" \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/epistemic-gate.sh\""
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tier1-phase-manifest-check.sh\" \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tier1-phase-manifest-check.sh\""
           }
         ]
       }
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/orientation-trigger.sh\" \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/orientation-trigger.sh\""
           }
         ]
       },
@@ -54,7 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/sizing-check.sh\" \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/sizing-check.sh\""
           }
         ]
       },
@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tier1-verify-dispatch.sh\" \"$INPUT\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tier1-verify-dispatch.sh\""
           }
         ]
       }

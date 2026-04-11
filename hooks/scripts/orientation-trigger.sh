@@ -2,7 +2,11 @@
 # PostToolUse hook: remind to regenerate ORIENTATION.md after key artifact changes
 # Fires on Write operations; checks if the target is a key artifact
 
-INPUT="$1"
+# Claude Code delivers hook input via stdin, not as a command-line argument.
+INPUT="${1:-}"
+if [[ -z "$INPUT" && ! -t 0 ]]; then
+    INPUT="$(cat)"
+fi
 
 # Key artifacts that should trigger orientation regeneration
 if echo "$INPUT" | grep -qE '"(system-design\.md|domain-model\.md|scenarios\.md|product-discovery\.md)"'; then

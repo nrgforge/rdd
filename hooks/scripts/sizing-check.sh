@@ -2,7 +2,11 @@
 # PostToolUse hook: flag documents exceeding sizing heuristics
 # Fires on Write operations targeting docs/
 
-INPUT="$1"
+# Claude Code delivers hook input via stdin, not as a command-line argument.
+INPUT="${1:-}"
+if [[ -z "$INPUT" && ! -t 0 ]]; then
+    INPUT="$(cat)"
+fi
 
 # Only check files in docs/
 if ! echo "$INPUT" | grep -q '"docs/'; then

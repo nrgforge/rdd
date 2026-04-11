@@ -10,7 +10,13 @@
 
 set -uo pipefail
 
+# Claude Code delivers hook input via stdin, not as a command-line
+# argument. Read stdin if available; fall back to $1 for direct invocation
+# (test harnesses, manual debugging).
 INPUT="${1:-}"
+if [[ -z "$INPUT" && ! -t 0 ]]; then
+    INPUT="$(cat)"
+fi
 [[ -z "$INPUT" ]] && exit 0
 
 REPO_ROOT="$(pwd)"

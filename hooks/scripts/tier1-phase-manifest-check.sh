@@ -28,7 +28,13 @@ DISPATCH_LOG="${REPO_ROOT}/docs/housekeeping/dispatch-log.jsonl"
 MIGRATION_MARKER="${REPO_ROOT}/docs/housekeeping/.migration-version"
 ADVISORY_MARKER="/tmp/rdd-advisory-notice-$$"
 
+# Claude Code delivers hook input via stdin, not as a command-line argument.
+# Read stdin if available; fall back to $1 for direct invocation (test
+# harnesses, manual debugging).
 INPUT="${1:-}"
+if [[ -z "$INPUT" && ! -t 0 ]]; then
+    INPUT="$(cat)"
+fi
 
 # --- Fail-safe wrappers ------------------------------------------------------
 
