@@ -3,10 +3,10 @@
 **Started:** 2026-04-06
 **Cycle number:** 014
 **Phase:** build
-**Current phase:** RESEARCH ✅ complete; DISCOVER ✅ complete; MODEL ✅ complete; DECIDE ✅ complete; ARCHITECT ✅ complete; BUILD ▶ WP-F(v0.7.0) verification complete, WP-F(v0.7.1) migration dogfood next
+**Current phase:** RESEARCH ✅ complete; DISCOVER ✅ complete; MODEL ✅ complete; DECIDE ✅ complete; ARCHITECT ✅ complete; BUILD ▶ WP-F complete, phase-boundary Tier 1 mechanisms and closure pending
 **Artifact base:** ./docs/
 **Essay:** [014-specification-execution-gap.md](../essays/014-specification-execution-gap.md)
-**Plugin version during cycle:** v0.6.3 → v0.7.0 (WP-A/B/C/D) → v0.7.1 (WP-E) → WP-F(v0.7.0) verified 2026-04-11
+**Plugin version during cycle:** v0.6.3 → v0.7.0 (WP-A/B/C/D) → v0.7.1 (WP-E) → WP-F verified 2026-04-11 (migration dogfooded; corpus now in enforcement mode)
 
 ## Phase Status
 
@@ -299,6 +299,34 @@ The v0.7.0 behavioral verification pass surfaced five defects — all remediated
 - The "phase-boundary interstitial moment" extensibility framing for the compound defense exists in `docs/system-design.md` but not in the orchestrator SKILL.md. The orchestrator describes the current constellation; the extensibility criterion is only in system-design.md. Minor doc drift, not a bug.
 
 **Dispatch reliability observation during verification:** WP-F(v0.7.0) is the first time the dispatch log was populated on this repo. Prior to Cycle 10 no RDD cycle had run under v0.7.0. The WP-F synthetic tests exercised the full PostToolUse → Stop hook → compound check loop with both matching and mismatching dispatch entries, in both advisory and enforcement modes. The operational question ("does the per-phase susceptibility snapshot dispatch fire under task load") will be answered for the first time at the build-phase susceptibility snapshot dispatch at the end of this session, per Invariant 8 and the ARCHITECT phase's open question 1.
+
+### WP-F(v0.7.1) Migration Dogfood Outcomes (2026-04-11)
+
+The `/rdd-conform migrate` 10-step operation was executed on the RDD plugin's own corpus per ADR-070. The methodology is now the first user of the migrate subcommand, and the corpus transitions from advisory mode to enforcement mode.
+
+**Migration summary:** 58 files changed (40 audit file moves + 15 reference updates + 2 new infrastructure files + 1 cycle-status move). Directories created: `docs/housekeeping/`, `docs/housekeeping/audits/`, `docs/housekeeping/gates/` (empty). Version marker: `docs/housekeeping/.migration-version` contains `0.7.1`. Rollback manifest: `docs/housekeeping/.migration-rollback.json` (217 lines with full move and substitution record).
+
+**v0.7.1 scenarios verified (13 total):**
+- 8 migration scenarios (S2635, S2641, S2647, S2653, S2659, S2666, S2672, S2678) — all PASS, verified during the 10-step execution.
+- 4 conform scope extension scenarios (S2686, S2692, S2698, S2704) — all PASS. Operation 5 (housekeeping directory audit) exercised against post-migration state with no findings. Operation 6 (gate reflection note template alignment audit) documented; no notes exist yet so nothing to audit. Operation 7 (dispatch prompt format audit) exercised against all 8 phase skills; no middle-third placements flagged.
+- 1 integration scenario (S2734) — PASS. Stop hook now reads `docs/housekeeping/cycle-status.md`, detects the `.migration-version` marker, enters enforcement mode, and emits schema-valid `{"decision":"block"}` JSON on missing Tier 1 artifacts. The compound check is live for the first time in this corpus.
+
+**WP-F(v0.7.1) Finding 6 (remediated).** The migrate subcommand's Step 5 moved `docs/cycle-status.md` to `docs/housekeeping/cycle-status.md` but did not rewrite the file's own internal relative links. 24 links broken — the file's depth in the tree changed from `docs/` to `docs/housekeeping/`, so `./essays/...`, `./product-discovery.md`, `./domain-model.md`, `./system-design.md`, and `./roadmap.md` references were wrong after the move. Commit 8066f49: extended Step 5 with an explicit rewrite pass (order-dependent — `./essays/audits/` → `./audits/` before `./essays/` → `../essays/`), and applied the fix to the already-migrated `docs/housekeeping/cycle-status.md`. Audit reports moved in Step 4 have no internal links so they are unaffected; the spec notes this with room to extend.
+
+**Dispatch log state post-migration:** `docs/housekeeping/dispatch-log.jsonl` is absent at this point. The build-phase susceptibility snapshot dispatch (pending at phase boundary) will be the first real Agent-tool dispatch of the methodology's own Tier 1 infrastructure on this corpus — the empirical answer to ARCHITECT phase's open question 1 ("does the per-phase dispatch actually fire under task load").
+
+### Cycle 10 WP-F — Total Fix Count (2026-04-11)
+
+WP-F surfaced 6 defects total, all remediated inline as numbered `fix:` commits during verification:
+
+1. **f6a7fc1** — Stop hook schema rejection (decision:"allow" → plain-text stdout)
+2. **0bbbe95** — E1 dispatch detection cycle-insensitive (match on mechanism + expected_path)
+3. **1b02069** — PostToolUse emits JSON null not string "null" for missing Output path
+4. **04c36bb** — migrate: include docs/system-design.md in Step 6 file list
+5. **243a927** — distinguish user-tooling mechanisms from subagent dispatches (mechanism_type field)
+6. **8066f49** — migrate Step 5 rewrites internal relative links in moved cycle-status.md
+
+Five of six defects affected the Harness Layer infrastructure (hook scripts + manifest + migrate subcommand). One (#5) was a User-Tooling Layer + Harness Layer interaction defect. The compound defense is now operational with correct schema validation, cycle-aware dispatch detection, substrate-appropriate message language, and link-preserving migration. Cycle 10 exits in enforcement mode on its own corpus.
 
 ### Active risk register
 
