@@ -221,7 +221,9 @@ After all scenarios pass with unit and acceptance tests, verify that the new com
 
 Key principle: **if the new component was tested only with `MockX` or `StubY`, at least one test must replace those with the real `X` or `Y`.** A component that only passes with mocks has not been verified.
 
-This step catches type mismatches between components designed in parallel, persistence paths that diverge between test and production, and missing contracts in adapters tested without their real pipeline.
+**Lifecycle-sequence verification.** When a boundary involves shared mutable state — any returned value that aliases internal state (cached buffers, pooled connections, retained registry entries) — the integration test must exercise the production **lifecycle sequence**, not merely a single operation returning correct data. The ordered sequence: caller obtains the resource, caller mutates or disposes it, the original component's retained reference is re-read, and the test verifies the retained reference still holds its invariants. See COMPOSABLE TESTS §Lifecycle Composition for the design-time framing and STEWARDSHIP CHECKPOINTS Tier 1 Test quality sub-item 6e (Shared mutable state) for the review-time detection check.
+
+This step catches type mismatches between components designed in parallel, persistence paths that diverge between test and production, missing contracts in adapters tested without their real pipeline, and shared-reference leaks across lifecycle boundaries.
 
 ### Step 6: Generate Field Guide
 
@@ -375,6 +377,24 @@ For orthogonal dimensions — say 4 computation methods x 5 output formats — d
 - M tests for the other dimension (holding the first constant)
 - 1 integration test proving correct wiring
 
+### Lifecycle Composition
+
+The N × M Problem covers orthogonal dimensions. Lifecycle Composition covers an independent third axis: **ordered operations on shared mutable state** between components.
+
+When components share mutable state — cached buffers, pooled connections, retained registry entries, or any returned reference that aliases internal state — the integration test must exercise the production **lifecycle sequence**, not just individual operations. If component A hands a resource to component B, and B mutates or disposes the resource, the test must verify that A's retained reference survives B's actions.
+
+This is a category distinct from N+M+1 on orthogonal axes. A cache that returns correct bytes on first read and a caller that mutates those bytes are both locally correct; the bug lives at the **lifecycle boundary** where the cache's retained reference and the caller's mutation interact across time.
+
+Typical failure signatures:
+
+- A cache returns an internal buffer; a caller mutates the buffer; the cache's retained reference now reflects corrupted state.
+- A connection pool hands out a connection; a caller closes it; the pool's retained entry now points to a dead connection.
+- A registry returns a live entry; a caller modifies a field; the registry's invariants silently break.
+
+Each component is locally correct — corruption arises only when the production lifecycle sequence runs across components.
+
+Lifecycle Composition is a three-sided catch in the build skill: this subsection prompts at design time, Step 5 Integration Verification anchors the lifecycle-sequence test at verification time, and Stewardship Tier 1 Test quality sub-item 6e (Shared mutable state) detects missed cases at scenario-group boundaries.
+
 ### Test Pruning
 
 When test2 cannot pass if test1 fails, they share redundant coverage. Simplify test2 — remove the shared setup and assertions. The composed suite maintains predictive power with less repetition.
@@ -449,6 +469,7 @@ A quick structural scan. For each module that received new code in this scenario
    - **Assertion roulette** — does any test contain multiple unrelated assertions without clear messages? Each test should verify one cohesive behavior.
    - **Boundary coverage** — for each module boundary crossed in this scenario group, does an integration test exist that uses real types on both sides (not stubs)? Check against the system design's Test Architecture table.
    - **Wiring verification** — do acceptance tests exercise the real call chain, or are they testing through mocks that could mask integration failures?
+   - **Shared mutable state** — for each module boundary crossed in this scenario group: does any returned value share a mutable reference with internal state (caches, pools, registries, retained entries)? If so, does a test verify that caller mutation or disposal of the returned value does not corrupt the internal state? See COMPOSABLE TESTS §Lifecycle Composition for the design-time framing and Step 5 §Lifecycle-sequence verification for the verification-time anchor. This is the review-time detection check in Lifecycle Composition's three-sided catch — it fires when neither the design-time prompt nor the verification-time anchor caught a shared-mutable-state boundary.
 
 7. **Decision coverage** — were any implicit decisions made during this scenario group? The heuristic: TODO stubs, approach choices between reasonable alternatives, or structural patterns not traceable to an ADR are likely undecided territory. Flag them.
 8. **Scenario completeness** — for each scenario claimed by the current work package, can it be verified in the running software? If not, is the gap a missing implementation or a missing decision?
