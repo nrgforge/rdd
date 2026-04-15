@@ -401,6 +401,8 @@ Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is
 **Current phase:** [phase name] (next)
 **Artifact base:** [path]
 **Essay:** [NNN-descriptive-name.md]
+**Skipped phases:** (optional) research, discover, model, architect
+**Paused:** (optional) YYYY-MM-DD — reason
 
 ## Phase Status
 
@@ -409,6 +411,12 @@ Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is
 | RESEARCH | ✅ Complete | ... | [brief summary of gate response] |
 | DISCOVER | ▶ In Progress | ... | — |
 | ... | ☐ Pending | — | — |
+
+## Pause Log (optional — present only if the cycle has been paused at least once)
+
+| # | Paused | Resumed | Reason |
+|---|--------|---------|--------|
+| 1 | YYYY-MM-DD | YYYY-MM-DD | [reason — e.g., "user stepped away mid-DECIDE gate"] |
 
 ## Feed-Forward Signals
 
@@ -419,6 +427,13 @@ Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is
 
 [Key context needed to resume the cycle in a new session]
 ```
+
+**Cycle shape declaration (ADR-072).** Two optional header fields let the cycle-status document declare its shape so the Stop hook (ADR-064) can honor it:
+
+- **`**Skipped phases:**`** — enumerate phases this cycle does not run, using canonical lowercase names (`research`, `discover`, `model`, `architect`, `play`, `synthesize`), comma-separated. Absent = no phases skipped (standard full-pipeline cycle). When present, the Stop hook treats the enumerated phases as having no required artifacts. Use this for Mode D (Custom) cycles, mini-cycles, and methodology amendments that scope out upstream phases by agreement.
+- **`**Paused:**`** — declares the cycle deliberately dormant. Format: `YYYY-MM-DD — reason`. Absent = cycle is active. When present, the Stop hook short-circuits all per-phase manifest checks until the field is removed, and emits a one-time advisory notice per session indicating the paused state. Use this when the user steps away mid-gate, when an external hold blocks progress, or when the cycle needs to rest without being formally closed (distinct from Graduation). The pause is removed by deleting the `**Paused:**` line when the cycle resumes; the event is recorded in the Pause Log below.
+
+The `Pause Log` section appears only when the cycle has been paused at least once. It records the audit trail of pause/resume events — each row captures when the pause began, when it ended (blank if still paused), and why. The log makes the pause visible and reviewable, preserving Invariant 8 (structural mechanisms must be observable, not silent bypasses).
 
 **When a phase loops back to an earlier phase** — play feeding back to DISCOVER, synthesis re-entering RESEARCH, or any backward propagation — record the loop in the phase status table:
 
