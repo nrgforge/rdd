@@ -1913,6 +1913,130 @@
 **Then** it tests the boundary with at least one adjacent component using real types (not stubs)
 **And** it verifies that the component's output can be consumed by downstream components
 
+## Feature: Lifecycle Composition in Build Stewardship (ADR-071)
+
+### Scenario: Build skill COMPOSABLE TESTS section contains Lifecycle Composition subsection
+**Given** the `/rdd-build` skill's COMPOSABLE TESTS section
+**When** the skill text is read
+**Then** a subsection named "Lifecycle Composition" appears alongside "The N x M Problem"
+**And** the subsection instructs that when components share mutable state — cached buffers, pooled connections, retained registry entries, or any returned reference that aliases internal state — the integration test must exercise the production lifecycle sequence, not just individual operations
+**And** it specifies that if component A hands a resource to component B and B mutates or disposes the resource, the test must verify that A's retained reference survives B's actions
+
+### Scenario: Build skill Integration Verification (Step 5) contains lifecycle-sequence guidance
+**Given** the `/rdd-build` skill's Step 5 Integration Verification section
+**When** the section is read
+**Then** an explicit paragraph states that when a boundary involves shared mutable state — any returned value that aliases internal state (cached buffers, pooled connections, retained registry entries) — the integration test must exercise the production lifecycle sequence
+**And** the guidance specifies the ordered sequence: caller obtains resource, caller mutates or disposes it, original component's retained reference is re-read to verify invariants still hold
+**And** a cross-reference points back to COMPOSABLE TESTS §Lifecycle Composition for the design-time framing
+
+### Scenario: Stewardship Tier 1 Test quality item contains Shared mutable state sub-item
+**Given** the `/rdd-build` skill's STEWARDSHIP CHECKPOINTS Tier 1 section
+**When** the Test quality item (currently item 6) is read
+**Then** a fifth sub-item named "Shared mutable state" appears adjacent to the existing Boundary coverage and Wiring verification sub-items
+**And** the sub-item asks, for each module boundary crossed in the scenario group, whether any returned value shares a mutable reference with internal state (caches, pools, registries, retained entries)
+**And** if so, whether a test verifies that caller mutation or disposal of the returned value does not corrupt the internal state
+
+### Scenario: Dual placement with cross-references
+**Given** both COMPOSABLE TESTS §Lifecycle Composition and Step 5 contain lifecycle-sequence guidance
+**When** a developer consults either section during the build flow
+**Then** the section they land on contains a cross-reference to the other
+**And** neither section assumes the developer has already read the other
+**And** the stewardship Tier 1 sub-item 6e serves as the review-time detective check for cases where neither design-time nor verification-time guidance caught a shared-mutable-state boundary
+
+### Scenario: Cached buffer test exercises production lifecycle sequence
+**Given** a component maintains an internal cache and returns a cached buffer to callers
+**And** the build skill has reached integration verification for a work package that crosses this boundary
+**When** the test author applies the Lifecycle Composition guidance
+**Then** the integration test does not merely verify the buffer is returned with correct contents
+**And** the test exercises the sequence: caller obtains the buffer, caller mutates it, component's retained cache entry is re-read
+**And** the test refutes the hypothesis that caller mutation corrupts the cached state
+
+### Scenario: Pooled connection stewardship check detects shared-reference leak
+**Given** a connection pool returns a connection to a caller
+**And** the caller's code path may close the connection after use
+**And** the build skill reaches a Tier 1 stewardship checkpoint after the scenario group is complete
+**When** the Shared mutable state sub-item is applied
+**Then** the check surfaces the boundary as a shared-mutable-state site
+**And** if no test verifies that the pool's retained entry survives the caller's close, the stewardship check flags the gap
+**And** the gap is either resolved by adding the lifecycle-sequence test or escalated to Tier 2
+
+### Scenario: Retained registry entry integration test catches mutation-corrupts-invariant
+**Given** a registry stores entries and returns them live to callers (not defensive copies)
+**And** a caller receives an entry and mutates a field
+**When** the integration test for the registry exercises the lifecycle sequence per the Composable Tests Lifecycle Composition subsection
+**Then** the test reads the registry's retained entry after caller mutation
+**And** the test refutes the hypothesis that the registry's invariants still hold — or confirms that the registry defends against this mutation
+**And** the outcome is observable: either the mutation corrupts invariants (fails the test, revealing a real bug) or the registry is verified safe against this class of leak
+
+### Scenario: Lifecycle Composition guidance scoped to build skill only
+**Given** the Lifecycle Composition category is added to `/rdd-build`
+**When** the debug, refactor, or review skill files are read
+**Then** no lifecycle composition subsection or stewardship sub-item is added to those skill files
+**And** their composition with build operates through mode shifts per ADR-048, inheriting build's orientation
+**And** standalone invocations of debug, refactor, or review do not reference Lifecycle Composition as an intra-skill concern
+
+## Feature: Cycle Shape Declaration (ADR-072)
+
+### Scenario: cycle-status.md supports Skipped phases field
+**Given** a cycle runs under Mode D (Custom) with explicit phase-skipping
+**When** the user records the skipped phases in `docs/housekeeping/cycle-status.md`
+**Then** the document contains a line of the form `**Skipped phases:** research, discover, model, architect` using canonical lowercase phase names
+**And** the field is optional (absent = no phases skipped, standard full-pipeline cycle)
+
+### Scenario: Stop hook honors Skipped phases declaration
+**Given** cycle-status.md contains a `**Skipped phases:**` line enumerating phase names
+**And** the current phase (from the `**Phase:**` field) is one of the enumerated skipped phases
+**When** the Stop hook runs
+**Then** the hook does not require any artifacts for that phase
+**And** the hook returns allow without running the per-phase manifest check for the skipped phase
+
+### Scenario: cycle-status.md supports Paused field
+**Given** a cycle is deliberately dormant (user stepped away mid-gate, or session is on hold for external reasons)
+**When** the user records a pause in cycle-status.md
+**Then** the document contains a line of the form `**Paused:** YYYY-MM-DD — reason`
+**And** the field is optional (absent = cycle is active)
+
+### Scenario: Stop hook honors Paused declaration
+**Given** cycle-status.md contains a non-empty `**Paused:**` line
+**When** the Stop hook runs
+**Then** the hook short-circuits — all per-phase manifest checks are bypassed
+**And** the hook emits a one-time advisory notice per session indicating the paused state
+**And** the hook returns allow for every Stop event until the pause is removed
+
+### Scenario: Pause Log records pause/resume history
+**Given** a cycle has been paused and resumed
+**When** cycle-status.md is read
+**Then** it contains a "Pause Log" section with a table of pause/resume entries
+**And** the table columns are `#` (sequential numbering), Paused (date), Resumed (date or blank), Reason
+**And** each entry records the pause date, resume date (if resumed), and reason
+**And** the Pause Log creates an audit trail making the pause visible and reviewable
+
+### Scenario: Full-pipeline cycle behavior unchanged
+**Given** a Mode A cycle with no `**Skipped phases:**` or `**Paused:**` fields
+**When** the Stop hook runs at any phase boundary
+**Then** the hook behaves exactly as before ADR-072 — every phase's manifest check runs and every Tier 1 mechanism is enforced
+**And** the ADR-064 compound check continues to detect fabricated audit output
+
+### Scenario: Skipped phase declaration does not bypass compound check for other phases
+**Given** cycle-status.md declares `**Skipped phases:** research, discover`
+**And** the current phase is decide (not skipped)
+**When** the Stop hook runs
+**Then** the compound check for decide-phase artifacts still fires
+**And** the fabrication detection for decide-phase dispatches still applies
+**And** only the research-phase and discover-phase checks are bypassed
+
+### Scenario: In-progress gate conversation does not cascade Stop-hook blocks (deferred — known gap in ADR-072 coverage)
+**Given** a phase-boundary gate conversation is in progress (multi-turn agent-user exchange)
+**And** the current phase is not enumerated in `**Skipped phases:**`
+**And** cycle-status.md has no `**Paused:**` field set (the user is actively engaged in the gate)
+**And** the gate reflection note for this phase has not yet been produced (the gate is legitimately mid-conversation)
+**When** the Stop hook fires between agent turns during the gate conversation
+**Then** the hook does not cascade successive blocks across turns
+**And** the gate conversation proceeds to its natural close without hook-induced friction
+**And** the manifest check passes when the gate reflection note is produced at the gate's natural close
+
+**Coverage note:** This scenario is not satisfiable under ADR-072's Decision text as written. The hook short-circuits only on `**Paused:**` or `**Skipped phases:**`; an in-progress gate with a present, engaged user triggers neither. The manifest check runs on every Stop and blocks on the not-yet-produced gate reflection note. The scenario documents a known gap surfaced by the Cycle 015 BUILD-entry susceptibility snapshot (`docs/housekeeping/audits/susceptibility-snapshot-015-build.md`). Resolution is deferred to a follow-up cycle — candidates include a hook-side session-scoped block-then-advisory supplement (the alternative flagged by the snapshot) or a third cycle-status.md marker (`**Gate in progress:** <phase>`). Cycle 015's scope remains Issue 10 (lifecycle composition in build stewardship); the broader hook-state design problem is out of scope.
+
 ## Feature: Debug Skill (ADR-048)
 
 ### Scenario: Debug follows hypothesis-trace-understand-fix cycle
