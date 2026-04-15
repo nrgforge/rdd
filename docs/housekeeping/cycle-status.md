@@ -1,372 +1,134 @@
-# Active RDD Cycle: Specification-Execution Gap in Prompt-Based Methodology
+# Active RDD Cycle: Lifecycle Composition in Build Stewardship
 
-**Started:** 2026-04-06
-**Cycle number:** 014
+**Started:** 2026-04-13
+**Cycle number:** 015
+**Cycle type:** Methodology amendment (mini-cycle: DECIDE + BUILD only)
 **Phase:** build
-**Current phase:** RESEARCH ✅ complete; DISCOVER ✅ complete; MODEL ✅ complete; DECIDE ✅ complete; ARCHITECT ✅ complete; BUILD ▶ WP-F complete, phase-boundary Tier 1 mechanisms and closure pending
+**Current phase:** BUILD ✅ complete (all five WPs delivered, BUILD gate reflection note produced, BUILD-exit susceptibility snapshot re-dispatched with canonical prompt formatting so the dispatch log captures `expected_path` correctly). Cycle 015 complete pending release tag.
+**Skipped phases:** research, discover, model, architect
 **Artifact base:** ./docs/
-**Essay:** [014-specification-execution-gap.md](../essays/014-specification-execution-gap.md)
-**Plugin version during cycle:** v0.6.3 → v0.7.0 (WP-A/B/C/D) → v0.7.1 (WP-E) → WP-F verified 2026-04-11 (migration dogfooded; corpus now in enforcement mode)
+**Driving issue:** [Issue #10 — Build skill: add lifecycle composition to integration verification and stewardship](https://github.com/nrgforge/rdd/issues/10)
+**Plugin version during cycle:** v0.7.2 (start)
+
+## Scoping Decision
+
+Issue 10 proposes two concrete build-skill additions (extend composable tests to cover lifecycle sequences; add shared-mutable-state check to Stewardship Tier 1) and names a new category — *lifecycle composition* — the skill does not currently hold. The issue already articulates the problem clearly and cites the proposed changes, so no research question is open.
+
+Mini-cycle scoping (DECIDE + BUILD only) was agreed with the user after a reconnaissance pass established:
+
+- No invariant amendment required — category *addition* to one skill, not cross-cutting rule.
+- No upstream phases (research, discover, model, architect) touched.
+- No other composable skills (debug, refactor, review) touched.
+- No contradictions with existing ADRs.
+- Glossary additions (Lifecycle Composition, Shared Mutable State, Lifecycle Boundary) small enough to fold into BUILD without standalone MODEL.
+
+Explicitly ruled out to keep scope tight: taxonomy formalization beyond naming the third case; language-specific mutation semantics; mode-shift enforcement (user deferred — will reapproach across future build cycles); extension to debug/refactor/review skills.
+
+Can-of-worms guardrail: if DECIDE surfaces anything that requires backfill into canonical upstream docs (domain model invariants, system design responsibility matrix, ADRs beyond 071), pause the mini-cycle and reassess scope before continuing.
 
 ## Phase Status
 
 | Phase | Status | Artifact | Key Epistemic Response |
 |-------|--------|----------|----------------------|
-| RESEARCH | ✅ Complete | [014-specification-execution-gap.md](../essays/014-specification-execution-gap.md) | Sharpened diagnostic: *mechanisms anchored to concrete workflow steps execute reliably (100% coverage); mechanisms whose dispatch depends on orchestrator contextual judgment do not (0% coverage for susceptibility snapshot)*. Recommendation: hook-based architecture (PostToolUse on Agent + Stop hook with per-phase manifest) as defense-in-depth on top of a primary skill-structure fix (add concrete dispatch sites for mechanisms that lack them). Honest scope: covers 4 of 6 observed failure modes; items 5–6 require a user-tooling layer (named, not designed here). Closing stance: *"know it when they see it"* — verification cannot prove mechanism effectiveness but creates observable conditions for contextual judgment. |
-| DISCOVER | ✅ Complete | [updated `product-discovery.md`](../product-discovery.md) | Cycle 10 additions interleaved across all 5 sections; per-entry Grounding Reframe pass applied (3 removals, 1 rewrite, 1 keep, 1 split-edit) per discover-phase snapshot recommendation. Discover-phase snapshot at [`./audits/susceptibility-snapshot-014-discover.md`](./audits/susceptibility-snapshot-014-discover.md). |
-| MODEL | ✅ Complete | [updated `domain-model.md`](../domain-model.md) | **Invariant 8 ADDED (broad scope): "Mechanism execution must be structurally anchored."** First invariant amendment since the Cycle 7 amendment to Invariant 4. Broad scope chosen at MODEL gate: applies to any unconditional structural mechanism, not only Cycle 9's Tier 1 sycophancy-resistance architecture. 22 new concepts, 7 existing concept updates (including User-Tooling Layer reframe-derailed gate limitation and compound-defense pattern provenance from the MODEL gate), 5 new actions, ~41 new relationships, 17 new open questions, 23 new synonym aliases. Amendment log entry #17 records propagation requirements including backward sweep of Cycle 9 (ADRs 055–062), Cycle 8 build-focused ADRs (048–055), ADR-033 hooks, and audit of Play and Synthesis phase mechanisms. Rename: Essay 014's "methodology graduation (small-d)" renamed to **Layered Enforcement Adoption** in the domain model to avoid collision with Graduation. MODEL gate produced three consequential outcomes: (1) Invariant 8 addition with broad scope; (2) the reframe-derailed gate observation and compound-defense pattern (user-surfaced); (3) the belief-mapping grounding of Invariant 8's commitment against the snapshot's Finding 1. |
-| DECIDE | ✅ Complete | Eight new ADRs (063–070), argument audit + 4 re-audits clean, conformance scan, backward propagation sweep (ADR-057 supersession + Amendment Log #18), ~45 scenarios, 9 new interaction-spec tasks | **Eight-ADR set operationalizing Invariant 8 through three enforcement substrates (Skill-Structure, Harness, User-Tooling Layers).** Key epistemic moment: user reaffirmed TDD framing as general principle (RED-before-GREEN is natural when DECIDE produces new invariants) while committing to cycle-specific urgency — the mechanisms being baked in for Cycle 10 make Invariant 8 capable of flagging systemic problems, so the RED phase should be shortened via urgent movement through ARCHITECT and BUILD before starting a new cycle. Framing audit produced three concerns (FC-A, FC-B, FC-C) all substantively addressed at the gate with specific user direction on each. Two success-mode instances observed (compound defense terminology endorsement; FC-C drivers-primary refinement) — both recorded as empirical grounding for ADR-069's failure-mode/success-mode dichotomy without inflating the count via naive pattern-matching (per DECIDE → ARCHITECT snapshot Finding 1 restraint). Snapshot Finding 2 surfaced one residual susceptibility (TDD analogy adoption without independent engagement of the competing "test runner IS the invariant's function" frame); user resolved via the prioritization answer above. |
-| ARCHITECT | ✅ Complete | [system-design.md v12.0 Amendment #13](../system-design.md) + [roadmap.md Cycle 10 work packages](../roadmap.md) + [system-design.md Appendix A: 8 per-phase susceptibility snapshot briefs](../system-design.md) + [susceptibility-snapshot-014-architect.md](./audits/susceptibility-snapshot-014-architect.md) | **System design amended to v12.0 (Amendment #13) and roadmap updated with Cycle 10 work packages WP-A through WP-F, split across v0.7.0 (WP-A/B/C/D/F-behavioral) and v0.7.1 (WP-E/F-migration-dogfood) per DECIDE commitment to cycle-specific urgency.** Gate walked through 6 open decisions + 1 bonus decision, all resolved and logged in roadmap's "Open Decision Points (resolved at the ARCHITECT gate)" section. Key architectural outcomes: (1) WP-B flagged as load-bearing primary fix with WP-F verification ordering running WP-B first before WP-A defense-in-depth, honoring DECIDE Finding 2 resolution by citing the competing frame "the test runner IS the invariant's function" alongside the TDD analogy; (2) 8 phase-specific susceptibility snapshot briefs drafted in Appendix A of system-design.md, each grounded in concrete Cycle 10 findings for that phase, with maintenance note that briefs are time-anchored and may need refresh in future cycles; (3) advisory-mode enforcement-conditional qualification elevated from ADR-064 to orchestrator-level methodology scope-of-claim as a second negative-scope item alongside "competence without independent second-order critique," honoring user-as-non-maintainer product principle consistently; (4) two user-surfaced framings explicitly attributed rather than absorbed — the "epistemic gates work because they ARE the phase-end step" insight (user response to the "why will the per-phase fix work?" probe, recorded as Cycle 11 research question candidate if the fix fails) and the "compound defense as phase-boundary interstitial moment" reframing (user response to probe asking for extensibility criterion, recorded in Responsibility Matrix and Architectural Drivers with ARCHITECT gate attribution after the fifth susceptibility snapshot identified unreconciled dual framings). Fifth susceptibility snapshot at [`./audits/susceptibility-snapshot-014-architect.md`](./audits/susceptibility-snapshot-014-architect.md) reports trajectory continuing to bend (DECIDE was the first phase to show signal declining rather than intensifying; ARCHITECT continues that trajectory). No Grounding Reframe warranted. Three feed-forward items identified by the snapshot: (a) WP-B implementation should check each Appendix A brief against the prior snapshot it cites; (b) the competing TDD frame is prose-only in the roadmap's Decision 6 resolution record — BUILD judgment call on visibility; (c) compound defense had two unreconciled framings in system-design.md — item (c) fixed during gate closure. Snapshot observation: selective engagement depth on Decisions 1, 4, 5 (agent-recommendation acceptances without user engagement of alternatives) — noted for pattern awareness, not Grounding Reframed because none of the three encode irreversible architectural commitments. User's in-gate explanation: "as we get deeper into this process it seems like the space or need for engagement on things we've been over starts to diminish" — a legitimate observation about engagement proportional to consequence, which the snapshot's proportional response (no Reframe) validated. Dispatch reliability observation: fifth Cycle 10 snapshot, all five ceremonial. The methodology remains in State B under its own Invariant 8 until v0.7.0 ships. |
-| BUILD | ▶ WP-F(v0.7.0) ✅ verified 2026-04-11; WP-F(v0.7.1) migration dogfood next | v0.7.0 (WP-A/B/C/D) + v0.7.1 (WP-E) shipped; WP-F(v0.7.0) behavioral verification complete with 5 remediation fixes committed; WP-F(v0.7.1) dogfood next | **Implementation complete across both releases.** WP-A: manifest + compound check hooks + advisory/enforcement mode + Fails-Safe-to-Allow + revision-aware reminder. WP-B: per-phase susceptibility snapshot dispatch in all 8 skills at bottom-third positions with Appendix A briefs; canonical Output path lines on all existing dispatches; position audit (4 middle-third accepted at workflow positions). WP-C: gate reflection note protocol in orchestrator with full template, compound defense documentation, reframe-derailed gate limitation; manifest extended with 6 gate entries; Stop hook {phase} substitution. WP-D: Three-Tier Classification with four-step decision procedure, Grounding Reframe Extension with two triggers, Methodology Scope-of-Claim, Centered-vs-Infrastructure in orchestrator. WP-E: /rdd-conform migrate subcommand (10-step), 3 new audit scopes, post-migration paths across all skills and manifest, Stop hook dual cycle-status path. User observation during WP-A: dispatch log should be committed (audit evidence for cross-machine collaboration), not gitignored — corrected from ADR-064's session-scoped framing. Appendix A briefs verified against cited snapshots (build commitment 3 satisfied). **WP-F(v0.7.0) verification 2026-04-11:** 44 scenarios verified (Per-Phase Manifest Format, Compound Check, Advisory Mode, Fails-Safe-to-Allow, Revision-Aware Re-Audit Reminder, Anchor Dispatch, User-Tooling Layer, Compound Defense, Three-Tier Classification, Grounding Reframe Extension, Methodology Scope-of-Claim, v0.7.0 integration). All PASS. Five fixes committed during the sweep (see "WP-F(v0.7.0) Verification Findings" section below). Dispatch log infrastructure exercised for the first time (prior to Cycle 10 no RDD cycle had run under v0.7.0). |
-| PLAY | ☐ Optional | — | — |
-| SYNTHESIZE | ☐ Optional | — | — |
+| RESEARCH | — Skipped (scoped) | — | Issue 10 already articulates the problem; no open research question |
+| DISCOVER | — Skipped (scoped) | — | No new stakeholder or job-to-be-done surfaced |
+| MODEL | — Skipped (scoped) | — | Three glossary entries folded into BUILD, no invariant amendment |
+| ARCHITECT | — Skipped (scoped) | — | No module-boundary changes |
+| DECIDE | ✅ Complete | ADR-071 + ADR-072 + scenarios + roadmap | Option 3 at gate: proceed with ADR-072 as designed; hook-side alternative noted but un-examined; BUILD commitments carry forward |
+| BUILD | ✅ Complete | Domain model glossary (3 entries) + build skill edits (3 extensions) + Stop hook branches (Paused + Skipped phases) + orchestrator convention + roadmap + ORIENTATION | Multi-cycle composition surfaced as reframe at BUILD gate; documented as six-question follow-up (Issue #14) |
+| PLAY | ☐ N/A (not applicable to methodology amendment) | — | — |
+| SYNTHESIZE | ☐ N/A | — | — |
 
-## Research Phase Artifact Trail
+## Deferred Work
 
-- **Essay:** [`../essays/014-specification-execution-gap.md`](../essays/014-specification-execution-gap.md) — citation-audited clean (re-audit), argument + framing audited clean (two re-audits)
-- **Reflections:** [`../essays/reflections/014-specification-execution-gap.md`](../essays/reflections/014-specification-execution-gap.md) — captures gate conversation findings, susceptibility snapshot, Grounding Reframe disposition, commitments for downstream phases
-- **Research log:** [`../essays/research-logs/014-specification-execution-gap.md`](../essays/research-logs/014-specification-execution-gap.md) — archived from `research-log.md` at phase end
-- **Literature reviews:**
-  - [`../essays/research-logs/lit-review-instruction-following-degradation.md`](../essays/research-logs/lit-review-instruction-following-degradation.md)
-  - [`../essays/research-logs/lit-review-telemetry-acceptance-criteria.md`](../essays/research-logs/lit-review-telemetry-acceptance-criteria.md)
-- **Spike reports (4):**
-  - [`../essays/research-logs/spike-s4-fail-loud-dispatch.md`](../essays/research-logs/spike-s4-fail-loud-dispatch.md) — text hardening is insufficient (negative result)
-  - [`../essays/research-logs/spike-s1-hook-feasibility.md`](../essays/research-logs/spike-s1-hook-feasibility.md) — hook architecture feasibility; items 1–3 fully, item 4 partially, items 5–6 out of reach
-  - [`../essays/research-logs/spike-s2-acceptance-criteria.md`](../essays/research-logs/spike-s2-acceptance-criteria.md) — YAML per-phase manifest format + tested reference Stop hook
-  - [`../essays/research-logs/spike-s3-base-rate-audit.md`](../essays/research-logs/spike-s3-base-rate-audit.md) — corpus audit: 100% coverage for step-anchored mechanisms, 0% for susceptibility snapshot
-- **Audit reports:**
-  - [`./audits/research-design-review-014.md`](./audits/research-design-review-014.md)
-  - [`./audits/citation-audit-014.md`](./audits/citation-audit-014.md) + `-reaudit.md` (clean)
-  - [`./audits/argument-audit-014.md`](./audits/argument-audit-014.md) + `-reaudit.md` + `-reaudit-2.md` (all clean)
-  - [`./audits/susceptibility-snapshot-014-research.md`](./audits/susceptibility-snapshot-014-research.md) — Tier 1 unconditional snapshot at research → discover boundary
+- **Cycle 014 PLAY** — optional, planned to run after Cycle 015 completes. User committed to running PLAY on Cycle 014 next; any new issues surfaced by PLAY are to be addressed as they come.
+- **Mode-shift enforcement question** (asked during Cycle 015 scoping) — user deferred; will reapproach after more build-cycle experience accumulates. Not open as an issue yet.
+- **Multi-cycle composition — follow-up cycle candidate** (surfaced during Cycle 015's DECIDE → BUILD gate + BUILD-exit gate, 2026-04-14). The gate conversations surfaced a larger design question than ADR-072 itself addresses: cycle-status.md currently represents a single active cycle, but actual practice involves multiple cycles at different states (paused, mini-cycles, pre-hook cycles needing resumption). The single-cycle model produces hook-loop friction during active gates and leaves pre-hook cycles stranded under enforcement mode.
 
-## Discover Phase Artifact Trail
+  **Framing (user-originated at the BUILD gate):** cycle-status.md should represent a stack of cycles at different states, with deliberate mini-cycles auto-pausing outer cycles and pushing onto the stack. The hook would read the active entry (top of stack) rather than the single `**Phase:**` field. ADR-072's two-field design becomes a specialization of this richer schema.
 
-- **Updated artifact:** [`../product-discovery.md`](../product-discovery.md) — Cycle 10 additions interleaved across all five sections (stakeholder map, jobs/mental models, value tensions, assumption inversions, product vocabulary). Initial pass applied 12 edits. Grounding Reframe pass per snapshot recommendation: three removals (interim-harness-layer sentence, framework-vs-model attribution job, ceremonial-vs-operational vocabulary entry, 80% reliability floor vocabulary entry), one rewrite (framework-vs-model tension reframed as "Scope transparency vs. limitation as disclaimer"), one keep (ceremonial-vs-operational tension), one split-edit on the line-9 stakeholder description.
-- **Susceptibility snapshot:** [`./audits/susceptibility-snapshot-014-discover.md`](./audits/susceptibility-snapshot-014-discover.md) — second instance of the susceptibility-snapshot mechanism firing in the project's entire history. Both firings during Cycle 10, both under ceremonial conditions. Snapshot identified one load-bearing finding ("framing adoption has propagated, not reversed") which drove the per-entry Grounding Reframe pass.
-- **Reflexive observations:**
-  - The snapshot dispatch failed twice with API 529 (overloaded) on the default model; succeeded on Opus retry. The orchestrator did not silently fall back to in-context evaluation between attempts — exactly the failure mode Cycle 10's #2 finding predicts. This is not a methodology gap (the methodology's response was correct) but suggests the susceptibility-snapshot-evaluator default model may warrant calibration if 529s recur. Recorded as observation, not active risk.
-  - The user surfaced the question *"what is the snapshot actually for?"* mid-pass, which reframed the methodological response from a feed-forward problem (which would have required designing a new mechanism) to a Grounding Reframe protocol enhancement (which requires strengthening an existing mechanism). The reframing is captured as DECIDE commitment #5 below.
-  - The per-entry Grounding Reframe pass is itself the cycle's clearest in-action demonstration of what the new commitment specifies: a snapshot finding drove course-correction of the current phase's artifacts at the boundary where the snapshot was produced, rather than feeding forward to bias subsequent phases.
+  **Question set for a dedicated follow-up cycle:**
+
+    1. **Cycle-state schema.** What does a multi-cycle cycle-status.md look like concretely? Header fields, nested entries, relationships (parent/child, ordered, active/paused). Does ADR-072's two-field design fold in as a specialization, or do they coexist?
+    2. **In-progress-gate case coverage.** With a richer state vocabulary (Active / Paused / Gate-in-progress / Nested), does the in-progress-gate case get its own declared marker, or does it still need a hook-side session-scoped block-once-then-advisory safety net (the un-examined alternative from Cycle 015)?
+    3. **Hook-side vs. cycle-state composition.** Are the two approaches mutually exclusive or complementary? Preliminary read: complementary — cycle-state does the deliberate, auditable work; hook-side handles the states the user can't realistically declare in real time (e.g., during a multi-turn gate conversation).
+    4. **`/rdd-conform` cycle-shape audit scope.** Pre-hook cycles (started before v0.7.0) don't have ADR-072's cycle-shape fields and can't be resumed cleanly under enforcement mode without them. Conform could gain an audit scope that detects pre-ADR-072 cycle-status.md files and walks the user through populating fields matching the cycle's actual state. Design: what to detect, what to prompt for, what to migrate automatically vs. manually.
+    5. **Cycle 8 (rdd-pair) resumption test case.** rdd-pair is paused at MODEL, pre-hooks. Its resumption is a concrete test case for both the multi-cycle schema (if Cycle 014 PLAY starts first, rdd-pair would need to nest or coexist) and the conform cycle-shape audit (its cycle-status predates ADR-072). Any design should validate against this case.
+    6. **Methodology graduation interaction.** If cycle-state becomes first-class and multi-cycle composition is supported, does that change what it means to "graduate" (ADR-025)? Graduation currently closes a single cycle's artifact corpus; does it compose with nested cycles, or is it a cross-stack operation?
+
+  **Narrow-gap references:** the specific in-progress-gate case is documented in `docs/scenarios.md` (ADR-072 feature block, deferred scenario) and ADR-072 §Consequences (Negative). Those are the narrow-gap records; this Deferred Work entry captures the broader question set they belong to.
+
+  **Scope note:** This follow-up is methodology-substantive and may warrant full pipeline (RESEARCH / DISCOVER / MODEL / DECIDE / ARCHITECT / BUILD) rather than a mini-cycle — the schema is not yet bounded tightly enough to skip phases responsibly. Explicitly out of Cycle 015's scope.
+
+  **Durable capture:** [Issue #14 — Multi-cycle composition: cycle-status schema + hook-state handling](https://github.com/nrgforge/rdd/issues/14)
+
+## DECIDE Gate Decision (visible record — option 3)
+
+At the DECIDE → BUILD gate, pass-7 argument audit returned clean (zero issues, chains A–I hold). The susceptibility snapshot dispatched at the same boundary returned a significant, in-cycle-applicable finding on ADR-072 meeting all three Grounding Reframe triggers: ADR-072's rejected-alternatives section omits the most proximate alternative — extending the hook's existing session-scoped `/tmp/rdd-advisory-${SESSION_ID}` suppression pattern to the blocking path (block once per session on gate-in-progress, downgrade subsequent fires to advisory).
+
+During the gate conversation, this failure mode manifested live: the Stop hook looped on the missing gate reflection note with no session-scoped suppression. The live failure is empirical content within the scope of the design question.
+
+**Decision:** proceed with ADR-072 as designed. The hook-side alternative is not adopted in the ADR at this time; it is recorded here as un-examined.
+
+**Un-examined alternative (hook-side, live):**
+
+- Extend `NOTICE_MARKER="/tmp/rdd-advisory-${SESSION_ID:-unknown}"` session-scoped one-time-fire pattern to the blocking path.
+- Block once per session on gate-in-progress conditions; downgrade subsequent fires to advisory for the remainder of the session.
+- Addresses the 60-successive-blocks problem from the harness side without adding fields to cycle-status.md.
+- Addresses the in-gate-conversation mini-cycle case (before any cycle-status.md field could be populated) that ADR-072's cycle-status.md two-field design does not cover.
+
+BUILD inherits the commitments in the gate reflection note at `docs/housekeeping/gates/015-decide-gate.md`.
 
 ## Feed-Forward Signals
 
-### From RESEARCH
-
-**Settled premises (the user is building on these going into discover):**
-
-1. The sharpened diagnostic (step-anchored vs. judgment-anchored) is a genuine narrowing of the original issue and should shape how discover and model think about mechanism classification.
-2. Externalization + procedural enforcement is the right direction for the framework's reliability improvements.
-3. The skill-structure fix is the first move for any Tier 1 mechanism lacking a concrete dispatch site; hooks are defense-in-depth on top, not a replacement.
-4. The user-tooling layer is feasible and grounded in the already-working epistemic gate mechanism; it is the natural home for conversational mechanisms that cannot be step-anchored.
-5. The cycle's success criterion is *material reduction* of framework-attributable failures, not elimination. Residual failures should become clearly attributable to the model, not the framework — making the next research question well-defined.
-
-**Open questions (the user is holding these open going into discover):**
-
-1. Whether the hook architecture specifically is worth its complexity cost (the user noted *"it could also feel heavy"*).
-2. Whether the skill-based dispatch will actually fire in practice (the user noted *"my fear is that it won't be dispatched"*).
-3. Whether RDD-in-Claude-Code can reach an 80% reliability threshold at which framework failures become clearly distinguishable from model failures.
-4. What to do about the models at the point where the conversation moves to model-attributable failures (explicitly future work, out of scope for Cycle 10).
-5. Broader declarative-decomposition approaches for orchestrating frontier capabilities across defined processes (explicitly future work).
-
-**Specific commitments carried forward to DECIDE:**
-
-1. **Hook-script reliability assessment.** The ADR for the hook architecture must include an explicit assessment of whether "fails safe to allow" is a sufficient mitigation for hook-script bugs, given that silent fail-to-allow and no hook produce the same observable outcome. Options to consider: a fail-loud mode for hook-script internal errors, a hook self-test mechanism at SessionStart, or explicit acceptance of the residual risk with reasons.
-2. **Framing audit necessity rationale.** The rationale for the framing audit as an unconditional Tier 1 mechanism should cite the four documented agent-side framing-adoption moments from this cycle and the one case (the skill-structure fix alternative) where the isolated framing audit generated an alternative the in-context agent had not surfaced. This grounds the Tier 1 status in direct cycle evidence, not just theoretical reasoning.
-3. **Possible ADR — "No new Tier 1 mechanism without a concrete dispatch site"** as a methodology-level rule. Would turn Cycle 10's recommendation from retroactive fix into a durable constraint on future mechanism additions.
-4. **Possible ADR — the three-tier categorization** (skill-structure layer / harness layer / user-tooling layer) as a methodology-level classification system for Tier 1 mechanisms going forward.
-
-### From DISCOVER
-
-**Settled premises (the user is building on these going into model):**
-
-1. **Product-discovery.md describes intended state.** Reflections capture transitional state and current-cycle observations. Conformance audits flag the delta between the two. This division of labor is now an explicit operating principle for future cycles.
-2. **The framework cannot objectively distinguish framework-attributable from model-attributable failures within its own scope.** That distinction requires external comparison work (parallel processes with different models, controlled comparisons across users) that is empirical research, not a framework feature. Encoding it as a stakeholder need creates an obligation the framework cannot meet.
-3. **Vocabulary table is for user-facing language, not internal methodology framing.** System vocabulary belongs in the domain model glossary (MODEL phase) or the system design. Cycle 10 vocabulary additions that drifted toward methodology framing have been removed from product-discovery.md.
-4. **Snapshot findings drive in-cycle course correction at their own boundary, not feed-forward to subsequent phases.** Each phase boundary handles its own findings via the Grounding Reframe; subsequent phases trust the boundary's decision and do their own work. This preserves clean separation of phase responsibility and avoids ambiguity about which phase owns the response to a finding.
-5. **Hook architecture scope is surgical, not broad.** The user's belief-mapping answer at the discover gate: for the broad/hooks-heavy reading to be right, the conversational aspect of the methodology would need to be fundamentally flawed; that is the extreme end. Mitigations + defense in depth + user steering can handle the worst cases. The hook architecture ADR DECIDE writes should be scoped to the four specific failure modes named in the essay, not as a new default for any structural mechanism going forward. The cycle's contribution has two distinct levels of intervention — *calibration* (skill-structure fix at concrete dispatch sites for the existing successful mechanisms) and *defense-in-depth* (hooks for the residual cases where calibration alone is insufficient). DECIDE should inherit both, in that order.
-
-**Open questions (the user is holding these open going into model):**
-
-1. How to apply the intended-state-vs-transitional-state principle retroactively to pre-Cycle-10 product discovery content. Out of scope for this cycle; future scope.
-2. Whether the rewritten "Scope transparency vs. limitation as disclaimer" tension warrants vocabulary entries at MODEL, or whether it lives only as a tension.
-3. Whether the susceptibility-snapshot-evaluator default model needs calibration given the API 529 failures observed in this phase. Likely a configuration question, not a methodology question.
-
-**Additional specific commitment carried forward to DECIDE:**
-
-5. **Grounding Reframe protocol enhancement.** The Grounding Reframe protocol should fire for any significant snapshot finding with in-cycle course-correction implications, not only for unassessable risk. Each significant finding should produce a Reframe with concrete decision options for the current phase's artifacts. Possible amendment to ADR-059. Rationale grounded in Cycle 10's discover-phase application: the per-entry pass on six flagged lines is the cycle's clearest in-action demonstration of what this commitment specifies. The research-phase snapshot at the research → discover boundary did not produce a Grounding Reframe on the four documented adoption moments — only on the HB2 complexity tradeoff — and the discover-phase finding was the downstream consequence of that gap.
-
-### From MODEL
+### From scoping conversation
 
 **Settled premises (the user is building on these going into DECIDE):**
 
-1. **Invariant 8 is adopted with broad scope.** Applies to any unconditional structural mechanism the methodology specifies — not only Cycle 9's Tier 1 sycophancy-resistance architecture. The three substrates (Skill-Structure Layer, Harness Layer, User-Tooling Layer) are the anchoring requirement for any mechanism claiming unconditional status. Mechanisms that cannot be anchored may not be specified as unconditional — they may be specified as best-effort or explicitly contingent.
-
-2. **The invariant is partly descriptive.** The user's observation at the gate: *"We move through the phases well, there are clear moments where we see the structure of the framework working. So I think we're there in many ways."* Many phase transitions and specialist dispatches already meet the anchoring criterion. The invariant formalizes what already works and names what does not.
-
-3. **Layered Enforcement Adoption** is the domain model term for the move Essay 014 calls "methodology graduation (small-d)." The rename avoids collision with Graduation (folding RDD artifacts into native project docs).
-
-4. **The three-tier classification is not a priority hierarchy.** Each layer is primary in its domain — skill-structure for step-anchorable mechanisms, harness for defense-in-depth and silent-fallback catching, user-tooling for conversational mechanisms that graduate into artifact-producing form. The unifying principle across all three: anchor the mechanism to a concrete, mechanically-unavoidable step with observable output.
-
-5. **The reframe-derailed gate is a real failure mode.** The User-Tooling Layer's artifact check verifies structural gate completion but not epistemic substance. A reframe-derailed gate can pass the manifest check while the reflection-note captures a direction the user does not own. The Susceptibility Snapshot at the same phase boundary is the complementary defense — together they form a conversational-layer compound defense mirroring the harness-layer Compound Check.
+1. Issue 10's problem statement is clear enough to skip RESEARCH/DISCOVER/MODEL/ARCHITECT.
+2. Lifecycle composition is a category addition to the build skill alongside structural composition, not a replacement.
+3. No invariant amendment. No backward propagation sweep anticipated.
+4. Scoped to build skill only; no cross-cut to debug/refactor/review.
+5. Stop and reassess if DECIDE surfaces anything requiring backfill to canonical upstream docs.
 
 **Open questions (the user is holding these open going into DECIDE):**
 
-1. Whether the narrow vs. broad scope distinction causes any of the existing domain model concepts to require rewording. Specifically whether "Tier 1" should be systematically replaced with "unconditional structural" or kept as a narrower subset.
-
-2. The methodology-wide mechanism audit itself — which is the concrete work Invariant 8's broad scope creates. Three areas flagged at the gate: (a) Cycle 8 build-focused skills and the Context Gathering protocol (deviation from specialist-subagent dispatch pattern); (b) Play phase mechanisms; (c) Synthesis phase mechanisms. The audit is a DECIDE-phase or post-DECIDE deliverable.
-
-3. Whether the belief-mapping pattern (specific ADR prediction) should become a required procedure at gates where invariant amendments are under consideration. Cycle 10's MODEL gate demonstrates the method: the snapshot's Finding 1 was "commitment was preference-accelerated, not belief-mapped"; the Grounding Reframe asked the user to name a specific ADR; the answer grounded the commitment post-hoc. Worth codifying.
+1. Whether the system design's Test Architecture table needs a row for lifecycle tests (default: skip unless clearly needed).
+2. Whether three glossary entries is the right granularity (may be two, may be four — judgment call during BUILD).
 
 **Specific commitments carried forward to DECIDE:**
 
-6. **Provenance attribution for the compound-defense pattern.** Any DECIDE-phase ADR that references the user-tooling-layer + susceptibility-snapshot compound defense must attribute the pattern to the MODEL gate conversation 2026-04-08, not to Essay 014. This was a user-surfaced observation, not an essay conclusion. Honest provenance matters for the same reason Cycle 10's diagnostic matters.
+1. ADR-071 must cite Issue 10 directly and document the two concrete skill changes.
+2. Argument + framing audit must run on ADR-071 alongside Issue 10 and the build skill (which ADR-071 modifies).
+3. Scenarios should cover the three concrete failure modes named in Issue 10: cached buffer invalidation, pooled connection mutation, retained registry entry — not abstract "shared mutable state" scenarios.
 
-7. **Backward propagation sweep under Invariant 8 (broad scope).** The user's ADR-060 example (research-methods-reviewer) is a concrete starting point. Full sweep scope per amendment log entry #17: Cycle 9 ADRs 055–062, Cycle 8 ADRs 048–055, ADR-033 hooks, and the Play/Synthesis phase ADRs. Each existing mechanism must be audited for which substrate anchors (or fails to anchor) its execution.
-
-8. **The "no new Tier 1 mechanism without a concrete dispatch site" rule is now mechanical enforcement of Invariant 8.** It does not need a separate methodology-level ADR — it is implied by the invariant. However, DECIDE may still want to write the rule explicitly as an ADR for clarity, with a note that it restates Invariant 8's anchoring requirement.
-
-9. **Grounding Reframe protocol codification.** Cycle 10's MODEL gate invoked the Grounding Reframe protocol against a susceptibility snapshot finding that had in-cycle course-correction implications (Finding 1 — preference-accelerated commitment). The protocol's extension from "unassessable risk" to "any significant snapshot finding with in-cycle course-correction implications" (per domain model update) should be encoded as an ADR amendment or new ADR in DECIDE.
-
-### Susceptibility snapshot findings from the MODEL → DECIDE boundary
-
-The third susceptibility snapshot dispatch of Cycle 10 (all three have been ceremonial per the cycle's own distinction) returned three load-bearing findings at the MODEL → DECIDE boundary. Snapshot artifact: [`./audits/susceptibility-snapshot-014-model.md`](./audits/susceptibility-snapshot-014-model.md).
-
-**Finding 1 — The Invariant 8 commitment was preference-accelerated, not belief-mapped.** The commitment moved from flag to acceptance in roughly two exchanges. The user's stated preference (*"I want it to be load-bearing"*) preceded the implications analysis. The agent worked through implications of the "make it an invariant" path but did not supply the implications of the "hold off until the mechanism is actually built" path at comparable depth. No belief-mapping check was performed before the commitment. **Grounding Reframe applied:** the user was asked to name one Cycle 9 ADR that the backward sweep would require amendment for. The response named ADR-060 (research-methods-reviewer) specifically and extended the scope to cover the entire methodology's mechanism inventory — a stronger answer than the question asked. Invariant 8 was held on grounded rather than preference-accelerated commitment.
-
-**Finding 2 — The reframe-derailed gate failure mode was user-surfaced, not agent-generated.** The agent's first-order analysis of the User-Tooling Layer did not include this failure mode. The user's pre-mortem supplied it. The agent absorbed it into the concept update. This is the same gap pattern documented across all three phases of Cycle 10: second-order critique requires either the user in second-order mode or an isolated evaluator. The agent does not generate it independently. **This is preserved as an observation, not actioned** — the observation itself is the correction; the provenance attribution (Commitment 6 above) is the propagation response.
-
-**Finding 3 — Framing-adoption propagation has reached structural depth.** Three consecutive phases have exhibited synthesis-moment framing adoption: research → essay material (four moments), discover → product discovery vocabulary, MODEL → domain model relationships (the compound-defense pattern, user-surfaced). Domain model relationships are the substrate DECIDE uses when generating ADRs. **DECIDE-phase mitigation:** the first ADR DECIDE writes should be accompanied by an explicit check — did this ADR's core framing originate from Essay 014, from a prior gate conversation, or from the agent's synthesis during ADR drafting? Provenance honesty at the ADR layer is the structural response to Finding 3.
-
-**Dispatch reliability observation:** this snapshot is Cycle 10's third; all three have been ceremonial. Under the Invariant 8 that the MODEL phase just added, the susceptibility snapshot itself is not yet Tier-1-compliant — it is not step-anchored, not harness-verified, and not artifact-produced at a canonical path. The gap between the commitment (Invariant 8) and the enforcement (compound check) is State B — absence would be visible if the dispatch didn't happen, the user is the harness layer in the interim, the path to Tier 1 is clear. The phase that added the invariant is not yet compliant with it; this is honest about the intermediate state rather than a contradiction.
-
-### From DECIDE
-
-**Settled premises (the user is building on these going into ARCHITECT):**
-
-1. **The eight-ADR set is audited clean.** Argument audit loop ran five iterations (original + four re-audits) to clean closure. The unconditional re-audit rule caught four new issues introduced by revisions across three of those iterations (NI-1, NI-A, NI-B1/B2, NI-C). Empirical grounding for research-phase Commitment 3 that mandatory re-audit after revision is load-bearing rather than ceremonial.
-
-2. **The centered-vs-infrastructure framing is the refined version of readables-vs-housekeeping.** Initially surfaced as a binary at DECIDE gate 2026-04-08, refined at DECIDE gate 2026-04-09 via the framing audit's FC-B observation. The refined framing articulates the distinction around user workflow ("what do we center for users to share and read vs. what underpins how the framework operates") rather than technical readability. Not a hard binary; a spectrum with directional intuition.
-
-3. **Advisory mode for pre-migration corpora is a UX commitment, not a binding architectural principle.** Initially framed as "plugin updates must degrade gracefully" (generalization from one user concern), reframed at DECIDE gate 2026-04-09 via the framing audit's FC-A observation as a UX commitment specific to ADR-064's compound check. Future plugin updates may compose the pattern as their own UX requires; no methodology-level principle is binding.
-
-4. **Provenance via architectural drivers is the primary attribution mechanism; provenance check subsections are selectively used.** Initially listed in ADR-069 as a universal methodology positive scope-of-claim, reframed at DECIDE gate 2026-04-09 via the framing audit's FC-C observation. Drivers (research findings, domain model concepts, prior ADRs) do the work for most ADRs; provenance check subsections fill in where drivers don't reach (DECIDE-gate contributions, agent synthesis at drafting time, cross-ADR compositions). Cycle 10 ADRs 063–070 include provenance checks because they carry unusually high proportions of non-driver content; future ADRs may omit them when drivers suffice.
-
-5. **The TDD framing is reaffirmed as a general principle for cycles producing new invariants.** Cycles that add invariants during DECIDE naturally enter subsequent phases with documented tension between what the invariant requires and what exists. This is not a defect; it is the methodology operating in a RED-before-GREEN state. Invariant 8 naming its own non-compliance until the enforcement mechanisms ship is the expected condition, not a contradiction.
-
-6. **Cycle 10's ARCHITECT phase is a cycle-specific exception to the default RED-phase duration.** The enforcement mechanisms being baked in (compound check hooks, skill-structure fixes, housekeeping migration) are what give Invariant 8 the capacity to flag systemic problems in future cycles. That capability is load-bearing for the methodology's self-auditing, so the RED phase should be shortened via urgent movement through ARCHITECT and BUILD before starting a new cycle. **Cycle-specific prioritization, not a general rule** — future cycles that produce invariant-level commitments may leave their RED phase longer if the tradeoffs differ.
-
-**Open questions (the user is holding these open going into ARCHITECT):**
-
-1. Whether the compound check's structural guarantee against sophisticated State C holds in practice under operational conditions (all four susceptibility snapshot dispatches in Cycle 10 have been ceremonial; operational reliability is unverified).
-
-2. Whether the failure-mode / success-mode dichotomy from ADR-069 generalizes beyond the two observed success-mode instances. The dichotomy is flagged as a watch item in ADR-069; future cycles will either validate or refute it.
-
-3. Whether the `{cycle}` token resolution via cycle-status field (canonical per ADR-063) or essay-prefix inference (fallback) is adequate in practice for multi-cycle projects with out-of-order essay numbering. The design commitment is in place; empirical validation is future work.
-
-4. Whether the three "not chosen at v1" Fails-Safe-to-Allow alternatives (SessionStart self-test, per-session suppression, rdd-doctor) will prove necessary in practice. v1 stderr notice + GitHub issue template is the baseline; later iterations may add these if the baseline proves insufficient.
-
-**Specific commitments carried forward to ARCHITECT:**
-
-1. **Foreground the enforcement implementation in Cycle 10's ARCHITECT phase.** Module decomposition should prioritize: (a) hook script architecture for the compound check (ADR-064), (b) per-phase susceptibility snapshot dispatch text for the eight phase skills (ADR-065 Fix 1), (c) canonical prompt skeleton application to existing Tier 1 dispatches (ADR-065 Fix 2), (d) position audit and relocation of middle-third dispatch sites (ADR-065 Fix 3), (e) the `/rdd-conform migrate` subcommand including migration, rollback manifest, and three new audit scopes (ADR-070), (f) the User-Tooling Layer's AID gate reflection note production (ADR-066). These are the primary ARCHITECT deliverables for this cycle. Other module work proceeds in parallel where it does not compete for attention.
-
-2. **Apply the architectural drivers framing to ARCHITECT's system design provenance.** Per the FC-C refinement, provenance in ARCHITECT should use architectural drivers (research findings, ADRs, domain model, product discovery) as the primary attribution mechanism. Provenance check subsections are used selectively if the system design introduces content not derivable from the driver chain.
-
-3. **The `docs/housekeeping/` directory introduction is a structural pattern ARCHITECT inherits.** Module decomposition should respect the centered-vs-infrastructure framing: user-facing modules live in the top-level structure, infrastructure modules (hooks, manifest loaders, dispatch log parsers) can live under `hooks/` or other infrastructure locations without being centered in the system design document.
-
-4. **Honor the implementation sequencing from ADR-070.** ADR-065's skill-file edits and ADR-070's path updates must ship together as a single atomic change. ADR-063/064 may ship before ADR-070's migration runs (advisory mode is the graceful state during the transition window). ARCHITECT's module decomposition should reflect this sequencing constraint.
-
-5. **The `rdd-conform migrate` subcommand does not yet exist.** The conformance scan surfaced this as an implicit gap. ARCHITECT should scope the migrate subcommand as part of its module decomposition — not just the behavior but the command-line interface, error handling, rollback manifest format, and summary report structure.
-
-6. **DECIDE → ARCHITECT susceptibility snapshot Finding 2 restraint.** The TDD analogy was the one residual susceptibility the DECIDE snapshot flagged. The user resolved it via the prioritization answer (TDD as general principle + cycle-specific urgency). ARCHITECT should not adopt the TDD framing as load-bearing architectural metaphor without also naming the competing frame ("the test runner IS the invariant's function"). Both frames are honest at different scales.
-
-### Susceptibility snapshot findings from the DECIDE → ARCHITECT boundary
-
-The fourth susceptibility snapshot dispatch of Cycle 10 (all four ceremonial) returned a substantive reversal of the prior trajectory. Snapshot artifact: [`./audits/susceptibility-snapshot-014-decide.md`](./audits/susceptibility-snapshot-014-decide.md).
-
-**Overall pattern — signal declining, not intensifying.** The DECIDE phase did not reproduce the prior three phases' susceptibility intensification. The provenance check subsections in ADRs 063–070 converted previously-invisible synthesis-moment framing adoption into labeled, auditable content. This is the first Cycle 10 phase to bend the trajectory. Whether this is a durable improvement or a ceremonial effect of the current dog-food cycle is unknown; operational validation remains future work.
-
-**Finding 1 — The second success-mode instance is plausible but classification-dependent.** Both claimed success-mode instances (compound defense terminology endorsement at early DECIDE; FC-C drivers-primary refinement at late DECIDE) are plausible on the artifact evidence. The limitation is that the classification rests on the agent's own characterization of what "evaluation on stated criteria" looks like. ADR-069's watch item names this honestly. **No Grounding Reframe warranted.** Feeds forward to ARCHITECT as a reminder: treat the failure-mode / success-mode dichotomy as a named hypothesis, not a proven framework.
-
-**Finding 2 — The TDD analogy is the one residual susceptibility worth escalating.** Four of the five user framings honored at DECIDE are defensibly superior to agent defaults. The TDD analogy for Invariant 8's timing is the borderline case — adopted at a synthesis moment, with the competing frame ("the test runner IS the invariant's function") not independently engaged before adoption. **Grounding Reframe applied at the gate:** the user was asked to belief-map the two framings and articulated a middle position (TDD as general principle + cycle-specific urgency for this cycle). The resolution is recorded above as Commitments 1 and 6.
-
-**Finding 3 — The five-iteration audit loop is the methodology working as designed.** The agent produces parallel-language residuals in cross-ADR edits; the audit mechanism caught every instance. Both "robust mechanism" and "imperfect editor" interpretations are true and compatible. **No concerning finding.**
-
-**Dispatch reliability observation:** this is Cycle 10's fourth snapshot; all four have been ceremonial. Operational reliability remains unverified. The mechanism this snapshot describes is still in State B under its own Invariant 8. The per-phase dispatch sites from ADR-065 are in the 34-item conformance debt, not in the current implementation. Until ARCHITECT → BUILD implements the ADR-065 skill-file edits and ADR-064's hook scripts, the susceptibility snapshot will continue to require ceremonial attention to fire.
-
-### From ARCHITECT
+### From DECIDE gate
 
 **Settled premises (the user is building on these going into BUILD):**
 
-1. **WP-B is the load-bearing primary fix of Cycle 10.** Essay 014 §5 names the skill-structure fix as the direct response to the 0% historical coverage diagnostic; hooks (WP-A) are defense-in-depth on top, not a replacement. If v0.7.0 runs into friction, WP-B's per-phase susceptibility snapshot dispatches are the minimum fix that resolves the cycle's primary diagnostic. This priority is encoded in the roadmap's Work Packages introduction and in WP-F's verification ordering (WP-B first, WP-A second). The competing frame "the test runner IS the invariant's function" is cited by name in the roadmap's Decision 6 resolution record alongside the TDD analogy — both are honest at different scales, and the roadmap holds them simultaneously rather than adopting one as load-bearing.
-
-2. **Cycle 10 ships as a split release across v0.7.0 and v0.7.1.** v0.7.0 contains WP-A + WP-B + WP-C + WP-D + WP-F(behavioral verification); the RDD corpus stays in advisory mode on v0.7.0 with skill files shipping pre-migration paths per ADR-070's Transitional State. v0.7.1 contains WP-E + WP-F(migration dogfood), and the `/rdd-conform migrate` subcommand lands along with the dogfood test on the RDD plugin's own corpus as the first user of the pattern. The split is motivated by isolating WP-E's large migration diff (~70 ADRs + essays + skill files + manifest + domain model + ORIENTATION) from the behavioral verification surface, and by honoring the "RDD has few users beyond the plugin author at this stage, so low risk" framing the user articulated at Bonus Decision 7.
-
-3. **The compound defense's inclusion criterion is the phase-boundary interstitial course-correction moment, not coverage zones.** The user-surfaced framing at the ARCHITECT gate sharpens the compound defense description: the umbrella is the set of mechanisms that fire at the phase-boundary interstitial moment where course correction is structurally possible. The current three components (manifest check, susceptibility snapshot, belief-mapping) happen to cover non-overlapping failure modes (structural floor, content ceiling, pre-artifact zone), but the "coverage zones" description is descriptive of the current constellation rather than a membership test for future additions. The extensibility is empirical (the pattern grew from two components to three during Cycle 10's own development), not speculative. Both the Architectural Drivers and Responsibility Matrix rows in system-design.md now reflect this framing with ARCHITECT gate attribution. Future cycles adding a component will not need a strict criterion — the phase-boundary interstitial principle is the criterion.
-
-4. **The methodology scope-of-claim has two visible negative-scope items at the orchestrator level.** Prior to ARCHITECT, the scope-of-claim named only "competence without independent second-order critique" (ADR-069). The ARCHITECT gate elevated a second negative-scope item: the compound check's structural guarantee against sophisticated State C applies only in enforcement mode (post-migration corpora with `docs/housekeeping/.migration-version` present); pre-migration corpora operate with WP-B's skill-structure fix but without harness-layer compound verification. This is visible at the orchestrator level rather than requiring users to cross-reference ADR-064, honoring the user-as-non-maintainer product principle consistently. The user's framing of this choice at the gate: "RDD doesn't have many users beyond me yet, so it's low risk at this stage" — the low-stakes context makes the disclosure cheap to add now.
-
-5. **The epistemic-gates-as-structural-step insight is candidate Cycle 11 research material.** At the ARCHITECT gate, the agent probed "what would the next cycle need to learn if the per-phase susceptibility snapshot dispatch still failed to fire after WP-B ships?" The user responded that epistemic gates work because they ARE the phase-end step, not something the orchestrator has to remember to dispatch — the same structural property should carry over to the snapshot dispatch once moved. If it still fails, the research question becomes "why does the gate text work at that position but the dispatch doesn't?" — a cleaner Cycle 11 question than "why did the orchestrator forget." This is recorded as a candidate follow-up if WP-B's fix does not achieve its target coverage rate in practice.
+1. ADR-071's three-extension dual-placement structure holds; argument chains A–I sound through seven audit passes.
+2. ADR-072's four argument chains hold through seven audit passes; pass-7 re-audit is clean.
+3. ADR-072 proceeds as designed (option 3 at gate). Hook-side alternative is not adopted in the ADR at this time.
+4. Cycle 015 scope remains DECIDE + BUILD; mini-cycle guardrails still hold.
+5. Cycle 014 PLAY remains deferred; run after Cycle 015 completes.
 
 **Open questions (the user is holding these open going into BUILD):**
 
-1. Whether WP-B's per-phase dispatch fix will achieve target coverage in practice. The user's expressed anticipation ("I anticipate the snapshot dispatch to occur if moved there — like epistemic gates, a similar mechanism at the gate, I'd hope we'd do this effectively") is a belief to be tested empirically. If the fix fails, Open Question 5 above becomes the Cycle 11 research question.
-
-2. Whether the selective engagement depth pattern observed at the ARCHITECT gate (minimal engagement on Decisions 1, 4, 5) generalizes to future gates where the user is deeper into an understood architecture. The user's in-gate explanation ("the space or need for engagement on things we've been over starts to diminish") is a legitimate observation that the snapshot evaluated proportionally. Whether this pattern produces durable methodology improvements or hides preference-accelerated commitments is an empirical question for future cycles.
-
-3. Whether the competing TDD frame ("the test runner IS the invariant's function") needs more structural visibility in the architecture beyond its prose presence in the roadmap's Decision 6 resolution record. Snapshot feed-forward item #2 — BUILD judgment call.
+1. Whether ADR-072's cycle-status.md two-field design is the right design, or whether a hook-side session-scoped block-then-advisory pattern is narrower and sufficient.
+2. Whether ADR-072 as currently designed covers the in-gate-conversation mini-cycle shape (during which no cycle-status.md field is yet populated) or whether BUILD must address that case.
+3. Whether the gate reflection note workflow in mini-cycles needs its own revisit (timing vs. manifest check).
 
 **Specific commitments carried forward to BUILD:**
 
-1. **Build WP-A + WP-B + WP-C + WP-D as the v0.7.0 release.** WP-B verification runs first; WP-A/C/D verification runs after WP-B passes. WP-F(behavioral) then verifies the complete v0.7.0 release surface against Cycle 10's scenarios 2341-2631 and 2713-2733.
-
-2. **Build WP-E as the v0.7.1 release.** The `/rdd-conform migrate` subcommand is implemented per ADR-070. WP-F(migration dogfood) then runs `/rdd-conform migrate` on the RDD plugin's own corpus as the first user of the pattern.
-
-3. **Check each Appendix A brief against the prior snapshot it cites during WP-B implementation.** Snapshot feed-forward item #1 — low-effort content check at implementation time. Verify that the cited findings (e.g., susceptibility-snapshot-014-discover.md Finding 1 in the discover phase brief) actually match what the referenced snapshot reported.
-
-4. **Decide whether the competing TDD frame needs more structural visibility.** Snapshot feed-forward item #2 — BUILD judgment call. The frame is prose-only in the roadmap's Decision 6 resolution; if BUILD reveals a place where the frame would help (e.g., a commit message, a skill file comment, a verification step), make the visibility choice at that moment.
-
-5. **Surface the pre-existing drift in system-design.md (graduate skill missing from module list; 12-vs-15 skill count inconsistency) as a follow-up task after Cycle 10 closes.** This is out of Cycle 10's scope but should not be forgotten.
-
-6. **After WP-F(v0.7.1) completes, close Cycle 10 and update the roadmap's Completed Work Log.** Prepare for the cycle's graduation question: does the cycle continue into a Cycle 11 (the privilege budget follow-up, the open question about why step-anchored mechanisms work at one position but not another, or whichever candidate surfaces next), or does the methodology rest at v0.7.1 for a time?
-
-### Susceptibility snapshot findings from the ARCHITECT → BUILD boundary
-
-The fifth susceptibility snapshot dispatch of Cycle 10 (all five ceremonial) reports trajectory continuing to bend (DECIDE was the first phase to show signal declining rather than intensifying; ARCHITECT continues that trajectory). Snapshot artifact: [`./audits/susceptibility-snapshot-014-architect.md`](./audits/susceptibility-snapshot-014-architect.md).
-
-**Overall pattern — trajectory continuing to bend.** The ARCHITECT phase maintained the DECIDE phase's improvement over research/discover/model: framing adoption at the artifact level is absent, both user-surfaced framings were explicitly attributed, and the TDD analogy residual susceptibility from the DECIDE snapshot was resolved with the competing frame cited by name in the roadmap.
-
-**Finding — selective engagement depth on Decisions 1, 4, 5.** Three of seven decisions received minimal engagement — agent-recommendation acceptances without the user engaging alternative arguments. The snapshot reframed this honestly: not sycophantic agent adjustment (the agent did not shift position), but user compliance with agent recommendation on decisions experienced as lower stakes. Critically, none of the three decisions encode irreversible architectural commitments (Decision 1 is a process choice; Decision 5 is a documentation choice; Decision 4 produced agent-composed content whose risk is mitigated by prior-snapshot anchoring and Appendix A's maintenance note). **The finding is recorded for pattern awareness across future cycles, not Grounding Reframed.** The user's in-gate explanation — "as we get deeper into this process it seems like the space or need for engagement on things we've been over starts to diminish" — is a legitimate observation about engagement proportional to consequence. The snapshot's proportional response (no Grounding Reframe, just an observation) validates the proportionality framing.
-
-**Finding — two user-surfaced framings attributed, not absorbed.** The epistemic-gates-as-structural-step framing (user response to the "why will the per-phase fix work?" probe) and the compound-defense-as-interstitial-moment framing (user response to the extensibility criterion probe) were both explicitly labeled by the agent as sharper than the agent's own framings, and both were recorded in the artifacts with ARCHITECT gate 2026-04-09 attribution rather than silently absorbed. This is the improvement over Cycle 10's research/discover/model phases, where the framing adoption pattern was the primary concern.
-
-**Three feed-forward items for BUILD (none require a Grounding Reframe):**
-
-1. **WP-B implementation should check each Appendix A brief against the prior snapshot it cites** — low-effort content check at implementation time.
-
-2. **The competing TDD frame is prose-only in the roadmap's Decision 6 resolution record, not structurally encoded** — BUILD judgment call about visibility.
-
-3. **The compound defense extensibility had two framings in system-design.md that were not reconciled** — the Architectural Drivers row used "coverage zones" framing while the Responsibility Matrix row (updated at the gate) used "interstitial moment" framing. **Fixed during gate closure:** the Architectural Drivers row now leads with the interstitial-moment framing with coverage zones described as the current constellation, bringing both rows into alignment.
-
-**Dispatch reliability observation:** this is Cycle 10's fifth snapshot dispatch. All five have been ceremonial (joint user/agent attention on whether the dispatch would fire). Operational reliability remains unverified. The mechanism is still in State B under its own Invariant 8 — the per-phase dispatch sites from ADR-065 Fix 1 ship in v0.7.0; until then, the susceptibility snapshot will continue to require ceremonial attention to fire.
-
-### From BUILD
-
-**Implementation status:** All five work packages (WP-A through WP-E) shipped across two releases (v0.7.0, v0.7.1). WP-F (verification) is next.
-
-**Build-phase observations:**
-
-1. **Dispatch log framing corrected.** ADR-064 specified `docs/housekeeping/dispatch-log.jsonl` as session-scoped state to be gitignored. The user identified that this framing doesn't hold for Pair-RDD or cross-machine collaboration — the compound check's cross-reference only works if dispatch log entries are available on the verifying machine. Corrected: dispatch log is committed as audit evidence, not gitignored. The `.gitignore` retains `session/` (context-reconstructive session artifacts per ADR-050).
-
-2. **Position audit accepted middle-third placements.** Four existing dispatch sites (citation-auditor and argument-auditor in research and synthesize skills) remain in the middle third of their skill files. These are at their natural workflow positions ("after the essay/outline is written") where step-anchoring is the primary mechanism. Relocating would break the step-anchoring that gives them 100% historical coverage. Position optimization is secondary to step-anchoring for files of 281-406 lines.
-
-3. **Gate reflection note path simplified.** ADR-066 specifies `{cycle}-{phase-from}-to-{phase-to}.md` but the `{phase-to}` component is non-deterministic at Stop hook check time (depends on user choice at the gate). Simplified to `{cycle}-{phase}-gate.md` in the manifest for deterministic verification. The transition information is captured in the file content headers.
-
-4. **Appendix A briefs verified against cited snapshots** (build commitment 3). Research brief's four framing-adoption moments, discover brief's Finding 1, model brief's Finding 1 all confirmed against cycle-status feed-forward signals.
-
-5. **Competing TDD frame visibility** (build commitment 4). No structural location surfaced during implementation where the frame needed additional visibility beyond its prose presence in the roadmap's Decision 6 resolution record. Accepted as prose-only.
-
-**Remaining for next session:**
-
-- WP-F(v0.7.1) verification (migration dogfood on RDD's own corpus)
-- Post-build housekeeping: ORIENTATION regeneration, roadmap archival, field guide generation (if applicable)
-- Build-phase susceptibility snapshot dispatch
-- Build-phase reflection time (epistemic gate)
-- Cycle closure decision (proceed to play/synthesize, or close Cycle 10)
-
-### WP-F(v0.7.0) Verification Findings (2026-04-11)
-
-The v0.7.0 behavioral verification pass surfaced five defects — all remediated inline as `fix:` commits. Each was found by the verification flow, fixed against the scenario, and re-verified. Cycle 10 is therefore the first RDD cycle whose implementation is not only written but also empirically tested against its scenarios by the methodology itself. The dispatch log infrastructure was exercised for the first time during this verification.
-
-**Finding 1 — Stop hook schema rejection.** `tier1-phase-manifest-check.sh` emitted `{"decision":"allow",...}` on its non-blocking paths. Claude Code's Stop hook schema accepts only `"approve"` or `"block"` for the `decision` field, so every advisory-mode invocation failed JSON validation and the advisory notice was never surfaced to the agent — the exact silent-fallback failure mode Cycle 10 exists to eliminate. Fixed to conform to the plain-text-stdout convention used by the project's other Stop and PostToolUse hooks (epistemic-gate.sh, invariant-reminder.sh, orientation-trigger.sh). Commit f6a7fc1. Found via the session-start hook output that surfaced the validation error directly to the user.
-
-**Finding 2 — Stop hook E1 dispatch detection was cycle-insensitive.** The structural assertion E1 distinguished "dispatched but no artifact" from "not dispatched at all" by grepping the dispatch log on mechanism name only, not on mechanism + substituted expected_path. Cross-cycle log residue would flip the message to the "dispatched" variant, obscuring the real cycle-boundary state. Enforcement mode compound check already matched correctly; E1 now mirrors that logic. Commit 0bbbe95.
-
-**Finding 3 — PostToolUse hook emitted `expected_path: "null"` as a JSON string.** `tier1-verify-dispatch.sh` used `jq --arg` for expected_path, which stringifies missing values — so a dispatch whose prompt lacked the canonical `Output path:` line was logged with `"expected_path":"null"` (spelled out) rather than `"expected_path":null` (JSON null). Downstream queries like `jq '.expected_path == null'` misclassified the missing case. Fixed via conditional `--argjson` with actual null. Commit 1b02069.
-
-**Finding 4 — `/rdd-conform migrate` omitted `docs/system-design.md` from its Step 6 file list.** The system design document contains multiple pre-migration path references (Appendix A per-phase susceptibility snapshot briefs, Test Architecture table, Integration Contracts notes) but was missing from migrate's "Files to update" list. Running migrate on a corpus would leave system-design.md as a mix of post-migration (skill-file-sourced) and pre-migration (system-design.md) references. Appendix A's own intro text claimed migrate rewrites its paths "in lockstep with the docs migration" — the fix aligns the migrate subcommand with that claim. Commit 04c36bb. Ensures the v0.7.1 dogfood actually corrects the drift.
-
-**Finding 5 — Compound check would false-positive on gate reflection notes.** The compound check uniformly cross-referenced every manifest mechanism against the dispatch log. But `aid-cycle-gate-reflection` is a User-Tooling Layer artifact produced by the orchestrator in-context, not by an isolated Agent dispatch — it has no dispatch log entry by design. Enforcement mode would have flagged legitimate gate reflection notes as "fabricated audit output" on every phase boundary. Added `mechanism_type: user-tooling` to the 6 aid-cycle-gate-reflection entries in the manifest (default: subagent), with the Stop hook branching on the field to skip compound check for user-tooling mechanisms and use different advisory language ("note was not produced" instead of "was not dispatched"). The structural floor (E1/S1/S2/S3) still applies uniformly; the Susceptibility Snapshot at the same phase boundary remains the complementary content-level defense. Commit 243a927.
-
-**Scenario coverage:** 44 scenarios across 11 features in the v0.7.0 range (2341-2631 + 2713-2733) — Per-Phase Manifest Format, Compound Check, Advisory Mode, Fails-Safe-to-Allow, Revision-Aware Re-Audit Reminder, Anchor Dispatch, User-Tooling Layer, Compound Defense, Three-Tier Enforcement Classification, Grounding Reframe Extension, Methodology Scope-of-Claim, and v0.7.0 integration scenarios. All PASS (with the fixes above).
-
-**WP-F(v0.7.0) commitments honored:**
-- Commitment 3 (check each Appendix A brief against the prior snapshot it cites): verified — all 8 phase skill briefs match Appendix A verbatim.
-- Commitment 4 (decide whether competing TDD frame needs more structural visibility): accepted as prose-only, no structural surface emerged during verification.
-
-**Out of scope (pre-existing drift noted for future attention):**
-- `docs/system-design.md` contains `graduate` skill missing from its module list; 12-vs-15 skill count inconsistency.
-- The "phase-boundary interstitial moment" extensibility framing for the compound defense exists in `docs/system-design.md` but not in the orchestrator SKILL.md. The orchestrator describes the current constellation; the extensibility criterion is only in system-design.md. Minor doc drift, not a bug.
-
-**Dispatch reliability observation during verification:** WP-F(v0.7.0) is the first time the dispatch log was populated on this repo. Prior to Cycle 10 no RDD cycle had run under v0.7.0. The WP-F synthetic tests exercised the full PostToolUse → Stop hook → compound check loop with both matching and mismatching dispatch entries, in both advisory and enforcement modes. The operational question ("does the per-phase susceptibility snapshot dispatch fire under task load") will be answered for the first time at the build-phase susceptibility snapshot dispatch at the end of this session, per Invariant 8 and the ARCHITECT phase's open question 1.
-
-### WP-F(v0.7.1) Migration Dogfood Outcomes (2026-04-11)
-
-The `/rdd-conform migrate` 10-step operation was executed on the RDD plugin's own corpus per ADR-070. The methodology is now the first user of the migrate subcommand, and the corpus transitions from advisory mode to enforcement mode.
-
-**Migration summary:** 58 files changed (40 audit file moves + 15 reference updates + 2 new infrastructure files + 1 cycle-status move). Directories created: `docs/housekeeping/`, `docs/housekeeping/audits/`, `docs/housekeeping/gates/` (empty). Version marker: `docs/housekeeping/.migration-version` contains `0.7.1`. Rollback manifest: `docs/housekeeping/.migration-rollback.json` (217 lines with full move and substitution record).
-
-**v0.7.1 scenarios verified (13 total):**
-- 8 migration scenarios (S2635, S2641, S2647, S2653, S2659, S2666, S2672, S2678) — all PASS, verified during the 10-step execution.
-- 4 conform scope extension scenarios (S2686, S2692, S2698, S2704) — all PASS. Operation 5 (housekeeping directory audit) exercised against post-migration state with no findings. Operation 6 (gate reflection note template alignment audit) documented; no notes exist yet so nothing to audit. Operation 7 (dispatch prompt format audit) exercised against all 8 phase skills; no middle-third placements flagged.
-- 1 integration scenario (S2734) — PASS. Stop hook now reads `docs/housekeeping/cycle-status.md`, detects the `.migration-version` marker, enters enforcement mode, and emits schema-valid `{"decision":"block"}` JSON on missing Tier 1 artifacts. The compound check is live for the first time in this corpus.
-
-**WP-F(v0.7.1) Finding 6 (remediated).** The migrate subcommand's Step 5 moved `docs/cycle-status.md` to `docs/housekeeping/cycle-status.md` but did not rewrite the file's own internal relative links. 24 links broken — the file's depth in the tree changed from `docs/` to `docs/housekeeping/`, so `./essays/...`, `./product-discovery.md`, `./domain-model.md`, `./system-design.md`, and `./roadmap.md` references were wrong after the move. Commit 8066f49: extended Step 5 with an explicit rewrite pass (order-dependent — `./essays/audits/` → `./audits/` before `./essays/` → `../essays/`), and applied the fix to the already-migrated `docs/housekeeping/cycle-status.md`. Audit reports moved in Step 4 have no internal links so they are unaffected; the spec notes this with room to extend.
-
-**Dispatch log state post-migration:** `docs/housekeeping/dispatch-log.jsonl` is absent at this point. The build-phase susceptibility snapshot dispatch (pending at phase boundary) will be the first real Agent-tool dispatch of the methodology's own Tier 1 infrastructure on this corpus — the empirical answer to ARCHITECT phase's open question 1 ("does the per-phase dispatch actually fire under task load").
-
-### Cycle 10 WP-F — Total Fix Count (2026-04-11)
-
-WP-F surfaced **nine** defects total, all remediated inline as numbered `fix:` commits during verification. The list grew as each fix unblocked the next layer of the hook chain, and the final defects were only reachable after prior ones had been fixed.
-
-1. **f6a7fc1** — Stop hook schema rejection (decision:"allow" → plain-text stdout)
-2. **0bbbe95** — E1 dispatch detection cycle-insensitive (match on mechanism + expected_path)
-3. **1b02069** — PostToolUse emits JSON null not string "null" for missing Output path
-4. **04c36bb** — migrate: include docs/system-design.md in Step 6 file list
-5. **243a927** — distinguish user-tooling mechanisms from subagent dispatches (mechanism_type field)
-6. **8066f49** — migrate Step 5 rewrites internal relative links in moved cycle-status.md
-7. **6692f8a** — PostToolUse strips plugin namespace prefix (surfaced by first live build-phase dispatch)
-8. **Cache sync (not a commit)** — manual `cp` from source to `~/.claude/plugins/cache/nrgforge/rdd/0.7.1/` after discovering that Claude Code's runtime uses the cached plugin install, not the source repo. The v0.7.1-shipped hooks diverged from source because all prior WP-F fixes were committed locally without a release cycle. V0.7.1-original hook scripts preserved as `.v0.7.1-orig` backups in the cache for rollback.
-9. **7ce6426** — ALL RDD hook scripts read `$INPUT` from stdin, not command-line argument. hooks.json drops the `"$INPUT"` argument. Since v0.6.0, every input-dependent hook (`invariant-reminder.sh`, `orientation-trigger.sh`, `sizing-check.sh`, `epistemic-gate.sh`, `tier1-verify-dispatch.sh`) has been silently non-functional in Claude Code's actual runtime. Only `tier1-phase-manifest-check.sh` worked, by accident — it reads cycle-status from disk and falls through on empty input. That accidental functionality was precisely what caught Finding #9: its enforcement block held while the Tier 1 dispatch logger was failing to populate the log, making the gap observable.
-
-**Three susceptibility snapshot artifacts preserved** at `docs/housekeeping/audits/`:
-- `susceptibility-snapshot-014-build.pre-prefix-fix.md` — first live operational dispatch in project history (first proof that the Skill-Structure anchor fires under task load; also the moment Finding #7 surfaced)
-- `susceptibility-snapshot-014-build.post-prefix-pre-stdin.md` — second dispatch, after cache sync + prefix fix; still no dispatch log entry because Finding #9 was latent
-- `susceptibility-snapshot-014-build.md` — canonical final dispatch, through the fully-fixed hook chain. Dispatch log entry populated with real Claude Code session_id, tool_use_id, and stripped mechanism name.
-
-**ARCHITECT phase open question 1 is answered empirically: YES, the per-phase dispatch fires under task load, AND the harness layer correctly logs it — but only after the hook scripts are fixed at multiple layers. The diagnostic gap Cycle 10 investigated turned out to be broader than Essay 014 named: not only "does the dispatch fire" but also "does the end-to-end loop carry evidence through protocol layers."**
-
-The compound defense is now operational with correct schema validation, cycle-aware dispatch detection, substrate-appropriate message language, link-preserving migration, plugin-namespace-aware matching, and stdin input delivery. Cycle 10 exits in enforcement mode on its own corpus, with all nine defects caught by the methodology's own enforcement infrastructure running against itself.
-
-### WP-F Build Phase Closure (2026-04-11)
-
-The build-phase susceptibility snapshot and gate reflection note are both present and structurally valid. Stop hook exit 0 with empty output — no block, no advisory. The dispatch log contains the canonical entry for the third dispatch, cross-referenced against the manifest. Invariant 8's compound defense (manifest check + susceptibility snapshot + gate reflection) is fully engaged at the build phase boundary.
-
-**Gate reflection note:** [`./gates/014-build-gate.md`](./gates/014-build-gate.md) — captures the belief-mapping question on Essay 014's claim, the user's response that broke the Stop-hook-block loop, the pedagogical move (Probe), and five settled premises + four open questions + five commitments carried forward.
-
-**Cycle 11 candidate research question (surfaced during WP-F):** *What categories of behavior are structurally unreachable by specification-conformant synthetic tests, and which warrant runtime-level testing infrastructure?* Concrete instantiation: a smoke test that fires an actual subagent dispatch against the real runtime and verifies the dispatch log is populated. Such a test would have caught Findings #7 and #9 before WP-F. The entire test suite in Cycle 10 operated within the specification layer; the runtime layer was unreached until WP-F executed through it.
-
-### Active risk register
-
-- ~~**Until the hook architecture is built, the susceptibility-snapshot dispatch rate is expected to return to 0% in any new cycle that does not have ceremonial attention on the dispatch.**~~ **Addressed by v0.7.0/v0.7.1.** The hook architecture is now built. Per-phase dispatch sites are step-anchored in all 8 phase skills. The compound check hooks are installed. Whether the operational dispatch rate improves from 0% is the empirical question WP-F verification will test. The methodology is no longer in State B under its own Invariant 8 for these mechanisms.
-- The cycle's recommendation carries an implementation dependency: implementable but not yet implemented. The intermediate state between "prose-only" and "hook-enforced" is fragile to user attention.
-
-### Agent-side susceptibility observation (for downstream phases to attend to)
-
-The susceptibility snapshot surfaced a "softer than sycophancy but real" pattern: the agent reached for user-provided framings at rhetorical synthesis moments in four documented instances. Each adoption was evidence-grounded and two were externally verified by the re-auditor. The framing audit caught the most consequential instance (the missing skill-structure fix alternative). Downstream phases (especially DECIDE when writing ADRs) should treat this as an active concern and be attentive to whether the pattern operates at their scale as well.
+1. BUILD implements ADR-072 as designed (two cycle-status.md fields).
+2. ADR-071's three concrete skill changes are implemented alongside: composable tests for lifecycle sequences + shared-mutable-state check in Stewardship Tier 1 + glossary entries (Lifecycle Composition, Shared Mutable State, Lifecycle Boundary, plus any adjustments judged during BUILD).
+3. The in-gate-conversation mini-cycle loop case is live evidence; if ADR-072's two-field design does not break this specific loop, flag it during BUILD and surface as either an ADR-072 revision or a separate hook-side supplement.
+4. If BUILD drifts into Design Amendment territory (material changes to ADR-072's decision, not just implementation detail), pause and reassess whether to reopen DECIDE before continuing.
 
 ## Context for Resumption
 
-This cycle is a direct follow-up to Cycle 9 (`013-sycophancy-and-rdd-reflexivity.md` + ADRs 055–062). Cycle 9 added the Tier 1 resistance architecture; Cycle 10 investigates why that architecture sometimes fails to fire. The issue that seeded Cycle 10 is [nrgforge/rdd#9](https://github.com/nrgforge/rdd/issues/9), filed the same day Cycle 9's architecture shipped as v0.6.0.
+If this cycle is interrupted and later resumed, the key context is:
 
-**If resuming in a new session:** read [`../essays/014-specification-execution-gap.md`](../essays/014-specification-execution-gap.md) as context, then [`../essays/reflections/014-specification-execution-gap.md`](../essays/reflections/014-specification-execution-gap.md) for the research-phase gate observations. Then read [`../product-discovery.md`](../product-discovery.md) for the discover-phase additions (post per-entry-pass state). Then read [`../domain-model.md`](../domain-model.md) — specifically Invariant 8 (line ~677), the Cycle 10 concept additions, and Amendment Log entry #17. Then read ADRs 063-070 at `./decisions/adr-06[3-9]*.md` and `./decisions/adr-070-housekeeping-migration.md`. Then read [`../system-design.md`](../system-design.md) — specifically Amendment #13 at the end of the Design Amendment Log, the new Structural Enforcement Concepts responsibility matrix section, the four new Harness Layer modules, the amended Orchestrator/phase-skills/Conformance-Audit/Susceptibility-Snapshot-Evaluator descriptions, and Appendix A (Per-Phase Susceptibility Snapshot Briefs). Then read [`../roadmap.md`](../roadmap.md) — specifically the Cycle 10 Work Packages section (with the WP-B priority note at the top), the dependency graph, the four transition states, and the "Open Decision Points (resolved at the ARCHITECT gate)" section. Finally read [`./audits/susceptibility-snapshot-014-architect.md`](./audits/susceptibility-snapshot-014-architect.md) for the ARCHITECT → BUILD boundary snapshot's findings and the three feed-forward items. The ARCHITECT phase is complete; the next phase is BUILD. Continue to `/rdd-build` in pipeline mode. The first work package to build is WP-B (the load-bearing primary fix: per-phase susceptibility snapshot dispatch in all 8 phase skills plus canonical prompt skeleton audit of existing Tier 1 dispatches plus position audit). After WP-B passes verification, build WP-A, WP-C, WP-D, then WP-F(behavioral) to close v0.7.0. Then build WP-E and WP-F(migration dogfood) to close v0.7.1.
-
-**Deferred framings the user surfaced but declined to crystallize:** During the discover-phase gate, the user offered *"not the easiest car to drive, but maybe a really powerful one"* as a possible characterization of RDD's character emerging from this cycle. The agent declined to encode this in the artifact at the time, citing the cycle's own findings about synthesis-moment adoption. Worth revisiting after MODEL/DECIDE if the framing still carries weight — possible home in cycle 11 vocabulary or in a later synthesis essay.
-
-**Reflexive note about this cycle:** Cycle 10 investigates whether the methodology's Tier 1 mechanisms actually fire under task load. The susceptibility-snapshot dispatch at the research → discover boundary was the first instance in the project's corpus of that specific mechanism firing. The discover-phase dispatch (second instance) failed twice with API 529 on the default model and succeeded on Opus retry; the orchestrator did not silently fall back to in-context evaluation between attempts — exactly the failure mode Cycle 10's #2 finding predicts. Both successful dispatches occurred under ceremonial conditions (joint user/agent attention on whether the dispatch would happen). This is noted so downstream phases do not over-interpret "the snapshot fired" as evidence of operational methodology reliability — it is evidence of ceremonial reliability, which is the very distinction Cycle 10's diagnostic identifies.
-
-## Candidate follow-up cycles
-
-**The Privilege Budget — mechanistic account of lost-in-the-middle and how it constrains skill file design.** Surfaced at the end of Cycle 10's research phase gate. The lit review on instruction-following degradation established that position effects are empirically robust (Liu et al. 2023; Guo & Vosoughi 2025) but explicitly flagged that the *mechanistic* account is unsettled. A follow-up cycle could investigate: (a) is there a file-length threshold at which the effect becomes design-relevant, or is it a continuous gradient; (b) is concept density per unit of text a separate variable from instruction count (benchmark work has varied count, not density); (c) what is the "privilege budget" — how much critical content can structurally-privileged positions hold before the privileging dilutes. The practical payoff: if the privilege budget turns out to be large enough to hold all Tier 1 mechanisms, then Cycle 10's hook architecture is over-engineered for a subset of the cases it addresses (specifically the "susceptibility snapshot not dispatched because it is at line 202 of a 530-line file" case, which could be addressed by moving the dispatch to the top of the appropriate phase skill instead of by adding a hook). This would narrow Cycle 10's hook recommendation to the silent-fallback cases where position-privileging does not help (items 1–3), separating them from cases where position-privileging might suffice (item 5 specifically). Not in scope for this cycle; noted for future consideration.
-
-**Synthesis-moment susceptibility beyond the essay-level framing audit.** From Cycle 10's susceptibility snapshot: the snapshot identified a "softer than sycophancy but real" pattern where the orchestrator reached for user-provided framings at synthesis moments. The essay-level framing audit is the methodology's current response. A narrower question worth scoping later: are there synthesis moments beyond the essay-level framing audit where the pattern operates and the methodology does not currently have an isolated-dispatch response? Not urgent; carried forward as a possible future scope.
+- Cycle 014 is complete through BUILD (v0.7.2 shipped 2026-04-13). Its cycle-status is archived at `../cycle-archive/cycle-014-specification-execution-gap-status.md`. Cycle 014 PLAY is still pending.
+- Issue 10's scope is established above. Do not re-scope without reopening the conversation with the user.
+- The user explicitly asked to minimize RDD ceremony. Stay proportional.
