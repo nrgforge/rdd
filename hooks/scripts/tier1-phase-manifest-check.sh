@@ -85,10 +85,12 @@ if [[ -f "$MIGRATION_MARKER" ]]; then
     ENFORCEMENT_MODE=true
 fi
 
+# Session ID from hook input — used by advisory, pause, and other
+# session-scoped notice markers to avoid per-Stop spam.
+SESSION_ID="$(printf '%s' "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)"
+
 # --- Advisory mode notice (once per session) ----------------------------------
 if ! $ENFORCEMENT_MODE; then
-    # Session-scoped suppression: use session_id from input to create marker
-    SESSION_ID="$(printf '%s' "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)"
     NOTICE_MARKER="/tmp/rdd-advisory-${SESSION_ID:-unknown}"
 
     if [[ ! -f "$NOTICE_MARKER" ]] && [[ -n "$SESSION_ID" ]]; then
@@ -103,6 +105,29 @@ enable the compound check and the Tier 1 artifact verification it
 provides, run /rdd-conform to migrate your corpus.
 EOF
     fi
+fi
+
+# --- Paused cycle short-circuit (ADR-072) ------------------------------------
+# If cycle-status.md declares the cycle paused, all manifest checks are
+# bypassed until the **Paused:** field is removed. Emit a one-time advisory
+# notice per session so the pause is visible without spamming on every Stop.
+# The pause notice marker is distinct from the advisory-mode marker so the
+# two notices don't collide (ADR-072 Decision).
+PAUSED_VALUE="$(grep -E '^\*\*Paused:\*\*' "$CYCLE_STATUS" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^\*\*Paused:\*\*[[:space:]]*(.*)$/\1/')"
+
+if [[ -n "$PAUSED_VALUE" ]]; then
+    PAUSE_NOTICE_MARKER="/tmp/rdd-pause-notice-${SESSION_ID:-unknown}"
+    if [[ ! -f "$PAUSE_NOTICE_MARKER" ]] && [[ -n "$SESSION_ID" ]]; then
+        touch "$PAUSE_NOTICE_MARKER" 2>/dev/null
+        cat >&2 <<EOF
+rdd-hook: cycle paused (${PAUSED_VALUE})
+Manifest checks are bypassed until the **Paused:** field is removed
+from docs/housekeeping/cycle-status.md. See ADR-072.
+EOF
+    fi
+    allow
 fi
 
 # --- Determine current phase from cycle-status.md ----------------------------
@@ -151,6 +176,27 @@ if [[ -z "$CURRENT_CYCLE" ]]; then
 fi
 
 [[ -z "$CURRENT_CYCLE" ]] && allow
+
+# --- Skipped phases short-circuit (ADR-072) ----------------------------------
+# If cycle-status.md declares the current phase as skipped, bypass its
+# manifest check entirely. The skip is explicit and declared in cycle-status,
+# preserving Invariant 8 (the skip is structurally anchored and observable,
+# not a silent bypass). Phase names are canonical lowercase.
+SKIPPED_PHASES_RAW="$(grep -E '^\*\*Skipped phases:\*\*' "$CYCLE_STATUS" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^\*\*Skipped phases:\*\*[[:space:]]*(.*)$/\1/' \
+    | tr ',' ' ' \
+    | tr '[:upper:]' '[:lower:]')"
+
+if [[ -n "$SKIPPED_PHASES_RAW" ]]; then
+    for skipped in $SKIPPED_PHASES_RAW; do
+        # Trim whitespace; compare canonical lowercase
+        skipped="$(printf '%s' "$skipped" | tr -d '[:space:]')"
+        if [[ -n "$skipped" && "$skipped" == "$CURRENT_PHASE" ]]; then
+            allow
+        fi
+    done
+fi
 
 # --- Load and parse manifest --------------------------------------------------
 [[ -f "$MANIFEST_PATH" ]] || die_open "manifest not found at $MANIFEST_PATH"
