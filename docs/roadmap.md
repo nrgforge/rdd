@@ -5,7 +5,7 @@
 
 ## Work Packages
 
-No active work packages. Cycle 15 complete pending BUILD gate close. Cycle 014 PLAY remains deferred. See Completed Work Log below.
+No active work packages. Cycle 15 complete (v0.7.3 shipped). Cycle 014 PLAY remains deferred. See Completed Work Log below.
 
 ## Completed Work Log
 
@@ -13,15 +13,15 @@ No active work packages. Cycle 15 complete pending BUILD gate close. Cycle 014 P
 
 **Derived from:** ADRs 071, 072, Issue #10
 **Cycle type:** Methodology amendment (mini-cycle: DECIDE + BUILD only; RESEARCH / DISCOVER / MODEL / ARCHITECT skipped by explicit scoping)
-**Shipped across:** pending release
+**Shipped across:** v0.7.3
 
 | WP | Title | Status | Release |
 |----|-------|--------|---------|
-| A | Domain model glossary — Lifecycle Composition / Shared Mutable State / Lifecycle Boundary | Complete | pending |
-| B | ADR-071 build skill edits — three-sided catch (COMPOSABLE TESTS §Lifecycle Composition + Step 5 anchor + Stewardship Tier 1 sub-item 6e) | Complete | pending |
-| C | ADR-072 hook script — Stop hook honors Skipped phases and Paused fields | Complete | pending |
-| D | ADR-072 convention documentation — cycle-status.md template + Pause Log in orchestrator skill | Complete | pending |
-| E | Integration verification + housekeeping | Complete | pending |
+| A | Domain model glossary — Lifecycle Composition / Shared Mutable State / Lifecycle Boundary | Complete | v0.7.3 |
+| B | ADR-071 build skill edits — three-sided catch (COMPOSABLE TESTS §Lifecycle Composition + Step 5 anchor + Stewardship Tier 1 sub-item 6e) | Complete | v0.7.3 |
+| C | ADR-072 hook script — Stop hook honors Skipped phases and Paused fields | Complete | v0.7.3 |
+| D | ADR-072 convention documentation — cycle-status.md template + Pause Log in orchestrator skill | Complete | v0.7.3 |
+| E | Integration verification + housekeeping | Complete | v0.7.3 |
 
 **Summary:**
 - Issue #10 named a methodology gap: the build skill's test and stewardship guidance addresses integration risk at **type boundaries** (mock vs. real) and **structural boundaries** (wrong module, wrong direction) but not **lifecycle boundaries** — where shared mutable state, ordered operations, and ambiguous ownership across components determine correctness
