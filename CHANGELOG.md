@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.7.3
+
+Cycle 15: Lifecycle Composition in Build Stewardship. Mini-cycle (DECIDE + BUILD only) adding a third integration-risk category to `/rdd-build` and, mid-cycle, cycle-shape declaration fields in `cycle-status.md` honored by the Stop hook in response to a live hook-loop that surfaced during the DECIDE gate itself.
+
+### Lifecycle Composition in build stewardship (ADR-071)
+
+- **COMPOSABLE TESTS §Lifecycle Composition (NEW)** — a third case alongside The N × M Problem, naming shared mutable state as an independent axis. When components share mutable state — cached buffers, pooled connections, retained registry entries, or any returned reference that aliases internal state — the integration test must exercise the production lifecycle sequence, not just individual operations. If component A hands a resource to B and B mutates or disposes it, the test must verify A's retained reference survives B's actions (ADR-071)
+- **Step 5 Integration Verification — lifecycle-sequence guidance (NEW)** — an explicit paragraph specifying the ordered sequence (caller obtains → mutates/disposes → original component's retained reference re-read to verify invariants) with cross-reference to the design-time framing
+- **Stewardship Tier 1 Test quality sub-item 6e Shared mutable state (NEW)** — adjacent to Boundary coverage and Wiring verification; the review-time detection check that fires when a module boundary crossed in the scenario group involves a returned value aliasing internal state
+- **Three-sided catch** — the three anchors (design-time prompt, verification-time anchor, review-time detector) form a three-sided catch; developers land on the anchor relevant to their current task; cross-references between all three
+- **Three glossary entries added** — Lifecycle Composition (the category), Shared Mutable State (the bug class), Lifecycle Boundary (the boundary class distinguished from type and structural boundaries)
+- **Scoped to build skill only** — debug, refactor, review skills unchanged; the category composes with them via ADR-048 mode shifts
+
+### Cycle-shape declaration (ADR-072)
+
+- **`**Skipped phases:**` optional header field (NEW)** — enumerated phases this cycle does not run, canonical lowercase (`research`, `discover`, `model`, `architect`, `play`, `synthesize`), comma-separated; absent = standard full-pipeline cycle; present = Stop hook treats enumerated phases as having no required artifacts
+- **`**Paused:**` optional header field (NEW)** — declares the cycle deliberately dormant (format: `YYYY-MM-DD — reason`); Stop hook short-circuits all per-phase manifest checks and emits a one-time advisory notice per session via `/tmp/rdd-pause-notice-${SESSION_ID}` (distinct marker from `/tmp/rdd-advisory-${SESSION_ID}` so the two don't collide)
+- **Pause Log section (NEW)** — audit trail of pause/resume events preserving Invariant 8 observability; appears only when the cycle has been paused at least once
+- **Stop hook honors both fields** — `hooks/scripts/tier1-phase-manifest-check.sh` gains Paused short-circuit and Skipped phases short-circuit branches; SESSION_ID extraction hoisted out of the advisory-mode block so both notice types can share it; phase names canonicalize to lowercase for case-insensitive matching
+- **Cycle Status template in orchestrator skill** — `skills/rdd/SKILL.md` documents the two fields and the Pause Log convention with explanatory prose wiring ADR-064 and ADR-072
+- **Known gap documented and deferred** — in-progress-gate case (no `cycle-status.md` field can be set before Stop fires between agent turns during an active gate conversation); documented in three locations (scenarios.md deferred scenario, ADR-072 Consequences Negative, cycle-status.md Deferred Work); [Issue #14](https://github.com/nrgforge/rdd/issues/14) captures the six-question follow-up cycle brief (multi-cycle composition as first-class methodology concept)
+- **Latent PostToolUse hook defect surfaced** — dispatch logger regex only matches canonical plain-text `Output path: <path>` lines, fails on markdown-bolded or backticked variants; produces `expected_path: null` and triggers compound-check fabrication suspicion even for legitimate dispatches; [Issue #15](https://github.com/nrgforge/rdd/issues/15) scoped as a separate fix
+
+### Methodological dog-food
+
+- **The failure mode ADR-072 addresses manifested live during the cycle** — the Stop hook cascaded blocks twice during the DECIDE → BUILD gate itself, because the single-cycle `cycle-status.md` model had no structural representation of an in-progress mini-cycle gate conversation. ADR-072 was drafted and landed in response to this live evidence
+- **BUILD-entry susceptibility snapshot caught the ADR-072 gap** the in-conversation agent had drifted past (Tier 1 Architectural Isolation from Cycle 9 firing on its own evidence within a cycle about extending the catchment); recommended writing one failing-case scenario to pin down the gap, which was executed
+- **Three BUILD-phase snapshot files preserved** — `.pre-implementation.md` (BUILD-entry, evaluated the design before implementation), `.pre-canonical-format.md` (first BUILD-exit attempt, archived because its dispatch prompt used non-canonical formatting that the PostToolUse regex did not match), and the canonical `susceptibility-snapshot-015-build.md` (re-dispatched with canonical prompt formatting). Preservation pattern matches the Cycle 10 WP-F precedent for artifact/log provenance gaps discovered at enforcement boundaries
+
+### Cycle 15 closure
+
+- **2 new ADRs** (071, 072), **15 active scenarios** satisfied (1 deferred as known gap)
+- **Seven argument-audit passes** on DECIDE artifacts (clean on pass 7)
+- **Mini-cycle scope** — RESEARCH / DISCOVER / MODEL / ARCHITECT skipped by explicit scoping per ADR-072's `**Skipped phases:**` mechanism; Cycle 015 is the first cycle to use the mechanism it defined (the declaration was added to Cycle 015's own `cycle-status.md` as a permanent live smoke test during WP-E)
+
 ## v0.7.2
 
 Cycle 10 WP-F verification-surfaced remediation. Nine latent defects in the v0.7.0/v0.7.1 hook infrastructure caught by the methodology running against its own corpus in enforcement mode. All fixes land in this release. Invariant 8's compound defense is now operational end-to-end on any corpus that runs the plugin.
