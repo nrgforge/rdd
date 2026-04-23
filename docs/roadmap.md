@@ -93,6 +93,8 @@
 
 #### WP-F: RESEARCH Skill + Reviewer Agent + Orchestrator — Question-Isolation Protocol
 
+**Status:** ✅ Shipped — 9dd999e (2026-04-23). `skills/research/SKILL.md` Step 1 rewritten as the Question-Isolation Entry Protocol with five substeps (1.1 articulate question in research log as first content, 1.2 agent composes specific-artifact-named constraint-removal prompt + user responds, 1.3 research-methods-reviewer dispatch with four criteria, 1.4 revise or accept, 1.5 research loop begins); classified first-line structural (Skill-Structure Layer per ADR-067) with cognitive component carried in prompt wording; greenfield and irreplaceable-artifact cases covered; honest scope-of-claim for pre-semantic priming residual. `agents/research-methods-reviewer.md` gained the fourth criterion (Incongruity Surfacing); Input section now describes the constraint-removal response as part of the reviewable question set; Process §3 extended so prior-art criterion can be satisfied by the constraint-removal response; Output template adds constraint-removal review and incongruity-surfacing sections. `skills/rdd/SKILL.md` Question Toolkit expanded from six to seven forms with the new Constraint-removal row (primary for research entry; available throughout cycle); the six existing forms remain unchanged. All 8 scenarios for ADR-082 trace to skill, agent, and orchestrator text.
+
 **Objective:** Extend `skills/research/SKILL.md` with the 5-step question-isolation entry protocol (ADR-082). Extend `agents/research-methods-reviewer.md` with the fourth review criterion (incongruity surfacing). Extend `skills/rdd/SKILL.md` Question Toolkit with the seventh form (constraint-removal).
 
 **Changes:**
