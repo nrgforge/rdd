@@ -63,6 +63,8 @@
 
 #### WP-D: ARCHITECT Skill Amendment — Fitness Criteria Decomposition Gate Check
 
+**Status:** ✅ Shipped — b46eb4e (2026-04-23). `skills/architect/SKILL.md` extended: Step 5 gained Qualitative Claim Identification subsection (agent walks responsibilities flagging quality language — transparent/seamless/backward-compatible/performant/lossless/isolated/etc. — while concrete responsibilities carry no overhead); Step 9 gained Decomposing Qualitative Claims into Fitness Properties subsection with `**Fitness:** <observable> — <how observed>` format, placement rules (inline or per-module subsection), refutability standard, compositional pathways into ADR-073/075/077, and direction-not-constraint signal for claims that resist decomposition; Step 10 Design Audit item 7 added as a hard gate that refuses advance on undecomposed qualitative claims; system-design.md template updated with optional **Fitness** subsection in Module Decomposition, responsibility-matrix inline-fitness convention, and clarified split between system-level criteria (table) and module-level fitness (inline with claim); Step 12 highlights list extended with decomposed qualitative claims + direction-not-constraint framing. All 5 scenarios for ADR-076 trace to skill text.
+
 **Objective:** Extend `skills/architect/SKILL.md` with the fitness-criteria decomposition gate check (ADR-076). Refuses to advance ARCHITECT phase when any qualitative claim in module responsibilities lacks adjacent `**Fitness:**` properties.
 
 **Changes:**
