@@ -47,6 +47,8 @@
 
 #### WP-C: DECIDE Skill Amendments + ORIENTATION.md Role-Separation Note
 
+**Status:** ✅ Shipped — 06cfb50 (2026-04-23). `skills/decide/SKILL.md` extended with role-separation note in Step 2; new Step 2.5 ADR Lifecycle and Supersession Workflow (body-immutable/status-mutable rule, Superseded/Updates header formats, four-step workflow with fitness property for sweep verification, drift decision tree, Step 3.7 relationship); Step 4 extended with Preservation Scenarios subsection (ADR-075) and Cycle Acceptance Criteria Table subsection (ADR-073) with null-coverage judgments for both; Step 5 gained supersession gate check and extended highlights list. ADR template updated to reflect current corpus practice (Rejected alternatives + Provenance check). ADR-074 §3 downstream sweep for ADR-072 Updated by ADR-078 discharged: system-design.md already swept in v13.0 Amendment #14, ORIENTATION.md already swept during ARCHITECT regeneration, domain-model.md Amendment 20 recorded the supersession's impact with per-artifact sweep status, field-guide.md bundled with post-BUILD regeneration (WP-H). All 15 scenarios for ADRs 073/074/075 trace to skill text. ORIENTATION Section 4 role-separation paragraph was already in place from ARCHITECT regeneration — no further edit needed.
+
 **Objective:** Extend `skills/decide/SKILL.md` with Cycle Acceptance Criteria Table production (ADR-073), ADR Supersession Workflow (ADR-074), and Preservation Scenarios (ADR-075). Add the role-separation note (ADR-074) to `docs/ORIENTATION.md` Section 4.
 
 **Changes:**
