@@ -54,9 +54,30 @@ $IS_TIER1 || exit 0
 # --- Extract Output path from prompt -----------------------------------------
 # The canonical prompt skeleton (ADR-065) includes a line:
 #   Output path: docs/housekeeping/audits/some-artifact.md
-# Extract it via regex. If absent, log with expected_path: null (JSON null).
+# Match against common markdown-formatted variants agent-authored prompts
+# produce naturally — bold label, backticked path, wrapped backticks, list
+# item — so the Stop hook's compound check doesn't treat legitimate
+# dispatches as fabrication-suspicious (Issue #15). Negative: prose
+# prescriptions without the "Output path:" label do not match.
+#
+# Match filter (grep): line contains "Output path:" after optional leading
+# whitespace, list marker (- or *), markdown bold (**), or wrapping backtick.
+# Extraction (sed): strip list marker, wrapping backticks, markdown bold
+# around the label, then take everything after "Output path:", strip
+# backticks around the path, strip trailing whitespace.
 PROMPT="$(printf '%s' "$INPUT" | jq -r '.tool_input.prompt // empty' 2>/dev/null)"
-EXPECTED_PATH="$(printf '%s' "$PROMPT" | grep -oE '^Output path: .+$' | head -1 | sed 's/^Output path: //' || true)"
+EXPECTED_PATH="$(printf '%s' "$PROMPT" \
+    | grep -E '^[[:space:]]*([-*][[:space:]]+)?(\*\*)?`?Output path:' \
+    | head -1 \
+    | sed -E '
+        s/^[[:space:]]*[-*][[:space:]]+//
+        s/^`(.*)`$/\1/
+        s/\*\*Output path:\*\*/Output path:/
+        s/^.*Output path:[[:space:]]*//
+        s/^`//
+        s/`$//
+        s/[[:space:]]+$//
+    ' || true)"
 
 # --- Extract identifiers -----------------------------------------------------
 SESSION_ID="$(printf '%s' "$INPUT" | jq -r '.session_id // empty' 2>/dev/null)"
