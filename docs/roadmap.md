@@ -13,6 +13,8 @@
 
 #### WP-A: cycle-status.md Schema Migration to Cycle Stack Format
 
+**Status:** ✅ Shipped — b90d4a1 (2026-04-23). Cycle 016's active entry migrated to `## Cycle Stack` / `### Active:` format; orchestrator template updated with ADR-078/ADR-079 per-entry fields and nested-cycle spawn procedure; backward-compat with current Stop hook confirmed (no regression in Fails-Safe-to-Allow behavior on `BUILD (next)`).
+
 **Objective:** Migrate `docs/cycle-status.md` from per-file fields (ADR-072) to per-entry fields within a `## Cycle Stack` section, with the active entry on top and paused entries beneath. Establishes the schema that WP-B's hook reads.
 
 **Changes:**
