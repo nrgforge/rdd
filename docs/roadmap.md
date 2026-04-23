@@ -30,6 +30,8 @@
 
 #### WP-B: Hook Layer Changes — Cycle Stack Parser, In-Progress Gate, Applicable_when, Legacy Detection
 
+**Status:** ✅ Shipped — f158af4 (2026-04-23). Hook parses Cycle Stack top entry; in-progress-gate predicate skips aid-cycle-gate-reflection for source phase; applicable_when evaluator supports 5 primitives (cycle_type_in, cycle_type_not_in, phase_not_skipped, parent_cycle_present, parent_cycle_absent) with skip logged to dispatch log; pre-ADR-072 legacy detection forces grandfathered advisory mode per cycle; BUILD (next) parens parse bug fixed. Manifest gained artifact_type on 6 gate-reflection entries and applicable_when on 4 research-phase entries. New hooks/tests/ infrastructure with 6 scenario tests (27 assertions, all green). Paused Cycle 016 via ADR-072 until BUILD phase-exit artifacts exist (8f8a14d) — known methodology gap: mid-phase active work lacks an enforcement-aware mitigation beyond the overbroad Paused field.
+
 **Objective:** Extend `hooks/scripts/tier1-phase-manifest-check.sh` to parse the multi-cycle Cycle Stack, evaluate the in-progress-gate predicate, evaluate `applicable_when` preconditions, and detect legacy pre-ADR-072 cycle-status format for grandfathered advisory mode. Add corresponding fields to `hooks/manifests/tier1-phase-manifest.yaml`.
 
 **Changes:**
