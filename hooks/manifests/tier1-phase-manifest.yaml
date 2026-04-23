@@ -40,7 +40,7 @@ phases:
           - cycle_type_in: [standard, batch]
         required_headers:
           - "# Research Design Review"
-          - "## Per-question audit"
+          - "## Per-Question Review"
         required_fields:
           - "Belief-mapping"
       - mechanism: citation-auditor
