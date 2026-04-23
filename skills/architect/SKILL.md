@@ -94,6 +94,14 @@ Rules:
 - If a module owns too many rows, its boundary is too broad — split it
 - If a module owns zero or one row, it may not justify its existence — merge it
 
+#### Qualitative Claim Identification
+
+Walk each module's responsibilities and responsibility-matrix entries, and flag any language that states a **quality** without a measurable target — words like *transparent, seamless, backward-compatible, performant, lossless, isolated, unified, efficient, scalable, robust, intuitive,* or any other adjective asserting a property the design must satisfy.
+
+Each flagged qualitative claim must be decomposed into one or more testable fitness properties before the ARCHITECT gate may pass (see Step 9 for the decomposition format and Step 10 for the gate check). Concrete, already-testable responsibilities (e.g., "exposes the ExtractFile RPC accepting a Path and returning a TokenStream") carry no overhead — the claim itself is testable; no decomposition is required.
+
+This identification step is cheap. If a claim is genuinely obvious to test, writing down the fitness property is a one-line exercise. If a claim is not obvious, the cost of decomposition is the cost of catching the Issue #13 failure mode — the qualitative claim assumed obviously testable, never written down, never tested.
+
 ### Step 6: Dependency Graph
 
 Define directed dependencies between modules:
@@ -135,6 +143,40 @@ Define measurable properties the design must maintain. These become guardrails d
 
 Each criterion must be verifiable — either by automated check or by inspection of the responsibility matrix and dependency graph.
 
+#### Decomposing Qualitative Claims into Fitness Properties
+
+For each qualitative claim flagged in Step 5, write one or more **testable fitness properties** in `system-design.md` adjacent to the claim. The format is a single-line entry:
+
+```markdown
+**Fitness:** <observable property> — <how observed/measured>
+```
+
+Place the fitness property line inline within the responsibility-matrix entry (when one property suffices) or in a per-module **Fitness** subsection directly under the module's purpose (when multiple properties are required).
+
+**Refutability standard.** Each fitness property must be specific enough that a test could be written from it without ambiguity — the same standard `scenarios.md` entries already meet. A fitness property that reads "X is transparent — verified by being transparent" is not refutable and does not satisfy the requirement.
+
+**Examples.**
+
+- *Qualitative claim:* "The X module is transparent to existing consumers."
+  ```
+  **Fitness:** When X is enabled, the Y consumer's request-response payload, status codes, and error messages are byte-identical to the X-disabled baseline — verified by recorded fixture comparison in the X integration test suite.
+  ```
+
+- *Qualitative claim:* "The Z subsystem is backward-compatible."
+  ```
+  **Fitness:** All scenarios from version N-1 in `scenarios.md` continue to pass under version N — verified by the existing scenario suite.
+  **Fitness:** The version-N protocol accepts every payload shape the version-(N-1) protocol accepted — verified by the protocol-compatibility test fixture set.
+  ```
+
+The qualitative claim is not removed from `system-design.md` — it communicates intent in human-readable terms. The fitness properties are the verification anchors that make the claim enforceable. Both have value: the claim communicates, the properties verify.
+
+**Compositional pathways.** Fitness properties compose with downstream artifacts:
+- Properties that specify a layer become entries in the Cycle Acceptance Criteria Table (ADR-073).
+- Properties that are scenario-decomposable become preservation or behavior scenarios in `scenarios.md` (ADR-075).
+- Properties are consulted at BUILD pattern-reuse moments via ADR-077 prompt 4 — the prompt explicitly names the declared fitness properties as evaluation targets, making decomposition load-bearing during reuse rather than passive entries in the document.
+
+**Resistance to decomposition is a signal.** Some genuinely qualitative properties (developer experience, learnability, aesthetic coherence) resist decomposition into single-test properties. When a claim cannot be decomposed, treat the resistance itself as information: the property may be a *direction* the architecture is optimizing toward rather than a *constraint* it must satisfy. The methodology's position is to surface the distinction explicitly — either decompose, or acknowledge the direction-not-constraint framing in system-design.md — rather than letting an undecomposed claim stand as a silent constraint the design cannot verify.
+
 ### Step 10: Design Audit
 
 Before presenting, evaluate the design against itself:
@@ -144,6 +186,7 @@ Before presenting, evaluate the design against itself:
 4. **Cycle check** — any cycles in the dependency graph?
 5. **ADR alignment** — do ADR consequences align with module structure?
 6. **Fitness criteria satisfaction** — does the proposed design already satisfy its own fitness criteria?
+7. **Qualitative claim decomposition (ADR-076 gate check)** — walk every module responsibility and every responsibility-matrix entry, looking for qualitative claims (transparent, backward-compatible, seamless, performant, lossless, isolated, etc.). For each qualitative claim found, verify at least one adjacent `**Fitness:**` property is recorded and meets the refutability standard. **This check is a hard gate — the ARCHITECT phase does not advance when a qualitative claim remains undecomposed.** Surface the undecomposed claim by name to the user so the decomposition can be added before presenting. (Concrete, already-testable responsibilities carry no gate obligation.)
 
 Fix issues before presenting. If an issue requires a judgment call, present the options to the user.
 
@@ -279,6 +322,7 @@ Present the complete design to the user. Highlight:
 - Modules that were hard to scope (boundary was unclear)
 - Concepts that could reasonably live in multiple modules (and why you chose the one you did)
 - Fitness criteria that will be enforced during build
+- Decomposed qualitative claims (ADR-076) — for each qualitative claim in module responsibilities, show the adjacent `**Fitness:**` property and why it is refutable; for any claim where decomposition resisted, show the direction-not-constraint framing that was recorded explicitly
 - Any points where you stopped due to uncertainty
 
 **The user must engage with the system design before `/rdd-build` proceeds.** This is the gate between architectural design and implementation. Do not advance past this step without completing the epistemic gate below.
@@ -369,10 +413,16 @@ After the user approves the system design (or after any design amendment):
 **Depends on:** [other modules]
 **Depended on by:** [other modules]
 
+**Fitness** (optional — present when the module's responsibilities contain qualitative claims per ADR-076):
+- **Fitness:** <observable property> — <how observed/measured>
+- **Fitness:** <observable property> — <how observed/measured>
+
 ## Responsibility Matrix
 
 | Domain Concept/Action | Owning Module | Provenance |
 |----------------------|---------------|------------|
+
+Responsibility-matrix entries that include qualitative language (transparent, backward-compatible, seamless, etc.) carry an inline `**Fitness:** <observable> — <how observed>` line adjacent to the entry per ADR-076. Entries stated in concrete terms carry no fitness-line obligation.
 
 ## Dependency Graph
 
@@ -388,8 +438,12 @@ After the user approves the system design (or after any design amendment):
 
 ## Fitness Criteria
 
+System-level fitness criteria that span modules (dependency direction rules, responsibility-count limits, coupling constraints):
+
 | Criterion | Measure | Threshold | Derived From |
 |-----------|---------|-----------|-------------|
+
+Module-level fitness properties (decomposed qualitative claims per ADR-076) are recorded inline within each module's entry in the Module Decomposition section above, or within its responsibility-matrix row, rather than aggregated in this table. The placement is intentional — the property lives adjacent to the claim it decomposes so that supersession or amendment moves both together.
 
 ## Test Architecture
 
