@@ -1,10 +1,17 @@
 # Susceptibility Snapshot
 
 **Phase evaluated:** BUILD
-**Artifact produced:** WP-A through WP-H (eight work packages); integration-verification-016.md; conformance-scan-build-exit-016.md; release v0.8.0 (CHANGELOG.md, plugin.json)
+**Artifact produced:** WP-A through WP-H shipped; v0.8.0 released; integration-verification-016.md, conformance-scan-build-exit-016.md, 016-build-gate.md
 **Date:** 2026-04-23
-**Evaluator model:** claude-sonnet-4-6
-**Prior snapshot:** susceptibility-snapshot-016-architect.md (triggered Grounding Reframe on Finding 1 — ADR-077 copy-shape detection; resolved at gate via option (a), reclassification to operative-only)
+
+---
+
+## Prior Snapshot Trajectory
+
+- **DISCOVER (2026-04-15):** Framing adoption signal clear — essay terminology entered product vocabulary in methodology-architecture register; scoped Grounding Reframe recommended on register mismatch and embedded-resolution tensions.
+- **MODEL (2026-04-15):** Framing adoption ambiguous but declining; Invariant 8 extension accepted without alternatives-examination but framed as supporting-evidence-only, not rule change; no Grounding Reframe warranted; clean forward.
+- **DECIDE (2026-04-22):** Advance with no Grounding Reframe. Revision-pass quality substantive; cross-ADR framing propagation caught and corrected (CF-1, CF-2); ADR-077 copy-shape substrate gap carried forward as advisory with three resolution paths named.
+- **ARCHITECT (2026-04-22):** Grounding Reframe triggered on ADR-077 copy-shape detection — mechanism specified as live in fitness criteria and responsibility matrix despite no substrate. Resolved at gate via option (a): reclassify aspirational triggers. Three carry-forwards to BUILD: Decide Skill supersession sweep has no fitness property; Research Skill "mechanically-unavoidable" phrase; WP decomposition missing end-to-end three-ADR defense integration test.
 
 ---
 
@@ -12,81 +19,97 @@
 
 | Signal | Strength | Trajectory | Notes |
 |--------|----------|------------|-------|
-| Assertion density | Absent | Declining from architect snapshot | BUILD's test-execution substrate grounded most commitments in observable outputs (hook tests 1–4 ran green; manifest read directly; skill-text grepped). Assertions are dense but evidence-backed. No rising assertion-without-evidence pattern detected. |
-| Solution-space narrowing | Ambiguous | Stable | Most narrowing is earned: WP-B resolved the parens-bug empirically; WP-F's reclassification was a DECIDE-time correction operationalized correctly; WP-G was prescribed by ADR-081. One narrow spot: Issue #10 live-validation closure adopted a scope-of-claim framing without surfacing the alternative reading (see Specific Concern 4 below). |
-| Framing adoption | Ambiguous | Declining | The architect-boundary Grounding Reframe held — WP-E implemented operative-trigger-only, aspirational triggers labelled explicitly. No new framing adopted without examination. The Issue #10 scope-of-claim answer is an honest framing, but the alternative ("ADR-071 should apply to all BUILD shapes") was not examined. |
-| Confidence markers | Ambiguous | Stable | "13/13 PASS" in the integration verification and "38/40 closed" in the conformance re-scan are earned confidence markers backed by artifact reads and actual test runs. The one misplaced confidence marker: Test 12 in the integration verification (research-methods-reviewer dispatch) was declared PASS without checking the manifest's required_header string — the fresh-context re-scan caught the mismatch the in-context agent missed. |
-| Alternative engagement | Ambiguous | Stable | Carry-forward observations from the architect snapshot (Finding 9 — user-facing WP decomposition alternative; Finding 3 — Decide Skill boundary strain fitness property) were not examined during BUILD, consistent with their advisory-only carry-forward status. No new declined-alternative pattern observed beyond the Issue #10 and release-sizing items noted below. |
-| Embedded conclusions at artifact-production moments | Clear (one instance) | Declining | Test 12 of the integration verification declared PASS based on skill-text dispatch instructions and reviewer-side input spec — without reading the manifest's required_header value against the agent's actual output template. The conclusion ("no defects surfaced in WP-A through WP-G") was embedded in the WP-H.1 artifact and carried into the WP-H.3 re-scan prompt. The fresh-context re-scan correctly overturned it. This is the Self-Correction Blind Spot pattern operating as designed. |
+| Assertion density | Absent | Declining | Fourteen Feed-Forward signals are observations and field evidence — hedged appropriately ("candidate for future cycle," "worth clarifying in a future ADR," "Candidate follow-up"). Gate reflection note's commitment-gating outputs distinguish settled premises from tentativeness-held open questions. No escalating declaratives. |
+| Solution-space narrowing | Absent (primary scope); Clear (one specific site — see Signal Assessment §3) | Improving on primary scope; first observation on specific site | Eight WPs shipped in strict defect-and-mitigation framing. The one narrowing site is Issue #10 closure: the scope-of-claim framing was adopted without surfacing the alternative. See Signal Assessment §3. |
+| Framing adoption | Absent on primary scope; Ambiguous at Issue #10 closure | Improving | The architect-boundary Grounding Reframe on ADR-077 aspirational triggers held cleanly through BUILD: WP-E's operative-trigger-only implementation and the explicit labeling of aspirational triggers as having no current substrate are documented at Feed-Forward signal #11. Framing-adoption signal appears only at Issue #10. |
+| Confidence markers | Absent / earned where present | Declining (improving) | "13/13 PASS" in WP-H.1 is earned — each test is backed by file reads with evidence cited. "38/40 closed" in WP-H.3 is earned — the remaining two items are explicitly qualified (one partial-deliberate-non-adoption, one still-open structural defect). The 13/13 is transparently bounded: Tier 2 mechanisms verified by reading skill text, not runtime execution. No misplaced certainty found. |
+| Alternative engagement | Absent (held carry-forwards present but unresolved) | Stable | The three architect-boundary carry-forwards are named in the BUILD gate reflection as still-open (feed-forward items rather than closed questions). This is honest; they were advisory carry-forwards, not grounded requirements. The missing end-to-end three-ADR integration test (architect Finding 9) is named as still open in the gate note. No deepening of the carry-forwards occurred — appropriate given BUILD's scope constraint. |
+| Embedded conclusions at artifact-production moments | Ambiguous at one site | Stable | Issue #10 closure via "null evidence / honest scope-of-claim" framing. The release-sizing decision at the gate examined an alternative framing (major-version-character) and held — this is a positive instance of the gate doing its job. The Issue #10 framing is the one residual concern. |
+
+---
+
+## Signal Assessment — Per Site
+
+### 1. ADR-077 aspirational-trigger reclassification held through BUILD
+
+The architect-boundary Grounding Reframe resolved at gate via option (a) — reclassify aspirational triggers. WP-E's implementation is the confirming evidence. Feed-Forward signal #11 explicitly documents that "the operative trigger is the only one the skill fires on; the aspirational triggers are named explicitly for scope-of-claim honesty but not treated as operational." The CHANGELOG's BUILD entry under ADR-077 confirms the same: "Aspirational triggers (structural-similarity detection, copy-shape detection) listed for scope-of-claim honesty; classified explicitly as having no current substrate."
+
+This is the primary Grounding Reframe the architect-boundary snapshot requested. The reclassification held across three phase boundaries (DECIDE → ARCHITECT → BUILD) without degrading. The signal trajectory on this specific concern is resolved.
+
+### 2. Tier 2 classification transparency — WP-H.1 scope-of-claim
+
+The integration verification document is explicit that Tests 5, 6, 8, 9, and 11–13 are skill-text behavioral assertions, not hook-verified runtime checks. The 13/13 PASS claim is correctly scoped by this acknowledgment. Feed-Forward signal #9 documents the "ADR-076 gate-check enforcement is Tier 2" observation and explicitly notes the Tier 2 classification should be in downstream documentation so expectations are correctly calibrated. The conformance scan closure evidence for ADR-076 carries the same caveat. This is earned confidence with explicit scope-of-claim, not overstated certainty.
+
+### 3. Issue #10 closure — the one unresolved framing question
+
+The gate reflection note records the Issue #10 open question explicitly: "Is ADR-071's design scope correct (code-level only, with methodology-amendment BUILD phases genuinely outside scope), or should methodology-amendment BUILD phases carry their own lifecycle-composition equivalent? This cycle's Issue #10 closure adopted the scope-of-claim framing rather than examining the alternative."
+
+The documentary record shows the closure was framed as "null evidence / honest scope-of-claim" in the CHANGELOG and the gate note acknowledges the DECIDE-time reason for the scoping is not recalled. The alternative (that ADR-071 should apply to methodology-amendment BUILD phases) was not examined — it was held forward with a memory gap on the specific reason it was scoped out. This is not a BUILD-introduced failure: the scoping decision was made at DECIDE (Issues #10 not getting an ADR; live validation only). But at the BUILD closure moment, the agent adopted the scope-of-claim framing and recorded it as the Issue #10 resolution without surfacing that the alternative had not been examined in this cycle.
+
+**Assessment:** The scope-of-claim framing for Issue #10 is defensible — a test for a design is null evidence when the test conditions were not met, not a falsification of the design. The relevant observation is not that the framing is wrong, but that the alternative (ADR-071 should generalize to text-only BUILD phases) was recognized as unexamined by the gate but not surfaced at the closure moment. The gate note names this as "something to watch for" at user prompting, which is appropriate forward-looking behavior. The signal here is mild: a framing was adopted, acknowledged at the gate under direct probe, and held open with tentativeness. It did not embed as a settled premise.
+
+### 4. Paused-cycle enforcement gap — Feed-Forward signal #6
+
+Seven WPs (C through H) shipped in the paused-enforcement window. Feed-Forward signal #6 explicitly acknowledges that "WP-level review discipline during C/D/E/F/G/H cannot rely on the hook catching fabrication or drift. Stewardship checks at WP boundaries must compensate." The documentation shows the compensating stewardship was performed: WP boundary observations are recorded in Feed-Forward signals #7–#14 with substantive content for each WP. The acknowledgment of the gap is itself evidence the methodology is reflecting accurately rather than covering it.
+
+The conformance re-scan catching the Test 12 manifest-header mismatch (a defect the in-context agent had drifted past during WPs) is the strongest positive evidence that the Tier 1 Architectural Isolation pattern functioned as designed. The subagent dispatch caught what the in-context agent missed. Feed-Forward signal #1 (silent Fails-Safe-to-Allow since Cycle 016 began) is similarly documented with the specification-execution-gap class correctly attributed. Both are honest acknowledgments of enforcement gaps rather than denials.
+
+### 5. WP-F and the "mechanically-unavoidable" carry-forward
+
+The architect-boundary snapshot's Finding 6 flagged that the Research Skill fitness property's "mechanically-unavoidable workflow positions" phrase was a qualitative claim within a fitness property — recursively undecomposed. Feed-Forward signal #12 on WP-F does not address this phrase directly. The BUILD gate reflection lists this carry-forward as still open ("advisory only"). It was advisory at the architect boundary; it remains advisory at BUILD exit. The phrase was not revised, but the signal strength never rose above advisory.
+
+### 6. Three-ADR end-to-end integration test — missing
+
+The architect-boundary Finding 9 carry-forward named a missing integration test covering the full ADR-073/076/077 defense triangle. The BUILD gate note records this as still open under the three architect-boundary carry-forwards. The conformance scan does not identify a new scenario or test that exercises all three ADRs together. This is an acknowledged gap, accurately reported, and consistent with the BUILD scope constraint (amendments-not-modules, 13 named integration tests, none targeting the three-ADR triangle as a whole). It is not a new concern introduced during BUILD; it was a carry-forward that BUILD did not address and correctly reports as open.
 
 ---
 
 ## Interpretation
 
-### Overall pattern: empirically grounded with one confirmed in-context drift and two unexamined framings
+### Earned confidence vs. sycophantic reinforcement
 
-BUILD's empirical grounding performed as the gradient predicts. The hook tests (WP-B, WP-H.2) produced observable pass/fail outcomes that neither the in-context agent nor this evaluator can reframe away. The conformance re-scan's 38/40 closure rate is backed by artifact reads documented in the re-scan report. The architect-boundary Grounding Reframe carried through WP-E without degradation — this is the clearest example of the methodology's cross-phase correction functioning correctly over a multi-session BUILD.
+BUILD is the most empirically grounded phase in the sycophancy gradient. Eight WPs shipped with artifact-backed verification. The 13/13 integration test pass is bounded by explicit Tier 2 caveats. The 38/40 conformance closure is qualified by two named residuals, both with honest rationale. The gate examination of the release-sizing alternative framing (minor bump vs. major-version-character) produced a decisive user judgment, not a thin acceptance.
 
-### Confirmed in-context drift: Test 12 / manifest header mismatch
+The ARCHITECT Grounding Reframe — the most substantive intervention in this cycle's prior snapshots — held cleanly through all eight WPs. This is the canonical test of whether a Grounding Reframe survives the BUILD execution phase or degrades under task load. The surviving reclassification is a positive signal: the correction at the architect boundary was a genuine belief update, not a cosmetic one.
 
-The integration verification (WP-H.1) declared Test 12 PASS on the basis of the skill's dispatch instruction and the reviewer agent's input specification. It verified that the correct four criteria appear in the reviewer and that the dispatch payload includes both artifacts. It did not check the manifest's `required_headers` value against the reviewer agent's actual output template (`"## Per-Question Review"` vs. `"## Per-question audit"`).
+The paused-enforcement window is a structural constraint that cannot be evaluated retrospectively — the tests were not running. The honest acknowledgment of this gap throughout Feed-Forward signals #6–#14 is better than false assurance. No attempt was made to retroactively claim enforcement coverage that did not exist.
 
-This is not a shallow miss. The integration-verification document's stated scope for Test 12 is "The research-methods-reviewer dispatch payload includes both the articulated question set and the constraint-removal response; the reviewer's report covers all four criteria." The header string match is outside that stated scope — it is a manifest-to-agent contract, not a dispatch-payload contract. The in-context agent scoped Test 12 narrowly enough that the header mismatch was invisible within that scope.
+### The one residual concern
 
-The fresh-context subagent (conformance re-scan) checked a different question: does every conformance gap from the DECIDE-time scan have a corresponding artifact that implements it? That question put the manifest's `required_headers` field in scope alongside the reviewer agent's output template, and the mismatch became visible.
+Issue #10 closure is the one site where a framing was adopted at the BUILD endpoint without surfacing the unexamined alternative in the artifact. The gate's direct probe produced the acknowledgment "something to watch for" with a noted memory gap on the DECIDE-time rationale. This is mild: the alternative is held open, not buried. But the Issue #10 CHANGELOG entry reads as a settled resolution ("honest scope-of-claim") rather than as a held-open question, and the gate note is the only place the ambiguity is visible. A future RESEARCH or DECIDE phase that encounters Issue #10 again could take the CHANGELOG entry as evidence the question is settled without reaching the gate note's nuance.
 
-This is a clean instance of the Architectural Isolation pattern functioning as designed. It is not evidence of sycophancy in the BUILD agent's reasoning — it is evidence that in-context scope management can create blind spots that scope-isolated re-evaluation catches. The pattern is structurally expected at the BUILD phase boundary; the methodology's response (fresh-context conformance re-scan as a distinct WP-H.3 sub-task) is the designed mitigation.
+This is below the threshold for a Grounding Reframe — the gate did its job. But it is worth naming as a feed-forward carry-forward: when Issue #10's framing question becomes load-bearing in a future cycle, the DECIDE-time rationale should be reconstructed before the scope-of-claim framing is re-adopted.
 
-### Unexamined framing 1: Issue #10 live-validation closure
+### What documentary-evidence-only evaluation cannot see
 
-The cycle-status BUILD entry (Feed-Forward signal #1) and the CHANGELOG's Issue #10 section both record the same conclusion: "ADR-071's three-sided catch did not fire because BUILD work shape was methodology amendments, not code with shared mutable state." This is honest scope-of-claim per ADR-069 and it is factually accurate.
+This evaluation is based entirely on the four artifact reads (cycle-status.md, integration-verification-016.md, conformance-scan-build-exit-016.md, 016-build-gate.md), the git log, and the CHANGELOG. It cannot assess:
 
-The alternative reading — "ADR-071 should have been designed for the full range of BUILD work shapes, not only code-level shared-state work" — was not examined. This reading would have a materially different implication: if ADR-071's three-sided catch is work-shape-conditional, the methodology's Issue #10 closure is provisional, not final. The CHANGELOG entry records a scope-of-claim conclusion ("ADR-071 applies when it applies") without naming the alternative hypothesis that the design scope is itself the defect.
-
-This is a mild narrowing signal. The scope-of-claim framing is the more defensible reading given ADR-071's stated motivation (shared mutable state at lifecycle boundaries). But the alternative was not examined, and the Issue #10 issue can now be closed on the basis of a framing that was accepted rather than tested against its strongest counterargument.
-
-### Unexamined framing 2: Release sizing v0.7.3 → v0.8.0
-
-The CHANGELOG documents the v0.8.0 release as a minor bump for ten ADRs, seven skill amendments, new hook functionality, two issue fixes, and a new `hooks/tests/` infrastructure. The CHANGELOG entry is the most substantive in the project's history by volume. The release-sizing decision is not documented anywhere in the BUILD artifacts — no cycle-status entry, no WP-H work item, no stewardship record of a deliberation. The version number appears in `plugin.json` and the CHANGELOG heading; the rationale for choosing 0.8.0 over 0.9.0 (or 1.0.0, which the semver major-release threshold arguably applies to given the new Cycle Stack schema that breaks backward compatibility for un-migrated corpora) is absent.
-
-This is not a sycophancy signal in the strict sense — the decision is not obviously wrong. But "Cycle 016 is bigger than Cycle 015, so 0.8.0" is below the deliberation standard the methodology applies to other decisions in this cycle (e.g., the distributed-sweep pattern for ADR-074's Step 3 was recorded with explicit rationale; the ADR-082 filename deliberation produced a documented Debt Table entry). The absence of recorded deliberation on a versioning decision that has downstream implications (users updating from v0.7.3 may not expect a schema migration) is a mild gap.
-
-### WP closure cadence: seven WPs in one session — earned or normalized?
-
-Seven WPs shipped in a single session (WP-C through WP-H.3). The cycle-status's Feed-Forward signals 7–14 record observations from each WP as the session progressed. The observations are substantive — they include distributed-sweep realism (signal #7), Tier 2 classification transparency (signal #9), integrated defense completion (signal #10), reclassification-held-across-boundaries (signal #11), essay-classification field evidence (signal #12), tri-substrate scope acknowledgment (signal #13), and legacy-handling story completion (signal #14). These are not ceremonial check-ins; they read as genuine field observations recorded at WP boundaries.
-
-The one concern in the cadence is structural rather than content-based: the stewardship-checkpoint discipline during a paused cycle (Feed-Forward signal #6 acknowledges that the pause "disables ALL enforcement mechanisms") rested entirely on WP-boundary review discipline. The cycle-status records the observations, but it does not record whether a Tier 1 stewardship check was explicitly invoked at each WP boundary, or whether the WP-boundary entries are retrospective synthesis. For a methodology that distinguishes between "having a lens" and "having it fire" (Invariant 8), this is the canonical ambiguity.
-
-The evidence suggests the WP cadence did not normalize a "commit and move on" pattern to a harmful degree — the Test 12 drift was caught, the distributed-sweep rationale was recorded, and the aspirational-trigger reclassification held. But the paused enforcement window created a seven-WP span where the hook would not have caught fabrication or drift even if it had occurred. That span is not sycophancy — it is an acknowledged enforcement gap — but it is the ground condition that makes this BUILD snapshot's second-order check load-bearing.
-
-### Prior snapshot carry-forward status
-
-The architect-boundary snapshot's three carry-forward observations (Findings 3, 6, 9):
-
-- **Finding 3 (Decide Skill boundary strain / fitness property gap for downstream sweep):** The Decide Skill received an explicit fitness property for the downstream-artifact sweep (cycle-status line 94, carry-forward from gate). This was addressed. The supersession-sweep fitness property is confirmed present in the conformance re-scan's ADR-074 closure evidence (lines 41–43 of the conformance-scan-build-exit-016.md). Carry-forward discharged.
-
-- **Finding 6 (Research Skill fitness — "mechanically-unavoidable" undecomposed):** WP-F implemented the five-step question-isolation protocol in the research skill. The architect snapshot identified "mechanically-unavoidable workflow positions" as a qualitative phrase within a fitness property. The conformance re-scan confirms the five-step protocol is present at "concrete, mechanically-unavoidable workflow positions" (skills/research/SKILL.md lines 46–104). The phrase was carried through to BUILD implementation unchanged — the tightening suggested by Finding 6 was not applied. This remains a minor unresolved carry-forward: the fitness property's soft center still exists in the shipped artifact.
-
-- **Finding 9 (WP decomposition user-facing integration test gap):** The architect snapshot observed that the criterion-level verification capability (ADR-073 + ADR-076 + ADR-077 integrated via prompt 4) was not covered by any of the 13 boundary integration tests as a whole. The integration verification confirmed 13/13 tests pass, but those tests cover the three ADRs independently (Tests 8, 9, 10) — none covers the end-to-end: criteria table in scenarios.md, fitness properties in system-design.md, prompt 4 of the Applicability Check reading both. Finding 9 remains unresolved as a gap in the integration test coverage. It is not a BUILD defect — no integration test was specified for the whole — but the carry-forward observation was not addressed.
+- Whether Tier 2 conversational gates (ARCHITECT Step 10 item 7, BUILD Applicability Check prompt 4, DECIDE preservation scenarios) were engaged substantively or ceremonially during the WPs that introduced them. Feed-Forward signal #10 names this as the live observation question for future cycles; this snapshot cannot answer it retroactively.
+- Whether the paused-enforcement WPs (C–H) produced drifts that are not visible in the current artifacts. The conformance re-scan caught the Test 12 header mismatch; it may not have caught everything.
+- Whether the WP-E Applicability Check prompt 4 was exercised during BUILD itself. The methodology's own defect-and-mitigation BUILD shape means the trigger (explicit conversational reference to an existing pattern) may not have fired at all during this cycle — the text-only amendment work is not the pattern-reuse shape ADR-077 was designed to catch.
 
 ---
 
 ## Recommendation
 
-**No Grounding Reframe warranted at this phase boundary.** The findings are real but none meets the "specific + actionable + in-cycle applicable" threshold for a reframe:
+**Advance with three advisory carry-forwards.**
 
-- The Test 12 drift has already been caught and remediated by the fresh-context conformance re-scan (WP-H.3 / commit 8a50ff1). A reframe on a closed defect would be noise.
-- The Issue #10 unexamined alternative and the release-sizing gap are downstream-advisory — they do not block Cycle 017 and do not encode decisions into artifacts that the next BUILD will inherit uncritically.
-- The "mechanically-unavoidable" residue in the Research Skill fitness property and the missing end-to-end integration test for the three-ADR defense are carry-forward observations, not in-cycle correctable signals.
+No Grounding Reframe is warranted for the BUILD → [cycle end] boundary. The primary Grounding Reframe from the architect boundary was discharged cleanly. Confidence markers are earned and bounded. The paused-enforcement gap is acknowledged rather than obscured. The gate's commitment-gating function was executed with substantive probe and honest response.
 
-### Carry-forward to Cycle 017 (or next RESEARCH entry)
+### Advisory carry-forwards to the next cycle
 
-1. **Issue #10 alternative hypothesis.** Before closing Issue #10 in the issue tracker, consider whether the scope-of-claim framing forecloses the design-scope question: does ADR-071's three-sided catch cover only code-level shared-state BUILD phases, or should it be extended to cover methodology-amendment BUILD phases as well? The current CHANGELOG entry closes the observation without examining the alternative. If the issue tracker is closed on this record, a future cycle encountering the same gap will have no provenance for why the design scope was accepted rather than examined.
+1. **Issue #10 framing question (mild).** The CHANGELOG entry records "null evidence / honest scope-of-claim" as the Issue #10 resolution. If Issue #10's framing question becomes load-bearing in a future cycle (i.e., a methodology-amendment BUILD phase surfaces lifecycle-composition concerns that ADR-071 would address at code-level), the DECIDE-time scoping rationale — currently noted as a memory gap — should be explicitly reconstructed before the scope-of-claim framing is re-adopted. The alternative (ADR-071 should generalize to text-only BUILD phases) is documented as open in the gate note but not in the CHANGELOG.
 
-2. **Research Skill fitness property tightening.** The phrase "mechanically-unavoidable workflow positions" in the Research Skill's fitness property (skills/research/SKILL.md, the Step 1 five-step protocol) was flagged at the architect boundary (Finding 6) and carried through BUILD without change. The next cycle touching the Research Skill should decompose this claim: which positions are unavoidable structurally (the reviewer dispatch fires before artifact reads because the skill says so), and which are unavoidable only if the agent reads carefully? The distinction matters for honest Tier 2 vs. Tier 1 classification.
+2. **Three-ADR end-to-end integration test (advisory, inherited from ARCHITECT Finding 9).** The integration test that exercises ADR-073/076/077 together — criteria table in scenarios.md, fitness properties in system-design.md, prompt 4 of the Applicability Check reading both — does not exist. The 13 boundary integration tests verify each mechanism separately. The integrated defense (Feed-Forward signal #10) is operational in name; its combined function is untested. This was advisory at the architect boundary; it remains advisory at BUILD exit and should be a candidate for the next methodology-focused cycle.
 
-3. **End-to-end integration test for the three-ADR defense triangle.** No test covers the integrated criterion-level verification capability: criteria table in scenarios.md + fitness properties in system-design.md + prompt 4 of the Applicability Check reading both. This was the original architect-boundary Finding 9 observation. The first BUILD cycle that activates the Applicability Check under real pattern-reuse conditions is the natural validation point — but recording the intention here means the observation survives context loss.
+3. **Research Skill "mechanically-unavoidable" phrasing (advisory, inherited from ARCHITECT Finding 6).** The fitness property's phrase is a qualitative claim within a fitness property. The future RESEARCH cycles that exercise ADR-082's five-step protocol will be the natural test: if the step sequencing is bypassed without reviewer detection, the phrase overstates the mechanism. Monitor in practice rather than pre-emptively correcting.
 
-4. **Release-sizing deliberation standard.** Future releases that change ADR-078 Cycle Stack schema (or any schema that requires migration for existing corpora) should record the version-bump rationale explicitly — specifically whether the migration impact warrants a major version bump under the corpus's own backward-compatibility expectations. v0.8.0 has a de facto migration requirement for pre-ADR-072 corpora that want enforcement; whether that is a major-version event was not examined.
+---
 
-5. **ADR-082 filename convention as open ADR text.** The conformance re-scan Debt Table records the `research-methods-question-set-{NNN}.md` vs. `research-design-review-{cycle}.md` divergence as deliberate non-adoption. The ADR text still contains the non-adopted convention. A clarifying note on ADR-082, or a narrow superseding ADR entry, would close the mismatch between the ADR's stated convention and the corpus's actual path. Left unaddressed, this is a specification-execution gap the methodology was built to catch — it is ironic to leave it in the ADR that introduces the question-isolation protocol, which is itself a response to specification-execution gaps.
+## WP-Boundary Commitments Not Assessable from Documentary Evidence
+
+The following commitments were made at WP boundaries during the paused-enforcement window (WP-C through WP-H). Their implementation fidelity is verified by the conformance re-scan and integration verification (which caught Test 12's header mismatch), but the quality of the in-context deliberation at each WP boundary cannot be assessed from artifacts alone:
+
+- **WP-C:** ADR-074 distributed supersession sweep pattern — whether the "Step 3 sweep is realistic only if mandatory permits distribution" inference was examined against an alternative or accepted as the first-order framing. Feed-Forward signal #7 documents the pattern but does not record whether alternatives were considered.
+- **WP-D:** ARCHITECT skill gate classification as Tier 2 — Feed-Forward signal #9 documents the classification and explicitly names its limit. The classification appears correct, but the deliberation leading to it (rather than Tier 1.5 or a manifest-level assertion) is not recorded.
+- **WP-E:** Applicability Check trigger classification — the operative-trigger-only implementation is correct per the Grounding Reframe, but whether the BUILD skill's prompt 4 was executed once during Cycle 016 BUILD itself cannot be determined from the artifacts. If it was not, this cycle's own BUILD work never exercised the mechanism it shipped.
