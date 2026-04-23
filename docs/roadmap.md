@@ -78,6 +78,8 @@
 
 #### WP-E: BUILD Skill Amendments — Step 5.5 + Applicability Check
 
+**Status:** ✅ Shipped — 677257a (2026-04-23). `skills/build/SKILL.md` extended with Step 5.5 Cycle Criterion Verification (ADR-073) inserted between existing Step 5 (Integration Verification) and Step 6 (Generate Field Guide); reads the Cycle Acceptance Criteria Table from scenarios.md or acceptance-criteria.md, walks each entry, handles Layer-match yes/no/null-judgment, and triggers a Design Amendment when the specified layer is unreachable from the test harness. Tier 1b Applicability Check (ADR-077) added between Tier 1 and Tier 2 stewardship — triggered (not always-on) per the operative-trigger-only reclassification from the architect → build gate Grounding Reframe; four-prompt composition-not-recitation form with prompt 4 integrating ADR-076 fitness-property consultation; outcomes handle substantive answers, pauseable concerns, and Grounding Reframe fallback for unanswerable prompts; batched application affordance for refactoring-heavy sessions. All 6 ADR-077 scenarios and 2 BUILD-side ADR-073 scenarios trace to skill text (the other 3 ADR-073 scenarios are DECIDE-side and satisfied by WP-C).
+
 **Objective:** Extend `skills/build/SKILL.md` with Step 5.5 Cycle Criterion Verification (ADR-073) and the Applicability Check stewardship-checkpoint (ADR-077, four-prompt form including prompt 4 fitness-property consultation).
 
 **Changes:**
