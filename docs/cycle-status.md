@@ -8,6 +8,7 @@
 **Started:** 2026-04-15
 **Current phase:** BUILD (next)
 **Cycle type:** batch
+**Paused:** 2026-04-23 — WP-B activated enforcement mid-BUILD; exit artifacts do not yet exist. Unpause at the BUILD gate reflection, once all WP work is complete and the phase-exit susceptibility snapshot and gate reflection note are produced.
 
 **Essay:** 015-methodology-seams.md
 **Artifact base:** ./docs/
@@ -106,6 +107,12 @@ Whether #13 and #16 share a common mechanism — existing-artifact gravity suppr
 - BUILD stewardship Tier 1 should re-examine Decide Skill boundary strain (snapshot Finding 3) if skill text grows unwieldy
 - BUILD may revisit WP decomposition if WP-E's stubbing of WP-C / WP-D dependencies proves rough (snapshot Finding 9)
 - Research Skill fitness property's recursive use of "mechanically-unavoidable workflow positions" (snapshot Finding 6) candidate for tightening
+
+## Pause Log
+
+| # | Paused     | Resumed | Reason |
+|---|------------|---------|--------|
+| 1 | 2026-04-23 |         | WP-B (Cycle Stack parser + in-progress-gate + applicable_when + legacy detect) shipped mid-BUILD. With enforcement actually operating (the pre-WP-B parens bug no longer masks it), every Stop would block on missing BUILD-exit artifacts. Paused until the BUILD gate reflection is produced at phase exit. |
 
 ## Feed-Forward Signals
 
