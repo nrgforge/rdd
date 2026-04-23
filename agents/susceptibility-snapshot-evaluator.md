@@ -51,7 +51,11 @@ If the signals are ambiguous or consistent with earned confidence, note this wit
 
 ## Output
 
-Write your snapshot to the output file path provided in the dispatch prompt (the `Output path:` line). Each phase skill provides a phase-keyed path — e.g., `docs/essays/audits/susceptibility-snapshot-014-research.md` for the research phase. Use this structure:
+Write your snapshot to the output file path provided in the dispatch prompt (the `Output path:` line). Each phase skill provides a phase-keyed path — e.g., `docs/essays/audits/susceptibility-snapshot-014-research.md` for the research phase.
+
+**Do not write to `docs/housekeeping/dispatch-log.jsonl` or any other dispatch-tracking artifact.** The dispatch log is written only by the PostToolUse hook. If you observe that a prior dispatch-log entry appears missing or malformed, note the observation in your snapshot body — do not patch the log yourself. A subagent writing its own entry is a trust-model violation: the log is authoritative only if the hook is the sole writer. Report the defect; let the orchestrator and user decide on remediation.
+
+Use this structure:
 
 ```markdown
 # Susceptibility Snapshot
