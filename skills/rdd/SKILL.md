@@ -390,19 +390,27 @@ Update and display this table at each gate. The "Key Epistemic Response" column 
 
 ### Cycle Status
 
-Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is the durable record of the active cycle — it survives across sessions where conversation context does not.
+Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is the durable record of the active cycle — it survives across sessions where conversation context does not. Per ADR-078, the file represents a **stack of cycle entries**: the top entry is active, entries beneath are paused outer cycles that will resume when nested cycles complete.
 
 **Create** when a new cycle begins. **Update** at every phase transition.
 
 ```markdown
-# Active RDD Cycle: [Topic]
+# RDD Cycle Status
 
-**Started:** [date]
+## Cycle Stack
+
+### Active: [Cycle title]
+
+**Cycle number:** NNN
+**Started:** YYYY-MM-DD
 **Current phase:** [phase name] (next)
-**Artifact base:** [path]
-**Essay:** [NNN-descriptive-name.md]
+**Cycle type:** [standard | mini-cycle | batch]
+**Parent cycle:** (if nested; absent otherwise)
 **Skipped phases:** (optional) research, discover, model, architect
-**Paused:** (optional) YYYY-MM-DD — reason
+**Pause-on-spawn policy:** (optional, defaults to `pause-parent`)
+**In-progress gate:** (optional; set by orchestrator at AID-gate start, cleared at gate-reflection-note write — per ADR-079)
+
+[Extra metadata — essay, artifact base, driving issues, plugin version, etc.]
 
 ## Phase Status
 
@@ -426,14 +434,35 @@ Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is
 ## Context for Resumption
 
 [Key context needed to resume the cycle in a new session]
+
+### Paused: [Outer cycle title]  (present only when a nested cycle is active)
+
+**Cycle number:** NNN
+**Paused:** YYYY-MM-DD — [reason]
+**Phase at pause:** [phase that was active when paused]
+**Spawned by:** [inner cycle that caused the pause, if applicable]
+**Continue-parent rationale:** (required iff this entry carried `**Pause-on-spawn policy:** continue-parent` before spawning; one-line justification)
+
+[Outer cycle's Phase Status, Feed-Forward Signals, etc. preserved verbatim]
 ```
 
-**Cycle shape declaration (ADR-072).** Two optional header fields let the cycle-status document declare its shape so the Stop hook (ADR-064) can honor it:
+**Cycle shape declaration (ADR-072 + ADR-078).** Per-entry header fields let the cycle-status document declare each cycle's shape so the Stop hook (ADR-064) can honor it:
 
-- **`**Skipped phases:**`** — enumerate phases this cycle does not run, using canonical lowercase names (`research`, `discover`, `model`, `architect`, `play`, `synthesize`), comma-separated. Absent = no phases skipped (standard full-pipeline cycle). When present, the Stop hook treats the enumerated phases as having no required artifacts. Use this for Mode D (Custom) cycles, mini-cycles, and methodology amendments that scope out upstream phases by agreement.
-- **`**Paused:**`** — declares the cycle deliberately dormant. Format: `YYYY-MM-DD — reason`. Absent = cycle is active. When present, the Stop hook short-circuits all per-phase manifest checks until the field is removed, and emits a one-time advisory notice per session indicating the paused state. Use this when the user steps away mid-gate, when an external hold blocks progress, or when the cycle needs to rest without being formally closed (distinct from Graduation). The pause is removed by deleting the `**Paused:**` line when the cycle resumes; the event is recorded in the Pause Log below.
+- **`**Cycle type:**`** — one of `standard` (full pipeline), `mini-cycle` (scoped Mode D), `batch` (multi-issue). Describes content character. Nested relationships are captured by `**Parent cycle:**`, not by the type.
+- **`**Parent cycle:**`** — present on nested entries; names the outer cycle by number. Absent on top-level cycles.
+- **`**Skipped phases:**`** — enumerate phases this entry does not run, using canonical lowercase names (`research`, `discover`, `model`, `architect`, `play`, `synthesize`), comma-separated. Absent = no phases skipped. When present, the Stop hook treats the enumerated phases as having no required artifacts. Use for Mode D (Custom) cycles, mini-cycles, and methodology amendments that scope out upstream phases by agreement.
+- **`**Paused:**`** — declares the entry deliberately dormant. Format: `YYYY-MM-DD — reason`. Active entries do not carry this field; paused entries always do. When the top entry is paused, the Stop hook short-circuits all per-phase manifest checks and emits a one-time advisory notice per session. Pause is removed by deleting the line when the cycle resumes; the event is recorded in the Pause Log below.
+- **`**Phase at pause:**`** — records the phase the cycle was at when paused, so resume can restore the correct phase (history-pseudostate pattern from Harel 1987).
+- **`**Pause-on-spawn policy:**`** — `pause-parent` (default — spawning a nested cycle pauses the outer) or `continue-parent` (rare; explicit decision that outer continues independently). Set on the entry that will be paused by a future spawn.
+- **`**Continue-parent rationale:**`** — required one-line justification when `**Pause-on-spawn policy:** continue-parent` is set. Absence on a continue-parent entry is itself a signal the choice was not deliberated.
+- **`**In-progress gate:**`** — per ADR-079, set by the orchestrator at AID-gate start (format: `<source-phase> → <target-phase>`), cleared when the gate reflection note is written. While present on the top entry, the Stop hook's gate-reflection-note check returns allow for the source phase only; all other manifest checks continue to fire.
 
 The `Pause Log` section appears only when the cycle has been paused at least once. It records the audit trail of pause/resume events — each row captures when the pause began, when it ended (blank if still paused), and why. The log makes the pause visible and reviewable, preserving Invariant 8 (structural mechanisms must be observable, not silent bypasses).
+
+**Spawning a nested cycle (pause-parent default).** When a nested mini-cycle or side cycle begins:
+1. On the current (outer) entry, add `**Paused:** YYYY-MM-DD — spawned <inner cycle title>` and `**Phase at pause:** <phase>`. Rename the entry heading from `### Active:` to `### Paused:`.
+2. Push a new entry at the top of the stack: `### Active: [inner cycle title]` with `**Parent cycle:** <outer NNN>` and `**Cycle type:** mini-cycle` (or the appropriate type).
+3. When the inner cycle completes (or is paused), remove the inner entry (or mark it paused) and restore the outer entry: rename `### Paused:` → `### Active:`, remove its `**Paused:**` and `**Phase at pause:**` fields, set `**Current phase:**` to the recorded phase-at-pause value.
 
 **When a phase loops back to an earlier phase** — play feeding back to DISCOVER, synthesis re-entering RESEARCH, or any backward propagation — record the loop in the phase status table:
 

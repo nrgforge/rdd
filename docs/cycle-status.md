@@ -1,9 +1,14 @@
-# Active RDD Cycle: Multi-Issue Batch Cycle (Issues #10–#16)
+# RDD Cycle Status
 
-**Started:** 2026-04-15
+## Cycle Stack
+
+### Active: Multi-Issue Batch Cycle (Issues #10–#16)
+
 **Cycle number:** 016
-**Cycle type:** Batch cycle (multi-issue, mixed research depth) — experimental shape
+**Started:** 2026-04-15
 **Current phase:** BUILD (next)
+**Cycle type:** batch
+
 **Essay:** 015-methodology-seams.md
 **Artifact base:** ./docs/
 **Driving issues:** #10, #11, #12, #13, #14, #15, #16
