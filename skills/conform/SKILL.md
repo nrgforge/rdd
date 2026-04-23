@@ -18,7 +18,7 @@ $ARGUMENTS
 
 ## OPERATIONS
 
-This skill provides seven operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
+This skill provides eight operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
 
 | Operation | When to use |
 |-----------|-------------|
@@ -29,6 +29,7 @@ This skill provides seven operations. The user specifies which operation to run,
 | **Housekeeping Audit** | Verify housekeeping directory structure and detect pre-migration state |
 | **Gate Note Audit** | Verify gate reflection notes match the ADR-066 template |
 | **Dispatch Prompt Audit** | Verify skill file dispatch prompts follow the ADR-065 skeleton |
+| **Cycle-Shape Audit** | Detect pre-ADR-072 `cycle-status.md` entries and walk the user through field migration into the current ADR-078 Cycle Stack schema (ADR-081) |
 
 If the user's request is ambiguous, ask which operation they need. If they describe a situation ("I just updated the RDD skills"), map it to the appropriate operation.
 
@@ -376,6 +377,102 @@ For each skill file (`skills/**/SKILL.md`):
 - **Does not audit brief content** — audit is format-level, not content-level
 
 Findings are reported with file:line references and suggested remediations. **Do not auto-correct.**
+
+---
+
+## Operation 8: Cycle-Shape Audit (ADR-081)
+
+### Purpose
+
+Detect pre-ADR-072 `cycle-status.md` entries (legacy format — no `**Skipped phases:**`, `**Paused:**`, or `**Cycle type:**` fields) and walk the user through migrating each one into the current ADR-078 Cycle Stack schema while preserving the legacy entry's prose body verbatim.
+
+This operation is opt-in per cycle. The methodology works without migration — the Stop hook applies grandfathered advisory mode to pre-ADR-072 entries (per ADR-081) until they are migrated. Migration is the path for practitioners who want to resume a legacy cycle under enforcement rather than advisory mode.
+
+### When to Use
+
+- Resuming a paused cycle that was started before v0.7.0 (pre-hooks, pre-ADR-072). The validation case is **Cycle 8 (rdd-pair)** — paused at MODEL before cycle-shape fields existed.
+- Unarchiving a legacy cycle from `docs/cycle-archive/` back into active `cycle-status.md` — the unarchived entry is treated as a paused legacy cycle for the purposes of this operation.
+- Preparing a corpus with multiple legacy cycles for migration — the audit surfaces all legacy entries and the user migrates each individually.
+
+### Four-Step Workflow
+
+#### Step 1: Detect
+
+Read `docs/housekeeping/cycle-status.md` (or `docs/cycle-status.md` if pre-migration). Identify entries that match the **legacy pre-ADR-072 signature**:
+
+- Single-entry format (no `## Cycle Stack` wrapper), OR an entry inside a Cycle Stack that lacks cycle-shape fields
+- No `**Skipped phases:**`, `**Paused:**`, or `**Cycle type:**` fields anywhere in the entry
+- No `**Cycle number:**`, `**Started:**`, or `**Current phase:**` fields (ADR-078 per-entry schema)
+
+When the corpus contains multiple legacy entries (including any unarchived from `docs/cycle-archive/`), surface them as a list for the user. The user migrates each individually or batch-confirms the migrations after reviewing the proposed per-entry changes.
+
+#### Step 2: Read and Infer
+
+For each detected legacy entry, read the existing body and infer fields where possible — do **not** fabricate:
+
+- **Cycle number:** infer from the entry title if numbered ("Cycle 8 — rdd-pair" → `8`), or from a `**Cycle:**` line in the body, or from `docs/essays/NNN-*.md` matching the cycle's topic. If no inference is possible, prompt the user.
+- **Started:** infer from any explicit "Started: YYYY-MM-DD" text in the body. Otherwise, fall back to `git log --follow --diff-filter=A cycle-status.md` (or the nearest prior cycle-status touch) for a date estimate, surfacing the source. If no reasonable inference, prompt.
+- **Title:** infer from the existing heading text (`## [title]`).
+- **Current phase:** infer from existing Phase Status table — the last row marked `▶ In Progress` or similar. When the prose shows the cycle paused at a specific phase (e.g., "paused at MODEL boundary"), use that phase. Confirm inference with the user before writing.
+
+#### Step 3: Prompt
+
+Ask the user for fields the entry does not provide:
+
+- **Cycle type** — `standard`, `mini-cycle`, or `batch` per ADR-078. Default assumption: `standard` unless the entry's body shows a skipped-phases pattern (suggesting `mini-cycle`).
+- **Current phase confirmation** — confirm the inferred phase; if the user is resuming immediately, ask whether to mark the phase as `(next)` or `▶ In Progress`.
+- **Paused state** — if the legacy entry's prose declares pause (e.g., "Cycle 8 paused; Cycle 9 took priority"), propose `**Paused:** YYYY-MM-DD — <reason from prose>` and confirm. If the entry does not declare pause but has not progressed recently, ask.
+- **Parent cycle** — if the legacy entry was spawned under another cycle (rare for pre-ADR-072 cycles), prompt for `**Parent cycle:**`.
+
+Do not auto-delegate these prompts to the agent — the user is the source of truth for cycle state.
+
+#### Step 4: Write Migrated Entry
+
+Write the migrated entry with the current ADR-078 header fields at the top, followed by the existing prose body **byte-identical** to its pre-migration content:
+
+```markdown
+### [Active|Paused]: <title>
+**Cycle number:** <N>
+**Started:** <YYYY-MM-DD>
+**Current phase:** <phase> (next | ▶ In Progress)
+**Cycle type:** <standard|mini-cycle|batch>
+[**Parent cycle:** <N>   — if applicable]
+[**Paused:** <YYYY-MM-DD> — <reason>   — if applicable]
+[**Phase at pause:** <phase>   — if paused]
+
+[existing prose body — Phase Status table, Feed-Forward Signals,
+ Context for Resumption, etc. — preserved verbatim]
+```
+
+Add (or create) a `Pause Log` section with a one-line migration record:
+
+```markdown
+## Pause Log
+
+| # | Paused | Resumed | Reason |
+|---|--------|---------|--------|
+| N | -         | -       | Migrated from pre-ADR-072 format on YYYY-MM-DD |
+```
+
+If the entry already had a Pause Log, append the migration record as a new row rather than replacing the log.
+
+### What the Migration Preserves
+
+- The existing prose body (Phase Status table, Feed-Forward Signals, Context for Resumption sections) is preserved byte-identical. The migration adds header fields only; it does not rewrite the body.
+- The cycle's identity (cycle number, title, started date) is preserved.
+- The cycle's pause state, if any, becomes the formal `**Paused:**` field. The prose pause declaration remains for human readability — the field does not replace it.
+
+### What the Migration Does Not Do
+
+- It does not retroactively run manifest checks on the cycle's already-completed phases. Grandfathered phases are accepted as-completed; only post-migration work is subject to enforcement.
+- It does not rewrite archived cycle-status files in `docs/cycle-archive/` — archived cycles remain byte-identical in their original format. If an archived cycle is unarchived (moved back into `cycle-status.md`), the Cycle-Shape Audit treats it as any other legacy entry to migrate.
+- It does not force migration of all legacy cycles at once. Each legacy cycle migrates when the user is ready to resume it.
+
+### Validation Case
+
+Cycle 8 (rdd-pair) is the named validation case per ADR-081. Running the audit against Cycle 8's `cycle-status.md` (paused at MODEL, pre-hooks) should produce a current-schema entry that resumes cleanly under enforcement with the Cycle 8 prose preserved verbatim. If the audit's prompts are rough on Cycle 8 — missing fields the user cannot easily supply, ambiguous phase mapping, or fabrication pressure — the audit's prompts should be refined before broad use.
+
+Findings and proposed migrations are presented to the user. **Do not auto-migrate.** Per ADR-081, the user opts in per cycle.
 
 ---
 
