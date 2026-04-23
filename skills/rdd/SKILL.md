@@ -246,7 +246,7 @@ The time spent at each gate must be productive, not merely brief (Invariant 4, a
 
 ### Question Toolkit
 
-Six research-grounded question forms available to the AID cycle. These are question *types* the agent composes with phase content and conversation state — not scripts to recite. The non-formulaic requirement is a hard constraint: each question instance must reference specific content from the current artifact and conversation.
+Seven research-grounded question forms available to the AID cycle. These are question *types* the agent composes with phase content and conversation state — not scripts to recite. The non-formulaic requirement is a hard constraint: each question instance must reference specific content from the current artifact and conversation.
 
 **Composition process (goal-first):**
 1. Determine the epistemic goal — "What do I need to understand by asking this question?"
@@ -255,7 +255,7 @@ Six research-grounded question forms available to the AID cycle. These are quest
 4. Compose the question from goal + context + type
 5. Evaluate the user's response against the goal — if it doesn't address the question substantively, reframe
 
-**The six forms:**
+**The seven forms:**
 
 | Form | Mechanism | Primary phases | Example goal |
 |------|-----------|---------------|-------------|
@@ -265,10 +265,11 @@ Six research-grounded question forms available to the AID cycle. These are quest
 | **Rebuttal elicitation** | "What's the strongest reason someone would disagree with [decision]?" | DECIDE | Surface rejected alternatives that may not have been fully examined |
 | **Commitment gating** | "Which premises are you building on, and which remain open?" | All phase boundaries | Distinguish settled ground from open questions before advancing |
 | **Open-question reframing** | "What's the open question behind [assertion]?" Used for assertion-aware observation. | All phases (triggered by embedded conclusions) | Convert embedded conclusions into examinable questions |
+| **Constraint-removal** | "What would we build if [key infrastructure component] were not available?" Forces the question moment to treat existing artifacts as prior art rather than constraints. Composed against a specific named artifact, not a generic "consider alternatives" gesture. The **primary form for the research-entry moment** (ADR-082) where solution-anchoring most operates; available throughout the cycle when an artifact's gravitational pull is suspected. | RESEARCH (primary, at entry per ADR-082); any phase where the user flags anchoring risk | Bracket existing artifacts so the problem can be re-framed around needs rather than around the default solution shape the artifacts make accessible |
 
 **Triple duty:** Every question from the toolkit simultaneously serves as sycophancy resistance evidence (did the user engage alternatives?), confidence diagnosis (is their confidence earned?), and epistemic advancement (did the user's understanding deepen?). The response to a belief-mapping question IS the test of earned confidence — a user who engages the alternative substantively has demonstrated grounded understanding.
 
-**Phase-specific emphasis:** RESEARCH (pre-mortem + open-question), DISCOVER (belief-mapping + commitment gating), MODEL (warrant elicitation), DECIDE (rebuttal elicitation + belief-mapping on rejected alternatives), BUILD (commitment gating at stewardship). These are starting points for composition, not constraints — the agent selects based on the epistemic goal.
+**Phase-specific emphasis:** RESEARCH (constraint-removal at entry + pre-mortem + open-question), DISCOVER (belief-mapping + commitment gating), MODEL (warrant elicitation), DECIDE (rebuttal elicitation + belief-mapping on rejected alternatives), BUILD (commitment gating at stewardship). These are starting points for composition, not constraints — the agent selects based on the epistemic goal.
 
 **Adversarial framing on explicit request:** When the user explicitly requests adversarial framing ("argue against this," "play devil's advocate"), the agent may use it as a deliberate rhetorical choice. The belief-mapping constraint applies to agent-initiated challenge moves, not to user-requested debate.
 

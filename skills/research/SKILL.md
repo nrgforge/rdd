@@ -43,29 +43,65 @@ All paths below use `./docs/` as the default base. Replace with the chosen base 
 
 Repeat until the user says the problem space is sufficiently understood.
 
-### Step 1: Scope the First Question
+### Step 1: Question-Isolation Entry Protocol (ADR-082)
 
-Before researching, clarify with the user:
+The research-entry moment is where solution-anchoring most operates — existing artifacts in the corpus make solution categories accessible before the question is even articulated. The five-step question-isolation protocol runs before any artifact corpus is read for this research entry. This is a **first-line structural** mechanism (Skill-Structure Layer per ADR-067) — the five steps have mechanically-observable outputs in the research log and audit corpus; the constraint-removal prompt's wording is the cognitive component carried within the structural frame.
+
+**Step 1.1 — User articulates research question(s) in the research log.**
+
+Before reading the existing artifact corpus (essays, ADRs, system-design, scenarios, product-discovery, code) for the new research entry, the user articulates the research question(s) in their own words. The articulation is written into the research log as the entry's first content.
+
+Clarify with the user — these are the same clarifying questions as before, now positioned at the pre-corpus-read moment:
 - What is the core question or hypothesis?
 - What do they already know or assume?
 - What would change their approach if the answer were different?
 
-Present a research plan (search terms, lit-reviewer dispatch, or spike-runner dispatch) and get approval before proceeding.
+Write the articulated question(s) to `./docs/essays/research-logs/research-log.md` as the entry's first content. This placement is the structural anchor — the research log's first entry is the question, written before the agent consults the corpus.
 
-### Step 1b: Research Design Review
+**Note on practitioner reading habits.** The methodology cannot enforce the user's reading order — if the user has already read the corpus before articulating the question, the articulation is already anchored. The structural anchor is the artifact (the research log entry's first content is the question), and the reviewer (Step 1.3) is more likely to flag artifact-framed questions when this happens.
 
-Before executing the first research loop, dispatch the **research-methods-reviewer** specialist subagent. Provide it with:
-- The research question set (the questions from Step 1)
+**Step 1.2 — Agent composes a constraint-removal prompt; user responds.**
+
+The agent names the **most consequential existing artifact or infrastructure component** for this research context — the one whose presence most shapes the default solution space. The agent then composes the constraint-removal prompt against that specific artifact:
+
+> *What if [specific named artifact] were not available? How would the problem be solved then?*
+
+The prompt's wording is not a fixed script — it follows the schema-comparison principle: name a specific structural alternative, not a generic "consider alternatives" gesture. The user writes a brief response recording the imagined-without-it framing. The response is recorded in the research log alongside the question.
+
+**Greenfield case.** When the research entry is in a greenfield context with no consequential prior artifacts, the constraint-removal response is a one-line null answer: *"No consequential prior artifacts to bracket."* The structural anchor is the recorded engagement — the question was asked, the absence was recorded.
+
+**Irreplaceable-artifact case.** When the user judges that the named artifact is genuinely irreplaceable, that is recorded as the answer with a one-sentence justification. The structural function is forcing the question to be asked; the user's substantive engagement (including "I considered this and concluded it is genuinely irreplaceable because...") is the evidence.
+
+**Deliberately do NOT delegate this to the agent.** The user is the source of authority on which existing artifact is "most consequential" and what the imagined-without-it framing actually surfaces. If the agent generates the constraint-removal answer, it is artifact-shaped — anchored on the same artifact the question is supposed to bracket (the sycophancy vector per ADR-055's belief-mapping principle).
+
+**Step 1.3 — Research plan and reviewer dispatch.**
+
+Present a research plan (search terms, lit-reviewer dispatch, or spike-runner dispatch) and get user approval. Then dispatch the **research-methods-reviewer** specialist subagent. Provide it with:
+- The research question set (the questions from Step 1.1)
+- The constraint-removal response (from Step 1.2) — the reviewer evaluates both artifacts as one "question set under review"
 - Prior research context (existing essays or research logs from prior cycles, if available)
 Output path: docs/housekeeping/audits/research-design-review-{cycle}.md
 
-The agent reviews each question for embedded conclusions, applies belief-mapping ("What would the researcher need to believe for a different question to be more productive?"), and flags premature narrowing in the question set.
+The agent reviews the question set against **four criteria** (extended per ADR-082 from the original three):
 
-After the agent completes, read the review:
+1. **Need-vs-artifact framing** — are questions framed around needs ("what is the simplest way to achieve the outcome?") or around existing artifacts ("how do we connect A to B?")
+2. **Embedded conclusions** — do question phrasings presuppose their answers?
+3. **Prior-art treatment** — does at least one question (or the constraint-removal response) treat existing artifacts as prior art rather than as constraints?
+4. **Incongruity surfacing** — when a simple solution in one area sits adjacent to a complex solution being designed for an adjacent area, has the incongruity been surfaced for examination?
+
+**Step 1.4 — User revises or accepts.**
+
+After the reviewer completes, read the review:
 - **Flagged questions** — present reformulations to the user. The user decides whether to adopt, adapt, or keep the original.
-- **Premature narrowing** — surface the concern. The user may expand the question set or proceed with awareness.
+- **Premature narrowing / missing prior-art treatment / incongruity surfaced** — surface the concern. The user revises the question set or accepts the issue with recorded rationale.
 
-This is a Tier 1 unconditional mechanism — it fires before every research phase. After any substantial essay revision (from framing audit findings, discovery feedback, or reflections), dispatch the research-methods-reviewer again before the next research loop.
+**Step 1.5 — Research loop begins.**
+
+The agent now reads the existing artifact corpus and proceeds to Step 2 (Research). The research loop does not begin until Step 1.3's reviewer dispatch completes and Step 1.4's flagged issues have been resolved or accepted with rationale.
+
+This protocol is a Tier 1 unconditional mechanism — it fires before every research phase. After any substantial essay revision (from framing audit findings, discovery feedback, or reflections), re-dispatch the research-methods-reviewer on the revised question set before the next research loop.
+
+**What this protocol does not do.** It does not eliminate solution-anchoring — the pre-semantic priming component (Tulving & Schacter 1990) is not accessible to instruction. The methodology can structure the question moment but cannot reach below conscious deliberation. The structural mechanism is first-line; a known residual remains that prompt-level intervention cannot reach. This is ADR-069 scope-of-claim discipline applied to the cognitive layer.
 
 ### Step 2: Research
 
