@@ -1,11 +1,173 @@
 # Roadmap: Pedagogical RDD
 
-**Updated:** 2026-04-14
-**Derived from:** System Design v12.0, ADRs 001-072
+**Updated:** 2026-04-22
+**Derived from:** System Design v13.0, ADRs 001-082
 
 ## Work Packages
 
-No active work packages. Cycle 15 complete (v0.7.3 shipped). Cycle 014 PLAY remains deferred. See Completed Work Log below.
+### Cycle 016: Methodology Seams (Issues #10–#16)
+
+**Derived from:** ADRs 073-082, Essay 015, conformance-scan-decide-016.md (40 expected gaps in 8 groups)
+**Cycle type:** Batch cycle (multi-issue, mixed research depth)
+**Note:** Issues #10 (lifecycle composition) and #15 (regex defect) are not in this cycle's WPs — #10 is live-validated in BUILD against the existing ADR-071 mitigation; #15 is a pure-implementation fix that runs alongside the WPs without requiring an ADR.
+
+#### WP-A: cycle-status.md Schema Migration to Cycle Stack Format
+
+**Objective:** Migrate `docs/cycle-status.md` from per-file fields (ADR-072) to per-entry fields within a `## Cycle Stack` section, with the active entry on top and paused entries beneath. Establishes the schema that WP-B's hook reads.
+
+**Changes:**
+- `docs/cycle-status.md` — schema migration; current Cycle 016 entry becomes the first entry in a Cycle Stack
+- Per-entry fields added: `**Cycle number:**`, `**Started:**`, `**Current phase:**`, `**Cycle type:**`, `**Parent cycle:**`, `**Phase at pause:**`, `**Spawned by:**`, `**Pause-on-spawn policy:**`, `**Continue-parent rationale:**`, `**In-progress gate:**`. Existing fields (`**Skipped phases:**`, `**Paused:**`) remain valid per-entry
+- Backward-compat preserved: legacy single-entry format continues to work; ADR-072's two fields fold in as per-entry fields
+
+**Scenarios covered:** Multi-Cycle Schema in cycle-status.md (ADR-078) — all eight scenarios
+
+**Dependencies:** None — independent
+
+---
+
+#### WP-B: Hook Layer Changes — Cycle Stack Parser, In-Progress Gate, Applicable_when, Legacy Detection
+
+**Objective:** Extend `hooks/scripts/tier1-phase-manifest-check.sh` to parse the multi-cycle Cycle Stack, evaluate the in-progress-gate predicate, evaluate `applicable_when` preconditions, and detect legacy pre-ADR-072 cycle-status format for grandfathered advisory mode. Add corresponding fields to `hooks/manifests/tier1-phase-manifest.yaml`.
+
+**Changes:**
+- `hooks/scripts/tier1-phase-manifest-check.sh` — Cycle Stack parser (top entry only); in-progress-gate predicate (selective skip on `artifact_type: aid-cycle-gate-reflection`); applicable_when evaluator (5 precondition primitives: `cycle_type_in`, `cycle_type_not_in`, `phase_not_skipped`, `parent_cycle_present`, `parent_cycle_absent`); legacy-format detection + grandfathered advisory mode
+- `hooks/manifests/tier1-phase-manifest.yaml` — optional `applicable_when` block per entry; optional `artifact_type` field per entry
+- New fixture tests: `test_hook_parses_multi_entry_stack.sh`, `test_hook_skips_gate_artifact_during_in_progress.sh`, `test_hook_detects_legacy_format_and_advisory.sh`, `test_hook_evaluates_applicable_when.sh`, plus nominal-conditions and backward-compat fixtures
+
+**Scenarios covered:** Multi-Cycle Schema (ADR-078) hook scenarios; Non-Interrupting Stop Predicate (ADR-079) all six scenarios; Scope-Adaptive Enforcement (ADR-080) all five scenarios; Grandfathered-Rule Migration (ADR-081) hook-detection scenario
+
+**Dependencies:** WP-A (hard dep — hook reads the schema; without WP-A's schema target, the hook has nothing to parse)
+
+---
+
+#### WP-C: DECIDE Skill Amendments + ORIENTATION.md Role-Separation Note
+
+**Objective:** Extend `skills/decide/SKILL.md` with Cycle Acceptance Criteria Table production (ADR-073), ADR Supersession Workflow (ADR-074), and Preservation Scenarios (ADR-075). Add the role-separation note (ADR-074) to `docs/ORIENTATION.md` Section 4.
+
+**Changes:**
+- `skills/decide/SKILL.md` — Step 4 amended with criteria table production + null-coverage judgment-note; Step 4 amended with preservation scenario production; new section on ADR supersession workflow (body-immutable rule, status-mutable rule, supersession header writer for total replacement and partial Updates relationship, mandatory downstream-artifact sweep, drift decision tree); gate check for supersession header presence on superseding ADRs
+- `docs/ORIENTATION.md` — Section 4 (artifact map) gains a brief role-separation paragraph: ADRs as historical record; system-design.md / ORIENTATION.md / domain-model.md / field-guide.md as current-state
+
+**Scenarios covered:** Cycle Acceptance Criteria Table (ADR-073) production scenarios; ADR Body Immutability + Supersession Workflow (ADR-074) all six scenarios; Preservation Scenarios (ADR-075) all four scenarios
+
+**Dependencies:** None — independent (skill text changes; user-facing artifact production)
+
+---
+
+#### WP-D: ARCHITECT Skill Amendment — Fitness Criteria Decomposition Gate Check
+
+**Objective:** Extend `skills/architect/SKILL.md` with the fitness-criteria decomposition gate check (ADR-076). Refuses to advance ARCHITECT phase when any qualitative claim in module responsibilities lacks adjacent `**Fitness:**` properties.
+
+**Changes:**
+- `skills/architect/SKILL.md` — Step 5 (Responsibility Allocation) and Step 9 (Fitness Criteria) amended with qualitative-claim identification step; gate check refuses advance unless decomposition is recorded; system-design.md template updated to show the `**Fitness:** <observable> — <how observed>` line format
+
+**Scenarios covered:** Fitness Criteria Decomposition (ADR-076) all five scenarios
+
+**Dependencies:** None — independent
+
+---
+
+#### WP-E: BUILD Skill Amendments — Step 5.5 + Applicability Check
+
+**Objective:** Extend `skills/build/SKILL.md` with Step 5.5 Cycle Criterion Verification (ADR-073) and the Applicability Check stewardship-checkpoint (ADR-077, four-prompt form including prompt 4 fitness-property consultation).
+
+**Changes:**
+- `skills/build/SKILL.md` — Step 5 amended with new Step 5.5 reading the Cycle Acceptance Criteria Table from `scenarios.md` and verifying each entry at its specified layer; Tier 1 Stewardship Check section amended with Applicability Check trigger conditions and four-prompt form (including prompt 4 reading `system-design.md` fitness properties); Grounding Reframe fallback for unanswerable prompts; "no declared fitness properties" judgment recording
+
+**Scenarios covered:** Cycle Acceptance Criteria Table (ADR-073) BUILD-side scenarios; Applicability Check (ADR-077) all six scenarios
+
+**Dependencies:** WP-C (implied logic — the criteria-table format is established in C; could be stubbed if E ships first); WP-D (implied logic — fitness-property format is established in D; could be stubbed if E ships first)
+
+---
+
+#### WP-F: RESEARCH Skill + Reviewer Agent + Orchestrator — Question-Isolation Protocol
+
+**Objective:** Extend `skills/research/SKILL.md` with the 5-step question-isolation entry protocol (ADR-082). Extend `agents/research-methods-reviewer.md` with the fourth review criterion (incongruity surfacing). Extend `skills/rdd/SKILL.md` Question Toolkit with the seventh form (constraint-removal).
+
+**Changes:**
+- `skills/research/SKILL.md` — new Step 0 / entry protocol (5 steps: question articulation, constraint-removal response, reviewer dispatch, revise/accept, research loop begins); classified explicitly as first-line structural (Skill-Structure Layer per ADR-067) with cognitive component
+- `agents/research-methods-reviewer.md` — fourth criterion (incongruity surfacing) added to the existing three (need-vs-artifact framing, embedded conclusions, prior-art treatment); reviewer's scope expanded to evaluate the question set as combined research questions + constraint-removal response
+- `skills/rdd/SKILL.md` Question Toolkit — seventh form added: "What would we build if [key infrastructure component] were not available?" — primary at research entry; existing six forms unchanged
+
+**Scenarios covered:** Question-Isolation Protocol (ADR-082) all eight scenarios
+
+**Dependencies:** None — independent (skill + agent + orchestrator text changes)
+
+---
+
+#### WP-G: CONFORM Skill Cycle-Shape Audit Operation
+
+**Objective:** Extend `skills/conform/SKILL.md` with a new audit operation (cycle-shape audit) that detects pre-ADR-072 cycle-status.md and walks the user through field migration, preserving prose body verbatim (ADR-081).
+
+**Changes:**
+- `skills/conform/SKILL.md` — new operation in the operations table; four-step workflow (detect / read-and-infer / prompt-user / write-migrated-entry); validation case is Cycle 8 (rdd-pair, paused at MODEL, pre-hooks)
+
+**Scenarios covered:** Grandfathered-Rule Migration (ADR-081) audit + migration scenarios + archive-to-active edge case
+
+**Dependencies:** WP-A (hard — needs the new Cycle Stack format as the migration target)
+
+---
+
+#### WP-H: Integration Verification + Release Housekeeping
+
+**Objective:** Verify the 13 boundary integration tests, the Cycle 016 acceptance scenarios, and the conformance-scan re-run. Address Issue #15 (PostToolUse regex defect) as a parallel pure-implementation fix. Live-validate Issue #10's ADR-071 mitigations during this cycle's BUILD work as the implementation evidence.
+
+**Changes:**
+- Integration verification: run all 13 new boundary integration tests against the modified system; capture results in `docs/housekeeping/audits/integration-verification-016.md`
+- Issue #15 fix: extend `hooks/scripts/post_tool_use.py` (or equivalent dispatch logger) regex to match markdown-formatted `Output path:` lines (bold, backticked, list-item variants) per the seven test fixtures specified in the issue body
+- Issue #10 live validation: BUILD's normal stewardship work exercises the ADR-071 lifecycle-composition mitigations; capture observed behavior as field evidence
+- Conformance-scan re-run: dispatch `/rdd-conform` after WP-A through WP-G complete; verify the 40 gaps from `conformance-scan-decide-016.md` have closed
+- Release housekeeping: bump plugin version in `.claude-plugin/plugin.json`; update README; release notes referencing all ADRs and Issues addressed
+
+**Scenarios covered:** Integration scenarios across all WPs; Issue #15 acceptance fixtures; Issue #10 live validation observations
+
+**Dependencies:** WP-A through WP-G (hard — verification requires the implementations to exist)
+
+## Dependency Graph
+
+```
+WP-A (cycle-status.md schema) ──┬── hard ──► WP-B (hook layer)
+                                │
+                                └── hard ──► WP-G (cycle-shape audit)
+
+WP-C (DECIDE skill) ────────── implied ────► WP-E (BUILD skill — criteria table consumer)
+
+WP-D (ARCHITECT skill) ─────── implied ────► WP-E (BUILD skill — fitness property consumer)
+
+WP-F (RESEARCH + reviewer + orchestrator) — independent
+
+WP-A, WP-B, WP-C, WP-D, WP-E, WP-F, WP-G ──── all hard ────► WP-H (integration verification + release)
+```
+
+**Classification key:**
+- **Hard dependency:** B cannot be built without A. Examples: WP-B's hook reads the schema WP-A defines; WP-G's audit migrates *to* the schema WP-A defines; WP-H's integration verification requires WP-A through WP-G to exist as targets.
+- **Implied logic:** Building A before B is simpler because B references concepts/formats A defines, but a stub is possible. Examples: WP-E's Step 5.5 reads the criteria-table format from WP-C, but BUILD-skill-only changes can be stubbed against a fixture if WP-C is delayed; WP-E's prompt 4 reads the fitness-property format from WP-D, similarly stubbable.
+- **Open choice:** Genuinely independent. Examples: WP-A and WP-C and WP-D and WP-F can all be started in any order — no shared substrate, no read/write coupling.
+
+## Transition States
+
+### TS-1: Hook-layer changes operational (after WP-A + WP-B)
+
+cycle-status.md uses the multi-cycle Cycle Stack format; the Stop hook parses it correctly; in-progress-gate cascade-blocks (the Cycle 015 failure mode) are prevented; mini-cycles get scope-adaptive enforcement via `applicable_when` preconditions; legacy pre-ADR-072 cycles get grandfathered advisory mode.
+
+System is coherent at this state: existing skill workflows continue to operate as today; the new infrastructure is available but skill-side workflows have not yet adopted the new patterns. The methodology has fixed its hook-layer pain points (Cycle 015's most acute concerns) without requiring skill adoption.
+
+### TS-2: Skill-side methodology amendments operational (after WP-C + WP-D + WP-E + WP-F + WP-G)
+
+DECIDE produces criteria tables, supersession headers, preservation scenarios; ARCHITECT enforces fitness decomposition; BUILD verifies criteria at specified layers and surfaces applicability checks at pattern reuse; RESEARCH applies the question-isolation protocol; CONFORM offers cycle-shape audit migration.
+
+If TS-2 ships before TS-1: the skill-side amendments operate against the legacy cycle-status format under grandfathered advisory mode (ADR-081 covers this) — methodology remains coherent but the hook-layer pain points persist.
+
+### TS-3: Full Cycle 016 operational (after WP-H)
+
+All boundary integration tests passing; Issue #15 regex defect fixed; Issue #10 live-validated. Plugin version bumped; release notes published. The methodology has gained: criterion-level verification, ADR lifecycle discipline, preservation coverage, fitness decomposition, applicability checks at pattern reuse, multi-cycle composition, non-interrupting in-progress-gate handling, scope-adaptive enforcement, grandfathered legacy support, and question-isolation at research entry.
+
+## Open Decision Points
+
+- **Order of TS-1 vs. TS-2.** Both are coherent transition states. The methodology has a slight bias toward TS-1 first because the in-progress-gate cascade-block is the most acute live-demonstrated failure (Cycle 015 BUILD gate), but TS-2 first is also viable since legacy cycles are advisory regardless. Builder choice based on context.
+- **Whether WP-F (question-isolation protocol) ships in this cycle or is deferred.** F has the highest cognitive overhead among the WPs and was reclassified at the DECIDE gate (essay §10 said second-line cognitive; ADR-082 reclassified to first-line structural). If the reclassification proves contested in practice, F could be deferred to a future cycle. If it ships now, the field evidence is captured in this cycle's BUILD.
+- **Whether Cycle 014 PLAY is folded into this cycle's BUILD or kept deferred.** PLAY remains deferred from Cycle 014; this cycle's WPs do not require PLAY work. Builder may choose to combine if scoped appropriately.
 
 ## Completed Work Log
 

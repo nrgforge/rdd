@@ -1,6 +1,8 @@
 # ADR-072: Cycle Shape Declaration — Skipped Phases and Paused State
 
-**Status:** Proposed
+> **Updated by ADR-078 on 2026-04-22.** ADR-078 (Multi-Cycle Schema) folds this ADR's two header fields (`**Skipped phases:**`, `**Paused:**`) in as per-entry fields within a richer `## Cycle Stack` schema. The semantics established here remain current; the field placement migrates from per-file to per-entry. The rest of this ADR remains authoritative for the field semantics and hook behavior.
+
+**Status:** Updated by ADR-078
 
 ## Context
 

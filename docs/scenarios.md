@@ -2861,3 +2861,372 @@
 **Then** `docs/housekeeping/.migration-version` is written and the corpus transitions to enforcement mode on the next session
 **And** the compound check's structural guarantee against sophisticated State C becomes active
 **And** the Stop hook emits `block` on missing required artifacts rather than advisory notices
+
+## Feature: Cycle Acceptance Criteria Table with Layer-Match Verification (ADR-073)
+
+### Scenario: DECIDE produces an acceptance criteria table for a cycle with emergent criteria
+**Given** product-discovery names an emergent acceptance criterion (e.g., "first real MCP consumer workflow via live MCP transport")
+**When** DECIDE Step 4 (Behavior Scenarios) runs
+**Then** `scenarios.md` contains a Cycle Acceptance Criteria Table with one row per non-atomic criterion
+**And** each row records the criterion verbatim, the specified verification layer, the verification method, and the layer-match check (yes / no)
+
+### Scenario: DECIDE records null judgment when all criteria are atomic
+**Given** product-discovery names only atomic criteria each with 1:1 scenario mapping
+**When** DECIDE Step 4 runs
+**Then** the Cycle Acceptance Criteria Table is omitted
+**And** a one-line note records the judgment ("no emergent criteria identified") in `scenarios.md`
+
+### Scenario: BUILD Step 5.5 verifies an entry whose layer-match check is "no"
+**Given** the Cycle Acceptance Criteria Table contains a row with Layer-match check = "no" (verification stubs the named layer)
+**When** BUILD Step 5.5 (Cycle Criterion Verification) runs
+**Then** BUILD writes (or identifies) an integration test or harness exercising the criterion at the specified layer
+**And** the test passes against the running system before BUILD declares the cycle complete
+
+### Scenario: Integration — BUILD reads the table from scenarios.md
+**Given** a Cycle Acceptance Criteria Table written by DECIDE in `scenarios.md`
+**When** BUILD Step 5.5 runs
+**Then** BUILD parses the table from `scenarios.md` (not from a separate artifact) and verifies each entry
+
+### Preservation: existing scenarios in scenarios.md remain unchanged
+**Given** `scenarios.md` contains existing per-feature scenario blocks
+**When** the Cycle Acceptance Criteria Table is added at a new top-section position
+**Then** the existing per-feature scenario blocks are observable verbatim and continue to compile under the existing scenario tooling
+
+## Feature: ADR Body Immutability, Status Mutability, and Supersession Workflow (ADR-074)
+
+### Scenario: Body of an accepted ADR is immutable after the supersession event
+**Given** ADR-NNN is in `Accepted` status
+**When** ADR-MMM is filed superseding ADR-NNN
+**Then** ADR-NNN's Context, Decision, Rejected alternatives, Consequences, and Provenance check sections are observable byte-identical to their pre-supersession content
+
+### Scenario: Status field updates with dated supersession header on supersession
+**Given** ADR-NNN is `Accepted` and ADR-MMM is filed superseding it on date D
+**When** the supersession workflow Step 2 runs
+**Then** ADR-NNN's Status field reads `Superseded by ADR-MMM`
+**And** ADR-NNN has a dated supersession header at the top: `> **Superseded by ADR-MMM on D.** [reason]`
+
+### Scenario: Updates header (partial supersession) preserves the original ADR's authority for unchanged scope
+**Given** ADR-NNN is `Accepted` and ADR-MMM partially refines it on date D
+**When** the supersession workflow Step 2 runs with the Updates relationship
+**Then** ADR-NNN's Status field reads `Updated by ADR-MMM`
+**And** ADR-NNN has a dated update header naming which part is updated and stating the rest remains current
+
+### Scenario: Downstream artifact sweep updates system-design.md provenance
+**Given** ADR-NNN is superseded by ADR-MMM and `system-design.md` cites ADR-NNN in a provenance chain
+**When** the supersession workflow Step 3 runs
+**Then** the affected provenance chain entries in `system-design.md` cite ADR-MMM (not ADR-NNN)
+**And** ORIENTATION.md, domain-model.md, and field-guide.md entries citing ADR-NNN are updated to cite ADR-MMM where the new decision is the current authority
+
+### Scenario: Drift decision tree distinguishes implementation divergence from supersession
+**Given** shipped code differs from an accepted ADR's text and the architectural decision still holds
+**When** the developer applies the drift decision tree
+**Then** the divergence is classified as implementation-level and no ADR change is filed
+**And** the field-guide may note the divergence for orientation purposes
+
+### Preservation: existing ADRs without supersession headers remain valid
+**Given** ADRs filed before this ADR (e.g., ADR-057 with its existing supersession note for ADR-065's retroactive anchoring)
+**When** the new supersession workflow is in effect
+**Then** the existing ADRs remain readable in their current form
+**And** backfilling existing ADRs is not required for the workflow to operate on new supersession events
+
+## Feature: Preservation Scenarios in DECIDE (ADR-075)
+
+### Scenario: Preservation scenario is written for a feature touching existing modules
+**Given** a feature scenario block in `scenarios.md` for a feature whose module touches existing call paths
+**When** DECIDE Step 4 runs
+**Then** the same feature block contains at least one `### Preservation:` scenario asserting that an existing observable behavior remains unchanged
+**And** the preservation scenario meets the same refutability standard as behavior scenarios (each Then clause is observable and verifiable)
+
+### Scenario: Null-coverage judgment-note is recorded for a wholly isolated module
+**Given** a feature whose module is genuinely not in the call path of any existing observable behavior
+**When** DECIDE Step 4 runs
+**Then** a one-line note records the judgment ("No existing observable behavior is in the call path; preservation scenarios omitted") in the feature block
+**And** the note is observable in `scenarios.md` rather than being a silent omission
+
+### Scenario: Integration — preservation scenarios appear alongside behavior scenarios in scenarios.md
+**Given** a feature with both behavior and preservation scenarios
+**When** the feature block is read top-to-bottom
+**Then** behavior scenarios (`### Scenario:`) and preservation scenarios (`### Preservation:`) are observable in the same block
+
+### Preservation: behavior scenarios continue to be produced unchanged
+**Given** the existing DECIDE Step 4 behavior-scenario production
+**When** the preservation-scenario requirement is added
+**Then** behavior scenarios continue to be produced with the existing Given/When/Then format and the existing refutability standard
+
+## Feature: Fitness Criteria Decomposition in ARCHITECT (ADR-076)
+
+### Scenario: ARCHITECT gate refuses to advance when a qualitative claim is undecomposed
+**Given** `system-design.md` contains a module responsibility with an undecomposed qualitative claim (e.g., "transparent")
+**When** the ARCHITECT phase gate check runs
+**Then** the gate refuses to advance and surfaces the undecomposed claim by name
+
+### Scenario: ARCHITECT gate advances when fitness properties are recorded adjacent to the claim
+**Given** a module responsibility with a qualitative claim plus one or more `**Fitness:**` properties decomposing it
+**When** the ARCHITECT gate check runs
+**Then** the gate check passes
+**And** each fitness property meets the refutability standard (a test could be written from it without ambiguity)
+
+### Scenario: Fitness properties live in system-design.md adjacent to the qualitative claim
+**Given** a module responsibility with a qualitative claim
+**When** decomposition is recorded
+**Then** the `**Fitness:**` properties appear inline within the responsibility entry or in a per-module Fitness subsection in `system-design.md`
+
+### Scenario: Integration — ADR-077 prompt 4 consults the fitness properties at BUILD reuse
+**Given** `system-design.md` declares fitness properties for module X (per ADR-076)
+**When** BUILD's pattern-reuse stewardship checkpoint fires for code touching module X (per ADR-077)
+**Then** prompt 4 of the applicability check names the declared fitness properties as evaluation targets
+
+### Preservation: concrete responsibility statements need no decomposition
+**Given** a module responsibility stated in concrete terms (e.g., "exposes the ExtractFile RPC accepting a Path and returning a TokenStream")
+**When** the ARCHITECT gate check runs
+**Then** no decomposition is required and the gate passes for that responsibility entry
+
+## Feature: Applicability Check at BUILD Pattern Reuse (ADR-077)
+
+### Scenario: Stewardship checkpoint fires on explicit pattern-reuse trigger
+**Given** the developer or agent explicitly references an existing pattern as the template ("we'll do this the way we did X")
+**When** BUILD enters the implementation step
+**Then** the applicability check stewardship-checkpoint fires with the four prompts composed against the named pattern, original context, and new context
+
+### Scenario: Four prompts are composed for the specific situation, not recited
+**Given** a pattern-reuse trigger
+**When** the applicability check fires
+**Then** each of the four prompts contains the actual content of the moment in the bracketed slots (specific pattern, original context, new context, declared fitness properties)
+**And** the user's response is recorded in the build session log
+
+### Scenario: Build pauses on substantive concern surfaced by the applicability check
+**Given** the applicability check fires and the user's response surfaces a genuine concern
+**When** the build moves toward implementation
+**Then** the build pauses and the developer evaluates whether the pattern still applies
+**And** the alternative becomes a candidate when the concern is not resolved
+
+### Scenario: Prompt 4 records "no declared fitness properties" when ADR-076 produced none
+**Given** `system-design.md` declares no fitness properties for the affected module
+**When** the applicability check fires for code touching that module
+**Then** prompt 4's response is recorded as "no declared fitness properties for this module"
+**And** the absence is recorded as a judgment, not a silent skip
+
+### Scenario: Grounding Reframe fires when prompts cannot be answered substantively
+**Given** the applicability check fires and the user cannot answer one or more prompts substantively
+**When** the build attempts to advance
+**Then** the agent surfaces the gap per ADR-068's Grounding Reframe extension
+**And** the agent offers concrete grounding actions (consult the original pattern's ADR provenance, run a spike, defer the decision)
+**And** the decision to proceed without resolving the gap is recorded visibly for the next susceptibility snapshot
+
+### Preservation: BUILD's existing Step 5 integration verification continues to fire
+**Given** BUILD's existing Step 5 (Integration Verification) for inter-component contracts
+**When** the new applicability check is added as a stewardship-checkpoint trigger
+**Then** Step 5's existing integration verification continues to run on every cycle's BUILD phase
+
+## Feature: Multi-Cycle Schema in cycle-status.md (ADR-078)
+
+### Scenario: cycle-status.md uses the Cycle Stack format with active and paused entries
+**Given** a project with one active cycle and one paused outer cycle
+**When** `cycle-status.md` is read
+**Then** the file contains a `## Cycle Stack` section with the active entry first (`### Active: <title>`) and the paused entry second (`### Paused: <title>`)
+**And** each entry contains the per-entry fields (Cycle number, Started, Cycle type, Skipped phases, Phase at pause as applicable)
+
+### Scenario: Spawning a mini-cycle under pause-parent default pauses the outer
+**Given** an active cycle and the user spawns a mini-cycle without specifying coupling policy
+**When** the mini-cycle is added to the stack
+**Then** the outer cycle's entry gains `**Paused:** <date> — <reason>` and `**Phase at pause:** <phase>`
+**And** the mini-cycle's entry becomes the top of stack as `### Active: <title>` with `**Pause-on-spawn policy:** pause-parent` (or absent, since it is default)
+
+### Scenario: continue-parent requires Continue-parent rationale field
+**Given** the user spawns a nested cycle with `**Pause-on-spawn policy:** continue-parent`
+**When** the cycle entry is recorded
+**Then** the entry contains a `**Continue-parent rationale:**` line with a one-line justification
+**And** the absence of the field on a continue-parent entry is treated as a missing-deliberation signal
+
+### Scenario: Stop hook reads only the top entry of the cycle stack
+**Given** a stack with an active entry on top and one or more paused entries beneath
+**When** the Stop hook fires
+**Then** the hook reads the top entry's `**Current phase:**` field and runs the manifest check for that phase only
+**And** the hook does not read the paused entries' phase fields
+
+### Scenario: Resume restores outer cycle to phase-at-pause
+**Given** a paused outer cycle with `**Phase at pause:** <phase>` and the inner cycle completes
+**When** the inner cycle's entry is removed from the stack
+**Then** the outer entry's `**Paused:**` field is removed and the outer becomes the top of stack
+**And** the outer entry's `**Current phase:**` is restored to the recorded `**Phase at pause:**` value
+
+### Scenario: Backward compatibility — legacy single-entry format treated as one-entry stack
+**Given** a `cycle-status.md` written before this ADR (no `## Cycle Stack` header, single cycle in flat format)
+**When** the Stop hook reads the file
+**Then** the entire file body is treated as a single-entry stack
+**And** the hook applies the existing manifest checks against the legacy entry's phase
+
+### Scenario: Integration — ADR-072's two fields fold in as per-entry fields
+**Given** a cycle entry with `**Skipped phases:**` and/or `**Paused:**` fields (per ADR-072)
+**When** the Stop hook reads the entry
+**Then** the same skip/pause semantics from ADR-072 apply to the per-entry field placement
+
+### Preservation: single-cycle workflows (Modes A-C) continue to operate
+**Given** a standard full-pipeline cycle (Mode A) with one entry on the stack
+**When** the cycle progresses through phases
+**Then** the orchestrator and Stop hook behave as for any single-cycle workflow before this ADR
+**And** the additional per-entry fields are absent (with default behavior preserved)
+
+## Feature: Non-Interrupting Stop Predicate for In-Progress Gate Conversations (ADR-079)
+
+### Scenario: In-progress gate field is set at AID gate start
+**Given** the orchestrator enters the AID gate at a phase boundary (e.g., decide → architect)
+**When** the orchestrator emits "Before we move on — reflection time."
+**Then** the top entry of `cycle-status.md`'s Cycle Stack gains `**In-progress gate:** decide → architect`
+**And** the field is set before the first agent turn of the gate conversation
+
+### Scenario: Stop hook returns allow on gate-reflection-note check during in-progress gate
+**Given** the top entry's `**In-progress gate:**` field is present and names the current phase boundary
+**When** the Stop hook fires and the manifest contains an entry tagged `artifact_type: aid-cycle-gate-reflection`
+**Then** the hook returns `allow` for that entry without checking it
+**And** a one-time advisory notice fires per session indicating the in-progress gate
+
+### Scenario: Other source-phase manifest checks continue to fire during in-progress gate
+**Given** the top entry's `**In-progress gate:**` field is set and the source phase has manifest entries beyond the gate-reflection note
+**When** the Stop hook fires
+**Then** the non-gate manifest entries for the source phase continue to run
+**And** the compound check (ADR-064) continues to run for any specialist-subagent dispatches that fired during the gate
+
+### Scenario: In-progress gate field is cleared at gate-reflection-note write
+**Given** the orchestrator completes the AID gate and writes the gate reflection note (per ADR-066)
+**When** the orchestrator's gate-completion step runs
+**Then** the `**In-progress gate:**` field is removed from the top entry
+**And** subsequent Stop events run the full manifest check including the gate-reflection-note entry
+
+### Scenario: Safe failure mode — orchestrator fails to set the field
+**Given** the AID gate begins but the orchestrator fails to set `**In-progress gate:**`
+**When** the Stop hook fires before the gate-reflection note is written
+**Then** the hook reverts to its existing behavior — the gate-reflection-note check fires and may block
+**And** the user's mitigation is the existing pattern (set `**Paused:**` if interrupted; produce the gate-reflection note if the gate is truly complete)
+
+### Scenario: Integration — manifest's artifact_type field identifies the gate-reflection entry
+**Given** the manifest contains entries with optional `artifact_type` fields (per ADR-079's hook extension)
+**When** the Stop hook evaluates the in-progress-gate predicate
+**Then** the hook identifies the gate-reflection entry by its `artifact_type: aid-cycle-gate-reflection` value
+**And** entries without the `artifact_type` field continue to behave as today
+
+### Preservation: cycles that complete gates without interruption are unaffected
+**Given** a phase-boundary gate that completes within a few exchanges and the gate-reflection note is written promptly
+**When** the cycle proceeds
+**Then** the `**In-progress gate:**` field is set and cleared within the same gate flow
+**And** no Stop event reads the field while it is set, so the existing hook behavior is observable
+
+## Feature: Scope-Adaptive Enforcement via Precondition Composition (ADR-080)
+
+### Scenario: Manifest entry with cycle-type precondition is skipped for mismatched cycle
+**Given** a manifest entry with `applicable_when: [cycle_type_in: [standard, batch]]` and the active cycle entry's `**Cycle type:**` is `mini-cycle`
+**When** the Stop hook iterates manifest entries
+**Then** the entry is skipped without checking the artifact
+**And** the dispatch log records `skipped: applicable_when condition cycle_type_in not met`
+
+### Scenario: Manifest entry with phase-not-skipped precondition is skipped when phase is in skipped-phases list
+**Given** a manifest entry with `applicable_when: [phase_not_skipped: research]` and the active entry's `**Skipped phases:**` includes `research`
+**When** the Stop hook fires
+**Then** the entry is skipped and the dispatch log records the skip reason
+
+### Scenario: Default behavior — manifest entries without applicable_when fire unconditionally
+**Given** a manifest entry with no `applicable_when` block (the today behavior)
+**When** the Stop hook fires for the active cycle's current phase
+**Then** the entry fires and the artifact existence check runs
+**And** no precondition evaluation is performed
+
+### Scenario: Compound check for fired dispatches is unaffected by preconditions
+**Given** a manifest entry that fired (its precondition was met) and the dispatch logged a result
+**When** the compound check (ADR-064) evaluates the dispatch log
+**Then** the compound check's fabrication detection runs as today, independent of any precondition logic
+
+### Preservation: existing manifest entries continue to fire as before
+**Given** the existing `tier1-phase-manifest.yaml` entries (none of which carry `applicable_when` blocks today)
+**When** the precondition framework is added
+**Then** all existing entries continue to fire with their existing semantics for any active cycle
+
+## Feature: Grandfathered-Rule Migration for Pre-ADR-072 Cycles (ADR-081)
+
+### Scenario: Stop hook detects pre-ADR-072 cycle-status format
+**Given** a `cycle-status.md` with no `**Skipped phases:**`, `**Paused:**`, or `**Cycle type:**` fields (legacy format)
+**When** the Stop hook fires against the corpus
+**Then** the hook applies grandfathered enforcement: the manifest checks run in advisory mode for that cycle
+**And** the corpus-level `.migration-version` enforcement state does not override the per-cycle grandfathering
+
+### Scenario: /rdd-conform cycle-shape audit walks the user through field migration
+**Given** a corpus containing one or more legacy pre-ADR-072 `cycle-status.md` entries
+**When** the user runs the cycle-shape audit scope of `/rdd-conform`
+**Then** the audit lists the legacy entries and prompts the user for the missing fields per entry
+**And** the audit infers fields where possible (started date from explicit text or git history; cycle title; current phase from existing prose)
+
+### Scenario: Migration preserves prose body verbatim
+**Given** a legacy entry with Phase Status table, Feed-Forward Signals, and Context for Resumption sections
+**When** the cycle-shape audit migrates the entry to the current schema
+**Then** the migrated entry's prose body is observable byte-identical to the pre-migration content
+**And** only the cycle-shape header fields are added
+
+### Scenario: Migration record is added to the entry's Pause Log
+**Given** a legacy entry being migrated
+**When** the cycle-shape audit completes the migration on date D
+**Then** the entry's Pause Log gains a one-line entry "Migrated from pre-ADR-072 format on D"
+
+### Scenario: Validation case — Cycle 8 (rdd-pair) migrates cleanly
+**Given** Cycle 8's `cycle-status.md` (paused at MODEL, pre-hooks)
+**When** the user runs `/rdd-conform` cycle-shape audit on Cycle 8
+**Then** the migration produces a current-schema entry with the cycle's existing prose preserved
+**And** Cycle 8 resumes cleanly under enforcement on the next session
+
+### Scenario: Archive-to-active edge — unarchived legacy cycle gets grandfathered treatment
+**Given** an archived legacy cycle in `docs/cycle-archive/` is unarchived (moved back into `cycle-status.md`)
+**When** the Stop hook fires against the unarchived entry
+**Then** the entry is treated as any other paused legacy cycle: grandfathered enforcement applies and `/rdd-conform` cycle-shape audit is the migration path
+
+### Preservation: archived cycles in cycle-archive/ are unchanged
+**Given** archived cycle status files in `docs/cycle-archive/`
+**When** the Stop hook runs (and the migration framework is in effect)
+**Then** the archived files are observable byte-identical to their archived state
+**And** no manifest checks fire against them
+
+## Feature: Question-Isolation Protocol at RESEARCH Entry (ADR-082)
+
+### Scenario: Research log first content is the user-articulated research question(s)
+**Given** the user invokes `/rdd-research` for a new research entry
+**When** the user articulates the research question(s) in the research log
+**Then** the question text is the entry's first content
+**And** the agent has not yet read the existing artifact corpus (essays, ADRs, system-design, scenarios, product-discovery, code) for the new entry
+
+### Scenario: Constraint-removal prompt is composed against the actual research context
+**Given** the research entry's question(s) are recorded
+**When** the agent composes the constraint-removal prompt
+**Then** the prompt names the most consequential existing artifact specifically (not generically)
+**And** the user's response is recorded in the research log alongside the question
+
+### Scenario: Research-methods-reviewer evaluates question set plus constraint-removal response
+**Given** steps 1 and 2 of the research-entry protocol have produced the research questions and the constraint-removal response
+**When** the research-methods-reviewer dispatch runs (per the extension to ADR-060)
+**Then** the reviewer's audit covers both artifacts as one "question set under review"
+**And** the reviewer evaluates the four criteria (need-vs-artifact framing, embedded conclusions, prior-art treatment, incongruity surfacing)
+
+### Scenario: Research loop is blocked until reviewer dispatch completes
+**Given** the research entry's question articulation and constraint-removal response are recorded
+**When** the research-methods-reviewer dispatch is in flight
+**Then** the agent does not enter the research loop (lit-review / spike / synthesis)
+**And** the research loop begins only after the reviewer's report is read and any flagged issues are resolved or accepted with rationale
+
+### Scenario: Constraint-removal form is added to the Question Toolkit
+**Given** the orchestrator's Question Toolkit (per ADR-055)
+**When** the toolkit is read
+**Then** the constraint-removal form ("What would we build if [key infrastructure component] were not available?") is one of seven forms (alongside belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing)
+**And** the constraint-removal form is named as the primary form for the research-entry moment
+
+### Scenario: Greenfield context — null answer is recorded
+**Given** a research entry in a greenfield context with no consequential prior artifacts
+**When** the constraint-removal prompt fires
+**Then** the user's response is recorded as a one-line null answer ("no consequential prior artifacts to bracket")
+**And** the structural anchor (recorded engagement) is observable in the research log
+
+### Scenario: Integration — research-methods-reviewer extension adds incongruity-surfacing criterion
+**Given** the existing research-methods-reviewer (ADR-060) reviews question framing, embedded conclusions, and premature narrowing
+**When** the extension per this ADR ships
+**Then** the reviewer's criteria include the fourth criterion (incongruity surfacing) in addition to the existing three
+
+### Preservation: existing six Question Toolkit forms remain available
+**Given** the orchestrator's Question Toolkit
+**When** the constraint-removal form is added
+**Then** the six existing forms (belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing) remain available unchanged
+**And** their existing usage at AID gates and other phases is unaffected

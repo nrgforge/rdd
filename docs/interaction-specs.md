@@ -278,3 +278,79 @@
 ### Task: Receive a hook failure GitHub issue with pre-populated diagnostic
 
 **Interaction mechanics:** A user whose hook script encountered an internal error has clicked the GitHub issue link from the Fails-Safe-to-Allow stderr notice. The link opens a pre-populated issue at `https://github.com/nrgforge/rdd/issues/new?template=hook-failure.md` with the hook name, diagnostic line, plugin version, OS/shell environment, and (if available) a sanitized copy of the hook input JSON. The user fills in any additional context and submits. The maintainer receives the issue, reproduces the failure locally using the diagnostic data, fixes the hook script, and ships the fix in the next plugin release. The user updates the plugin on their schedule; their corpus continues to work in advisory mode during the gap. The maintainer's work is enabled by structured diagnostic data that the user contributed without being required to debug the plugin themselves.
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Running DECIDE Phase, Cycle 016 Extensions)
+
+**Super-Objective:** "Translate research findings and product discovery into ADRs, scenarios, and interaction specifications that BUILD can implement faithfully — including the new criterion-level verification, preservation coverage, and ADR lifecycle disciplines introduced in Cycle 016"
+
+### Task: Produce a Cycle Acceptance Criteria Table at DECIDE
+
+**Interaction mechanics:** The developer-researcher is in the DECIDE phase. Product discovery has named one or more acceptance criteria that are emergent or aggregate (e.g., "first real MCP consumer workflow via live MCP transport") rather than atomic. Per ADR-073, the developer adds a top section to `scenarios.md` (or, when scenarios.md is already large, a sibling `acceptance-criteria.md`) called "Cycle Acceptance Criteria Table." For each non-atomic criterion, the developer fills four columns: the criterion verbatim, the layer the criterion specifies (e.g., "live MCP transport"), the verification method (which scenarios compose to cover it, plus any integration test), and the layer-match check (yes / no — does the verification exercise the named layer, or does it stub it?). When the cycle's criteria are all atomic with 1:1 scenario mapping, the developer records the judgment as a one-line note ("no emergent criteria identified") rather than producing the table. The table becomes input to BUILD Step 5.5, which the developer or the BUILD agent verifies each entry's layer-match check against the actual test composition.
+
+### Task: Write preservation scenarios alongside behavior scenarios
+
+**Interaction mechanics:** While writing behavior scenarios for a feature, the developer-researcher pauses at each feature block and asks: *what should this feature not change?* Per ADR-075, the developer writes at least one `### Preservation:` scenario covering the contract or behavior most at risk of being silently changed by the new feature. Inputs the developer consults: product-discovery's assumption inversions for the area, existing scenarios in `scenarios.md` that the new feature touches, and `system-design.md` provenance chains for the affected modules. When the new feature genuinely cannot affect any existing behavior (a wholly isolated module or brand-new entry point), the developer records the judgment as a one-line note ("No existing observable behavior is in the call path; preservation scenarios omitted") rather than fabricating a scenario. The recorded judgment is itself the structural anchor — the question was asked.
+
+### Task: File a superseding ADR when a prior decision is changed
+
+**Interaction mechanics:** A new architectural decision genuinely supersedes (or partially refines) an earlier ADR. Per ADR-074, the developer files a new ADR (ADR-MMM) describing the new decision and citing the original (ADR-NNN) by number and one-line summary. The developer adds a dated supersession header at the top of ADR-NNN (`> **Superseded by ADR-MMM on YYYY-MM-DD.** [reason]` for total replacement; `> **Updated by ADR-MMM on YYYY-MM-DD.** [scope]` for partial refinement) and updates ADR-NNN's Status field accordingly. The developer does not edit ADR-NNN's body sections (Context, Decision, Rejected alternatives, Consequences, Provenance check) — these remain immutable. The developer then sweeps the downstream current-state artifacts: `system-design.md` provenance chains, `ORIENTATION.md` Section 4 / 5, `domain-model.md` concept and relationship tables that cite ADR-NNN, `field-guide.md` implementation-level entries — replacing the citation with ADR-MMM where the new decision is now authoritative. The developer records the supersession in cycle-status.md's relevant phase status entry.
+
+### Task: Apply the drift decision tree when shipped code differs from an ADR
+
+**Interaction mechanics:** During `/rdd-conform` audit, BUILD stewardship, or ARCHITECT review, the developer notices shipped code differs from an accepted ADR's text. Per ADR-074's drift decision tree, the developer asks: does the architectural decision still hold? If yes — the divergence is implementation-level — the developer records the divergence in `field-guide.md` if useful for orientation but does not change the ADR. If the architectural call has actually changed — decision-level supersession — the developer applies the supersession workflow above. If neither applies (code violated an ADR without filing a supersession) — the code is structural debt; the developer either reconforms the code via a `refactor:` commit or files a superseding ADR that legitimizes the new direction. The developer does not quietly amend the ADR to match the violation — silent amendment loses the historical record.
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Initiating RESEARCH Phase, Cycle 016 Extension)
+
+**Super-Objective:** "Begin a research entry with question framing that is not pre-shaped by existing implementation artifacts, so the research investigates the problem space rather than narrowing to integration with what already exists"
+
+### Task: Articulate research questions before consulting the artifact corpus
+
+**Interaction mechanics:** The developer-researcher invokes `/rdd-research` for a new research entry. Before the agent reads any existing essays, ADRs, system-design, scenarios, product-discovery, or code for the new entry, the developer writes the research question(s) in their own words as the first content of the research log. The agent does not preface this with corpus retrieval. The discipline is the artifact ordering: the question text appears first; the corpus reads come after. Per ADR-082, the structural anchor is the artifact (research log entry's first content is the question), not a hook that prevents corpus reads.
+
+### Task: Respond to the constraint-removal prompt at research entry
+
+**Interaction mechanics:** With the research questions recorded, the agent composes a constraint-removal prompt naming the most consequential existing artifact specifically: "What if [the most consequential existing artifact / infrastructure component] were not available? How would the problem be solved then?" The developer responds in the research log alongside the question. When the developer has no constraint-removal answer ("the artifact is genuinely irreplaceable"), the response itself is recorded as the answer with a one-sentence justification. In a greenfield context with no consequential prior artifacts, the response is a one-line null answer ("no consequential prior artifacts to bracket"). The recorded engagement is the structural anchor; substantive content is not required.
+
+### Task: Wait for research-methods-reviewer dispatch before entering the research loop
+
+**Interaction mechanics:** With the question articulation and constraint-removal response recorded, the agent dispatches the research-methods-reviewer (per ADR-060 extended by ADR-082). The reviewer evaluates both artifacts as one "question set under review" against four criteria: need-vs-artifact framing, embedded conclusions, prior-art treatment, incongruity surfacing. The developer waits for the reviewer's report before the research loop (lit-review / spike / synthesis) begins. When the reviewer flags issues, the developer revises the question set or accepts the issues with rationale. When the reviewer's report is clean (or accepted), the loop proceeds.
+
+---
+
+## Stakeholder: Everyday Developer (BUILD Pattern-Reuse Engagement, Cycle 016 Extension)
+
+**Super-Objective:** "Recognize when a working code pattern is being applied to a new context where its assumptions may not hold, and pause to evaluate the pattern's applicability before silent breakage"
+
+### Task: Engage with the applicability check at a pattern-reuse moment
+
+**Interaction mechanics:** The developer is in BUILD and is about to extend an existing pattern by analogy. The operative trigger that fires the applicability check is the developer's or agent's **explicit reference** to a prior pattern as the template ("we'll do this the way we did X") — this is conversational (Tier 2 per ADR-058), recognized in the build conversation. Two further triggers are documented as aspirational in v13.0 but not currently enforced (structural-similarity detection and copy-shape stewardship-flag detection) — they have no substrate in the codebase as of this writing; the methodology relies on conversational recognition until a future cycle adds the missing infrastructure. When the operative trigger fires, the agent surfaces an applicability check stewardship-checkpoint with four prompts composed against the specific pattern, original context, and new context: (1) what is one structural alternative to this pattern? (2) what's different about the new context that might make this pattern wrong? (3) which assumptions of the original context are being carried forward, and which of those hold in the new context? (4) which fitness properties does `system-design.md` declare for the affected module(s) (per ADR-076), and does the candidate pattern satisfy each? The developer answers each prompt substantively; the responses land in the build session log. When a response surfaces a genuine concern, the build pauses; the developer evaluates whether the pattern still applies, and the alternative becomes a candidate. When all responses confirm applicability with explicit reasoning, the build proceeds. When the developer cannot answer one or more prompts substantively, the agent fires the Grounding Reframe (per ADR-068) — naming the gap, offering grounding actions (consult the pattern's ADR provenance, run a spike, defer the decision). The developer's choice to proceed without resolving the gap is recorded visibly for the next susceptibility snapshot.
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Operating Cycles Under Multi-Cycle Schema, Cycle 016 Extension)
+
+**Super-Objective:** "Manage RDD cycles when more than one is active, paused, or pre-migration — without hook-cascade friction during in-progress gates and without losing enforcement guarantees for cycles that should have them"
+
+### Task: Spawn a mini-cycle from within an active outer cycle
+
+**Interaction mechanics:** The developer is in an active cycle (e.g., a standard full-pipeline) and needs to spawn a mini-cycle for a scoped piece of work (e.g., a methodology amendment, a side investigation). Per ADR-078, the developer adds a new entry to `cycle-status.md`'s `## Cycle Stack` section as `### Active: <new-cycle-title>` at the top, with `**Cycle type:** mini-cycle` and `**Parent cycle:** <outer-cycle-number>`. The outer cycle's entry is updated to `### Paused: <outer-title>` with `**Paused:** <date> — spawned <new-cycle-title>` and `**Phase at pause:** <phase>`. The default coupling policy is `pause-parent`; no field is required for the default. When the mini-cycle completes, the developer removes the mini-cycle's entry; the outer entry's `**Paused:**` line is removed and the outer becomes the top of stack at the recorded `**Phase at pause:**` value.
+
+### Task: Spawn a continue-parent side-cycle with explicit rationale
+
+**Interaction mechanics:** The developer wants to run a brief side-cycle that should not pause the outer (e.g., `/rdd-conform` audit during an active build). Per ADR-078, the developer adds the side-cycle entry with `**Pause-on-spawn policy:** continue-parent` and a required `**Continue-parent rationale:** <one-line justification>`. The Stop hook reads only the top entry, which means the outer cycle's enforcement is suspended for the duration of the side-cycle — the rationale field makes the suspension a deliberate, auditable choice. Without the rationale field, the absence is treated as a missing-deliberation signal.
+
+### Task: Set the in-progress gate field at the start of an AID gate conversation
+
+**Interaction mechanics:** The orchestrator (acting on behalf of the developer) emits "Before we move on — reflection time." at a phase-boundary AID gate. Per ADR-079, the orchestrator updates `cycle-status.md`'s top entry with `**In-progress gate:** <phase-from> → <phase-to>` before the first agent turn of the gate conversation. While the field is set, Stop events return `allow` for the gate-reflection-note check (preventing the cascade-block failure mode demonstrated in Cycle 015) — other source-phase manifest checks continue to run, and the compound check continues for any specialist dispatches that fired during the gate. When the gate completes and the gate-reflection note is written (per ADR-066), the orchestrator clears the field. The developer is free to step away mid-gate; the field's persistence in `cycle-status.md` survives across sessions.
+
+### Task: Encounter advisory mode for a manifest entry skipped by precondition
+
+**Interaction mechanics:** The developer is running a mini-cycle (scoped DECIDE+BUILD, no RESEARCH). When the Stop hook fires, manifest entries that depend on RESEARCH artifacts (e.g., the research-essay citation-audit entry) carry an `applicable_when: [cycle_type_in: [standard, batch]]` precondition (per ADR-080). The hook evaluates the precondition, finds the active cycle's `**Cycle type:** mini-cycle` does not match, and skips the check with `onFail: CONTINUE` semantics — recording `skipped: applicable_when condition cycle_type_in not met` in the dispatch log. The developer sees no friction from checks that legitimately do not apply; the dispatch log records the skip for audit transparency.
+
+### Task: Encounter grandfathered enforcement on a pre-ADR-072 cycle
+
+**Interaction mechanics:** The developer resumes an old cycle (e.g., Cycle 8 rdd-pair, paused at MODEL pre-hooks) whose `cycle-status.md` lacks the cycle-shape fields. Per ADR-081, the Stop hook detects the legacy format and applies grandfathered enforcement — the manifest checks run in advisory mode for that cycle, regardless of the corpus-level `.migration-version` state. The developer sees an advisory notice naming the grandfathered status. The developer chooses when to migrate: running `/rdd-conform` cycle-shape audit walks the developer through populating fields matching the cycle's actual state, preserving the existing prose body verbatim. After migration, the cycle resumes under enforcement on the next session. Cycle 8 is the validation case.
