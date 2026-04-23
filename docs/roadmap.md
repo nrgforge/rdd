@@ -110,6 +110,8 @@
 
 #### WP-G: CONFORM Skill Cycle-Shape Audit Operation
 
+**Status:** ✅ Shipped — 67b5ddf (2026-04-23). `skills/conform/SKILL.md` Operations table expanded from seven to eight with the new Cycle-Shape Audit row; Operation 8 section added with the four-step workflow (Detect / Read and Infer / Prompt / Write Migrated Entry), preservation + non-rewrite guarantees, validation case naming Cycle 8 (rdd-pair), and three primary entry points (resuming pre-v0.7.0 paused cycles, unarchiving from `docs/cycle-archive/`, preparing corpora with multiple legacy cycles). Pause Log migration record format specified. All 6 WP-G-side ADR-081 scenarios trace to Operation 8; scenario #1 (hook legacy detection) is WP-B hook-side work already shipped.
+
 **Objective:** Extend `skills/conform/SKILL.md` with a new audit operation (cycle-shape audit) that detects pre-ADR-072 cycle-status.md and walks the user through field migration, preserving prose body verbatim (ADR-081).
 
 **Changes:**
