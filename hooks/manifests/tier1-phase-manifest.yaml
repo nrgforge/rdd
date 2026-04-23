@@ -36,6 +36,8 @@ phases:
       - mechanism: research-methods-reviewer
         path_template: docs/housekeeping/audits/research-design-review-{cycle}.md
         min_bytes: 2000
+        applicable_when:
+          - cycle_type_in: [standard, batch]
         required_headers:
           - "# Research Design Review"
           - "## Per-question audit"
@@ -46,6 +48,8 @@ phases:
         audited_documents:
           - "docs/essays/{cycle}-*.md"
         min_bytes: 1500
+        applicable_when:
+          - cycle_type_in: [standard, batch]
         required_headers:
           - "# Citation Audit Report"
           - "## Summary"
@@ -58,6 +62,8 @@ phases:
         audited_documents:
           - "docs/essays/{cycle}-*.md"
         min_bytes: 1500
+        applicable_when:
+          - cycle_type_in: [standard, batch]
         required_headers:
           - "# Argument Audit Report"
           - "## Summary"
@@ -68,6 +74,8 @@ phases:
       - mechanism: susceptibility-snapshot-evaluator
         path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md
         min_bytes: 400
+        applicable_when:
+          - cycle_type_in: [standard, batch]
         required_headers:
           - "# Susceptibility Snapshot"
         required_fields:
@@ -76,6 +84,7 @@ phases:
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
+        artifact_type: aid-cycle-gate-reflection
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -106,6 +115,7 @@ phases:
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
+        artifact_type: aid-cycle-gate-reflection
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -136,6 +146,7 @@ phases:
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
+        artifact_type: aid-cycle-gate-reflection
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -178,6 +189,7 @@ phases:
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
+        artifact_type: aid-cycle-gate-reflection
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -208,6 +220,7 @@ phases:
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
+        artifact_type: aid-cycle-gate-reflection
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
@@ -238,6 +251,7 @@ phases:
           - "## Recommendation"
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
+        artifact_type: aid-cycle-gate-reflection
         path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:

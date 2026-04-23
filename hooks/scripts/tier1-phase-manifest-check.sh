@@ -107,13 +107,50 @@ EOF
     fi
 fi
 
-# --- Paused cycle short-circuit (ADR-072) ------------------------------------
-# If cycle-status.md declares the cycle paused, all manifest checks are
+# --- Extract active entry from Cycle Stack (ADR-078) -------------------------
+# If the file has a '## Cycle Stack' header, extract the top entry (the first
+# '### Active:' section) and scope all subsequent field parsing to that entry.
+# Legacy single-entry files (no stack header) are treated as a one-entry stack:
+# the whole file body is the single entry. This satisfies ADR-078 scenario 6
+# (backward compatibility) and scenario 4 (hook reads only the top entry).
+
+if grep -qE '^## Cycle Stack[[:space:]]*$' "$CYCLE_STATUS" 2>/dev/null; then
+    ACTIVE_ENTRY="$(awk '
+        /^## Cycle Stack/ { in_stack = 1; next }
+        in_stack && /^### Active:/ { in_entry = 1; next }
+        in_entry && /^### (Active|Paused):/ { exit }
+        in_entry { print }
+    ' "$CYCLE_STATUS")"
+else
+    ACTIVE_ENTRY="$(cat "$CYCLE_STATUS")"
+fi
+
+# --- Legacy pre-ADR-072 detection (ADR-081) ----------------------------------
+# If no cycle-shape fields (Skipped phases, Paused, Cycle type) are present,
+# the entry predates ADR-072 and gets grandfathered advisory enforcement —
+# regardless of the corpus-level .migration-version state.
+LEGACY_PRE_ADR_072=false
+if ! grep -qE '^\*\*(Skipped phases|Paused|Cycle type):\*\*' <<<"$ACTIVE_ENTRY"; then
+    LEGACY_PRE_ADR_072=true
+    GRAND_MARKER="/tmp/rdd-grandfathered-${SESSION_ID:-unknown}"
+    if [[ ! -f "$GRAND_MARKER" ]] && [[ -n "$SESSION_ID" ]]; then
+        touch "$GRAND_MARKER" 2>/dev/null
+        cat >&2 <<'EOF'
+rdd-hook: grandfathered cycle (pre-ADR-072 format)
+This cycle's cycle-status.md predates the cycle-shape field schema (ADR-072).
+Manifest checks run in advisory mode for this cycle; run /rdd-conform
+cycle-shape audit to migrate it to the current schema. See ADR-081.
+EOF
+    fi
+    ENFORCEMENT_MODE=false
+fi
+
+# --- Paused cycle short-circuit (ADR-072, applied to active entry) -----------
+# If the active entry declares the cycle paused, all manifest checks are
 # bypassed until the **Paused:** field is removed. Emit a one-time advisory
-# notice per session so the pause is visible without spamming on every Stop.
-# The pause notice marker is distinct from the advisory-mode marker so the
-# two notices don't collide (ADR-072 Decision).
-PAUSED_VALUE="$(grep -E '^\*\*Paused:\*\*' "$CYCLE_STATUS" 2>/dev/null \
+# notice per session (marker distinct from advisory-mode and in-progress-gate
+# markers to avoid collision).
+PAUSED_VALUE="$(grep -E '^\*\*Paused:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
     | tail -1 \
     | sed -E 's/^\*\*Paused:\*\*[[:space:]]*(.*)$/\1/')"
 
@@ -123,34 +160,55 @@ if [[ -n "$PAUSED_VALUE" ]]; then
         touch "$PAUSE_NOTICE_MARKER" 2>/dev/null
         cat >&2 <<EOF
 rdd-hook: cycle paused (${PAUSED_VALUE})
-Manifest checks are bypassed until the **Paused:** field is removed
-from docs/housekeeping/cycle-status.md. See ADR-072.
+Manifest checks are bypassed until the **Paused:** field is removed from the
+active entry in cycle-status.md. See ADR-072.
 EOF
     fi
     allow
 fi
 
-# --- Determine current phase from cycle-status.md ----------------------------
-# Try canonical **Phase:** marker first, fall back to **Current phase:** parsing
+# --- In-progress gate predicate (ADR-079) ------------------------------------
+# When the active entry carries **In-progress gate:** <source> → <target>, the
+# gate-reflection-note check for the source phase is skipped (other checks
+# continue to run). The predicate is applied later in the mechanism-iteration
+# loop where per-entry artifact_type is available.
+IN_PROGRESS_GATE="$(grep -E '^\*\*In-progress gate:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^\*\*In-progress gate:\*\*[[:space:]]*(.*)$/\1/')"
+IN_PROGRESS_GATE_SOURCE=""
+if [[ -n "$IN_PROGRESS_GATE" ]]; then
+    IN_PROGRESS_GATE_SOURCE="$(printf '%s' "$IN_PROGRESS_GATE" \
+        | sed -E 's/[[:space:]]*(->|→).*$//' \
+        | tr -d '[:space:]' \
+        | tr '[:upper:]' '[:lower:]')"
+    GATE_MARKER="/tmp/rdd-gate-notice-${SESSION_ID:-unknown}"
+    if [[ ! -f "$GATE_MARKER" ]] && [[ -n "$SESSION_ID" ]]; then
+        touch "$GATE_MARKER" 2>/dev/null
+        cat >&2 <<EOF
+rdd-hook: in-progress gate (${IN_PROGRESS_GATE})
+Gate-reflection-note checks for the source phase are bypassed until the
+**In-progress gate:** field is cleared. Other checks continue to fire. See ADR-079.
+EOF
+    fi
+fi
 
-CURRENT_PHASE=""
+# --- Determine current phase from active entry -------------------------------
+# Try canonical **Phase:** marker first, fall back to **Current phase:** parsing.
+# The fallback tolerates optional parens around the next/in-progress marker
+# (accepts both "BUILD next" and "BUILD (next)" and "BUILD ▶ In Progress").
 
-# Canonical: **Phase:** build
-CURRENT_PHASE="$(grep -E '^\*\*Phase:\*\*' "$CYCLE_STATUS" 2>/dev/null \
+CURRENT_PHASE="$(grep -E '^\*\*Phase:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
     | tail -1 \
     | sed -E 's/^\*\*Phase:\*\*[[:space:]]*([A-Za-z_-]+).*/\1/' \
     | tr '[:upper:]' '[:lower:]')"
 
-# Fallback: parse **Current phase:** to find the phase marked as "next" or "In Progress"
 if [[ -z "$CURRENT_PHASE" ]]; then
-    CURRENT_PHASE_LINE="$(grep -E '^\*\*Current phase:\*\*' "$CYCLE_STATUS" 2>/dev/null | tail -1)"
+    CURRENT_PHASE_LINE="$(grep -E '^\*\*Current phase:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null | tail -1)"
     if [[ -n "$CURRENT_PHASE_LINE" ]]; then
-        # Look for a phase marked with "next" or "In Progress" (case insensitive)
-        # Format: "RESEARCH ... complete; DISCOVER ... complete; BUILD next"
         CURRENT_PHASE="$(printf '%s' "$CURRENT_PHASE_LINE" \
-            | grep -oiE '[A-Z_-]+[[:space:]]+(next|▶|in progress)' \
+            | grep -oiE '[A-Z_-]+[[:space:]]+\(?(next|▶|in progress)\)?' \
             | head -1 \
-            | sed -E 's/[[:space:]]+(next|▶|in progress)//i' \
+            | sed -E 's/[[:space:]]+\(?(next|▶|in progress)\)?.*//i' \
             | tr '[:upper:]' '[:lower:]')"
     fi
 fi
@@ -158,12 +216,10 @@ fi
 [[ -z "$CURRENT_PHASE" ]] && allow
 
 # --- Determine current cycle number ------------------------------------------
-# Canonical: **Cycle number:** 014
-CURRENT_CYCLE="$(grep -E '^\*\*Cycle number:\*\*' "$CYCLE_STATUS" 2>/dev/null \
+CURRENT_CYCLE="$(grep -E '^\*\*Cycle number:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
     | tail -1 \
     | sed -E 's/^\*\*Cycle number:\*\*[[:space:]]*([0-9]+).*/\1/')"
 
-# Fallback: highest NNN prefix in docs/essays/
 if [[ -z "$CURRENT_CYCLE" ]]; then
     CURRENT_CYCLE="$(ls "${REPO_ROOT}/docs/essays/" 2>/dev/null \
         | grep -E '^[0-9]{3}-' \
@@ -177,12 +233,17 @@ fi
 
 [[ -z "$CURRENT_CYCLE" ]] && allow
 
-# --- Skipped phases short-circuit (ADR-072) ----------------------------------
-# If cycle-status.md declares the current phase as skipped, bypass its
-# manifest check entirely. The skip is explicit and declared in cycle-status,
-# preserving Invariant 8 (the skip is structurally anchored and observable,
-# not a silent bypass). Phase names are canonical lowercase.
-SKIPPED_PHASES_RAW="$(grep -E '^\*\*Skipped phases:\*\*' "$CYCLE_STATUS" 2>/dev/null \
+# --- Parse cycle type and parent cycle (ADR-080 applicable_when substrate) --
+CYCLE_TYPE="$(grep -E '^\*\*Cycle type:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^\*\*Cycle type:\*\*[[:space:]]*([A-Za-z_-]+).*/\1/' \
+    | tr '[:upper:]' '[:lower:]')"
+PARENT_CYCLE="$(grep -E '^\*\*Parent cycle:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^\*\*Parent cycle:\*\*[[:space:]]*([0-9]+).*/\1/')"
+
+# --- Skipped phases short-circuit (ADR-072, per active entry) ----------------
+SKIPPED_PHASES_RAW="$(grep -E '^\*\*Skipped phases:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
     | tail -1 \
     | sed -E 's/^\*\*Skipped phases:\*\*[[:space:]]*(.*)$/\1/' \
     | tr ',' ' ' \
@@ -190,7 +251,6 @@ SKIPPED_PHASES_RAW="$(grep -E '^\*\*Skipped phases:\*\*' "$CYCLE_STATUS" 2>/dev/
 
 if [[ -n "$SKIPPED_PHASES_RAW" ]]; then
     for skipped in $SKIPPED_PHASES_RAW; do
-        # Trim whitespace; compare canonical lowercase
         skipped="$(printf '%s' "$skipped" | tr -d '[:space:]')"
         if [[ -n "$skipped" && "$skipped" == "$CURRENT_PHASE" ]]; then
             allow
@@ -225,6 +285,9 @@ while IFS= read -r mech; do
     # the AID cycle gate reflection note — no dispatch log entry expected,
     # compound check does not apply).
     mechanism_type="$(printf '%s' "$mech" | jq -r '.mechanism_type // "subagent"')"
+    # artifact_type: optional canonical identifier used by ADR-079's in-progress
+    # gate predicate to single out the aid-cycle-gate-reflection entry.
+    artifact_type="$(printf '%s' "$mech" | jq -r '.artifact_type // empty')"
     path_tmpl="$(printf '%s' "$mech" | jq -r '.path_template')"
     min_bytes="$(printf '%s' "$mech" | jq -r '.min_bytes // 500')"
 
@@ -232,6 +295,68 @@ while IFS= read -r mech; do
     path="${path_tmpl//\{cycle\}/$CURRENT_CYCLE}"
     path="${path//\{phase\}/$CURRENT_PHASE}"
     full_path="${REPO_ROOT}/${path}"
+
+    # --- In-progress gate predicate (ADR-079) -------------------------------
+    # When the active entry's **In-progress gate:** names the current phase
+    # as the source, the gate-reflection-note check for that phase is skipped.
+    # All other mechanism checks continue to run.
+    if [[ -n "$IN_PROGRESS_GATE_SOURCE" ]] \
+        && [[ "$CURRENT_PHASE" == "$IN_PROGRESS_GATE_SOURCE" ]] \
+        && [[ "$artifact_type" == "aid-cycle-gate-reflection" ]]; then
+        continue
+    fi
+
+    # --- applicable_when precondition evaluation (ADR-080) ------------------
+    # When any listed precondition fails, the mechanism check is skipped and
+    # the skip is recorded in the dispatch log. All conditions must hold for
+    # the check to run. Supported primitives: cycle_type_in, cycle_type_not_in,
+    # phase_not_skipped, parent_cycle_present, parent_cycle_absent.
+    applicable_when="$(printf '%s' "$mech" | jq -c '.applicable_when // empty')"
+    if [[ -n "$applicable_when" && "$applicable_when" != "null" ]]; then
+        skip_reason=""
+        while IFS= read -r precond; do
+            [[ -z "$precond" || "$precond" == "null" ]] && continue
+            primitive="$(printf '%s' "$precond" | jq -r 'keys[0]')"
+            case "$primitive" in
+                cycle_type_in)
+                    if ! printf '%s' "$precond" \
+                        | jq -e --arg ct "$CYCLE_TYPE" '.cycle_type_in | any(. == $ct)' >/dev/null 2>&1; then
+                        skip_reason="cycle_type_in"
+                    fi
+                    ;;
+                cycle_type_not_in)
+                    if printf '%s' "$precond" \
+                        | jq -e --arg ct "$CYCLE_TYPE" '.cycle_type_not_in | any(. == $ct)' >/dev/null 2>&1; then
+                        skip_reason="cycle_type_not_in"
+                    fi
+                    ;;
+                phase_not_skipped)
+                    target="$(printf '%s' "$precond" | jq -r '.phase_not_skipped')"
+                    for sk in $SKIPPED_PHASES_RAW; do
+                        sk="$(printf '%s' "$sk" | tr -d '[:space:]')"
+                        [[ "$sk" == "$target" ]] && { skip_reason="phase_not_skipped"; break; }
+                    done
+                    ;;
+                parent_cycle_present)
+                    [[ -z "$PARENT_CYCLE" ]] && skip_reason="parent_cycle_present"
+                    ;;
+                parent_cycle_absent)
+                    [[ -n "$PARENT_CYCLE" ]] && skip_reason="parent_cycle_absent"
+                    ;;
+            esac
+            [[ -n "$skip_reason" ]] && break
+        done < <(printf '%s' "$applicable_when" | jq -c '.[]')
+
+        if [[ -n "$skip_reason" ]]; then
+            # Record the skip in the dispatch log (best-effort; create dir if needed)
+            if mkdir -p "$(dirname "$DISPATCH_LOG")" 2>/dev/null; then
+                printf '{"timestamp":"%s","mechanism":"%s","skipped":"applicable_when condition %s not met"}\n' \
+                    "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$mechanism" "$skip_reason" \
+                    >> "$DISPATCH_LOG" 2>/dev/null
+            fi
+            continue
+        fi
+    fi
 
     # --- Structural assertions (ADR-063) ------------------------------------
 
