@@ -1,5 +1,83 @@
 # Changelog
 
+## v0.8.0
+
+Cycle 016: Methodology Seams. A batch cycle addressing seven issues (#10–#16) with targeted methodology interventions at the boundaries where RDD specifies the shape on each side but not the relationship between them. Ten new ADRs (073–082) across DECIDE, ARCHITECT, BUILD, RESEARCH, CONFORM, and the hook / cycle-status schema close structural gaps surfaced in prior cycles. The structural-first / cognitive-second principle held across the seven issues — ADRs 073/074/075/076/078/079/080/081 carry first-line structural enforcement (Skill-Structure Layer, Harness Layer, or canonical-path artifact); ADR-077 carries the second-line conversational layer at BUILD pattern reuse; ADR-082 step-anchored its research-entry protocol into Skill-Structure Layer with a cognitive component.
+
+### DECIDE skill — criterion verification, supersession workflow, preservation scenarios (ADRs 073/074/075)
+
+- **Cycle Acceptance Criteria Table (NEW — Step 4, ADR-073)** — four-column table (Criterion / Specified layer / Verification method / Layer-match check) bridging product-discovery's workflow language to scenarios' action language when criteria are emergent, aggregate, or specify an integration layer scenarios stub. Lives in `scenarios.md` as a top section or in a separate `acceptance-criteria.md`. Null-coverage judgment note for all-atomic cycles. BUILD Step 5.5 reads the table as its input.
+- **Role separation — historical record vs. current state (NEW — Step 2, ADR-074)** — explicit statement that ADRs serve the historical-record role (value: fidelity to the moment of decision) while `system-design.md` / `ORIENTATION.md` / `domain-model.md` / `field-guide.md` serve the current-state role (value: currency). ADR template updated with Rejected alternatives + Provenance check sections; status values expanded to `Proposed | Accepted | Updated by ADR-NNN | Superseded by ADR-NNN | Deprecated`.
+- **ADR Supersession Workflow (NEW — Step 2.5, ADR-074)** — body-immutable / status-mutable rule; supersession header format (`> **Superseded by ADR-NNN on YYYY-MM-DD.**`) and update header format (`> **Updated by ADR-NNN on YYYY-MM-DD.**` — IETF *Updates* analog); four-step workflow (file superseding ADR → add dated header + update status on old → downstream sweep across four artifacts → record in cycle-status); fitness property for sweep verification; drift resolution decision tree (implementation divergence vs. supersession vs. drift-without-supersession); explicit relationship to the invariant-specific Step 3.7 backward propagation.
+- **Preservation Scenarios (NEW — Step 4, ADR-075)** — negative-space complement to behavior scenarios. For each feature-scenario block touching existing modules, at least one `### Preservation:` block asserting an existing observable behavior remains unchanged. Three selection sources outside the new feature's frame (assumption inversions, existing scenarios, system-design provenance) — partial mitigation for authorship-time Einstellung. Null-coverage judgment note for wholly-isolated modules. Refutability standard matches behavior scenarios.
+- **Supersession gate check (NEW — Step 5, ADR-074)** — before presenting, verify every new ADR that supersedes a prior one has the corresponding header + status-field update on the old ADR and that the four-artifact downstream sweep has been discharged (or explicitly deferred with rationale in `cycle-status.md`).
+
+### ARCHITECT skill — qualitative claim decomposition hard gate (ADR-076)
+
+- **Qualitative Claim Identification (NEW — Step 5)** — agent walks module responsibilities and responsibility-matrix entries flagging quality language (transparent, seamless, backward-compatible, performant, lossless, isolated, etc.). Concrete, already-testable responsibilities carry no overhead.
+- **Fitness Property Format (NEW — Step 9)** — single-line format: `**Fitness:** <observable property> — <how observed/measured>`. Placed inline within the responsibility-matrix entry (when one property suffices) or in a per-module **Fitness** subsection (when multiple). Refutability standard matches scenarios.
+- **Compositional pathways** — fitness properties feed forward: ADR-073 criteria table (layer-specifying properties), ADR-075 preservation scenarios (scenario-decomposable properties), ADR-077 prompt 4 (fitness-property consultation at BUILD pattern reuse).
+- **Resistance-to-decomposition signal** — genuinely qualitative properties (developer experience, learnability) that resist decomposition are surfaced as *direction-not-constraint* framing explicitly rather than letting undecomposed claims stand as silent constraints.
+- **Hard gate (NEW — Step 10 item 7)** — ARCHITECT phase refuses to advance when a qualitative claim remains undecomposed; undecomposed claim surfaced by name. Tier 2 skill-text enforcement (conversational layer; not hook-verified — ADR-076 explicitly rejected LLM-subagent delegation of the decomposition per Invariant 0).
+- **System-design template updated** — optional **Fitness** subsection under module Purpose; responsibility-matrix inline-fitness convention; clarified split between system-level criteria (table) and module-level fitness (inline with claim).
+
+### BUILD skill — criterion verification step + applicability-check stewardship (ADRs 073/077)
+
+- **Step 5.5 Cycle Criterion Verification (NEW)** — inserted between Step 5 (Integration Verification) and Step 6 (Generate Field Guide). Reads the Cycle Acceptance Criteria Table; walks each entry; handles Layer-match `yes` via composing-scenario verification; handles Layer-match `no` by writing or identifying an integration test or harness at the criterion's specified layer; triggers a Design Amendment when the specified layer is unreachable from the test harness.
+- **Tier 1b: Applicability Check (NEW — ADR-077)** — triggered stewardship prompt, not always-on. Tier 2 conversational mechanism per ADR-058. Operative trigger: explicit conversational reference to an existing pattern as template. Aspirational triggers (structural-similarity detection, copy-shape detection) listed for scope-of-claim honesty; classified explicitly as having no current substrate.
+- **Four-prompt form with composition-not-recitation rule** — each prompt contains the actual pattern, original context, new context, and declared fitness properties in the bracketed slots. Prompt 4 is the ADR-076 integration point (reads `**Fitness:**` properties from `system-design.md`; null case records "No declared fitness properties for this module" as judgment, not silent skip).
+- **Outcomes** — substantive answer → proceed with recorded reasoning; genuine concern → pause and evaluate; unanswerable prompts → Grounding Reframe (ADR-068 extension) with name-the-gap / offer-grounding-actions / make-decision-visible.
+- **Batched application affordance** — refactoring-heavy sessions may batch the check across a coherent batch of analogous reuses rather than per-file, preserving the schema-comparison intervention while reducing ceremonial-recitation pressure.
+
+### RESEARCH skill + reviewer agent + orchestrator — question-isolation at research entry (ADR-082)
+
+- **Five-step Question-Isolation Entry Protocol (NEW — Step 1)** — first-line structural (Skill-Structure Layer per ADR-067) with a cognitive component in the constraint-removal prompt wording:
+  1. User articulates research question(s) in the research log as the entry's first content, before any artifact corpus is read for this research entry
+  2. Agent composes a *specific-artifact-named* constraint-removal prompt; user responds
+  3. Research-methods-reviewer dispatch evaluates the question set + constraint-removal response as one reviewable set, with four criteria
+  4. User revises or accepts flagged issues with recorded rationale
+  5. Research loop begins
+- **Greenfield / irreplaceable-artifact cases** — greenfield case records a one-line null answer (`"No consequential prior artifacts to bracket"`); irreplaceable-artifact case records the judgment with a one-sentence justification. The structural anchor is the recorded engagement.
+- **Research-methods-reviewer fourth criterion (NEW — Incongruity Surfacing)** — flags when the research context contains a simple-vs-complex adjacency the question set does not examine. Process §3 (Prior-Art Treatment) extended so the criterion can be satisfied by the constraint-removal response when the question set itself is artifact-framed. Two-artifact evaluation scope (question set + constraint-removal response as one review unit).
+- **Question Toolkit seventh form — Constraint-removal (NEW)** — "What would we build if [key infrastructure component] were not available?" Primary form for the research-entry moment; available throughout the cycle when an artifact's gravitational pull is suspected. The six existing forms remain unchanged.
+- **Essay 015 §10 reclassification** — the protocol was originally grouped under "second-line cognitive" with ADR-077; DECIDE-phase analysis reclassified it as "first-line structural with cognitive component" because the five-step workflow step-anchors in the skill file with mechanically-observable outputs. WP-F implements the reclassified shape; field evidence across future research cycles will test whether the classification holds in practice.
+
+### Multi-cycle Cycle Stack schema + hook layer (ADRs 078/079/080/081)
+
+- **`## Cycle Stack` schema (NEW — cycle-status.md, ADR-078)** — file represents a stack of cycle entries with the active entry on top; `### Active:` / `### Paused:` section headers; per-entry fields include `**Cycle number:**`, `**Started:**`, `**Current phase:**`, `**Cycle type:**`, `**Parent cycle:**`, `**Phase at pause:**`, `**Spawned by:**`, `**Pause-on-spawn policy:**`, `**Continue-parent rationale:**`, `**In-progress gate:**`. ADR-072's two fields (`**Skipped phases:**`, `**Paused:**`) fold in as per-entry fields. Orchestrator template updated with the new schema and nested-cycle spawn procedure.
+- **Parent close policy — pause-parent / continue-parent (NEW — ADR-078)** — Temporal's Parent Close Policy pattern adapted to RDD's human-paced epistemic units. Default: spawning a nested cycle pauses the outer; `continue-parent` requires a one-line `**Continue-parent rationale:**` field. When a `continue-parent` inner cycle is active, the outer cycle's manifest checks are not enforced — the deliberate scope-of-enforcement choice is reviewable in the rationale field.
+- **Non-interrupting Stop predicate (NEW — ADR-079)** — `**In-progress gate:**` field set by the orchestrator at AID-gate start (format: `<source-phase> → <target-phase>`), cleared when the gate reflection note is written. While present on the top entry, the Stop hook's gate-reflection-note check returns allow for the source phase only; all other manifest checks continue to fire.
+- **Scope-adaptive enforcement via `applicable_when` preconditions (NEW — ADR-080)** — per-manifest-entry `applicable_when` block with five precondition primitives (`cycle_type_in`, `cycle_type_not_in`, `phase_not_skipped`, `parent_cycle_present`, `parent_cycle_absent`). Hook evaluates preconditions before each manifest check; records `skipped: applicable_when condition <X> not met` in dispatch log.
+- **Grandfathered enforcement for pre-ADR-072 cycles (NEW — ADR-081)** — Stop hook detects legacy single-entry format and applies advisory mode for that cycle's manifest checks regardless of corpus `.migration-version` state. Grandfathered window ends on per-cycle migration via `/rdd-conform` Operation 8.
+- **Stop hook enhancements** — `hooks/scripts/tier1-phase-manifest-check.sh` gains the Cycle Stack parser, in-progress-gate predicate, applicable_when evaluator, and legacy-format detection; `hooks/manifests/tier1-phase-manifest.yaml` gains optional `applicable_when` and `artifact_type` fields per entry.
+- **New `hooks/tests/` infrastructure** — `lib.sh` (shared helpers, fixture writers, assertion library) + `run_tests.sh` harness + six scenario tests. Extensible for future hook work.
+
+### CONFORM skill — Cycle-Shape Audit (ADR-081)
+
+- **Operation 8: Cycle-Shape Audit (NEW)** — detects pre-ADR-072 `cycle-status.md` entries and walks the user through migrating each one to the current ADR-078 Cycle Stack schema while preserving the legacy prose body verbatim. Four-step workflow (Detect / Read and Infer / Prompt / Write Migrated Entry). Migration record added to the entry's Pause Log (`Migrated from pre-ADR-072 format on YYYY-MM-DD`). Opt-in per cycle. Cycle 8 (rdd-pair) named as the validation case.
+- **Operations table expanded** — from seven to eight operations; new entry describes when to use cycle-shape audit (resuming pre-v0.7.0 paused cycles; unarchiving legacy cycles from `docs/cycle-archive/`; preparing corpora with multiple legacy cycles).
+
+### Issue #15 — PostToolUse dispatch logger regex fix
+
+- **`hooks/scripts/tier1-verify-dispatch.sh` line 59 regex extended** — now matches markdown-formatted variants of `Output path:` (bold, backticked path, fully backticked line, list-item form) alongside the canonical plain-text form. Before, the regex required plain text with no formatting; legitimate dispatches with markdown-bold labels silently logged `expected_path: null` and tripped the Stop hook's fabrication-suspicion message. Same failure-mode class as Cycle 10 WP-F Findings #7 and #9 — a specification-execution gap between prose guidance and regex enforcement surfaced only under operational conditions.
+- **`hooks/tests/test_output_path_regex.sh` (NEW)** — 9 assertions covering all seven fixtures from Issue #15 plus two extra cases. Full hook test suite: 7/7 pass.
+
+### Conformance re-scan + inline remediation
+
+- **Cycle 016 BUILD-exit conformance re-scan** — `docs/housekeeping/audits/conformance-scan-build-exit-016.md`. Of the 40 gaps surfaced by the DECIDE-time scan, 38 closed, 1 partial (ADR-082 filename convention — deliberate BUILD decision retaining the prior path name), 1 still open — the still-open gap was a manifest / reviewer output header mismatch (`"## Per-question audit"` vs. `"## Per-Question Review"`) that the Tier 1 Architectural Isolation re-scan caught despite the in-context agent having drifted past it during the WPs. Fixed inline in the same commit series.
+- **Field evidence for the methodology catching its own specification-execution gaps** — the same failure-mode class as Cycle 10's nine verification-surfaced defects, recurring at the methodology boundary between hook and agent contracts.
+
+### Issue #10 live validation
+
+- **ADR-071's three-sided catch did not fire during Cycle 016 BUILD because the BUILD work shape was methodology amendments (skill text), not code with shared mutable state.** This is itself the observation: ADR-071 is designed for component-level integration risk at lifecycle boundaries, and a text-only BUILD phase does not exercise that risk surface. The three anchors (design-time prompt in COMPOSABLE TESTS, verification-time anchor in Step 5, review-time detector in Stewardship Tier 1 sub-item 6e) remain available for future cycles with code-level shared-state work. The honest scope-of-claim per ADR-069: ADR-071 applies when it applies; the methodology does not over-claim that every BUILD phase exercises every mitigation.
+
+### Cycle 016 closure
+
+- **Ten ADRs** (073–082), **eight work packages** (A–H), **seven issues addressed** (#10 live validation, #11–#16 structural amendments, #15 regex fix).
+- **Seven argument-audit passes** on DECIDE artifacts (cleared at pass 2 with one revision); **two susceptibility snapshots** (decide → architect clean; architect → build produced a Grounding Reframe on ADR-077 aspirational triggers — resolved at gate by reclassifying to operative-only).
+- **Plugin versions**: v0.7.3 → v0.8.0.
+- **Batch cycle shape as live validation for Issue #14** — the single `cycle-status.md` schema did hold across seven issues with mixed research depth; hook friction, gate-state ambiguity, and resume/pause events across the cycle's execution were recorded as field evidence alongside the literature research. The new Cycle Stack schema (ADR-078) and non-interrupting Stop predicate (ADR-079) ship together, tested against Cycle 016's own use.
+
 ## v0.7.3
 
 Cycle 15: Lifecycle Composition in Build Stewardship. Mini-cycle (DECIDE + BUILD only) adding a third integration-risk category to `/rdd-build` and, mid-cycle, cycle-shape declaration fields in `cycle-status.md` honored by the Stop hook in response to a live hook-loop that surfaced during the DECIDE gate itself.
