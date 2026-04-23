@@ -40,12 +40,20 @@ Identify decisions that need to be made. These typically emerge from:
 
 ### Step 2: Write ADRs
 
+#### ADR Role — Historical Record vs. Current State
+
+ADRs serve the **historical-record** role: "what was decided, when, why, what alternatives were rejected." Their value is fidelity to the moment of decision. `system-design.md`, `ORIENTATION.md`, `domain-model.md`, and `field-guide.md` serve the **current-state** role: "what is the architecture today, with provenance to the decisions that produced it." Their value is currency. When these roles are separated, a reader asking "what is current?" reads the current-state document; a reader asking "what was decided?" reads the ADR. Each artifact does one job and stays accurate at it.
+
+The body of an accepted ADR is immutable. If a decision needs to change, file a new superseding (or updating) ADR — do not edit the accepted one. See Step 2.5 for the full lifecycle and supersession workflow.
+
+#### ADR Template
+
 One ADR per decision. Use this template:
 
 ```markdown
 # ADR-NNN: [Decision Title]
 
-**Status:** Proposed | Accepted | Superseded by ADR-XXX
+**Status:** Proposed | Accepted | Updated by ADR-MMM | Superseded by ADR-MMM | Deprecated
 
 ## Context
 
@@ -55,6 +63,11 @@ Use domain vocabulary from the glossary.]
 ## Decision
 
 [The decision. Concrete and specific.]
+
+## Rejected alternatives
+
+[Alternatives considered and the reason each was rejected.
+Substantive analytical engagement; not a perfunctory list.]
 
 ## Consequences
 
@@ -66,6 +79,13 @@ Use domain vocabulary from the glossary.]
 
 **Neutral:**
 - ...
+
+## Provenance check
+
+[Which framings, decisions, and evidence are driver-derived (from
+research, domain model, prior ADRs, user framing at gates) versus
+drafting-time synthesis. Used selectively — when content is not from
+the driver chain, label it so the reader can distinguish.]
 ```
 
 Write ADRs to `./docs/decisions/adr-NNN-<slug>.md`.
@@ -77,9 +97,70 @@ Write ADRs to `./docs/decisions/adr-NNN-<slug>.md`.
 - **Context comes from the essay** — don't introduce new framing; reference what was already learned
 - **Thin, not exhaustive** — capture the decision and key consequences, not every possible consideration
 - **Use domain vocabulary** — every noun and verb should come from the glossary
+- **Body-immutable once accepted** — the Context, Decision, Rejected alternatives, Consequences, and Provenance check sections do not change after acceptance. Only the Status field and a dated supersession/update header may change. When a decision changes, file a new ADR via Step 2.5
 - **Check for unexamined product assumptions** — if an ADR's context references a product assumption (how users work, what they need, which workflows matter), check whether that assumption has been validated through product discovery. If not, flag it as a potential inversion principle violation
 
 Present ADRs to the user for approval before proceeding.
+
+### Step 2.5: ADR Lifecycle and Supersession Workflow
+
+This step fires whenever a new ADR genuinely supersedes or partially updates a prior accepted ADR — not on every ADR revision during DECIDE drafting (those ADRs are still `Proposed` and freely editable).
+
+#### Body-Immutable, Status-Mutable Rule
+
+For accepted ADRs:
+
+- **Immutable** — Context, Decision, Rejected alternatives, Consequences, Provenance check. The decision text does not change after acceptance.
+- **Mutable** — the Status field and a dated supersession or update header at the top of the ADR.
+
+If a decision has actually changed, file a new ADR. Do not edit the accepted one to match a new direction — silent amendment destroys the historical record that the supersession workflow exists to preserve.
+
+#### Supersession Header Formats
+
+**Total replacement** (IETF *Obsoletes* analog — the new decision replaces the old entirely):
+
+```markdown
+> **Superseded by ADR-NNN on YYYY-MM-DD.** [One-line reason.]
+```
+
+**Partial update** (IETF *Updates* analog — the new decision refines part of the old; the rest of the old ADR remains current):
+
+```markdown
+> **Updated by ADR-NNN on YYYY-MM-DD.** [Names which part is updated; the rest of this ADR remains current.]
+```
+
+The Status field reflects the strongest applicable state: `Superseded by ADR-NNN` for total replacement, `Updated by ADR-NNN` for partial update, `Deprecated` when the decision no longer applies but no replacement has been filed.
+
+#### Supersession Workflow — Four Steps
+
+When a later decision supersedes or updates an earlier ADR:
+
+1. **File the new superseding (or updating) ADR.** Describe the new decision and its rationale. Cite the original ADR by number and one-line summary in the Context section.
+2. **Write the dated header** at the top of the original ADR and update its Status field. Do not edit the body.
+3. **Sweep the downstream current-state artifacts** so current architecture traces to the new decision:
+   - `system-design.md` — provenance chains in module/responsibility/driver tables
+   - `ORIENTATION.md` — Section 4 (artifact map) and Section 5 (current state) where affected
+   - `domain-model.md` — concept and relationship tables citing the superseded ADR; Amendment Log entry recording the supersession's impact
+   - `field-guide.md` — implementation-level entries referencing the superseded decision
+4. **Record the supersession in the cycle** that produced it — note the event in the relevant phase status entry of `cycle-status.md`.
+
+Step 3 is the load-bearing step. It is mandatory; supersession without downstream-artifact update creates exactly the silent provenance drift the workflow exists to prevent. The sweep is judgment-directed prose editing, not a mechanical find/replace — provenance text is often phrased in the superseded decision's terms and requires re-phrasing, not substitution.
+
+**Fitness property for the sweep.** Post-supersession, the downstream-artifact sweep is verified by a named check: for each of the four artifacts, entries that cited the superseded ADR either (a) now cite the superseding ADR where the new decision is authoritative, (b) retain the superseded citation where the reference is historical (e.g., "pre-ADR-NNN format"), or (c) have been rewritten because the superseded citation no longer applies. A spot-check against `grep -n "ADR-<superseded-number>"` in the four artifacts surfaces missed entries; the conformance audit serves as a backstop for misses.
+
+#### Drift Resolution Decision Tree
+
+When ADR text and shipped code differ:
+
+- **Implementation-level divergence** (the architectural decision still holds; one detail differs in code) — no ADR change. The commit message carries provenance; `field-guide.md` may note the divergence for orientation.
+- **Decision-level supersession** (the original architectural call has actually changed) — apply the four-step workflow above.
+- **Drift without supersession** (code violated an accepted ADR without one being filed) — this is structural debt. Either reconform the code via a `refactor:` commit (BUILD's existing pattern), or file a superseding ADR that legitimizes the new direction with rationale. **Do not quietly amend the ADR to match the violation.** Silent legitimization erodes the methodology's integrity.
+
+The drift resolution is a judgment made when the discrepancy is observed (typically during `/rdd-conform` audit, BUILD stewardship, or ARCHITECT review). The decision tree is the structure for that judgment.
+
+#### Relationship to Step 3.7 (Backward Propagation)
+
+Step 3.7 handles the case where a new ADR introduces or changes a domain model invariant — which always triggers a sweep of prior ADRs and essays for contradictions. Step 2.5 is the general supersession workflow, invariant-driven or otherwise. When an invariant change is itself the supersession trigger, both steps apply: Step 2.5's four-step workflow fires for the superseded ADR, and Step 3.7's invariant-specific backward sweep follows across the broader corpus.
 
 ### Step 3: Argument Audit
 
@@ -165,6 +246,56 @@ Example pattern:
 **Then** SemanticAdapter receives input it can downcast without error
 ```
 
+#### Preservation Scenarios
+
+For each feature scenario block whose feature touches existing modules, write at least one **preservation scenario** asserting that an existing observable behavior, contract, or invariant remains unchanged when the feature is exercised. Preservation scenarios are the negative-space complement to behavior scenarios: behavior scenarios specify what the feature *should* do; preservation scenarios specify what existing behavior it *should not change*.
+
+Preservation scenarios live in the same `scenarios.md` feature block as the behavior scenarios they complement — a reader scanning the block sees `### Scenario:` and `### Preservation:` entries together.
+
+Format:
+
+```markdown
+### Preservation: [Descriptive name — what is being preserved]
+**Given** [precondition exercising the new feature alongside the existing behavior]
+**When** [action invoking the new feature]
+**Then** [the existing observable behavior X remains unchanged — stated refutably]
+```
+
+Selection is informed by three sources outside the new feature's immediate frame. Consulting sources outside the new feature's frame is a partial mitigation for authorship-time Einstellung — the same mental model that anchors the writer on the new feature's success path while writing behavior scenarios can anchor selection toward contracts the feature is unlikely to violate rather than those it is most at risk of violating:
+
+- **Product-discovery assumption inversions** for the relevant area
+- **Existing scenarios in `scenarios.md`** that the new feature touches
+- **System-design provenance chains** from the affected modules — which ADRs established the existing behavior
+
+The prompt to make explicit each time:
+
+> *"What should this feature not change? Write that as a refutable scenario."*
+
+Preservation scenarios meet the same refutability standard as behavior scenarios — each Then clause must be observable and verifiable. A preservation scenario that reads "the system continues to work correctly" is not refutable and does not satisfy the requirement.
+
+**Null-coverage judgment.** If the feature genuinely cannot affect any existing observable behavior (a wholly isolated module, a brand-new entry point in the call graph), the feature block records the judgment as a one-line note: *"No existing observable behavior is in the call path; preservation scenarios omitted."* The recorded judgment is itself the structural anchor — the question was asked; the answer was negative; the answer is visible in the artifact. Do not fabricate a preservation scenario when none applies.
+
+#### Cycle Acceptance Criteria Table
+
+When product-discovery names acceptance criteria that are **emergent** (observable only at integration), **aggregate** (covered by multiple scenarios composing), or specify an **integration layer** that individual scenarios stub out, produce a **Cycle Acceptance Criteria Table** bridging product-discovery's workflow language to scenarios' action language. BUILD Step 5.5 reads the table as its input and verifies each entry at its specified layer.
+
+The table has four columns:
+
+| Column | Content |
+|--------|---------|
+| Criterion | The acceptance criterion as stated in product-discovery, verbatim |
+| Specified layer | The layer at which the criterion specifies satisfaction (e.g., "live MCP transport," "end-to-end with real downstream service," "API-boundary behavior") |
+| Verification method | Which scenarios compose to cover the criterion, plus any additional integration test or harness |
+| Layer-match check | Does the verification exercise the specified layer, or does it stub the layer the criterion names? (yes / no) |
+
+Place the table in `scenarios.md` as a top section preceding the per-feature scenario blocks. If `scenarios.md` is already large and adding the table would make the file unwieldy, place it instead in a separate `./docs/acceptance-criteria.md` and reference that file from the top of `scenarios.md`. The placement decision is a document-sizing judgment; both are valid under ADR-073.
+
+Atomic criteria (1:1 scenario mapping at the criterion's specified layer) may appear in the table with the notation `atomic, 1:1` in the Verification method column, or be omitted entirely — the table's purpose is to surface emergent and aggregate criteria for explicit treatment.
+
+**Null-coverage judgment.** If product-discovery names only atomic criteria each with 1:1 scenario mapping at the criterion's specified layer, the table itself is omitted and a one-line note at the top of `scenarios.md` records the judgment: *"No emergent or aggregate acceptance criteria identified; all criteria are atomic with 1:1 scenario mapping."* The recorded judgment is the structural anchor — the question was asked, the answer recorded, and future readers (including BUILD Step 5.5) can see that the layer-match question was considered rather than omitted by default.
+
+The layer-match check is a structural prompt for the Inversion Principle's BUILD-facing form: *"what layer am I not verifying?"* A "no" in the Layer-match column is not a failure — it is the table working as designed, surfacing the gap that BUILD Step 5.5 will close with an integration test or harness exercising the criterion at its stated layer.
+
 ### Step 4.5: Interaction Specifications
 
 After scenarios are written, produce interaction specifications — the workflow-level specification of how each stakeholder works with the system. Interaction specifications fill the gap between business-rule scenarios (which specify *what* happens) and technical implementation (which specifies *how* it's built). Scenarios and interaction specifications operate at different specification levels and do not duplicate each other.
@@ -207,12 +338,23 @@ Each interaction specification entry must:
 
 ### Step 5: Present for Approval
 
+Before presenting, run the **supersession gate check**: for every new ADR whose Decision, Rejected alternatives, or Context explicitly names a prior accepted ADR as being superseded, updated, or replaced by this one, verify that:
+
+1. The prior ADR has a dated `> **Superseded by ADR-NNN on YYYY-MM-DD.**` or `> **Updated by ADR-NNN on YYYY-MM-DD.**` header at the top of its file (per Step 2.5).
+2. The prior ADR's Status field reflects the relationship (`Superseded by ADR-NNN`, `Updated by ADR-NNN`, or `Deprecated`).
+3. The four-artifact downstream sweep (Step 2.5 Step 3) has been performed where applicable, or is explicitly noted as deferred with rationale (e.g., "sweep deferred to BUILD when ADR-NNN actually ships") recorded in `cycle-status.md`.
+
+If any of these checks fail, fix the gap before presenting — a superseding ADR without its counterpart header on the superseded ADR creates exactly the silent provenance drift the workflow exists to prevent.
+
 Present the complete set — ADRs + scenarios + interaction specifications + audit findings and fixes — to the user. Highlight:
 - Decisions where alternatives were close calls
 - Scenarios that cover edge cases vs. happy paths
+- Preservation scenarios that surfaced non-obvious negative-space risks, and feature blocks where the null-coverage judgment was recorded
+- The Cycle Acceptance Criteria Table (if produced) — which criteria have Layer-match "no," since those will become BUILD Step 5.5 work; or the null-coverage judgment if all criteria are atomic
 - Interaction specifications and how they relate to the stakeholder models they derive from
 - Any points where you stopped due to uncertainty
 - Audit findings that changed the ADRs or prior documents
+- For any supersession events this cycle produced: the superseded ADR's header, the superseding ADR's link back, and the downstream-sweep status (complete, partial with reason, or deferred with rationale)
 
 ### EPISTEMIC GATE
 
