@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.8.1
+
+Patch release: codifies dispatch-prompt discipline and subagent trust-model rules surfaced during Cycle 016 BUILD-exit remediation. No methodology-level changes; small edits to the orchestrator skill and snapshot-evaluator agent plus one artifact remediation.
+
+### Orchestrator skill (`skills/rdd/SKILL.md`)
+
+- **Dispatch prompt discipline (load-bearing).** Dispatches to any specialist subagent (snapshot evaluator, argument auditor, citation auditor, research methods reviewer, conformance scanner) MUST include a literal line of the form `Output path: <path>`. The PostToolUse hook `tier1-verify-dispatch.sh` grep-matches this literal; paraphrases (markdown headers, "Write your output to:" prose) produce `expected_path: null` in the dispatch log, which the Tier 1 manifest check treats as a fabrication signal even when the dispatch is legitimate. Phase-skill briefs already include the line in the correct format — pass them through verbatim.
+- **Subagent dispatch-log prohibition.** Subagents MUST NOT write to `dispatch-log.jsonl` to patch missing or malformed entries. A subagent writing its own entry is a trust-model violation: the log is authoritative only if the PostToolUse hook is the sole writer. Defects should be reported in the artifact body; re-dispatch with a corrected prompt is the remediation.
+- **Repeated-block Stop-hook guidance.** If a Stop hook blocks with the same error across multiple turns without new information from the user, surface the issue once and stop. Do not repeat the analysis on each fire. Prefer autonomous remediation (e.g., re-dispatching a malformed subagent call) over re-surfacing options.
+
+### Snapshot-evaluator agent (`agents/susceptibility-snapshot-evaluator.md`)
+
+- Explicit prohibition on writing to `docs/housekeeping/dispatch-log.jsonl` or any other dispatch-tracking artifact. Defects should be reported in the snapshot body.
+
+### BUILD-exit remediation (Cycle 016)
+
+- `docs/housekeeping/audits/susceptibility-snapshot-016-build.md` re-dispatched with a proper `Output path:` literal prompt. Two prior attempts archived as `.pre-verification.md` and `.pre-verification-2.md`. Manually-written dispatch-log entry from the first re-dispatch removed. Dispatch log now has a clean hook-written entry with non-null `expected_path`.
+- Snapshot finding (unchanged on substance): advance with three advisory carry-forwards, no Grounding Reframe warranted. Architect-boundary reframe on ADR-077 aspirational triggers held through BUILD.
+
+### Known follow-ups
+
+Other agent files (citation-auditor, argument-auditor, conformance-scanner, research-methods-reviewer, orientation-writer, lit-reviewer, spike-runner) do not yet carry the dispatch-log prohibition. The rule is universal but the sweep is deferred as a follow-up issue. A fallback extractor in `tier1-verify-dispatch.sh` that tolerates common `Output path:` paraphrases (markdown headers, bold variants) is also candidate scope for a future patch.
+
 ## v0.8.0
 
 Cycle 016: Methodology Seams. A batch cycle addressing seven issues (#10–#16) with targeted methodology interventions at the boundaries where RDD specifies the shape on each side but not the relationship between them. Ten new ADRs (073–082) across DECIDE, ARCHITECT, BUILD, RESEARCH, CONFORM, and the hook / cycle-status schema close structural gaps surfaced in prior cycles. The structural-first / cognitive-second principle held across the seven issues — ADRs 073/074/075/076/078/079/080/081 carry first-line structural enforcement (Skill-Structure Layer, Harness Layer, or canonical-path artifact); ADR-077 carries the second-line conversational layer at BUILD pattern reuse; ADR-082 step-anchored its research-entry protocol into Skill-Structure Layer with a cognitive component.
