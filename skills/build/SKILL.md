@@ -225,6 +225,26 @@ Key principle: **if the new component was tested only with `MockX` or `StubY`, a
 
 This step catches type mismatches between components designed in parallel, persistence paths that diverge between test and production, missing contracts in adapters tested without their real pipeline, and shared-reference leaks across lifecycle boundaries.
 
+### Step 5.5: Cycle Criterion Verification
+
+After integration is verified and before generating the field guide, verify each entry in the **Cycle Acceptance Criteria Table** (per ADR-073) at its specified layer.
+
+1. **Locate the table.** Read the Cycle Acceptance Criteria Table from the top of `./docs/scenarios.md` (or `./docs/acceptance-criteria.md` if the table was placed in a separate file). If no table exists, look for the null-coverage judgment note (e.g., *"No emergent or aggregate acceptance criteria identified; all criteria are atomic with 1:1 scenario mapping."*). The null-coverage case skips to Step 6 — no per-criterion verification is required because DECIDE recorded the judgment that all criteria are atomic.
+
+2. **Walk each entry.** For each row in the table:
+   - **Read the criterion** (column 1), the **specified layer** (column 2), the **verification method** (column 3), and the **layer-match check** (column 4).
+   - **Confirm the verification ran.** The scenarios or tests named in column 3 must have passed under Steps 2–5. If they have not, the criterion is not yet satisfied — loop back to the relevant step.
+
+3. **Handle layer-match = "yes".** The composing scenarios already exercise the criterion at its specified layer. The criterion is satisfied; record the verification in the build session log and move to the next entry.
+
+4. **Handle layer-match = "no".** The verification stubs the layer the criterion names. This is the gap DECIDE surfaced for BUILD to close. Write (or identify) an integration test or harness that exercises the criterion at its specified layer — the `no` is not a failure to fix by declaring the criterion satisfied; it is a prompt to extend verification. The test must pass against the running system before BUILD declares the cycle complete. If the integration test cannot be written because the specified layer is not reachable from the test harness, surface the gap as a design problem (the criterion's specified layer is not accessible under current architecture) and trigger a Design Amendment per the DESIGN AMENDMENTS section.
+
+5. **Record results.** For each entry, record in the build session log: criterion name, what was verified, which test or harness exercised the specified layer, and the verification result. The record composes with Step 5's integration-verification outputs.
+
+6. **Present.** Before moving to Step 6, summarize the criterion-verification results to the user: which criteria had layer-match `yes` and passed via composing scenarios, which had `no` and now pass via a new integration test or harness, and any criteria where the gap is a design problem that required an amendment.
+
+The table is the bridge between product-discovery's workflow language and scenarios' action language. Step 5.5 is the mechanical check that the bridge actually carries traffic at the layer specified, not only at the layer tested.
+
 ### Step 6: Generate Field Guide
 
 After all scenarios pass and integration is verified, generate a field guide that maps the system design to the current implementation. **This step is conditional** — only run it if implementation exists beyond `docs/`. If the project is still in the ARCHITECT phase with no code, skip this step entirely.
@@ -484,6 +504,65 @@ Present a brief conformance summary:
 **If flags** → can the issue be resolved with a small structural tidying (extract, move, rename)? If yes, tidy as a `refactor:` commit and continue. If no, escalate to Tier 2.
 
 > **Review mode available.** For deeper understanding of the work package beyond architectural conformance — design intent, assumption validity, decision rationale, test quality — the build flow can shift into review mode (see MODE SHIFTS). Review complements stewardship: stewardship checks architectural drift, review builds your understanding of what was built and why.
+
+### Tier 1b: Applicability Check (Triggered — ADR-077)
+
+The Applicability Check is a **triggered** stewardship prompt — it fires when code is being extended by analogy (a working pattern is being adapted to a new context), not at every scenario-group boundary. The cognitive mechanism it operationalizes is schema comparison (Gentner, Loewenstein & Thompson 2003), which the essay identifies as the best-evidenced counter to the Einstellung effect (Bilalic et al. 2008) at the application site.
+
+**This is a Tier 2 conversational mechanism** per ADR-058 — it operates inside the conversation where the agent's susceptibility may be in play, with reduced reliability relative to ADR-075 (preservation scenarios) and ADR-076 (fitness decomposition), which carry the first-line structural load. The check is not a hook block; it is a stewardship prompt that the BUILD conversation surfaces when the trigger fires.
+
+#### Trigger Condition
+
+**Operative trigger (conversational, at current substrate):**
+
+- The developer or agent explicitly references an existing pattern as the template — for example, *"we'll do this the way we did X,"* *"this should work like Y,"* or *"use the pattern from module Z."* The trigger fires when the reference is recognized in the BUILD conversation.
+
+The following triggers are **aspirational** — described here for scope-of-claim honesty, not as substrate the BUILD skill currently has:
+
+- Structural-similarity detection (AST-based or otherwise) flagging new code that mirrors existing code with parameters swapped. No current substrate.
+- Stewardship-check detection of copy-shape with localized modifications. No current substrate (ADR-071 added Lifecycle Composition checks; it did not add copy-shape detection).
+
+Future cycles may implement the aspirational triggers. Until then, the Applicability Check relies on explicit conversational reference. Naming triggers that don't exist would create reliability expectations the implementation cannot meet.
+
+#### Four-Prompt Form
+
+When the operative trigger fires, surface these four prompts in the BUILD conversation — composed for the specific situation, not recited verbatim. The agent fills the bracketed slots with the actual content of the moment:
+
+> *Pattern reuse detected. The pattern works in [original context]. Before applying it to [new context]:*
+>
+> 1. *What is one structural alternative to this pattern? (A different approach, not a refinement of this one.)*
+> 2. *What's different about [new context] that might make this pattern wrong?*
+> 3. *Which assumptions of [original context] are you carrying forward — and which of those hold in [new context]?*
+> 4. *Which fitness properties does `system-design.md` declare for the affected module(s) (per ADR-076)? Does the candidate pattern satisfy each, or is satisfaction unverified?*
+
+**The user's response is the load-bearing artifact.** The user articulates the alternative, names the differences, and identifies which assumptions hold. The agent does not generate the alternative on the user's behalf (that would recreate the Einstellung the check exists to counter); the agent's job is to compose the question and record the substantive response in the build session log. This follows ADR-055's belief-mapping principle — the question form is the structural intervention; the user's substantive response is the evidence.
+
+**Composition-not-recitation.** Each prompt must contain specific content in the bracketed slots — the actual pattern named, the actual original context, the actual new context, and (for prompt 4) the specific fitness properties declared for the affected module(s). A recited skeleton with generic placeholders is not the intervention; it is ceremonial activity that trains the user to bypass.
+
+#### Prompt 4 — Fitness Property Consultation (ADR-076 integration)
+
+Prompt 4 is the integration point with ADR-076's fitness-property decomposition. Read `system-design.md` and locate the affected module(s) — the modules whose code is being modified, extended, or whose contract is being touched by the pattern reuse. For each affected module:
+
+- **If the module has declared `**Fitness:**` properties** (inline in the responsibility entry or in a per-module Fitness subsection), name them explicitly in prompt 4. The user evaluates whether the candidate pattern satisfies each property, or whether satisfaction is unverified.
+- **If the module has no declared fitness properties,** record prompt 4's response as *"No declared fitness properties for this module."* The absence is itself the recorded judgment — not a silent skip. ADR-076's gate check (which would have surfaced undecomposed qualitative claims at ARCHITECT time) is the audit trail for whether that absence is appropriate. If the absence feels wrong (the module clearly has qualitative responsibilities that should have been decomposed), loop back to ARCHITECT via a Design Amendment rather than waving the gap through.
+
+#### Outcomes
+
+**Substantive answer → proceed with reasoning recorded.** When the user articulates the alternative, names the differences, identifies the carried-forward assumptions, and confirms (or disconfirms) fitness-property satisfaction, record the reasoning in the build session log and proceed with the implementation. The record composes with the stewardship summary.
+
+**Genuine concern surfaced → pause and evaluate.** When the user's response surfaces a concern — an assumption from the original context does not hold, a fitness property is unsatisfied, a structural alternative looks stronger — the build pauses. The developer evaluates whether the pattern still applies. If not, the alternative becomes the implementation candidate, and the original pattern becomes prior art rather than template.
+
+**Prompts cannot be answered substantively → Grounding Reframe.** When the alternative cannot be named, the differences cannot be articulated, or the assumption check is deflected, the agent does not advance by default. Apply the Grounding Reframe pattern (ADR-068 extension): name the gap, offer concrete grounding actions, and make the proceed-without-grounding decision visible:
+
+1. **Name what is uncertain:** *"The ground is soft here because [specific prompt that could not be answered]."*
+2. **Offer grounding actions:** consult the original pattern's ADR provenance; run a quick spike to test the analogical assumption; belief-map the specific carried-forward assumption; defer the decision and revisit with more context.
+3. **Make visible what would be built on without grounding,** so the next susceptibility snapshot at the phase boundary can register it.
+
+The user decides whether to pursue a grounding action or proceed. Either way, the decision is recorded in the build session log. The block is conversational, not structural — the methodology does not over-claim enforcement strength at this layer.
+
+#### Batched Application
+
+Pattern-reuse-heavy work (refactoring sessions, applying a template across many files) may encounter the trigger frequently. When the developer signals upfront that a coherent batch is being processed, the Applicability Check may fire once for the batch rather than per-file — the four prompts name all the analogous reuses in a single check. This preserves the schema-comparison intervention (the structural-alternative prompt must still be answered for the batch as a whole) while reducing ceremonial-recitation pressure.
 
 ### Tier 2: Deep Architecture Review
 
