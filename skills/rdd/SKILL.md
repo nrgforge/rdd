@@ -413,6 +413,7 @@ Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is
 **Parent cycle:** (if nested; absent otherwise)
 **Skipped phases:** (optional) research, discover, model, architect
 **Pause-on-spawn policy:** (optional, defaults to `pause-parent`)
+**In-progress phase:** (optional; set by orchestrator at phase entry, removed at phase-exit verification — per v0.8.2)
 **In-progress gate:** (optional; set by orchestrator at AID-gate start, cleared at gate-reflection-note write — per ADR-079)
 
 [Extra metadata — essay, artifact base, driving issues, plugin version, etc.]
@@ -460,9 +461,20 @@ Maintain a persistent cycle status document at `./docs/cycle-status.md`. This is
 - **`**Phase at pause:**`** — records the phase the cycle was at when paused, so resume can restore the correct phase (history-pseudostate pattern from Harel 1987).
 - **`**Pause-on-spawn policy:**`** — `pause-parent` (default — spawning a nested cycle pauses the outer) or `continue-parent` (rare; explicit decision that outer continues independently). Set on the entry that will be paused by a future spawn.
 - **`**Continue-parent rationale:**`** — required one-line justification when `**Pause-on-spawn policy:** continue-parent` is set. Absence on a continue-parent entry is itself a signal the choice was not deliberated.
+- **`**In-progress phase:**`** — per v0.8.2, set by the orchestrator when entering a phase; removed when the agent is ready to invite phase-exit verification. The value names the phase in canonical lowercase (`research`, `discover`, `model`, `decide`, `architect`, `build`, `play`, `synthesize`). While the field is present on the top entry and names the current phase, the Stop hook short-circuits the entire per-phase manifest check and emits a one-time advisory notice per session. Removing the field invites the next Stop-hook fire to evaluate the manifest — blocks on unmet obligations, allows on clean exit. Only then advance **Current phase:** to the next phase and re-set **In-progress phase:** for that phase. Without this field, the manifest check fires on every Stop event during the phase, which creates a pathological loop at pre-dispatch steps where the agent is awaiting user input.
 - **`**In-progress gate:**`** — per ADR-079, set by the orchestrator at AID-gate start (format: `<source-phase> → <target-phase>`), cleared when the gate reflection note is written. While present on the top entry, the Stop hook's gate-reflection-note check returns allow for the source phase only; all other manifest checks continue to fire.
 
 The `Pause Log` section appears only when the cycle has been paused at least once. It records the audit trail of pause/resume events — each row captures when the pause began, when it ended (blank if still paused), and why. The log makes the pause visible and reviewable, preserving Invariant 8 (structural mechanisms must be observable, not silent bypasses).
+
+**Phase entry and exit (v0.8.2).** The orchestrator manages the `**In-progress phase:**` field across each phase transition:
+
+1. **On phase entry** (when dispatching to a phase skill): add `**In-progress phase:** <phase>` to the active entry, where `<phase>` is the canonical lowercase name. This suppresses the Stop-hook manifest check for the duration of the phase work, preventing the mid-phase Stop-loop at pre-dispatch steps where the agent is awaiting user input.
+2. **During the phase**: the field stays set. Phase work proceeds (research loops, gate conversations, specialist subagent dispatches, etc.). The hook allows every Stop.
+3. **At phase-exit readiness** (after all required artifacts have been produced — audits dispatched, gate reflection note written, susceptibility snapshot complete): remove the `**In-progress phase:**` line. Do NOT advance `**Current phase:**` yet.
+4. **Invite verification**: the next Stop fires the manifest check against the still-current phase. If all obligations are met, the hook allows. If not, the hook blocks with a specific list of unmet obligations — address them and try again.
+5. **On clean verification**: advance `**Current phase:**` to the next phase and add `**In-progress phase:** <next-phase>` in the same edit. The cycle resumes in the new phase.
+
+This two-step exit (remove the field; then advance) is the v0.8.2 discipline. Advancing `**Current phase:**` without removing `**In-progress phase:**` first silently skips verification and is a methodology violation — the skill refuses to do this.
 
 **Spawning a nested cycle (pause-parent default).** When a nested mini-cycle or side cycle begins:
 1. On the current (outer) entry, add `**Paused:** YYYY-MM-DD — spawned <inner cycle title>` and `**Phase at pause:** <phase>`. Rename the entry heading from `### Active:` to `### Paused:`.

@@ -215,6 +215,38 @@ fi
 
 [[ -z "$CURRENT_PHASE" ]] && allow
 
+# --- In-progress phase predicate (v0.8.2) -----------------------------------
+# When the active entry carries **In-progress phase:** <phase> and the phase
+# names the currently-active phase, the entire manifest check short-circuits.
+# The manifest check is phase-EXIT verification; during the phase the agent is
+# producing artifacts in workflow order and cannot satisfy phase-exit
+# obligations yet. Blocking every mid-phase turn-end produces a runaway Stop
+# loop at pre-dispatch steps where the agent is awaiting user input (see
+# v0.8.2 release notes).
+#
+# Orchestrator discipline (see skills/rdd/SKILL.md): set **In-progress phase:**
+# when entering the phase; remove the line when ready for phase-exit
+# verification. The subsequent Stop fires the manifest check against the
+# then-current phase. Legacy cycles without the field retain prior behavior.
+IN_PROGRESS_PHASE="$(grep -E '^\*\*In-progress phase:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^\*\*In-progress phase:\*\*[[:space:]]*([A-Za-z_-]+).*/\1/' \
+    | tr '[:upper:]' '[:lower:]')"
+
+if [[ -n "$IN_PROGRESS_PHASE" && "$IN_PROGRESS_PHASE" == "$CURRENT_PHASE" ]]; then
+    IN_PROGRESS_PHASE_MARKER="/tmp/rdd-in-progress-phase-${SESSION_ID:-unknown}"
+    if [[ ! -f "$IN_PROGRESS_PHASE_MARKER" ]] && [[ -n "$SESSION_ID" ]]; then
+        touch "$IN_PROGRESS_PHASE_MARKER" 2>/dev/null
+        cat >&2 <<EOF
+rdd-hook: in-progress phase (${IN_PROGRESS_PHASE})
+Manifest check is bypassed while **In-progress phase:** names the current phase.
+Remove the line from the active entry in cycle-status.md when ready for
+phase-exit verification. Introduced in v0.8.2.
+EOF
+    fi
+    allow
+fi
+
 # --- Determine current cycle number ------------------------------------------
 CURRENT_CYCLE="$(grep -E '^\*\*Cycle number:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
     | tail -1 \
