@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.8.2
+
+Patch release: fixes a Stop-hook loop at RESEARCH Step 1.1 that blocks every mid-phase turn-end, not just phase-exit attempts. Observed during Cycle 017 entry — the hook fires the per-phase manifest check on every Stop event, but the RESEARCH manifest requires artifacts (research-design-review, citation audit, argument audit, susceptibility snapshot, gate reflection) that cannot exist until later workflow steps. At pre-dispatch steps where the agent is awaiting user input, every turn-end hits the block and the user sees a runaway wall of block messages.
+
+### Hook change (`hooks/scripts/tier1-phase-manifest-check.sh`)
+
+- **New `**In-progress phase:**` predicate (introduced in v0.8.2).** When the active entry carries `**In-progress phase:** <phase>` and the phase matches the currently-active phase, the entire manifest check short-circuits with a one-time session advisory. Removing the field invites the next Stop to fire the manifest check against the still-current phase — blocks on unmet obligations, allows on clean exit. The orchestrator sets the field at phase entry and removes it at phase-exit readiness.
+- Legacy cycles without the field retain prior behavior (manifest check on every Stop). New cycles get the field set by the orchestrator automatically.
+
+### Orchestrator skill (`skills/rdd/SKILL.md`)
+
+- **Phase entry/exit discipline documented.** New subsection specifies the two-step phase-exit procedure: (1) remove `**In-progress phase:**` to invite verification; (2) advance `**Current phase:**` only after the manifest check passes.
+- Cycle-status.md schema template updated with the new field.
+- Per-field documentation for `**In-progress phase:**` added alongside the other cycle-shape fields, with cross-reference to ADR-083.
+
+### Test (`hooks/tests/test_in_progress_phase.sh`)
+
+- Positive case: field present, names current phase → short-circuit.
+- Mismatch case: field present but names a different phase → check still fires.
+- Negative case: field absent → check fires normally (legacy behavior preserved).
+
+All 8 hook tests pass.
+
+### Known limitations
+
+- A nonconforming agent that advances `**Current phase:**` without removing `**In-progress phase:**` first will silently skip the phase's manifest verification. The skill text declares this a methodology violation; a future hook hardening (PreToolUse on cycle-status.md edits) could enforce it structurally. Scoped as a follow-up.
+- Cycles started before v0.8.2 do not have the field set. If a pre-v0.8.2 cycle resumes under v0.8.2 without the field, the hook continues to fire on every Stop. Either add the field manually or continue as before — both are correct.
+
 ## v0.8.1
 
 Patch release: codifies dispatch-prompt discipline and subagent trust-model rules surfaced during Cycle 016 BUILD-exit remediation. No methodology-level changes; small edits to the orchestrator skill and snapshot-evaluator agent plus one artifact remediation.
