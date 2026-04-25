@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.8.3
+
+Patch release: demotes the Tier 1 phase-manifest check from blocking enforcement to advisory-only. Follow-up to v0.8.2's mid-phase-loop fix, addressing the underlying brittleness rather than patching one more failure path.
+
+### Why
+
+v0.8.2 fixed the pathological loop at RESEARCH Step 1.1 by introducing the `**In-progress phase:**` predicate, which suppresses the manifest check during phase work. That fix worked for orchestrator-driven invocation but left the standalone-skill path vulnerable: any user invoking `/rdd-research` (or any other phase skill) directly on an existing corpus would still hit the loop because no orchestrator was there to set the field.
+
+The deeper observation: the Stop-hook block was never a real wall. Claude Code's Stop hook returning `{"decision":"block"}` feeds the reason back to the agent as next-turn context — the agent processes the message and continues. The "structural prevention" property the block claimed (ADR-064 Harness Layer) was always more cosmetic than load-bearing. Its real cost was producing runaway loops at any Stop event during a phase where the manifest's required artifacts could not yet exist.
+
+The methodology's actual defenses are unaffected by this change:
+- Skill-text guidance (always firing) remains the primary driver of "do the audits, write the gate note, run the snapshot."
+- The dispatch-log compound fabrication check (ADR-064) still emits its advisory message identifying artifacts that exist without a corresponding logged dispatch — now in all modes, not only enforcement.
+- Audits run in isolated subagent contexts (Architectural Isolation) — untouched.
+
+### Hook change (`hooks/scripts/tier1-phase-manifest-check.sh`)
+
+- Manifest check always emits advisory (`allow_with_message`) when failures are found — never blocks. Same content as the prior block reason; same call to action ("specialist subagents must produce these via isolated dispatch"). Just no decision-block.
+- Compound fabrication check fires in all modes, not only enforcement. Output is the same advisory format.
+- The `ENFORCEMENT_MODE` variable is retained for the migration-version detection it carries but no longer gates the manifest-block branch (which is gone).
+- The In-progress phase predicate (introduced v0.8.2) is retained as an advisory-noise suppressor during phase work.
+
+### Orchestrator skill (`skills/rdd/SKILL.md`)
+
+- Phase entry/exit subsection rewritten to reflect advisory semantics. The two-step phase-exit procedure (remove the field; advance Current phase only after the advisory is clean) is still recommended, but is no longer described as load-bearing for correctness — the advisory is information for the agent, not a wall.
+- Per-field documentation for `**In-progress phase:**` updated to clarify its role is suppressing advisory noise, not gating correctness.
+
+### Tests
+
+- `test_in_progress_phase.sh`, `test_in_progress_gate.sh`, `test_parses_cycle_stack_phase.sh`, `test_applicable_when.sh`, `test_legacy_format.sh` all updated. Assertions changed from `assert_block_decision` to `assert_no_block` plus `assert_stdout_contains` for the advisory message content (the message is what proves the parser/predicate worked).
+- All 8 hook tests pass.
+
+### Methodology scope-of-claim
+
+The methodology's claim about Harness Layer enforcement is honestly weakened. ADR-064 / ADR-067 should be updated in-cycle to reflect this — Cycle 017's readability theme is the natural home for that work. Per ADR-069 scope-of-claim discipline, advisory-with-skill-discipline is closer to the system's actual behavior than advisory-or-block.
+
 ## v0.8.2
 
 Patch release: fixes a Stop-hook loop at RESEARCH Step 1.1 that blocks every mid-phase turn-end, not just phase-exit attempts. Observed during Cycle 017 entry — the hook fires the per-phase manifest check on every Stop event, but the RESEARCH manifest requires artifacts (research-design-review, citation audit, argument audit, susceptibility snapshot, gate reflection) that cannot exist until later workflow steps. At pre-dispatch steps where the agent is awaiting user input, every turn-end hits the block and the user sees a runaway wall of block messages.
