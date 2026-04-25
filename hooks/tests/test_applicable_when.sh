@@ -54,7 +54,10 @@ write_cycle_status '# RDD Cycle Status
 '
 run_hook test-cycle-type-in-met
 assert_exit_zero "$HOOK_EXIT"
-assert_block_decision "$HOOK_STDOUT"  # precondition met → mechanism fires → missing artifact → block
+# v0.8.3: advisory-only manifest check. Precondition met → mechanism fires →
+# missing artifact → advisory message naming the mechanism (no block).
+assert_no_block "$HOOK_STDOUT"
+assert_stdout_contains "$HOOK_STDOUT" "test-precondition-unmet"
 
 # ---- Primitive 2: phase_not_skipped --------------------------------------------
 write_manifest 'format_version: 1
@@ -158,7 +161,10 @@ write_cycle_status '# RDD Cycle Status
 '
 run_hook test-default-fire
 assert_exit_zero "$HOOK_EXIT"
-assert_block_decision "$HOOK_STDOUT"  # no precondition → check fires → missing artifact → block
+# v0.8.3: advisory-only manifest check. No precondition → check fires →
+# missing artifact → advisory (no block).
+assert_no_block "$HOOK_STDOUT"
+assert_stdout_contains "$HOOK_STDOUT" "test-default-fire"
 
 # ---- Skip is recorded in the dispatch log -----------------------------------
 # The first invocation (cycle_type_in unmet) should have created a

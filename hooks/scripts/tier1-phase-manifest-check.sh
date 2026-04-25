@@ -443,7 +443,7 @@ while IFS= read -r mech; do
         fi
     done <<< "$required_fields"
 
-    # --- Compound check (ADR-064) — enforcement mode only -------------------
+    # --- Compound check (ADR-064) -------------------------------------------
     # User-tooling mechanisms (e.g., aid-cycle-gate-reflection) are produced
     # in-context by the orchestrator, not by an isolated subagent dispatch,
     # so they have no dispatch log entry and the compound check's isolation
@@ -451,7 +451,11 @@ while IFS= read -r mech; do
     # complete check for these mechanisms; the Susceptibility Snapshot at the
     # same phase boundary is the complementary content-level defense
     # (orchestrator SKILL.md, "compound defense at phase boundaries").
-    if $ENFORCEMENT_MODE && [[ "$mechanism_type" != "user-tooling" ]]; then
+    #
+    # As of v0.8.3 the compound check fires in all modes (it is information,
+    # not enforcement — see "Advisory-only manifest check" note at the bottom
+    # of this file).
+    if [[ "$mechanism_type" != "user-tooling" ]]; then
         DISPATCH_LOGGED=false
         if [[ -f "$DISPATCH_LOG" ]]; then
             # Check for a dispatch log entry matching both mechanism and path
@@ -512,24 +516,33 @@ if (( ${#REMINDERS[@]} > 0 )); then
 fi
 
 # --- Emit decision ------------------------------------------------------------
+# Advisory-only manifest check (v0.8.3).
+#
+# Prior versions emitted a Stop-hook block decision in enforcement mode when
+# any FAILURES were collected. In practice the block was processable by the
+# agent (Claude Code feeds the reason back as next-turn context, not as a
+# wall) so the "structural prevention" property the block claimed was always
+# more cosmetic than load-bearing. The block's real cost was a runaway loop
+# at any Stop event during a phase where the manifest's required artifacts
+# could not yet exist (RESEARCH Step 1.1 was the canonical example).
+#
+# v0.8.3 demotes the manifest check to always-advisory. The methodology's
+# real defenses remain:
+#   - skill text (always-firing guidance to dispatch audits, write notes, etc.)
+#   - dispatch-log compound check (now firing in all modes — see above)
+#   - audits run in isolated subagent contexts (architectural isolation)
+#
+# The advisory message contains the same content the block would have, so
+# the agent and user still see what is missing. They are no longer wedged.
+
 if (( ${#FAILURES[@]} == 0 )); then
     allow
 fi
 
-# In advisory mode, report but do not block
-if ! $ENFORCEMENT_MODE; then
-    MSG="rdd-hook: advisory-mode check for phase '${CURRENT_PHASE}' (cycle ${CURRENT_CYCLE}). The following Tier 1 artifacts are missing or non-compliant (this is informational — the compound check is not active until corpus migration):"$'\n'
-    for f in "${FAILURES[@]}"; do
-        MSG+="  - ${f}"$'\n'
-    done
-    allow_with_message "$MSG"
-fi
-
-# In enforcement mode, block
-REASON="Tier 1 manifest check failed for phase '${CURRENT_PHASE}' (cycle ${CURRENT_CYCLE}). The phase cannot complete until the following artifacts are produced by their dispatched specialist subagents:"$'\n\n'
+MSG="rdd-hook: phase manifest advisory for phase '${CURRENT_PHASE}' (cycle ${CURRENT_CYCLE}). The following Tier 1 artifacts are missing or non-compliant:"$'\n'
 for f in "${FAILURES[@]}"; do
-    REASON+="  - ${f}"$'\n'
+    MSG+="  - ${f}"$'\n'
 done
-REASON+=$'\n'"Do NOT fabricate these artifacts in your own context. The mechanism's value is that the artifact comes from an isolated subagent dispatch, not that a file of the expected shape exists. If the dispatch previously failed, surface the failure to the user explicitly and stop."
+MSG+=$'\n'"Do NOT fabricate these artifacts in your own context. Specialist subagents must produce them via isolated dispatch. The methodology relies on advisory verification + skill discipline + the dispatch-log compound check, not on a hard hook block (v0.8.3 change)."
 
-block "$REASON"
+allow_with_message "$MSG"

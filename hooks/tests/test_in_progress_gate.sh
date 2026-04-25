@@ -86,7 +86,9 @@ write_cycle_status '# RDD Cycle Status
 run_hook test-in-progress-gate-control
 
 assert_exit_zero "$HOOK_EXIT"
-assert_block_decision "$HOOK_STDOUT"
+# v0.8.3: advisory-only manifest check. The negative case still surfaces the
+# missing gate-reflection note in stdout, but as advisory rather than block.
+assert_no_block "$HOOK_STDOUT"
 assert_stdout_contains "$HOOK_STDOUT" "aid-cycle-gate-reflection"
 
 report_summary

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Proves the hook parses **Current phase:** BUILD (next) out of the
-# Cycle Stack Active entry. Distinguishes successful-parse-then-allow from
+# Cycle Stack Active entry. Distinguishes successful-parse-then-advisory from
 # fail-to-parse-then-silent-allow by requiring artifacts that DO NOT exist —
-# with enforcement mode on, a fixed parser should BLOCK because artifacts are
-# missing; the current (pre-fix) parser can't resolve the phase and silently
-# allows.
+# a fixed parser emits an advisory message naming the build phase; the
+# pre-fix parser can't resolve the phase and silently allows with no message.
 #
-# This is the Red-phase driver for WP-B's Cycle Stack parser.
+# v0.8.3: advisory-only manifest check — assertions updated from block to
+# allow_with_message (the message is what proves the parser worked).
 
 source "$(dirname "$0")/lib.sh"
 TEST_NAME="test_parses_cycle_stack_phase"
@@ -35,10 +35,12 @@ Nominal.
 run_hook test-parses-cycle-stack
 
 # Under a fixed parser: phase=build, manifest requires build-exit artifacts,
-# artifacts missing, enforcement mode → block.
-assert_exit_zero "$HOOK_EXIT" "hook exits 0 even when it blocks"
-assert_block_decision "$HOOK_STDOUT"
-# The block reason must name the build phase, proving phase was parsed.
+# artifacts missing → advisory emitted naming the phase. v0.8.3 demoted this
+# to advisory-only; the assertion is no_block + the advisory message contains
+# the parsed phase and cycle name.
+assert_exit_zero "$HOOK_EXIT"
+assert_no_block "$HOOK_STDOUT"
+# The advisory message must name the build phase, proving phase was parsed.
 assert_stdout_contains "$HOOK_STDOUT" "phase 'build'"
 # Cycle number must be 016, proving cycle was parsed.
 assert_stdout_contains "$HOOK_STDOUT" "cycle 016"

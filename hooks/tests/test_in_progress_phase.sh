@@ -58,12 +58,13 @@ assert_no_block "$HOOK_STDOUT"
 assert_stderr_contains "rdd-hook: in-progress phase"
 assert_stderr_contains "research"
 
-# --- Case: field present but names DIFFERENT phase → check still fires ------
+# --- Case: field present but names DIFFERENT phase → advisory still fires ---
 #
 # If the agent set **In-progress phase:** discover but the active entry is
 # still in RESEARCH (e.g. stale or incorrectly-set), the predicate must NOT
-# suppress the current phase's check. This preserves the "must name the
-# current phase to suppress" contract.
+# suppress the current phase's advisory. This preserves the "must name the
+# current phase to suppress" contract. v0.8.3: assertion is advisory not
+# block.
 
 rm -f /tmp/rdd-in-progress-phase-*
 
@@ -83,10 +84,10 @@ write_cycle_status '# RDD Cycle Status
 run_hook test-in-progress-phase-mismatch
 
 assert_exit_zero "$HOOK_EXIT"
-assert_block_decision "$HOOK_STDOUT"
+assert_no_block "$HOOK_STDOUT"
 assert_stdout_contains "$HOOK_STDOUT" "research-methods-reviewer"
 
-# --- Negative case: field absent → check fires normally ---------------------
+# --- Negative case: field absent → advisory fires normally ------------------
 
 rm -f /tmp/rdd-in-progress-phase-*
 
@@ -105,7 +106,7 @@ write_cycle_status '# RDD Cycle Status
 run_hook test-in-progress-phase-negative
 
 assert_exit_zero "$HOOK_EXIT"
-assert_block_decision "$HOOK_STDOUT"
+assert_no_block "$HOOK_STDOUT"
 assert_stdout_contains "$HOOK_STDOUT" "research-methods-reviewer"
 
 report_summary

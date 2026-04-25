@@ -45,9 +45,11 @@ run_hook test-legacy
 # emits the grandfathered-status notice on stderr.
 assert_exit_zero "$HOOK_EXIT"
 assert_no_block "$HOOK_STDOUT"
-# Advisory message contains "advisory-mode" language listing the missing
-# artifacts — confirms the cycle was downgraded from enforcement.
-assert_stdout_contains "$HOOK_STDOUT" "advisory-mode check"
+# Advisory message names the missing artifact and the cycle/phase. v0.8.3
+# unified the advisory wording across modes ("phase manifest advisory") so
+# the legacy-mode message no longer carries the prior "advisory-mode check"
+# string; the advisory content is the same.
+assert_stdout_contains "$HOOK_STDOUT" "phase manifest advisory"
 # Grandfathered-status advisory stderr notice fires once per session.
 assert_stderr_contains "rdd-hook: grandfathered cycle"
 assert_stderr_contains "pre-ADR-072"
