@@ -18,14 +18,15 @@ $ARGUMENTS
 
 ## OPERATIONS
 
-This skill provides eight operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
+This skill provides nine operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
 
 | Operation | When to use |
 |-----------|-------------|
 | **Audit** | Check whether the artifact corpus matches current skill expectations |
 | **Remediation** | Generate missing artifacts or sections identified by the audit |
 | **Drift Detection** | Check whether artifacts still match the implementation |
-| **Migrate** | Move infrastructure artifacts to `docs/housekeeping/` and enable enforcement mode |
+| **Migrate** | Move infrastructure artifacts to `docs/housekeeping/` and enable enforcement mode (ADR-070) |
+| **Migrate to `.rdd/`** | Relocate infrastructure artifacts from `docs/housekeeping/` to `.rdd/` per the process-vs-product directory separation (ADR-085) |
 | **Housekeeping Audit** | Verify housekeeping directory structure and detect pre-migration state |
 | **Gate Note Audit** | Verify gate reflection notes match the ADR-066 template |
 | **Dispatch Prompt Audit** | Verify skill file dispatch prompts follow the ADR-065 skeleton |
@@ -473,6 +474,157 @@ If the entry already had a Pause Log, append the migration record as a new row r
 Cycle 8 (rdd-pair) is the named validation case per ADR-081. Running the audit against Cycle 8's `cycle-status.md` (paused at MODEL, pre-hooks) should produce a current-schema entry that resumes cleanly under enforcement with the Cycle 8 prose preserved verbatim. If the audit's prompts are rough on Cycle 8 — missing fields the user cannot easily supply, ambiguous phase mapping, or fabrication pressure — the audit's prompts should be refined before broad use.
 
 Findings and proposed migrations are presented to the user. **Do not auto-migrate.** Per ADR-081, the user opts in per cycle.
+
+---
+
+## Operation 9: Migrate to `.rdd/` (ADR-085)
+
+### Purpose
+
+Relocate infrastructure artifacts from `docs/housekeeping/` (ADR-070's placement) to `.rdd/` at the repository root, applying the process-vs-product directory separation via the dotfile convention. Update path references across the corpus and write the migration version marker at the new location.
+
+> **This is a one-shot, opt-in operation that supersedes ADR-070's placement.** It runs on a corpus that has already migrated to `docs/housekeeping/` (ADR-070). The methodology continues to operate without this migration; the Stop hook reads paths from the manifest and accepts both placements during the transition window.
+
+### Prerequisites
+
+- `/rdd-conform migrate` (Operation 4, ADR-070) has previously run successfully on the corpus. A pre-housekeeping corpus runs that operation first, then this one.
+- All skill file changes from the current plugin release must be installed.
+- No uncommitted modifications to files under `skills/`, `hooks/`, or `docs/` (the migration refuses to run if `git status` shows unstaged changes that would be conflated with the migration's mechanical edits).
+- Recommended timing: at a phase boundary or between cycles, not mid-phase.
+
+### Process
+
+#### Step 1: Idempotency Check
+
+Check whether `.rdd/.migration-version` exists and matches the current plugin version.
+- If present and matching → report "already migrated to `.rdd/`" and stop (no-op).
+- If absent or mismatched → proceed.
+
+The check uses the post-migration marker location. A corpus that has run the ADR-070 `Migrate` operation has `docs/housekeeping/.migration-version`; that marker is moved (not consulted) by this operation.
+
+#### Step 2: Uncommitted Changes Check
+
+Run `git status` and check for uncommitted modifications.
+- If unstaged changes are found → refuse to run, report the files, direct the user to commit or stash.
+- If clean → proceed.
+
+#### Step 3: Pre-Migration State Verification
+
+Confirm the corpus is in the ADR-070 `docs/housekeeping/` placement:
+- `docs/housekeeping/` exists.
+- `docs/housekeeping/.migration-version` exists.
+
+If neither exists, the corpus is pre-housekeeping. Direct the user to run `/rdd-conform migrate` (Operation 4) first.
+
+#### Step 4: Create `.rdd/` Directory Structure
+
+Create the following at the repository root:
+- `.rdd/`
+- `.rdd/audits/`
+- `.rdd/gates/`
+- `.rdd/session/` (created even if no session artifacts exist; the directory is part of the canonical layout)
+
+#### Step 5: Move Audits and Gates
+
+Move all files and subdirectories preserving structure:
+- `docs/housekeeping/audits/*` → `.rdd/audits/*`
+- `docs/housekeeping/gates/*` → `.rdd/gates/*`
+
+Audit and gate files are short structured artifacts and typically have no internal relative links, so no in-file rewrite is applied.
+
+#### Step 6: Move Cycle Status, Dispatch Log, and Migration Marker
+
+Move the three top-level infrastructure files:
+- `docs/housekeeping/cycle-status.md` → `.rdd/cycle-status.md`
+- `docs/housekeeping/dispatch-log.jsonl` → `.rdd/dispatch-log.jsonl` (if present; this file is gitignored ephemera and may not exist in committed state)
+- `docs/housekeeping/.migration-version` → `.rdd/.migration-version`
+
+**Rewrite internal relative links in the moved `cycle-status.md`.** The file's depth changes from `docs/housekeeping/` to `.rdd/` (one level up, sideways into the dotfile root). Apply substitutions in this order:
+- `./audits/` → `./audits/` (no change — siblings remain siblings within `.rdd/`)
+- `./gates/` → `./gates/` (no change)
+- `../essays/` → `../docs/essays/`
+- `../product-discovery.md` → `../docs/product-discovery.md`
+- `../domain-model.md` → `../docs/domain-model.md`
+- `../system-design.md` → `../docs/system-design.md`
+- `../system-design.agents.md` → `../docs/system-design.agents.md`
+- `../roadmap.md` → `../docs/roadmap.md`
+- `../ORIENTATION.md` → `../docs/ORIENTATION.md`
+- `../scenarios.md` → `../docs/scenarios.md`
+- `../interaction-specs.md` → `../docs/interaction-specs.md`
+- `../decisions/` → `../docs/decisions/`
+- `../references/` → `../docs/references/`
+
+#### Step 7: Move Session Directory
+
+Move `session/` → `.rdd/session/` if it exists at the repository root. The `session/` directory holds BUILD context-reconstructive mode session artifacts (per ADR-050) carrying `session-artifact: true` frontmatter. By that classification they are infrastructure and belong under `.rdd/`.
+
+If `session/` does not exist at the repository root, skip this step (no-op).
+
+#### Step 8: Remove Empty `docs/housekeeping/`
+
+After Steps 5–6, `docs/housekeeping/` should be empty. Verify it is empty and remove the directory. If files remain (unexpected — possibly a legacy artifact not in the canonical layout), surface them to the user and let them decide whether to migrate manually or leave in place.
+
+#### Step 9: Reference Updates
+
+Perform mechanical path substitutions across the corpus. For each affected file, replace:
+- `docs/housekeeping/` → `.rdd/`
+- `./docs/housekeeping/` → `./.rdd/`
+
+**Files to update — substitution scope:**
+
+- `docs/decisions/*.md` — all ADRs (other than ADR-064 / ADR-067 / ADR-070 whose immutable bodies retain pre-migration paths as historical record per ADR-074)
+- `docs/essays/*.md` — top-level essays
+- `docs/essays/research-logs/*.md` — research logs
+- `docs/essays/reflections/*.md` — reflections
+- `skills/**/SKILL.md` — all skill files (this file included)
+- `hooks/manifests/tier1-phase-manifest.yaml` — manifest `path_template` values
+- `hooks/scripts/*.sh` — hook scripts
+- `hooks/tests/**/*.sh` — hook test fixtures (see explicit enumeration below)
+- `docs/domain-model.md`
+- `docs/ORIENTATION.md`
+- `docs/system-design.md`
+- `docs/system-design.agents.md`
+
+**Hook test fixtures are explicitly included in the substitution sweep.** The Cycle 017 conformance scan (`conformance-scan-decide-017.md` Cluster 1) identified that the following hook test fixtures hardcode `docs/housekeeping/` paths and would break post-migration if not included:
+- `hooks/tests/lib.sh`
+- `hooks/tests/test_nominal.sh`
+- `hooks/tests/test_in_progress_phase.sh`
+- `hooks/tests/test_applicable_when.sh`
+- `hooks/tests/test_in_progress_gate.sh`
+- `hooks/tests/test_multi_entry_stack.sh`
+- `hooks/tests/test_output_path_regex.sh`
+- `hooks/tests/test_parses_cycle_stack_phase.sh`
+
+Each fixture's body is updated to reference `.rdd/...` paths. The substitution is mechanical; the test logic does not change.
+
+**Do not update:**
+- `docs/cycle-archive/**` — archived cycles retain their original paths (frozen historical record).
+- ADR-064, ADR-067, ADR-070 bodies — immutable per ADR-074. Their supersession headers (added by ADR-085 / ADR-088 / ADR-089) name the active authority; the stale paths in their bodies remain as historical record.
+- Old commits in git history — immutable.
+
+#### Step 10: Update `.gitignore`
+
+- Remove the `docs/housekeeping/dispatch-log.jsonl` entry if present.
+- Add `.rdd/dispatch-log.jsonl` (ephemeral session-scoped state).
+- Add `.rdd/session/` (BUILD session artifacts — gitignored per ADR-050 frontmatter convention).
+
+The rest of `.rdd/` (audits, gates, cycle-status.md, .migration-version) remains committed and corpus-visible.
+
+#### Step 11: Write Version Marker
+
+Write the current plugin version string to `.rdd/.migration-version` (single line, no metadata). The Stop hook reads this marker post-migration; presence of the marker at the new location is the structural signal that the corpus is on the ADR-085 placement.
+
+#### Step 12: Summary Report
+
+Present a summary listing:
+- Files moved (with from → to paths).
+- Hook test fixtures updated (explicit enumeration confirming all eight were included).
+- Files whose references were updated (with count of substitutions per file).
+- `.gitignore` changes applied.
+- Migration marker location and content.
+- Next step: "Review the diff with `git diff`, then commit when satisfied."
+
+The summary report makes the mechanical scope inspectable before commit. The migration is `git diff`-reviewable in its entirety.
 
 ---
 
