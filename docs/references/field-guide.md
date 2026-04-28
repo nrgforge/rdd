@@ -1,11 +1,15 @@
 # Field Guide: Pedagogical RDD
 
-**Updated:** 2026-04-11
-**Derived from:** System Design v12.0 Amendment #13, current implementation (SKILL.md files, agent files, Harness Layer hook scripts and manifest)
+**Updated:** 2026-04-28
+**Derived from:** System Design v14.0 Amendment #15, current implementation (SKILL.md files, agent files, Harness Layer hook scripts and manifest)
 
 ## How to Use This Guide
 
-This guide maps the system design's modules to their current implementation state. Each skill module is a single SKILL.md file — the "code" in this meta-project is prompt text that instructs an AI agent. Each Harness Layer module is a bash or YAML file operating at the Claude Code runtime level. For the overall architecture, read the system design. For routing to the right document, read ORIENTATION.md.
+This guide maps the system design's modules to their current implementation state. Each skill module is a single SKILL.md file — the "code" in this meta-project is prompt text that instructs an AI agent. Each Harness Layer module is a bash or YAML file operating at the Claude Code runtime level. For the overall architecture, start with the slim `system-design.md`; for the dense reference detail (architectural drivers, responsibility matrix, integration contracts, fitness criteria) consult the companion `system-design.agents.md` (ADR-084 Pattern B). For routing to the right document, read `ORIENTATION.md`.
+
+**Cycle 016 / 017 amendments reflected here:** ADR-084 Pattern B companion file (system-design.agents.md); ADR-085 `.rdd/` infrastructure relocation (path migration from `.rdd/` to `.rdd/`); ADR-088 / ADR-089 advisory-disposition demotion (Stop-hook manifest check is advisory across all modes, with skill-text anchoring as the load-bearing enforcement layer); ADR-090 In-Progress Phase field role-shift (advisory-noise suppressor scoped to per-phase manifest advisory only). Cycle 016 added preservation scenarios (ADR-075), Cycle Acceptance Criteria Table (ADR-073, BUILD Step 5.5), supersession workflow (ADR-074), Cycle Stack schema (ADR-078–081), question-isolation protocol (ADR-082), and applicability check at BUILD pattern reuse (ADR-077).
+
+**Path placement note.** Hook scripts read both placements transparently: `.rdd/...` (canonical post-ADR-085) takes precedence; `.rdd/...` (legacy ADR-070) is the fallback. Pre-migration corpora continue to operate; the migration is opt-in via `/rdd-conform migrate-to-rdd` (Operation 10).
 
 ---
 
@@ -51,22 +55,24 @@ The "compiled rollup" principle means the system design absorbs upstream context
 
 **Implementation state:** Complete
 **Code location:** `skills/research/SKILL.md`
-**Stability:** In flux — Cycle 9 added research methods review dispatch, framing audit, essay-as-checkpoint
+**Stability:** In flux — Cycle 9 added research methods review dispatch, framing audit, essay-as-checkpoint; Cycle 016 added Step 1: Question-Isolation Entry Protocol (ADR-082) with constraint-removal as primary form; Cycle 017 added Step 4c: Validation-Spike Decision (ADR-087)
 
 ### Domain Concepts in Code
 
 | Concept | Code Manifestation | Location |
 |---------|-------------------|----------|
+| Question-Isolation Entry Protocol (ADR-082) | Step 1: form questions before consulting existing artifacts; constraint-removal as primary form | SKILL.md §Step 1 |
 | Research Loop | Loop Mechanics (question → research → synthesize → decide) | SKILL.md §PROCESS |
 | Spike | Spike Rules section with constraints | SKILL.md §Spike Rules |
 | Essay (artifact) | Step 4: Essay with Abstract, body structure | SKILL.md §Step 4 |
 | Citation Audit (invocation) | Step 4a: invoke `/citation-audit` | SKILL.md §Step 4a |
 | Argument Audit (invocation) | Step 4b: invoke `/argument-audit` | SKILL.md §Step 4b |
+| Validation-Spike Decision (ADR-087) | Step 4c: optional tightly-scoped prototyping at research → discover gate; felt-trigger question + rationale-recording | SKILL.md §Step 4c |
 | Epistemic Gate | EPISTEMIC GATE section with reflection prompts | SKILL.md §EPISTEMIC GATE |
 | Reflection (artifact) | Step 5: Record Reflections with feed-back loop | SKILL.md §Step 5 |
 | Research Methods Review (invocation) | Step 1b: dispatch research-methods-reviewer before every research loop | SKILL.md §Step 1b |
 | Argument Audit with Framing Audit (invocation) | Step 4b: framing audit runs unconditionally alongside argument audit | SKILL.md §Step 4b |
-| Essay-as-checkpoint (enforcement) | Framing audit P1 issues block pipeline advance; re-audit after revision | SKILL.md §Step 4b, §Step 5 |
+| Essay-as-checkpoint (enforcement) | Framing audit P1 issues advise pipeline pause until revision + re-audit | SKILL.md §Step 4b, §Step 5 |
 
 ### Design Rationale
 
@@ -140,17 +146,21 @@ Invariants are the highest-authority artifact. The Constitutional Authority step
 
 **Implementation state:** Complete
 **Code location:** `skills/decide/SKILL.md`
-**Stability:** Settled
+**Stability:** In flux — Cycle 016 added preservation scenarios (ADR-075), Cycle Acceptance Criteria Table (ADR-073), ADR supersession workflow (ADR-074 with body-immutability + IETF Updates/Obsoletes); Cycle 017 used the supersession workflow on ADR-064/067/070 (eight new ADRs 083–090)
 
 ### Domain Concepts in Code
 
 | Concept | Code Manifestation | Location |
 |---------|-------------------|----------|
 | ADR (artifact) | ADR template with Status/Context/Decision/Consequences | SKILL.md §Step 2 |
+| Preservation Scenario (ADR-075) | Negative-space complement to behavior scenarios; specifies invariants that must hold under change | SKILL.md §Preservation Scenarios |
+| Cycle Acceptance Criteria Table (ADR-073) | Top-of-scenarios.md table with Criterion / Specified Layer / Verification Method / Layer-Match for emergent or aggregate criteria; null-coverage judgment when all criteria are atomic | SKILL.md §Cycle Acceptance Criteria |
+| Supersession Workflow (ADR-074) | Body-immutability + Status field mutability + IETF-style Updates/Obsoletes header + mandatory four-artifact downstream sweep (system-design.md / ORIENTATION.md / domain-model.md / field-guide.md) | SKILL.md §ADR Supersession |
 | Argument Audit (invocation) | Step 3: invoke `/argument-audit` on ADRs + essay | SKILL.md §Step 3 |
 | Conformance Audit (code vs. ADRs) | Step 3.5: scan codebase for ADR violations | SKILL.md §Step 3.5 |
 | Backward Propagation | Step 3.7: sweep prior docs when invariants change | SKILL.md §Step 3.7 |
 | Behavior Scenario (artifact) | Step 4: Given/When/Then format with integration scenarios | SKILL.md §Step 4 |
+| Interaction Specification (ADR-039) | Workflow-level task decomposition by stakeholder; appended to interaction-specs.md | SKILL.md §Interaction Specifications |
 
 ### Design Rationale
 
@@ -199,7 +209,7 @@ The responsibility matrix is the central artifact — it prevents god-classes by
 
 **Implementation state:** Complete
 **Code location:** `skills/build/SKILL.md`
-**Stability:** In flux — field guide generation (Step 6) and stewardship checkpoints added in Essay 005 cycle
+**Stability:** In flux — field guide generation (Step 6) and stewardship checkpoints added in Essay 005 cycle; Cycle 015 added Lifecycle Composition (ADR-071) as a third axis to N+M+1 with three-sided catch (design-time, verification-time, review-time); Cycle 016 added Step 5.5 Cycle Criterion Verification (ADR-073) and Tier 1b Applicability Check at pattern reuse (ADR-077)
 
 ### Domain Concepts in Code
 
@@ -209,7 +219,10 @@ The responsibility matrix is the central artifact — it prevents god-classes by
 | TDD Inner Loop | Step 3: red/green/refactor | SKILL.md §Step 3 |
 | Structure vs. Behavior | Two kinds of changes, never mixed | SKILL.md §STRUCTURE VS. BEHAVIOR |
 | Tidying | Exhale-inhale rhythm, tidying checklist | SKILL.md §TIDYING |
+| Lifecycle Composition (ADR-071) | Composable Tests § Lifecycle Composition; three-sided catch at design / verification / review | SKILL.md §COMPOSABLE TESTS, Step 5, Tier 1 sub-item 6e |
+| Cycle Criterion Verification (ADR-073) | Step 5.5: walk Cycle Acceptance Criteria Table; verify each entry at its specified layer; layer-match `no` triggers integration-test gap closure | SKILL.md §Step 5.5 |
 | Stewardship Checkpoints | Tier 1 (lightweight) and Tier 2 (deep review) | SKILL.md §STEWARDSHIP CHECKPOINTS |
+| Applicability Check (ADR-077) | Tier 1b: triggered four-prompt form at pattern reuse; consults system-design.md fitness properties (per ADR-076) | SKILL.md §Tier 1b |
 | Design Amendment (from build) | Amendment process when build reveals design flaw | SKILL.md §DESIGN AMENDMENTS |
 | Field Guide (artifact) | Step 6: module-to-implementation mapping | SKILL.md §Step 6 |
 
@@ -257,26 +270,29 @@ Unique architectural property: the three-phase conversation subsumes the epistem
 
 ## Module: Conformance Audit Skill
 
-**Implementation state:** Complete (7 operations as of v0.7.1)
+**Implementation state:** Complete (10 operations as of v0.8.4 — Cycle 017 added Graduation Check and Migrate to .rdd/)
 **Code location:** `skills/conform/SKILL.md`
-**Stability:** In flux — graduation operation is "open design territory" per the skill text; migrate subcommand (Operation 4) is new in v0.7.1 and had its Step 5 (internal link rewrite) and Step 6 (system-design.md in file list) refined in v0.7.2 after the WP-F dogfood
+**Stability:** In flux — Cycle 017 added Operations 9 (Graduation Check) and 10 (Migrate to .rdd/); Cycle 016 added Operation 8 (Cycle-Shape Audit, ADR-081); the migrate operation (Operation 4, ADR-070) had Step 5 refinements in v0.7.2
 
 ### Domain Concepts in Code
 
 | Concept | Code Manifestation | Location |
 |---------|-------------------|----------|
-| Conformance Audit (seven operations) | Operations table + seven operation sections | SKILL.md §OPERATIONS |
+| Conformance Audit (ten operations) | Operations table + ten operation sections | SKILL.md §OPERATIONS |
 | Audit (template alignment) | Operation 1: scan corpus against skill files | SKILL.md §Operation 1 |
 | Remediation | Operation 2: generate missing content for structural gaps | SKILL.md §Operation 2 |
 | Documentation Drift (detection) | Operation 3: compare artifacts vs. implementation | SKILL.md §Operation 3 |
-| Housekeeping Migration | Operation 4: 10-step migrate subcommand (ADR-070) | SKILL.md §Operation 4 |
-| Housekeeping Directory Organization Audit | Operation 5: detect pre-migration state and orphans | SKILL.md §Operation 5 |
+| Housekeeping Migration (ADR-070) | Operation 4: 10-step migrate subcommand | SKILL.md §Operation 4 |
+| Housekeeping Directory Organization Audit | Operation 5: detect pre-migration state, orphans, In-Progress Phase soft notes (ADR-090) | SKILL.md §Operation 5 |
 | Gate Reflection Note Template Alignment Audit | Operation 6: ADR-066 template compliance | SKILL.md §Operation 6 |
 | Dispatch Prompt Format Audit | Operation 7: ADR-065 canonical skeleton and position verification | SKILL.md §Operation 7 |
+| Cycle-Shape Audit (ADR-081) | Operation 8: detect pre-ADR-072 cycle-status entries; migrate to ADR-078 Cycle Stack schema | SKILL.md §Operation 8 |
+| Graduation Check (Issue #17) | Operation 9: pre-graduation scan for code → doc dangling references (WP-[A-Z], ADR-NNN, Cycle-N, etc.) | SKILL.md §Operation 9 |
+| Migrate to `.rdd/` (ADR-085) | Operation 10: relocate `docs/housekeeping/` → `.rdd/` with idempotency marker, hook test fixture sweep, summary report | SKILL.md §Operation 10 |
 
 ### Design Rationale
 
-This is NOT a pipeline phase — it's a utility invoked as needed. All seven operations are pragmatic actions (Invariant 3). The two-level severity classification (structural/format) prevents format obsession from blocking real work. Migration (Operation 4) is opt-in and one-shot — the methodology works without migration in advisory mode, and migrate transitions the corpus to enforcement mode by writing `docs/housekeeping/.migration-version`. The three new audit scopes (Operations 5-7) are paired with Operation 4's migration surface — they verify structural conformance to the post-migration layout, the ADR-066 gate reflection note template, and the ADR-065 canonical dispatch prompt skeleton.
+This is NOT a pipeline phase — it's a utility invoked as needed. All ten operations are pragmatic actions (Invariant 3). The two-level severity classification (structural/format) prevents format obsession from blocking real work. Operation 4 (Migrate, ADR-070) is opt-in and one-shot; Operation 10 (Migrate to `.rdd/`, ADR-085) is the post-Cycle-017 successor that relocates infrastructure to the dotfile-prefixed directory for process-vs-product separation. The methodology continues to operate in advisory disposition during the transition window — hook scripts read both placements transparently. Operations 5-7 verify structural conformance to the canonical layout, the ADR-066 gate reflection note template, and the ADR-065 canonical dispatch prompt skeleton. Operation 8 (Cycle-Shape Audit) walks the user through migrating pre-ADR-072 cycle-status entries; Operation 9 (Graduation Check) is the reverse-direction Tan et al. 2024 detection for code → doc dangling references.
 
 Distinct from product conformance (ADR-008, `/rdd-discover` backward mode), which checks product assumptions against user needs.
 
@@ -284,10 +300,11 @@ Distinct from product conformance (ADR-008, `/rdd-discover` backward mode), whic
 
 - All SKILL.md files (input) — reads skill files to determine expected artifact structure, verifies canonical dispatch skeleton in Operation 7
 - All artifact files (input) — reads corpus to compare against expectations
-- `docs/essays/audits/` → `docs/housekeeping/audits/` (move source/target) — Operation 4 migration
-- `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md` (move source/target, with internal relative link rewrite) — Operation 4 migration Step 5
-- `docs/housekeeping/.migration-version` (write) — Operation 4 marker that transitions Stop hook to enforcement mode
-- `docs/housekeeping/.migration-rollback.json` (write) — Operation 4 forensic record
+- Operation 4 (ADR-070): `docs/essays/audits/` → `.rdd/audits/`, etc.
+- Operation 10 (ADR-085): `docs/housekeeping/...` → `.rdd/...` with explicit hook test fixture inclusion
+- `.rdd/.migration-version` (write) — marker that transitions Stop hook compound check to enforcement-mode reading
+- Operation 9: codebase scan for `WP-[A-Z]`, `ADR-NNN`, `Cycle-N` patterns; report classifies matches as refactor / inline-gloss / historical record
+- `/rdd-graduate` (downstream caller) — Step 1b references Operation 9 as the recommended pre-graduation scan
 - Orchestrator — listed in Available Skills table
 
 ---
@@ -372,11 +389,11 @@ The two-section output is a Tier 1 unconditional mechanism. The framing audit ma
 
 ---
 
-## Module: Tier 1 Phase Manifest (NEW in v0.7.0, updated v0.7.2)
+## Module: Tier 1 Phase Manifest (NEW in v0.7.0; path templates migrated to .rdd/ in v0.8.4 per ADR-085)
 
 **Implementation state:** Complete
 **Code location:** `hooks/manifests/tier1-phase-manifest.yaml`
-**Stability:** Settled — format version 1; schema stable after v0.7.2 `mechanism_type` field addition
+**Stability:** Settled — format version 1; Cycle 016 added `applicable_when` precondition support (ADR-080) and `aid-cycle-gate-reflection` user-tooling entries (ADR-066); Cycle 017 migrated all `path_template` values from `docs/housekeeping/...` to `.rdd/...` per ADR-085
 
 ### Domain Concepts in Code
 
@@ -389,25 +406,28 @@ The two-section output is a Tier 1 unconditional mechanism. The framing audit ma
 | Structural Assertion (S3 required fields) | `required_fields` list | per mechanism |
 | Audited Documents (revision-aware reminder) | `audited_documents` glob list | citation/argument auditor entries |
 | Mechanism Type (subagent vs user-tooling) | `mechanism_type: user-tooling` field (default: subagent) | aid-cycle-gate-reflection entries |
+| Artifact Type (predicate matching) | `artifact_type: aid-cycle-gate-reflection` for ADR-079 in-progress-gate predicate | per gate-reflection entry |
+| Applicable When (ADR-080) | `applicable_when` list with primitives: `cycle_type_in`, `cycle_type_not_in`, `phase_not_skipped`, `parent_cycle_present`, `parent_cycle_absent` | per mechanism |
 | Token Substitution | `{cycle}` and `{phase}` placeholders in `path_template` | per mechanism |
+| Canonical Path (ADR-085) | All `path_template` values use `.rdd/audits/...` and `.rdd/gates/...`; hooks fall back to `docs/housekeeping/...` for pre-migration corpora | per mechanism |
 
 ### Design Rationale
 
-The manifest is the single source of truth for phase-boundary Tier 1 obligations. It is consumed by the Stop hook's compound check (`tier1-phase-manifest-check.sh`). Advisory mode and enforcement mode read the same manifest; the difference is whether failures block or merely notify. Play and synthesize phases are deliberately exempt from `aid-cycle-gate-reflection` entries because both subsume their gates (ADR-016, ADR-038). The `mechanism_type: user-tooling` distinction was added in v0.7.2 after WP-F verification revealed that the compound check's isolation assumption does not apply to artifacts produced in-context by the orchestrator (ADR-066).
+The manifest is the single source of truth for phase-boundary Tier 1 obligations. It is consumed by the Stop hook's compound check (`tier1-phase-manifest-check.sh`). Per ADR-088 (Cycle 017), the manifest check is advisory across all modes — failures emit model-visible advisories rather than blocking. Play and synthesize phases are deliberately exempt from `aid-cycle-gate-reflection` entries because both subsume their gates (ADR-016, ADR-038). The `mechanism_type: user-tooling` distinction (v0.7.2) exempts orchestrator-produced artifacts from compound check (ADR-066). The `applicable_when` extension (Cycle 016, ADR-080) enables scope-adaptive enforcement: mechanisms can be conditioned on cycle type, parent-cycle presence, or skipped-phase enumeration. The Cycle 017 path migration to `.rdd/` paths is transparent — hook scripts apply legacy fallback so pre-migration corpora continue to operate.
 
 ### Key Integration Points
 
-- `tier1-phase-manifest-check.sh` (consumer) — parses YAML at Stop event time
-- `tier1-verify-dispatch.sh` (consumer) — writes dispatch log entries that the Stop hook cross-references
-- `/rdd-conform migrate` (Operation 4) — path templates track post-migration paths from v0.7.1 onward
+- `tier1-phase-manifest-check.sh` (consumer) — parses YAML at Stop event time; resolves paths via `.rdd/` → `docs/housekeeping/` cascade
+- `tier1-verify-dispatch.sh` (consumer) — writes dispatch log entries that the Stop hook cross-references via two-form matching
+- `/rdd-conform migrate-to-rdd` (Operation 10) — substitution sweep updated this file's path templates as part of the Cycle 017 migration
 
 ---
 
-## Module: Tier 1 Dispatch Logger Hook (NEW in v0.7.0, fixed in v0.7.2)
+## Module: Tier 1 Dispatch Logger Hook (NEW in v0.7.0; .rdd/ path support added in v0.8.4 per ADR-085)
 
-**Implementation state:** Complete (fully functional after v0.7.2 stdin + prefix fixes)
+**Implementation state:** Complete
 **Code location:** `hooks/scripts/tier1-verify-dispatch.sh`
-**Stability:** Settled after v0.7.2
+**Stability:** Settled — Cycle 017 added `.rdd/` directory-presence selection per ADR-085
 
 ### Domain Concepts in Code
 
@@ -416,60 +436,98 @@ The manifest is the single source of truth for phase-boundary Tier 1 obligations
 | PostToolUse Hook (Agent matcher) | Fires on every Agent tool call | hooks/hooks.json §PostToolUse |
 | Tier 1 Mechanism Filter | `TIER1_MECHANISMS` space-separated list | tier1-verify-dispatch.sh:20 |
 | Plugin Namespace Stripping | `${SUBAGENT_TYPE#*:}` parameter expansion | tier1-verify-dispatch.sh §normalize |
-| Output Path Extraction | Regex match on `^Output path: ` in tool prompt | tier1-verify-dispatch.sh §extract |
+| Output Path Extraction | Regex match on `^Output path: ` in tool prompt with markdown-formatted variants | tier1-verify-dispatch.sh §extract |
+| Dispatch Log Location Selection (ADR-085) | Directory-presence cascade: `.rdd/` (canonical) → `docs/housekeeping/` (legacy) → `.rdd/` (fresh corpus default) | tier1-verify-dispatch.sh §init |
 | Dispatch Log Entry | JSONL append with timestamp, session, mechanism (stripped), subagent_type (preserved), expected_path, tool_use_id | tier1-verify-dispatch.sh §append |
-| Fails-Safe-to-Allow | `|| true` on jq write; `exit 0` on errors | tier1-verify-dispatch.sh §append |
+| Fails-Safe-to-Allow | `\|\| true` on jq write; `exit 0` on errors | tier1-verify-dispatch.sh §append |
 | stdin Input Delivery | Reads stdin if `$1` is empty and stdin is not a terminal | tier1-verify-dispatch.sh §input |
 
 ### Design Rationale
 
-Append-only verification infrastructure. This hook NEVER blocks — it only records evidence of dispatch events for the Stop hook's compound check to consume. The Fails-Safe-to-Allow discipline is critical: a broken dispatch logger must never wedge the agent. The plugin namespace stripping (v0.7.2) is required because Claude Code dispatches plugin-provided subagents with the `<plugin>:<name>` form, but the manifest uses bare names. The stdin delivery (v0.7.2) aligns with Claude Code's actual runtime contract, which synthetic tests using direct `$1` invocation had missed.
+Append-only verification infrastructure. This hook NEVER blocks — it only records evidence of dispatch events for the Stop hook's compound check to consume. The Fails-Safe-to-Allow discipline is critical: a broken dispatch logger must never wedge the agent. The plugin namespace stripping is required because Claude Code dispatches plugin-provided subagents with the `<plugin>:<name>` form, but the manifest uses bare names. The Cycle 017 directory-presence selection (ADR-085) ensures dispatch entries land at whichever placement the corpus is using — pre-migration corpora at `docs/housekeeping/`, post-migration corpora at `.rdd/`, fresh corpora default to `.rdd/`. Both Stop-hook helpers (`resolve_artifact_path`, `dispatch_log_has_entry`) read both forms transparently, so transition-window cycles continue to work.
 
 ### Key Integration Points
 
 - Tier 1 Phase Manifest (indirect) — defines which mechanisms warrant logging
-- Dispatch Log (`docs/housekeeping/dispatch-log.jsonl`) — append target
-- `tier1-phase-manifest-check.sh` (downstream consumer) — cross-references log entries in compound check
+- Dispatch Log (`.rdd/dispatch-log.jsonl` post-migration; `docs/housekeeping/dispatch-log.jsonl` legacy) — append target
+- `tier1-phase-manifest-check.sh` (downstream consumer) — cross-references log entries via `dispatch_log_has_entry()` two-form match
 
 ---
 
-## Module: Tier 1 Phase Manifest Check Hook (NEW in v0.7.0, fixed in v0.7.2)
+## Module: Tier 1 Phase Manifest Check Hook (NEW in v0.7.0; advisory across all modes since v0.8.3 per ADR-088)
 
-**Implementation state:** Complete (fully functional after v0.7.2 fixes)
+**Implementation state:** Complete; advisory disposition across all modes per ADR-088 (v0.8.3)
 **Code location:** `hooks/scripts/tier1-phase-manifest-check.sh`
-**Stability:** Settled after v0.7.2
+**Stability:** Settled — Cycle 017 amendments per ADR-088 / ADR-089 / ADR-090 (advisory demotion + In-Progress Phase predicate scoped to per-phase advisory only); Cycle 016 added Cycle Stack parsing (ADR-078), In-progress gate predicate (ADR-079), applicable_when precondition evaluation (ADR-080), legacy pre-ADR-072 detection (ADR-081), and Skipped/Paused short-circuits (ADR-072)
 
 ### Domain Concepts in Code
 
 | Concept | Code Manifestation | Location |
 |---------|-------------------|----------|
 | Stop Hook (manifest verification) | Fires on every Stop event | hooks/hooks.json §Stop |
-| Advisory/Enforcement Mode Detection | Checks for `docs/housekeeping/.migration-version` marker | tier1-phase-manifest-check.sh §mode |
-| Phase Detection (canonical) | Reads `**Phase:** <name>` from cycle-status | tier1-phase-manifest-check.sh §phase |
-| Phase Detection (fallback) | Parses `**Current phase:**` for `next`/`▶`/`In Progress` markers | tier1-phase-manifest-check.sh §phase |
-| Cycle Detection (canonical) | Reads `**Cycle number:** NNN` from cycle-status | tier1-phase-manifest-check.sh §cycle |
-| Cycle Detection (fallback) | Highest `NNN-` prefix in `docs/essays/` | tier1-phase-manifest-check.sh §cycle |
-| Dual cycle-status Path Support | Checks `docs/housekeeping/cycle-status.md` then `docs/cycle-status.md` | tier1-phase-manifest-check.sh §cycle_status |
-| Structural Assertion Loop | Iterates over `required_mechanisms` and applies E1/S1/S2/S3 checks | tier1-phase-manifest-check.sh §iterate |
-| Mechanism Type Branching | Skips compound check for `mechanism_type: user-tooling` | tier1-phase-manifest-check.sh §compound_check |
-| Cycle-Sensitive E1 Dispatch Detection | Matches on mechanism + substituted `expected_path` | tier1-phase-manifest-check.sh §e1 |
-| Compound Check (ADR-064) | Cross-references artifact presence against dispatch log entry | tier1-phase-manifest-check.sh §compound_check |
+| Three-Level Cycle-Status Precedence (ADR-085) | Reads `.rdd/cycle-status.md` → `docs/housekeeping/cycle-status.md` → `docs/cycle-status.md` (file-presence cascade) | tier1-phase-manifest-check.sh §init |
+| Two-Level Dispatch Log + Migration Marker (ADR-085) | Directory-presence selection of `.rdd/...` (preferred) or `docs/housekeeping/...` (legacy) | tier1-phase-manifest-check.sh §init |
+| Advisory Disposition (ADR-088) | All modes: missing artifacts emit `allow_with_message` advisory, never a block decision | tier1-phase-manifest-check.sh §emit |
+| Four-Failure-Mode Classification (ADR-088 §1) | F1 not-dispatched, F2 dispatched-no-output, F3 fabrication-signal, F4 assertion-failure — labeled inline on each FAILURE message | tier1-phase-manifest-check.sh §iterate, §emit |
+| In-Progress Phase Predicate (ADR-090) | Suppresses F1/F2/F4 per-phase advisories when field matches current phase; F3 fabrication signals continue to surface | tier1-phase-manifest-check.sh §in-progress-phase |
+| In-Progress Gate Predicate (ADR-079) | Suppresses gate-reflection-note check for the source phase when `**In-progress gate:**` field is set | tier1-phase-manifest-check.sh §in-progress-gate |
+| Cycle Stack Parsing (ADR-078) | Reads only the top `### Active:` entry of `## Cycle Stack`; legacy single-entry format treated as one-entry stack | tier1-phase-manifest-check.sh §active-entry |
+| applicable_when Precondition Evaluation (ADR-080) | Five primitives (cycle_type_in/_not_in, phase_not_skipped, parent_cycle_present/_absent) skip mechanism if condition not met; skip recorded in dispatch log | tier1-phase-manifest-check.sh §applicable_when |
+| Skipped Phases Short-Circuit (ADR-072) | `**Skipped phases:**` field bypasses all checks for enumerated phases | tier1-phase-manifest-check.sh §skipped |
+| Paused Cycle Short-Circuit (ADR-072) | `**Paused:**` field bypasses all checks until removed | tier1-phase-manifest-check.sh §paused |
+| Legacy Pre-ADR-072 Detection (ADR-081) | Entry without cycle-shape fields gets grandfathered advisory | tier1-phase-manifest-check.sh §legacy-detection |
+| Path Resolution Helper (ADR-085) | `resolve_artifact_path()` tries `.rdd/...` then `docs/housekeeping/...` fallback | tier1-phase-manifest-check.sh §helpers |
+| Compound Check Helper (ADR-064 / ADR-088) | `dispatch_log_has_entry()` matches both canonical and legacy expected_path forms | tier1-phase-manifest-check.sh §helpers |
 | Revision-Aware Re-Audit Reminder | mtime comparison between audited documents and last dispatch | tier1-phase-manifest-check.sh §reminder |
 | Fails-Safe-to-Allow | stderr diagnostic + `exit 0` on internal errors | tier1-phase-manifest-check.sh §die_open |
-| Schema-Valid Output | Plain-text stdout for advisory, `{"decision":"block"}` JSON for enforcement | tier1-phase-manifest-check.sh §emit |
 | stdin Input Delivery | Reads stdin if `$1` is empty and stdin is not a terminal | tier1-phase-manifest-check.sh §input |
 
 ### Design Rationale
 
-This is the structural floor of the compound defense at phase boundaries. Every structural assertion (E1/S1/S2/S3) and the compound check (cross-reference against dispatch log in enforcement mode) verify the manifest's contract mechanically without judgment. In advisory mode (pre-migration), failures produce plain-text stdout notices that inject into the agent's context without blocking. In enforcement mode (post-migration marker present), failures produce schema-valid `{"decision":"block"}` JSON that forces the agent to continue working until the Tier 1 obligations are met — the mechanism that caught seven of the nine WP-F defects. The `mechanism_type: user-tooling` branching (v0.7.2) exempts aid-cycle-gate-reflection from the dispatch log cross-reference because the note is produced by the orchestrator in-context, not by an isolated subagent. The Susceptibility Snapshot at the same phase boundary remains the complementary content-level defense.
+The advisory-across-all-modes disposition (ADR-088) shifted the Harness Layer from "blocking enforcement" to "advisory verification with skill-discipline as the load-bearing enforcement layer." The compound-check fabrication-detection mechanism is preserved — State C is now structurally **detectable** (not impossible). The agent and practitioner see the advisory each turn; the cycle does not wedge. The In-Progress Phase predicate (ADR-090) is the advisory-noise suppressor for mid-phase work — it suppresses F1/F2/F4 per-phase failures while keeping F3 fabrication signals live (per ADR-090 §1: the suppression is scoped to the per-phase manifest advisory only). The path-resolution and dispatch-log fallback helpers (ADR-085) make the hook backward-compatible across the migration window: pre-ADR-085 corpora at `docs/housekeeping/...` and post-migration corpora at `.rdd/...` both work transparently. The `mechanism_type: user-tooling` branching (v0.7.2) exempts aid-cycle-gate-reflection from compound check because the note is produced in-context.
 
 ### Key Integration Points
 
 - Tier 1 Phase Manifest (input) — parsed at every Stop event
-- Dispatch Log (input) — cross-referenced in enforcement mode compound check
-- `docs/housekeeping/cycle-status.md` (input) — phase and cycle detection
-- `docs/housekeeping/.migration-version` (input) — advisory/enforcement mode toggle
-- Agent conversation (output) — advisory notice (stdout) or block reason (JSON) surface to the model's context
+- Dispatch Log (input) — cross-referenced via two-form matching (canonical .rdd/ + legacy docs/housekeeping/)
+- Cycle-status.md (input, three-level precedence) — phase and cycle detection
+- `.rdd/.migration-version` / `docs/housekeeping/.migration-version` (input) — advisory/enforcement-marker toggle (no longer affects blocking; both modes produce advisory output)
+- Agent conversation (output) — advisory notice (stdout) surfaces to the model's context with the four-failure-mode legend
+- `/rdd-conform migrate-to-rdd` (Operation 10) — produces the marker file at the new location post-migration
+
+---
+
+## Module: System Design Companion File (NEW in v0.8.4 — ADR-084 Pattern B)
+
+**Implementation state:** Complete
+**Code location:** `docs/system-design.agents.md`
+**Stability:** New — Cycle 017 introduces this as the canonical Pattern B exemplar
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Companion-File Pattern (ADR-084 Pattern B) | Parallel-sibling agent-context file at predictable path `<artifact>.agents.md` | `system-design.agents.md` |
+| Architectural Drivers Table (full) | The dense reference list relocated from `system-design.md` | system-design.agents.md §Architectural drivers |
+| Responsibility Matrix (full) | Module-by-module concept and action allocation | system-design.agents.md §Responsibility Matrix |
+| Integration Contracts (full) | File-mediated contracts between skills, agents, hooks, manifests | system-design.agents.md §Integration Contracts |
+| Fitness Criteria (full) | Measurable architectural guardrails with ADR-076 decompositions | system-design.agents.md §Fitness Criteria |
+| Test Architecture (full) | Boundary integration tests and lifecycle-sequence tests | system-design.agents.md §Test Architecture |
+| Per-Phase Susceptibility Snapshot Briefs | Phase-anchored snapshot dispatch instructions | system-design.agents.md §Susceptibility Snapshot Briefs |
+| Design Amendment Log (full history) | All 15 amendments through v14.0 | system-design.agents.md §Design Amendment Log |
+
+### Design Rationale
+
+ADR-084 names two patterns for agent-context content placement: Pattern A (audience-tagged sections within the existing artifact) below an agent-proposed ~50% threshold of audience-tagged volume; Pattern B (companion file at predictable path) above. The Cycle 017 system-design split was the canonical Pattern B exemplar — `system-design.md` carries the human-facing F-pattern orientation lead, the dependency-graph diagram, and brief module summaries; `system-design.agents.md` carries the dense reference detail agents constructing context for code work need. Cross-references in both directions; load-bearing diagram retained on the human-facing surface.
+
+The orientation-trigger hook (per WP-B Cycle 017) was extended to fire on writes to `system-design.agents.md` alongside `system-design.md`, `domain-model.md`, `scenarios.md`, and `product-discovery.md`. Without that extension, edits to the companion file alone would not trigger ORIENTATION.md regeneration prompts — a sync-mechanism gap relative to the four sync mechanisms confirmed at the architect → build gate.
+
+### Key Integration Points
+
+- `system-design.md` (sibling) — slim human-facing surface; cross-references the companion at the F-pattern lead
+- `orientation-trigger.sh` (PostToolUse hook) — fires on writes to this file (Cycle 017 WP-B)
+- `/rdd-conform migrate-to-rdd` (Operation 10) — substitution sweep includes this file's path references
+- ARCHITECT skill — produces this file when Pattern B is the per-artifact judgment
 
 ---
 
