@@ -230,6 +230,28 @@ The loop runs as many times as needed: audit → revise → audit → revise →
 
 The essay that enters the epistemic gate should be citation-audited, argument-audited, and framing-audited — on its current state, not a prior version. Downstream phases inherit whatever the essay asserts; catching problems here is far cheaper than discovering them during DECIDE or BUILD.
 
+### Step 4c: Validation-Spike Decision (ADR-087)
+
+Before the research → discover gate's reflection-time prompt, surface the validation-spike decision. Tightly-scoped prototyping is one of the methodology's research methods, alongside lit-review, literature search, and research-methods review. It is **optional**, not mandatory — Invariant 8 disqualifies prototyping as an unconditional structural mechanism. The skill surfaces the question at this step-anchored position; the practitioner decides prototype-or-no-prototype with rationale recorded.
+
+**Beck-port scope-of-claim.** This step does not promote the Beck framing as verified. The Beck port remains a useful conceptual frame for RDD's investment posture; whether the cumulative payoff structure holds is unverified evidence per ADR-087 §1. Practitioners use the framing as an honest scope-of-claim, not a load-bearing premise.
+
+**Felt-trigger question (composed against the cycle's specific content, not recited verbatim):**
+
+> Is the cycle at risk of producing speculative claims that downstream phases will over-elaborate, where a tangible answer from a focused prototype would prune the possibility space directly? Or: would interaction-grounding (testing the cycle's claims against an actual built slice) surface real additional questions or directions that lit-review and methods alone cannot reach?
+
+When either rationale applies, consider running a tightly-scoped prototype before advancing to discover. The decision is felt-judgment, not mechanical — anticipating downstream over-elaboration risk and recognizing where interaction-grounding would surface additional content are both judgment moves.
+
+**Decision branches:**
+
+- **Run a prototype** — pause the research → discover advance until the prototype completes. Design the spike against a specific essay claim; time-box it; record what it tested, what it surfaced (questions, directions, refinements), and what it updates in the essay. The essay-as-checkpoint rule applies: if the prototype findings are substantial enough to revise the essay, the revision triggers a fresh argument-auditor dispatch (with framing audit) before the gate. Findings integrate into the essay before the cycle advances.
+
+- **Reject prototyping with rationale** — record the rejection visibly, with the practitioner's rationale (e.g., *"the literature support is direct on this exact scenario at the scale the methodology relies on; the claims have been tested in cited research; interaction-grounding would not surface additional questions or directions"*). The rejection is part of the cycle's recorded posture, not silent. Future cycles inherit calibrated confidence on the cycle's claims rather than treating them as validated.
+
+**Anti-elaboration positioning.** Tightly-scoped prototyping joins the methodology's anti-elaboration family alongside Tidy First / YAGNI (BUILD) and the ADR-077 Applicability Check (BUILD pattern reuse). The shared disposition: prefer tangible answers and pruned scope to speculative reasoning and accumulated possibility-space. Prototyping at RESEARCH prunes speculative claims at source, before they propagate downstream into ADRs and system design that elaborate on speculation.
+
+**Recording.** Whether the cycle runs a prototype or rejects prototyping with rationale, record the decision in the research log under a "Validation-Spike Decision" entry. The record makes the choice visible for downstream phases and for future-cycle review.
+
 ### EPISTEMIC GATE
 
 After presenting the essay, run the Attend-Interpret-Decide cycle before proceeding to the next phase. Introduce the gate to the user as "reflection time" — not "epistemic gate."
