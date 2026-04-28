@@ -1,6 +1,14 @@
 # ADR-064: Compound Check — PostToolUse(Agent) Dispatch Log + Stop Hook Manifest Verification
 
-**Status:** Proposed
+> **Updated by ADR-088 on 2026-04-27.** ADR-088 amends the Stop hook's manifest check from blocking to advisory across all modes (v0.8.3 release). The compound check mechanism (PostToolUse dispatch log + Stop-hook cross-reference) is retained but its finding is surfaced as advisory rather than as block. The State-C "structurally impossible" claim is amended to "structurally detectable." Skill-text anchoring (ADR-065) is the load-bearing enforcement layer; the Harness Layer adds visibility and detection.
+>
+> **Two specific reading-time notes for navigating ADR-064's preserved body:**
+>
+> 1. **"Enforcement mode" semantic shift.** ADR-064's Advisory mode subsection defines "enforcement mode" as the state a corpus enters when the migration-version marker is present, in which "the compound check runs as specified in Hook 2 above." After ADR-088, "enforcement mode" continues to mean "compound-check active" but no longer means "blocking." Practitioners composing ADR-064 with ADR-088 should read "enforcement mode" as "advisory disposition with compound-check cross-reference," not as "blocking with compound check." The migration-version marker mechanism is unchanged; only the disposition the marker enables is amended.
+>
+> 2. **Stale `docs/housekeeping/` paths in ADR-064's preserved body.** Once ADR-085's `.rdd/` migration runs, the path references throughout ADR-064's Decision section (`docs/housekeeping/dispatch-log.jsonl`, `docs/housekeeping/.migration-version`, the housekeeping directory framing) become historical record of what the paths were when ADR-064 was authored. ADR-074's body-immutability rule prevents correcting these in ADR-064's body. The active path authority post-migration is ADR-085. This is an expected artifact of body immutability + path migration together; it is named here so readers of ADR-064 know which paths are historical and which are active.
+
+**Status:** Updated by ADR-088
 
 ## Context
 

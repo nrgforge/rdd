@@ -354,3 +354,75 @@
 ### Task: Encounter grandfathered enforcement on a pre-ADR-072 cycle
 
 **Interaction mechanics:** The developer resumes an old cycle (e.g., Cycle 8 rdd-pair, paused at MODEL pre-hooks) whose `cycle-status.md` lacks the cycle-shape fields. Per ADR-081, the Stop hook detects the legacy format and applies grandfathered enforcement — the manifest checks run in advisory mode for that cycle, regardless of the corpus-level `.migration-version` state. The developer sees an advisory notice naming the grandfathered status. The developer chooses when to migrate: running `/rdd-conform` cycle-shape audit walks the developer through populating fields matching the cycle's actual state, preserving the existing prose body verbatim. After migration, the cycle resumes under enforcement on the next session. Cycle 8 is the validation case.
+
+---
+
+## Stakeholder: Zero-Prior-Familiarity Reader (Cycle 017 Extension)
+
+**Derived from:** product-discovery.md (Zero-Prior-Familiarity Reader — added in Cycle 017 DISCOVER as a primary-axis stakeholder type, characterized by zero schema rather than by external/internal status; includes both external recipients receiving a corpus and the practitioner returning after time away)
+
+**Super-Objective:** "Encounter the corpus and build the schemas needed to navigate it without routing comprehension through AI summarization — direct human understanding, not AI-as-reading-prosthetic"
+
+### Task: First-encounter navigation of the corpus
+
+**Interaction mechanics:** The reader opens `docs/` (or the corpus root) and encounters the artifact set. ORIENTATION.md is at the top of the artifact hierarchy and provides a five-section orientation readable in under five minutes. The reader follows ORIENTATION.md's reading paths (per ADR-019, ADR-020) toward whichever stakeholder reading path matches their context. Tier-2 documents (system-design.md, product-discovery.md, roadmap.md) carry F-pattern orientation leads at the top — 2–3 sentences naming what the document is, who reads it for what, and where to go if the reader's purpose is different. The reader can decide at the lead whether to continue reading, branch to another document, or stop. Density-ordered content (architectural-driver tables, stakeholder maps, fitness criteria) appears below the orientation lead, not as the document's first content.
+
+### Task: Encounter agent-context material in a Tier-2 artifact
+
+**Interaction mechanics:** When a Tier-2 artifact has agent-context material that exceeds the Pattern A threshold (per ADR-084), the agent-context material lives in a companion file at the predictable path `<artifact>.agents.md`. The reader's primary path through the artifact does not require reading the companion file — the human-facing artifact contains the orientation lead, the diagram (where present), brief module summaries, and cross-references to the companion file for agent-context detail. The reader who is not looking for agent-context material does not encounter it as overhead. The reader who is looking for it (a developer wanting to construct context for code work) finds it at a discoverable predictable path.
+
+### Task: Recognize when the corpus exceeds the reader's schema
+
+**Interaction mechanics:** When the reader cannot make progress on the current document despite the orientation lead, the experience is named in the methodology — context-mismatch (per domain model Amendment 21). The methodology's response is **not** to direct the reader to AI-as-orienter (ADR-086 records this non-adoption). The supported responses are: (a) follow ORIENTATION.md's reading path back to a more foundational artifact (e.g., from system-design.md back to a relevant essay); (b) consult the field guide for implementation-state context; (c) in a corpus that has graduated, consult the native project docs into which RDD knowledge has been folded. The reader's struggle is treated as legitimate signal (Invariant 0 — the reader's understanding is the methodology's outcome target) rather than as a problem to solve via agent-mediated translation.
+
+### Task: Navigate process-vs-product separation
+
+**Interaction mechanics:** Process artifacts that underpin framework operation live in `.rdd/` (per ADR-085) — audit reports, gate reflection notes, dispatch logs, cycle-status, migration markers, session artifacts. Product artifacts that the methodology centers for human reading live in `docs/` — essays, decisions, references, ORIENTATION.md, system-design.md, product-discovery.md, roadmap.md, domain-model.md, field-guide.md. The reader scanning `docs/` sees only product artifacts; the dotfile prefix on `.rdd/` signals "framework infrastructure" through an established software-corpus convention. The reader who needs to inspect process artifacts finds them at `.rdd/` — discoverable, not hidden — but does not encounter them when navigating the corpus's primary readables.
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Cycle 017 Extensions — Readability and Comprehensibility Practice)
+
+**Super-Objective:** "Apply Cycle 017's admissibility criterion, placement patterns, and v0.8.3 advisory disposition correctly during ongoing methodology operation"
+
+### Task: Apply the Outcome Test at the moment of a candidate human-facing artifact proposal
+
+**Interaction mechanics:** The developer is at a moment where they want to add a new human-facing artifact (e.g., during cycle work, at graduation, in response to external feedback). Per ADR-083, before drafting, the developer applies the Outcome Test: does this candidate artifact produce direct human understanding without AI as workaround? If the answer is uncertain or the candidate reads as bolt-on (additional to the real docs, sitting alongside as a workaround for what existing docs should have done), the developer applies the in-place-first default — the intervention redirects to in-place restructuring of the existing docs. If the candidate genuinely cannot be carried by in-place restructuring and falls under one of the four named exception conditions (audience asymmetry, content-divergence threshold, post-graduation lifecycle position, zero-prior-familiarity reader cohort), the addition is admissible with the exception named in cycle-status.md. The Outcome Test is felt; the structural support is the bolt-on / felt-additional signal making the failure-mode visible, the four exception conditions providing actionable scaffolding, and the recording of any deviation in cycle-status.md.
+
+### Task: Choose between Pattern A and Pattern B when structuring an artifact with mixed audience
+
+**Interaction mechanics:** The developer is structuring or restructuring an artifact (e.g., system-design.md at ARCHITECT in Cycle 017). Per ADR-084, the developer estimates the audience-tagged volume relative to the human-facing baseline. The threshold heuristic is ~50% (agent-proposed; not empirically calibrated; treat as starting point, not precision rule). Below the threshold, Pattern A applies — audience-tagged sections within the existing artifact, named by heading or by one-sentence orientation lead. Above the threshold, Pattern B applies — companion file at `<artifact>.agents.md` carrying the agent-context material, primary artifact retaining its human-facing role with cross-references to the companion file. Directory-level audience separation (e.g., `docs/agent/`) is not an option — the methodology's pattern catalog has only A and B for audience-divergent placement.
+
+### Task: Encounter the Stop hook's manifest advisory in v0.8.3
+
+**Interaction mechanics:** The developer is mid-phase and the Stop event fires. The hook reads `cycle-status.md`'s top entry and finds `**In-progress phase:** <current-phase>`. The manifest advisory is suppressed — the agent does not see "missing artifacts" output during expected mid-phase progression. When phase work completes and the orchestrator removes the `**In-progress phase:**` line, the next Stop event fires the manifest advisory. If all required artifacts are present (audits dispatched, gate reflection note written, susceptibility snapshot complete), the advisory is silent and the cycle advances. If any are missing, the agent sees a model-visible advisory naming each failing mechanism with its expected canonical path and the four-failure-mode classification (missing artifact + no dispatch log entry; missing artifact + dispatch log entry exists; artifact exists + no dispatch log entry — fabrication signal; artifact exists + structural assertion failure). The advisory does not block; the agent surfaces it to the developer; the developer decides the response.
+
+### Task: Encounter a fabrication signal during the compound check
+
+**Interaction mechanics:** The agent has produced an artifact at the expected canonical path but no corresponding dispatch log entry exists for the mechanism that should have produced it (e.g., the agent ran the audit in-context after a subagent dispatch errored). When the Stop hook fires, the cross-reference detects the fabrication signal. Per ADR-088, the signal surfaces as a model-visible advisory ("artifact exists but no corresponding dispatch was logged; this may indicate fabricated audit output") rather than as a block. The agent reads the advisory and surfaces it to the developer. The developer's response is: re-dispatch the subagent (the correct response to a fabrication signal — produces a genuine artifact and a matching dispatch log entry). If re-dispatch fails (subagent unavailable, permissions error, model API rate-limiting), the developer chooses a manual response (run the audit checklist by hand and explicitly accept the resulting artifact's non-isolated provenance, document the choice in cycle-status.md, etc.). The structural-detection guarantee holds — the agent cannot inject hook events, so fabrication is detectable — but the practitioner is responsible for the response.
+
+### Task: Encounter the validation-spike decision at the research → discover gate
+
+**Interaction mechanics:** The developer is at the research → discover gate of a new RDD cycle. Per ADR-087, before advancing to DISCOVER, the orchestrator (or `/rdd-research` skill) asks whether the cycle's research-phase claims warrant validation spike consideration. The trigger criteria are evaluated together: (a) is the claim load-bearing for downstream structural commitments (ADRs, methodology principles, system-design restructuring)? (b) does the literature directly establish the claim at the scale the methodology relies on? (c) is the practitioner's evidence anecdotal or single-instance? If all three trigger criteria fire, the developer asks "what's the simplest thing we could build to learn from before this claim becomes a structural commitment?" — and decides whether to run a spike or to advance with the claim's evidence as documented. The decision and rationale are recorded in the research log: spike-approved with named scope, or spike-rejected with rationale (e.g., "literature support is direct enough; the scale of the claim matches the scale of the evidence"). If a spike is run, RESEARCH does not advance until the spike completes and its findings are integrated into the essay.
+
+### Task: Recognize the Beck-port reframe in cycle outcomes
+
+**Interaction mechanics:** When a research phase produces a substantial essay and the developer evaluates the cycle's outcome, ADR-087's standing caveat applies: research-phase artifacts have research-grade evidence at their stated scope; they have not necessarily been validated against built artifacts. The cycle-as-instance reflection — *any cycle's findings are research-not-validation until something has been built and tested against the world* — is in the methodology's scope-of-claim language. Practitioners adopting RDD on the Beck framing's premise hold the framing as a useful conceptual frame but not as load-bearing structural evidence that the investment has the assumed payoff structure. The developer's response is calibrated confidence: research artifacts are valuable at their scope; downstream phases inherit them as research-grade evidence rather than as validated claims.
+
+---
+
+## Stakeholder: Methodology-Maintaining AI Agent (Cycle 017 v0.8.3 Operation)
+
+**Super-Objective:** "Operate the methodology's hooks and skills correctly under v0.8.3's advisory disposition while preserving the structural-detection guarantees the compound check provides"
+
+### Task: Emit Stop-hook manifest advisory with correct content
+
+**Interaction mechanics:** When the Stop event fires and a required mechanism's artifact is missing or fails structural assertions, the agent emits a model-visible advisory naming: (a) the missing mechanism by canonical name (e.g., "argument-auditor for cycle 017"), (b) the expected canonical path (e.g., `.rdd/audits/argument-audit-decide-017.md` post-migration; `docs/housekeeping/audits/argument-audit-decide-017.md` pre-migration), (c) the four-failure-mode classification matching the failure observed, (d) an explicit instruction reminding the agent that fabricating the artifact in-context to silence the advisory is a structural violation, not a workaround. The exit code is allow. The advisory is repeated on every Stop event until the artifact appears or the `**In-progress phase:**` field is set.
+
+### Task: Honor the In-progress phase predicate's advisory-noise suppression scope
+
+**Interaction mechanics:** When the agent reads `cycle-status.md`'s top entry and finds `**In-progress phase:** <phase>` matching the current phase, the manifest advisory is suppressed for that phase. Other Stop-hook checks (the gate-reflection-note check from ADR-066 conditioned on `**In-progress gate:**`; the compound-check fabrication detection from ADR-064 as updated by ADR-088) continue to fire normally. The In-progress phase predicate's suppression is scoped to the per-phase manifest advisory only — it does not suppress fabrication detection, gate-reflection-note checks, or any other check. A one-time advisory per session may emit noting that the manifest check is suppressed for the in-progress phase (visibility for the suppression).
+
+### Task: Surface the v0.8.3 amendment correctly when practitioners read prior ADRs
+
+**Interaction mechanics:** When the agent encounters ADR-064 in the corpus (e.g., during conformance audit, during cycle resumption, during methodology-debt review), the agent reads the supersession header expanded by ADR-088 — including the two reading-time notes (enforcement-mode semantic shift and stale `docs/housekeeping/` paths post-migration). The agent presents ADR-064's body as historical record of what was decided when, with ADR-088 as the active authority. Practitioners querying "what does the manifest check do?" receive the v0.8.3 advisory-disposition answer; practitioners querying "what was originally specified?" can read ADR-064's preserved body. The same pattern applies to ADR-067 (active authority is ADR-089) and ADR-070 (active authority is ADR-085).

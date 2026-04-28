@@ -3230,3 +3230,441 @@
 **When** the constraint-removal form is added
 **Then** the six existing forms (belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing) remain available unchanged
 **And** their existing usage at AID gates and other phases is unaffected
+
+---
+
+# Cycle 017 Scenarios — Readability & Comprehensibility (ADRs 083–090)
+
+## Cycle 017 Acceptance Criteria Table
+
+| Criterion | Specified layer | Verification method | Layer-match check |
+|---|---|---|---|
+| Cognitive-Economy Outcome Test is encoded as methodology principle, applied at moments of artifact proposal | Methodology-principle level (Tier 2 cognitive mechanism per Invariant 8) | Atomic, 1:1 — see "Outcome Test as Admissibility Criterion" feature scenarios | yes |
+| Companion-file pattern (Pattern B at predictable path) is named alternative to audience-tagged sections (Pattern A); directory-level audience separation rejected | Per-artifact methodology pattern catalog | Atomic, 1:1 — see "Agent-Context Content Placement" feature scenarios | yes |
+| `.rdd/` infrastructure relocation completes correctly across hook scripts, manifest, skill files, ADR references, and hook test fixtures | Migration tooling + atomic shipping unit | **Emergent across multiple scenarios.** Migration scope correctness verifies via "infrastructure-relocation correctness" group; runtime behavior post-migration verifies via the existing housekeeping integration tests adapted to `.rdd/` paths; conformance audit detects orphaned `docs/housekeeping/` content. | yes — combined verification covers the migration boundary (file moves) and the runtime boundary (hook scripts and tests pass against the new paths) |
+| AI-as-orienter non-adoption decision is recorded; agent-mediated orientation does not become a structural methodology pattern | Methodology-decision level | Atomic, 1:1 — non-adoption is a decision, not a behavior; see "AI-as-Orienter Non-Adoption" feature | yes |
+| Validation spike decision is recorded at research → discover gate when research-phase claims meet trigger condition | Research-phase skill text + research log | Atomic, 1:1 — see "Validation Spikes in Research" feature scenarios | yes |
+| Stop hook manifest check operates in advisory disposition across all modes; PostToolUse dispatch log records every Tier 1 dispatch; compound-check fabrication detection surfaces as advisory | Hook-script implementation + manifest specification | **Aggregate** across hook-script behavior, manifest behavior, and advisory output content; the advisory-disposition commitment is verified at integration through the existing v0.8.3 hook tests (already passing per conformance scan). See "v0.8.3 Advisory Disposition" feature for behavior scenarios; the integration verification depends on `hooks/tests/*.sh` continuing to pass post-migration. | yes — hook-script tests verify advisory output content; integration tests verify multi-Stop-event behavior |
+| In-progress phase field operates as advisory-noise suppressor; lifecycle (set at phase entry, removed at phase-exit) is documented in orchestrator skill | Skill-text + cycle-status.md schema | Atomic, 1:1 — see "In-Progress Phase Field Role" feature | yes |
+| ADR-074 supersession workflow is honored for ADR-070, ADR-064, ADR-067 (body-immutable, status-mutable, dated `Updates` headers, downstream-sweep recorded or deferred with rationale) | ADR-corpus structural + cycle-status.md | Atomic, 1:1 across three supersessions; cross-supersession coordination verified via cycle-status.md Amendment 22 three-touch checklist (recorded in cycle-status.md per ADR-074 fitness property) | yes |
+
+The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario mapping. Two are emergent / aggregate (`.rdd/` migration correctness; advisory disposition operating end-to-end across hooks and manifest); both have layer-match yes — verification reaches the criterion's specified layer (the migration's runtime layer through hook tests; the advisory-disposition layer through hook-script behavior tests). No emergent-aggregate criterion has Layer-match no in this cycle.
+
+---
+
+## Feature: Outcome Test as Admissibility Criterion (ADR-083)
+
+### Scenario: Outcome Test is documented as the methodology's admissibility criterion for human-facing artifacts
+**Given** an RDD corpus with cycle-017 artifacts in place
+**When** a reader queries "what is the methodology's admissibility criterion for adding a human-facing artifact?"
+**Then** the answer is the Outcome Test: the candidate artifact must produce direct human understanding without AI as workaround
+**And** the test is documented as outcome-coded, not reading-cost-coded
+
+### Scenario: In-place-first default redirects intervention impulses
+**Given** a practitioner observes a human-reading failure on an existing Tier-2 artifact
+**When** the practitioner consults ADR-083 for the appropriate response
+**Then** the in-place-first default directs the intervention to in-place restructuring of the existing artifact (sharper reading paths, F-pattern orientation leads, audience-segmented section ordering, content-type-to-form matching)
+**And** addition of a new human-facing artifact is admissible only after in-place-first redirect has been considered and the named exception conditions evaluated
+
+### Scenario: Bolt-on / felt-additional signal interrupts addition impulse
+**Given** a practitioner is considering adding a new human-facing artifact alongside existing thick documents
+**When** the candidate addition reads as bolt-on (additional to the real docs, sitting alongside as a workaround for what the existing docs should have done)
+**Then** the felt-additional quality is recognized as a failure-mode signal
+**And** the practitioner's response is to redirect intervention to fixing the existing docs rather than admitting the addition
+
+### Scenario: Methodology-wide default with named exceptions is the operationalized form
+**Given** the practitioner asks "is per-project variation admitted?"
+**When** they consult ADR-083 §4
+**Then** four named exception conditions are listed (audience asymmetry, content-divergence threshold, documentation-fatigue at post-graduation lifecycle, zero-prior-familiarity reader cohort)
+**And** corpus deviations from the default cite an exception condition by name in cycle-status.md
+
+### Scenario: Documentation-fatigue exception requires graduation status, not subjective fatigue
+**Given** a practitioner feels burdened by their corpus
+**When** they invoke the documentation-fatigue exception to add a brief purpose-built artifact
+**Then** the exception is admissible only if the corpus has one or more graduated Scoped Cycles, evidenced by archived scoped-cycle artifacts, cycle-status entries marking fold-and-archive operations, or native-doc folds (per ADR-026)
+**And** a corpus without graduation history cannot invoke the exception regardless of subjective fatigue
+
+### Scenario: Outcome Test invariant placement is held open
+**Given** the cycle's MODEL phase recorded the Outcome Test invariant-placement question as DECIDE-deferred
+**When** the practitioner asks whether the Outcome Test rises to invariant level
+**Then** ADR-083 §6 records the disposition: encoded at methodology-principle level for v1; invariant placement waits for either a structural anchor (a skill step at which the test must fire) or a Harness-Layer mechanism (a hook that detects candidate additions and prompts the test)
+**And** the question is held as a future-cycle scope, not foreclosed
+
+### Preservation: Existing artifact admissibility decisions remain valid
+**Given** the corpus's existing human-facing artifacts (essays, ADRs, system-design, product-discovery, ORIENTATION, roadmap, field-guide) were admitted under prior cycles' implicit criteria
+**When** ADR-083 encodes the Outcome Test as the v1 admissibility criterion
+**Then** existing artifacts are not retroactively re-evaluated — the criterion applies to new additions, not to historical admittance decisions
+**And** any retrospective re-evaluation of existing artifacts is an explicit cycle-scope decision, not a default consequence of ADR-083 landing
+
+---
+
+## Feature: Agent-Context Content Placement — Pattern A vs Pattern B (ADR-084)
+
+### Scenario: Pattern A applies when audience-tagged volume is below threshold
+**Given** an artifact has both human-facing and agent-facing material drawing on the same facts
+**When** the audience-tagged volume would not exceed ~50% of the human-facing baseline
+**Then** Pattern A (audience-tagged sections within the existing artifact) is the supported placement
+**And** the artifact retains a single file with named sections distinguishing reader-facing prose from agent-facing structural detail
+
+### Scenario: Pattern B applies when content divergence exceeds threshold
+**Given** an artifact's agent-facing material requires functionally different facts than the human-facing material
+**When** the audience-tagged volume would dominate the human-facing baseline
+**Then** Pattern B (companion file at predictable path `<artifact>.agents.md`) is the supported placement
+**And** the primary artifact retains its human-facing role; agent-context material relocates to the companion file
+
+### Scenario: system-design.md exemplary case applies Pattern B
+**Given** system-design.md's diagram is load-bearing for human-facing orientation
+**And** the architectural-driver table, fitness criteria, responsibility allocations, and provenance chains are agent-context-dominant
+**When** ARCHITECT restructures the artifact
+**Then** system-design.agents.md is created with the agent-context material
+**And** system-design.md retains the diagram, gains an F-pattern orientation lead, and adds brief module summaries with cross-references to the companion file
+
+### Scenario: Directory-level audience separation is rejected
+**Given** a practitioner considers placing agent-context material under a dedicated subdirectory (e.g., `docs/agent/`, `docs/internal/`)
+**When** they consult ADR-084
+**Then** the rejection is explicit with rationale (synchronization failure between human-facing and agent-facing corpora; type-axis interference with `docs/`'s existing organization)
+**And** the alternative is named: companion files at predictable paths (Pattern B) or audience-tagged sections (Pattern A)
+
+### Scenario: ~50% threshold is named as agent-proposed and not empirically calibrated
+**Given** a practitioner applies the per-artifact judgment criterion
+**When** they consult the threshold heuristic
+**Then** the documentation states the ~50% indicator is agent-proposed and not empirically calibrated
+**And** practitioners are directed to treat it as a starting point for judgment, not a precision rule
+
+### Preservation: Existing artifacts are not forced to migrate to Pattern A or Pattern B
+**Given** existing artifacts in the corpus were structured before ADR-084
+**When** ADR-084 lands
+**Then** existing artifacts remain valid in their current structure unless explicitly restructured
+**And** restructuring decisions are made per artifact at the moment of restructuring (e.g., system-design.md's restructuring at ARCHITECT is in scope; other Tier-2 artifacts are not retroactively migrated unless their own cycle warrants it)
+
+---
+
+## Feature: `.rdd/` Infrastructure Relocation (ADR-085)
+
+### Scenario: `/rdd-conform migrate-to-rdd` subcommand performs the relocation
+**Given** a corpus in the ADR-070 placement (`docs/housekeeping/`)
+**When** the practitioner runs `/rdd-conform migrate-to-rdd`
+**Then** the operation creates `.rdd/` and subdirectories (`audits/`, `gates/`, `session/`)
+**And** moves `docs/housekeeping/audits/*` → `.rdd/audits/*`, `docs/housekeeping/gates/*` → `.rdd/gates/*`, `docs/housekeeping/cycle-status.md` → `.rdd/cycle-status.md`, `docs/housekeeping/dispatch-log.jsonl` → `.rdd/dispatch-log.jsonl`, `docs/housekeeping/.migration-version` → `.rdd/.migration-version`
+**And** moves `session/` → `.rdd/session/` if present
+**And** removes the now-empty `docs/housekeeping/` directory
+**And** writes `.rdd/.migration-version` with the current plugin version
+
+### Scenario: Reference updates substitute paths across all dependent files
+**Given** a corpus in the ADR-070 placement before migration
+**When** `/rdd-conform migrate-to-rdd` runs
+**Then** `docs/housekeeping/` → `.rdd/` substitution is applied to: `docs/decisions/*.md`, `docs/essays/*.md`, `skills/**/SKILL.md`, `hooks/manifests/tier1-phase-manifest.yaml`, `hooks/scripts/*.sh`, `hooks/tests/**/*.sh`, `docs/domain-model.md`, `docs/ORIENTATION.md`
+**And** hook test fixtures at `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, `test_parses_cycle_stack_phase.sh` are explicitly included in the substitution sweep
+
+### Scenario: Migration is idempotent
+**Given** a corpus that has already migrated to `.rdd/`
+**When** `/rdd-conform migrate-to-rdd` runs again
+**Then** the operation detects the marker file and no-ops
+**And** no files are moved; no references are substituted
+
+### Scenario: ADR-070 receives the supersession header
+**Given** ADR-085 is accepted
+**When** the supersession workflow runs
+**Then** ADR-070's body remains immutable
+**And** ADR-070 carries the header: `> **Updated by ADR-085 on 2026-04-27.** ADR-085 relocates infrastructure artifacts from docs/housekeeping/ to .rdd/ and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.`
+**And** ADR-070's Status field is `Updated by ADR-085`
+
+### Scenario: Downstream-sweep deferral is recorded with rationale
+**Given** ADR-085's supersession requires updating system-design.md, ORIENTATION.md, domain-model.md, and field-guide.md
+**When** ADR-085 ships before all four artifacts are updated
+**Then** the deferred sweeps are recorded explicitly in cycle-status.md with rationale (deferred to ARCHITECT for system-design.md and ORIENTATION.md; deferred to BUILD for field-guide.md; discharged by Amendment 22 for domain-model.md)
+**And** the deferred sweeps are discharged at their named regeneration moments rather than left silent
+
+### Scenario: Stop hook reads `.rdd/.migration-version` after migration
+**Given** a corpus has migrated to `.rdd/`
+**When** the Stop hook fires for advisory-mode detection
+**Then** the hook reads `.rdd/.migration-version` (post-migration path)
+**And** does not look at `docs/housekeeping/.migration-version` (pre-migration path) for the migrated corpus
+
+### Preservation: Pre-migration corpora continue to work in advisory mode
+**Given** a corpus in the ADR-070 placement that has not run `/rdd-conform migrate-to-rdd`
+**When** the methodology operates on that corpus
+**Then** the cycle continues to function (hooks operate; advisories surface)
+**And** the practitioner is not forced to migrate as a precondition for continued operation
+
+### Preservation: Research logs and reflections remain at `docs/essays/` (per ADR-070's centered classification)
+**Given** ADR-085 relocates infrastructure artifacts but does not relocate centered artifacts
+**When** the migration runs
+**Then** `docs/essays/research-logs/` and `docs/essays/reflections/` remain unchanged in placement
+**And** the centered-vs-infrastructure classification from ADR-070 is preserved in the new placement
+
+---
+
+## Feature: AI-as-Orienter Non-Adoption (ADR-086)
+
+### Scenario: Non-adoption is recorded with explicit rationale
+**Given** the methodology's response to corpus comprehension failure for first-encounter readers
+**When** the practitioner consults ADR-086
+**Then** AI-as-orienter as a structural pattern is not adopted
+**And** the rationale is the unresolved operational-criterion problem (no tested criterion separates AI-as-orienter from AI-as-prosthetic in observable behavior)
+
+### Scenario: AID gate's bounded agent-mediated dialogue is exempt
+**Given** the AID gate operates on artifacts the practitioner has produced or is producing
+**When** ADR-086's non-adoption applies
+**Then** the AID gate pattern is not affected
+**And** the non-adoption is scoped to first-encounter orientation (new readers encountering an established corpus), not to all agent-mediated dialogue
+
+### Scenario: Future-cycle conditions for revisiting are documented
+**Given** practitioners may want to revisit the question
+**When** they consult ADR-086 §4
+**Then** three conditions are named for triggering revisiting: empirical evidence from a controlled study or spike; a literature finding establishing a tested operational criterion; a methodology-internal proposal that bounds the agent's role structurally
+**And** the conditions are conditional, not predetermined
+
+### Scenario: Default position composes with ADR-083 Outcome Test
+**Given** AI-as-orienter is a candidate intervention for the corpus comprehension failure
+**When** the candidate is evaluated against ADR-083's Outcome Test
+**Then** the candidate fails the test specifically because its outcome is unverifiable (the operational-criterion problem)
+**And** the cross-ADR reasoning produces the non-adoption disposition
+
+### Preservation: Other agent-mediated patterns are not affected
+**Given** the methodology has agent-mediated patterns at other phases (gamemaster during play; review skill; AID gate)
+**When** ADR-086 lands
+**Then** those patterns continue to operate as their own ADRs specify
+**And** the non-adoption is scoped to first-encounter orientation only
+
+---
+
+## Feature: Validation Spikes in Research Phases (ADR-087)
+
+### Scenario: Trigger condition fires at the research → discover gate
+**Given** a research phase has produced an essay with claims load-bearing for downstream commitments
+**When** the research → discover gate runs
+**Then** the orchestrator (or `/rdd-research` skill) asks whether the claims warrant validation spike consideration
+**And** the trigger criteria are: (a) load-bearing for downstream structural commitments (ADRs, methodology principles, system-design restructuring), (b) the literature does not directly establish the claim at the scale the methodology relies on, (c) the practitioner's evidence is anecdotal or single-instance
+
+### Scenario: Spike-or-rejection rationale is recorded in research log
+**Given** the trigger condition has been evaluated
+**When** the practitioner decides whether to run a spike
+**Then** the decision is recorded with rationale in the research log (e.g., "spike rejected: literature support is direct enough; the scale of the claim matches the scale of the evidence" or "spike approved: claim X is load-bearing for ADR-NNN and lit-review evidence is convergent but not direct on this exact scenario")
+**And** the rejection rationale is visible, not silent
+
+### Scenario: Beck-port reframe is encoded as calibration, not promotion
+**Given** the cycle-as-instance reflection records that Cycle 017's essay rests on lit-review synthesis without spike validation
+**When** the practitioner consults ADR-087 for the methodology's position on the Beck port
+**Then** the Beck port is documented as a useful conceptual frame but not load-bearing structural evidence
+**And** three specific items separate the conceptual port from a verified payoff claim (compressed-feedback-horizon unverified; reusability conditional on stewardship; cycle-as-instance reflection)
+
+### Scenario: Standing caveat is encoded for research-phase outputs
+**Given** future cycles may operate at lit-review-and-reflection scope without spike validation
+**When** practitioners and downstream phases inherit research-phase findings
+**Then** the standing caveat applies: research-phase artifacts have research-grade evidence at their stated scope, not validated claims at any scope
+**And** the caveat is documented in scope-of-claim language alongside ADR-069
+
+### Scenario: Validation spike does not promote to Tier 1 unconditional
+**Given** Invariant 8's anchoring requirement
+**When** ADR-087 encodes validation spikes
+**Then** the encoding is optional research-phase step, not unconditional structural mechanism
+**And** the rationale is that the trigger condition is judgment-applied and the structural anchoring requirement disqualifies optional-with-judgment from Tier 1 status
+
+### Preservation: Lit-review-only research cycles remain valid
+**Given** the methodology admits lit-review-and-reflection cycles at appropriate scopes
+**When** ADR-087 encodes validation spikes as optional
+**Then** lit-review-only cycles remain valid
+**And** the standing caveat names what evidence ceiling such cycles achieve, rather than rejecting them
+
+---
+
+## Feature: v0.8.3 Advisory Disposition (ADR-088 amends ADR-064)
+
+### Scenario: Stop hook manifest check operates in advisory disposition
+**Given** a corpus in any mode (pre-migration or migrated)
+**When** the Stop hook fires and finds a missing required artifact
+**Then** the hook emits a model-visible advisory naming the failing mechanism
+**And** the hook's exit code is allow (advisory), not block
+
+### Scenario: Compound check fabrication detection surfaces as advisory
+**Given** an artifact exists at the expected canonical path
+**And** no corresponding dispatch log entry exists for the mechanism that should have produced it
+**When** the Stop hook fires
+**Then** the cross-reference detects the fabrication signal
+**And** the hook emits a model-visible advisory: "artifact exists but no corresponding dispatch was logged; this may indicate fabricated audit output"
+**And** the hook's exit code is allow
+
+### Scenario: Advisory repeats on every Stop until the artifact appears or `**In-progress phase:**` is set
+**Given** a phase is in progress and a required artifact is missing
+**When** the agent's Stop event fires
+**Then** the advisory is emitted on every Stop event
+**And** the agent reads the advisory and is expected to surface it to the user
+**And** repeated firing is the visibility mechanism, not a noise-creation problem
+
+### Scenario: ADR-064's body retains pre-amendment language
+**Given** ADR-088 amends ADR-064
+**When** ADR-064's file is read
+**Then** ADR-064's body remains immutable (compound check architecture, fails-safe-to-allow rationale, scope discipline, housekeeping framing, advisory-mode-vs-enforcement-mode commitment)
+**And** ADR-064 carries an expanded supersession header (per ADR-088) with two reading-time notes: enforcement-mode semantic shift and stale `docs/housekeeping/` paths post-migration
+
+### Scenario: State-C claim is amended from impossibility to detectability
+**Given** the methodology's documented structural defense against sophisticated State C fabrication
+**When** the practitioner consults ADR-088 for the active authority
+**Then** the claim is "structurally detectable" — fabrication is detectable because the agent cannot inject hook events
+**And** the prevention claim is amended; the practitioner is responsible for the response to detection
+
+### Scenario: Skill-text anchoring is named as load-bearing
+**Given** the v0.8.3 advisory demotion shifts enforcement strength
+**When** the practitioner asks "what causes Tier 1 mechanisms to fire?"
+**Then** the answer is skill-text anchoring (ADR-065) — the primary firing mechanism
+**And** the Harness Layer adds detection-and-visibility, not prevention
+
+### Preservation: PostToolUse Agent dispatch hook implementation is unchanged
+**Given** ADR-088 amends ADR-064's enforcement disposition
+**When** the implementation is examined
+**Then** the PostToolUse Agent dispatch hook continues to fire on every Tier 1 dispatch
+**And** the dispatch log JSONL format is unchanged (`timestamp, session_id, mechanism, subagent_type, expected_path, tool_use_id`)
+
+### Preservation: fails-safe-to-allow disposition for hook-script errors is unchanged
+**Given** an internal hook-script error occurs
+**When** the hook runs
+**Then** the hook emits allow with the existing stderr notice format (per ADR-064 §"Fails-Safe-to-Allow")
+**And** the GitHub-issue surfacing template is unchanged
+
+---
+
+## Feature: Three-Tier Enforcement Classification — Harness Layer Revision (ADR-089 amends ADR-067)
+
+### Scenario: Harness Layer technique row reflects advisory disposition
+**Given** the methodology's Three-Tier Enforcement Classification is consulted
+**When** a practitioner reads the Harness Layer row
+**Then** the enforcement technique reads "two hooks operating in advisory disposition" (PostToolUse Agent dispatch log + Stop-hook cross-reference, surfacing missing artifacts and fabrication signals as model-visible advisories)
+**And** the State-C claim language is "detectable" rather than "impossible"
+
+### Scenario: Decision procedure step 2 directs new mechanism proposals to advisory-disposition Harness Layer
+**Given** a new mechanism proposal is being classified
+**When** step 2 of the decision procedure evaluates whether the mechanism's trigger is a tool-call or phase-end event
+**Then** "yes" directs the proposal to the Harness Layer with advisory disposition
+**And** the practitioner understands the substrate's contribution is detection with practitioner-decided response, not mechanical prevention
+
+### Scenario: Substrate primacy ordering is preserved
+**Given** ADR-089 amends the Harness Layer's enforcement-technique description
+**When** the substrate-primacy framing is consulted
+**Then** the Skill-Structure Layer's primacy for step-anchorable mechanisms is unchanged
+**And** the User-Tooling Layer's primacy for conversational mechanisms with natural artifact moments is unchanged
+**And** the Harness Layer's primacy for tool-call-and-phase-boundary mechanisms is unchanged (only enforcement strength shifts)
+
+### Scenario: Existing Tier 1 mechanisms continue to use Harness Layer as defense-in-depth
+**Given** existing Tier 1 mechanisms (susceptibility-snapshot, argument-auditor, citation-auditor, research-methods-reviewer)
+**When** ADR-089 lands
+**Then** the Skill-Structure Layer remains primary for each (ADR-065's anchored dispatches)
+**And** the Harness Layer adds defense-in-depth visibility (records the dispatch and verifies the artifact) in advisory disposition
+
+### Preservation: Four-step decision procedure structure is unchanged
+**Given** ADR-067's decision procedure
+**When** ADR-089 amends step 2's Harness Layer language
+**Then** the four-step structure is unchanged
+**And** steps 1, 3, and 4 carry the original ADR-067 text
+
+---
+
+## Feature: In-Progress Phase Field Role (ADR-090)
+
+### Scenario: Field is set at phase entry by the orchestrator
+**Given** the orchestrator dispatches to a phase skill
+**When** the dispatch begins
+**Then** the orchestrator updates `cycle-status.md`'s active cycle entry adding `**In-progress phase:** <phase>` (canonical lowercase)
+**And** the Stop hook suppresses the per-phase manifest advisory for the named phase while the field is set
+
+### Scenario: Field is removed at phase-exit readiness
+**Given** all required artifacts for the current phase have been produced (audits dispatched, gate reflection note written, susceptibility snapshot complete)
+**When** the orchestrator prepares to advance to the next phase
+**Then** the `**In-progress phase:**` line is removed from the cycle entry
+**And** the next Stop event fires the manifest advisory; if all obligations are met, the advisory is silent
+
+### Scenario: Standalone phase-skill invocation operates without the field
+**Given** a practitioner invokes a phase skill directly (without orchestrator)
+**When** the field is not set
+**Then** the cycle continues to function correctly
+**And** the manifest advisory output is noisier during phase work (the missing-artifacts message fires on every Stop event)
+**And** no cycle wedging occurs because the manifest check is advisory across all modes (per ADR-088)
+
+### Scenario: Conformance audit emits soft note for missing field during active phase
+**Given** the conformance audit runs against a corpus where a cycle entry has no `**In-progress phase:**` field during active phase work
+**When** the audit produces findings
+**Then** a soft note is emitted: "the active entry has no In-progress phase field; advisory output may be noisy during phase work"
+**And** the note is informational, not a finding requiring remediation
+
+### Scenario: Conformance audit emits stale field finding with explicit remediation
+**Given** the conformance audit finds an `**In-progress phase:**` field set for a phase that has been completed (per cycle-status.md's phase status table)
+**When** the audit produces findings
+**Then** the finding is surfaced as a stewardship concern about cycle-status hygiene
+**And** the remediation is named explicitly: remove the `**In-progress phase:**` line from the affected cycle-status.md entry
+
+### Preservation: Other Stop-hook checks are unaffected by the field
+**Given** the In-progress phase field's suppression is scoped to the per-phase manifest advisory only
+**When** other Stop-hook checks fire (gate-reflection-note check from ADR-066 conditioned on `**In-progress gate:**`; the compound-check fabrication detection from ADR-064 as updated by ADR-088)
+**Then** those checks operate normally regardless of `**In-progress phase:**` state
+
+---
+
+## Feature: ADR-074 Supersession Workflow Discharge (Cycle 017)
+
+### Scenario: Three supersession headers are applied with correct format
+**Given** ADR-085 partially supersedes ADR-070, ADR-088 partially supersedes ADR-064, ADR-089 partially supersedes ADR-067
+**When** the supersession workflow runs at Cycle 017 DECIDE
+**Then** each superseded ADR carries an `> **Updated by ADR-NNN on YYYY-MM-DD.**` header in markdown blockquote form
+**And** each superseded ADR's Status field reads `Updated by ADR-NNN`
+**And** each superseded ADR's body remains immutable
+
+### Scenario: Three coordinated downstream-artifact touches land in domain-model Amendment 22
+**Given** ADR-085, ADR-088, and ADR-089 each defer a domain-model touch to Cycle 017's DECIDE phase
+**When** Amendment 22 is written to the domain model
+**Then** all three touches land together: (a) Compound Check concept update for ADR-088 advisory disposition; (b) Three-Tier Enforcement concept update for ADR-089 Harness Layer technique revision; (c) Amendment-Log entry recording ADR-085 supersession of ADR-070
+**And** none of the three touches is applied without the others (the cycle-status.md three-touch checklist prevents partial application)
+
+### Scenario: Deferred sweeps are recorded with rationale
+**Given** the four-artifact downstream sweep is partially deferred (system-design.md and ORIENTATION.md to ARCHITECT; field-guide.md to BUILD; domain-model.md discharged at Amendment 22)
+**When** the deferral occurs
+**Then** the rationale is recorded explicitly in cycle-status.md per ADR-074 fitness property
+**And** the natural regeneration moment that discharges each deferral is named
+
+### Scenario: Conformance check verifies sweep completeness post-discharge
+**Given** the deferred sweeps complete at their named regeneration moments
+**When** `/rdd-conform` runs after the sweeps complete
+**Then** entries that cited the superseded ADRs in the four artifacts (system-design.md, ORIENTATION.md, domain-model.md, field-guide.md) either cite the superseding ADR where the new decision is authoritative, retain the superseded citation where the reference is historical, or have been rewritten because the superseded citation no longer applies (per ADR-074 fitness property)
+
+### Preservation: ADR-070, ADR-064, ADR-067 bodies retain pre-supersession language
+**Given** ADR-074's body-immutable / status-mutable rule
+**When** the supersession workflow applies headers and Status updates
+**Then** the bodies of ADR-070, ADR-064, and ADR-067 remain unchanged
+**And** practitioners reading the historical record see what was decided when
+
+---
+
+## Feature: Integration — Cycle 017 ADRs Compose Across the Corpus
+
+### Scenario: ADR-083 and ADR-084 produce coherent admissibility-and-placement guidance
+**Given** the Outcome Test (ADR-083) and the Pattern A / Pattern B catalog (ADR-084) are both active
+**When** a practitioner is structuring or restructuring an artifact
+**Then** ADR-083 governs the admissibility question (should this artifact exist, and what type)
+**And** ADR-084 governs the placement question (audience-tagged sections vs. companion file vs. directory rejection)
+**And** the two ADRs do not produce contradictory guidance
+
+### Scenario: ADR-088 and ADR-089 produce coherent v0.8.3 picture
+**Given** ADR-088 amends ADR-064 (implementing ADR for advisory disposition)
+**And** ADR-089 amends ADR-067 (classifying ADR for the technique row)
+**When** the practitioner reads the methodology's structural-prevention claims
+**Then** the two amendments produce consistent language (block → advisory; impossibility → detectability)
+**And** the substrate-primacy ordering and four-step decision procedure remain unchanged
+
+### Scenario: Cycle 017 ADRs do not amend any invariant
+**Given** the Outcome Test invariant-placement question is held open as a future-cycle scope (per ADR-083 §6)
+**When** the methodology's invariants are read after Cycle 017 lands
+**Then** invariants 0–8 are unchanged from the pre-cycle state
+**And** Cycle 017's commitments are encoded at methodology-principle level, not invariant level
+
+### Scenario: ADR-085 path migration composes with ADR-088/ADR-089 advisory commitments
+**Given** ADR-085 relocates infrastructure to `.rdd/` and ADR-088/ADR-089 amend the manifest check disposition
+**When** the migration runs and the v0.8.3 hook scripts operate against the new paths
+**Then** the manifest check fires in advisory disposition against `.rdd/` paths post-migration
+**And** the compound-check cross-reference operates against `.rdd/dispatch-log.jsonl`
+**And** the migration-version detection reads `.rdd/.migration-version`
+
+### Preservation: Existing methodology functions are not regressed by Cycle 017
+**Given** the methodology operates with cycles 1–016 ADRs and skills
+**When** Cycle 017's eight ADRs land
+**Then** existing pipeline phases (RESEARCH, DISCOVER, MODEL, DECIDE, ARCHITECT, BUILD, PLAY, SYNTHESIZE) continue to function
+**And** existing AID-gate protocols, susceptibility snapshots, conformance audits, and supersession workflows continue to operate
+**And** existing artifacts retain their authority unless explicitly superseded by Cycle 017 ADRs (only ADR-070, ADR-064, ADR-067 are superseded)

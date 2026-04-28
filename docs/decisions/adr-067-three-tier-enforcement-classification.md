@@ -1,6 +1,10 @@
 # ADR-067: Three-Tier Enforcement Classification as Methodology-Level Taxonomy
 
-**Status:** Proposed
+> **Updated by ADR-089 on 2026-04-27.** ADR-089 amends the Harness Layer row's enforcement-technique description and the decision-procedure step 2 language to reflect ADR-088's advisory demotion (v0.8.3). The Three-Tier substrate framing, the four-step decision procedure structure, and the substrate primacy ordering all remain current authority. Only the Harness Layer's enforcement-technique description and the State-C claim language are amended (block → advisory; impossibility → detectability).
+>
+> **Reading-time note for navigating ADR-067's preserved body:** The "only structural defense" and "structurally impossible" language in the "Not a priority hierarchy" subsection's Harness Layer paragraph is amended by ADR-089 §3 to read "the only structural defense against sophisticated State C fabrication, because fabrication would require inducing a fake PostToolUse event, which the agent cannot do; the compound check makes State C **detectable** rather than impossible — the Stop-event advisory surfaces the fabrication signal and the practitioner decides the response." The classification table's Harness Layer row in the body retains its original "two hooks" technique description; the amended row appears in ADR-089 §1. Practitioners citing ADR-067's classification taxonomy for new mechanism proposals should use ADR-089's amended language for the Harness Layer.
+
+**Status:** Updated by ADR-089
 
 ## Context
 

@@ -1,6 +1,8 @@
 # ADR-070: Housekeeping Directory Migration and rdd-conform Scope Extension
 
-**Status:** Proposed
+> **Updated by ADR-085 on 2026-04-27.** ADR-085 relocates infrastructure artifacts from `docs/housekeeping/` to `.rdd/` and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.
+
+**Status:** Updated by ADR-085
 
 ## Context
 

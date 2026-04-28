@@ -1,230 +1,237 @@
 # Roadmap: Pedagogical RDD
 
-**Updated:** 2026-04-22
-**Derived from:** System Design v13.0, ADRs 001-082
+**Updated:** 2026-04-28
+**Derived from:** System Design v14.0, ADRs 001-090
 
 ## Work Packages
+
+### Cycle 017: Readability & Comprehensibility (Issue #17 + methodology debt)
+
+**Derived from:** ADRs 083-090, Essay 016, conformance-scan-decide-017.md (18 findings across 3 clusters)
+**Cycle type:** Standard cycle
+**Notes:** Path-migration work (Cluster 1, ~160 references across 23 files including hook test fixtures) is the largest mechanical scope. Skill-text and tooling work (Cluster 3) is smaller in volume but functionally significant. Advisory-language documentation debt (Cluster 2) was partly discharged at DECIDE (domain-model.md Amendment 22) and at ARCHITECT (system-design.md, system-design.agents.md, ORIENTATION.md). Field-guide.md and BUILD-time skill-text edits remain.
+
+#### WP-A: `/rdd-conform migrate-to-rdd` Subcommand Implementation
+
+**Objective:** Implement the `migrate-to-rdd` subcommand of `/rdd-conform` per ADR-085 §4 ten-step operation. Idempotent via `.rdd/.migration-version` marker; refuses uncommitted changes; produces summary report. Performs reference substitution across all affected files **including hook test fixtures explicitly** per the conformance scan finding (ADR-085 §10).
+
+**Changes:**
+- `skills/conform/SKILL.md` — new operation description in operations table; ten-step workflow (idempotency check; create `.rdd/` + subdirectories; move `audits/`, `gates/`, `cycle-status.md`, `dispatch-log.jsonl`, `.migration-version`; move `session/` → `.rdd/session/`; mechanical reference substitution sweep; `.gitignore` updates; write marker; produce report)
+- Implementation must include the explicitly enumerated hook test fixtures in the substitution sweep: `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, `test_parses_cycle_stack_phase.sh`
+- Reference substitution targets: `docs/decisions/*.md`, `docs/essays/*.md`, `skills/**/SKILL.md`, `hooks/manifests/tier1-phase-manifest.yaml`, `hooks/scripts/*.sh`, `hooks/tests/**/*.sh`, `docs/domain-model.md`, `docs/ORIENTATION.md`, `docs/system-design.md`, `docs/system-design.agents.md`
+- New fixture tests: `test_conform_migrate_to_rdd_basic.sh`, `test_conform_migrate_to_rdd_idempotent.sh`, `test_conform_migrate_to_rdd_hook_fixtures.sh`
+
+**Scenarios covered:** `.rdd/` Infrastructure Relocation (ADR-085) all migration scenarios; idempotency scenarios; hook test fixture inclusion scenario
+
+**Dependencies:** None — independent
+
+---
+
+#### WP-B: Hook Script + Test Fixtures Path Substitution
+
+**Objective:** Update `hooks/scripts/tier1-verify-dispatch.sh`, `hooks/scripts/tier1-phase-manifest-check.sh`, and the manifest's `path_template` values to read/write `.rdd/...` paths post-migration. Add backward-compat fallback for pre-migration corpora reading `docs/housekeeping/...`.
+
+**Changes:**
+- `hooks/scripts/tier1-verify-dispatch.sh` — dispatch log path read from `.rdd/dispatch-log.jsonl` first; legacy fallback to `docs/housekeeping/dispatch-log.jsonl`
+- `hooks/scripts/tier1-phase-manifest-check.sh` — cycle-status.md read from `.rdd/cycle-status.md` first; legacy fallback; `.rdd/.migration-version` mode marker check; same fallback pattern
+- `hooks/manifests/tier1-phase-manifest.yaml` — all `path_template` values updated from `docs/housekeeping/{audits,gates}/...` to `.rdd/{audits,gates}/...`
+- **`hooks/hooks.json` (orientation-trigger matcher extension — surfaced at Cycle 017 ARCHITECT gate):** extend the orientation-trigger hook's PostToolUse matcher to fire on writes to `system-design.agents.md` alongside the existing system-design.md, domain-model.md, scenarios.md targets. One-line config edit; mechanical. Without it, edits to the companion file alone do not trigger ORIENTATION.md regeneration prompts — a sync-mechanism gap relative to the four sync mechanisms confirmed at the gate.
+- Hook test fixtures — `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, `test_parses_cycle_stack_phase.sh` — fixture data updated to `.rdd/...` paths
+- New fixture tests: `test_hook_reads_rdd_path_with_legacy_fallback.sh`, `test_hook_dispatch_log_writes_rdd_path.sh`, `test_orientation_trigger_fires_on_system_design_agents.sh`
+
+**Scenarios covered:** Hook script path-update scenarios from ADR-085; backward-compat scenarios
+
+**Dependencies:** WP-A (implied logic — WP-B's substitutions are mostly executed by the migration subcommand; WP-B implementation can stub references manually for testing without the migration running)
+
+---
+
+#### WP-C: `/rdd-research` Skill-Text Edit at Research → Discover Gate (ADR-087 §3)
+
+**Objective:** Add the validation-spike decision step to `skills/research/SKILL.md` immediately before the research → discover gate's reflection-time prompt. Felt-trigger question + rationale-recording requirement. The skill text encodes prototype-or-no-prototype as a felt-judgment decision (not mandatory) per ADR-087 §3 anti-elaboration positioning.
+
+**Changes:**
+- `skills/research/SKILL.md` — new step at the gate position composing the trigger question (interaction-grounding rationale OR possibility-space-pruning rationale); rejection-with-rationale handling; spike-running with findings integration into essay before essay-as-checkpoint advance
+- New fixture test: `test_research_validation_spike_step_anchored.sh`
+
+**Scenarios covered:** Validation-Spike Research Method (ADR-087) all scenarios
+
+**Dependencies:** None — independent
+
+---
+
+#### WP-D: Stop-Hook Manifest Check Advisory Disposition (ADR-088 / ADR-089 / ADR-090 implementation alignment)
+
+**Objective:** Confirm the v0.8.3 advisory disposition is implemented across all modes per ADR-088 — the Stop-hook manifest check emits model-visible advisories rather than blocks. Update `hooks/scripts/tier1-phase-manifest-check.sh` advisory-output formatting to name failing mechanism with four-failure-mode classification. Implement In-Progress Phase predicate per ADR-090 (advisory-noise suppressor when field present and matching).
+
+**Changes:**
+- `hooks/scripts/tier1-phase-manifest-check.sh` — advisory output across all modes; four-failure-mode classification in advisory text; In-Progress Phase predicate evaluation (advisory-noise suppression when field matches current phase); ensure no exit code emits block disposition
+- Update `skills/conform/SKILL.md` audit scopes — soft note for missing In-Progress Phase field (informational, not finding) per ADR-090
+- New fixture tests: `test_hook_manifest_check_advisory.sh`, `test_hook_in_progress_phase_suppresses_advisory.sh`
+
+**Scenarios covered:** Phase-Manifest Check Advisory (ADR-088), Three-Tier Classification's Harness Layer Revision (ADR-089), In-Progress Phase Field Role (ADR-090)
+
+**Dependencies:** None — independent (the v0.8.3 release shipped this disposition; WP-D is the methodology-conformance verification that the implementation aligns with the ADRs)
+
+---
+
+#### WP-E: `field-guide.md` Regeneration
+
+**Objective:** Regenerate `docs/references/field-guide.md` to reflect: (a) Cycle 017 module amendments and the new artifact module `system-design.agents.md`; (b) post-migration `.rdd/` paths per ADR-085; (c) advisory-disposition language updates per ADR-088 / ADR-089. Discharges the deferred sweep from Cycle 017 DECIDE for `field-guide.md`.
+
+**Changes:**
+- `docs/references/field-guide.md` — full regeneration after Cycle 017 BUILD scope is implemented
+- References to `docs/housekeeping/` paths updated to `.rdd/` paths
+- References to ADR-064 / ADR-067 framings updated to v0.8.3 advisory-disposition language
+
+**Scenarios covered:** Field-guide regeneration (ADR-023 base scenarios + Cycle 017 path/disposition updates)
+
+**Dependencies:** WP-A through WP-D (hard — field guide regenerates after the implementation work it documents)
+
+---
+
+#### WP-F: Graduation-Check Tooling for Code→Doc Dangling References (Issue #17)
+
+**Objective:** Implement a pre-graduation scan that detects corpus-internal identifier strings (work-package numbers, ADR numbers, axis labels) in codebase candidates before they ossify into durable artifacts. Modeled on Tan et al. 2024's detection tool, in the reverse direction (code → doc rather than doc → code). Mechanism is structurally anchored at the moment of graduation (Invariant 8). Candidate work package per essay 016 §4.3.
+
+**Changes:**
+- New script: `hooks/scripts/graduation-check.sh` (or `skills/conform/SKILL.md` extension as a graduation-prep audit operation) — scans codebase for patterns matching `WP-[A-Z]`, `ADR-NNN`, axis labels declared in scoped-cycle artifacts; produces report with file:line locations for each match; user reviews before graduation
+- Skill-text addition to `/rdd-graduate` (existing skill) referencing the pre-graduation scan as recommended step
+- New fixture test: `test_graduation_check_detects_code_doc_dangling_refs.sh`
+
+**Scenarios covered:** Graduation-check scenarios (Issue #17 candidate)
+
+**Dependencies:** WP-A (implied — the migration-version marker semantics are useful for graduation-check's detection logic; could ship independently)
+
+---
+
+#### WP-G: Integration Verification + Release Housekeeping
+
+**Objective:** Verify all Cycle 017 boundary integration tests pass, the conformance-scan re-runs cleanly, and the deferred-sweep discharge is complete (system-design.md, system-design.agents.md, ORIENTATION.md, field-guide.md all reference `.rdd/` paths and v0.8.3 advisory-disposition language). Bump plugin version. Release notes.
+
+**Changes:**
+- Integration verification: run all new boundary integration tests against the modified system; capture results in `.rdd/audits/integration-verification-017.md`
+- Conformance-scan re-run: dispatch `/rdd-conform` after WP-A through WP-F complete; verify the 18 findings from `conformance-scan-decide-017.md` have closed
+- Release housekeeping: bump plugin version in `.claude-plugin/plugin.json`; update README with Cycle 017 readability changes; release notes referencing all ADRs and Issue #17
+
+**Scenarios covered:** Integration scenarios across all WPs; conformance-scan closure verification
+
+**Dependencies:** WP-A through WP-F (hard — verification requires the implementations to exist)
+
+## Dependency Graph
+
+```
+WP-A (migrate-to-rdd subcommand) ─────── implied ──► WP-B (hook script + test fixture path substitution)
+WP-A ─────────────────────────────────── implied ──► WP-F (graduation-check tooling)
+
+WP-C (/rdd-research validation-spike step) — independent
+
+WP-D (Stop-hook advisory + In-Progress Phase predicate) — independent
+
+WP-A, WP-B, WP-C, WP-D ────── all hard ──► WP-E (field-guide regeneration)
+
+WP-A, WP-B, WP-C, WP-D, WP-E, WP-F ─── all hard ──► WP-G (integration verification + release)
+```
+
+**Classification key:**
+- **Hard dependency:** B cannot be built without A. Examples: WP-E's field guide regenerates from the implementation in WP-A through WP-D; WP-G's verification requires all WPs to exist as targets.
+- **Implied logic:** Building A before B is simpler. Examples: WP-A's migration sweep handles most of WP-B's substitutions automatically; WP-A's marker semantics inform WP-F's graduation-check detection logic; either could ship first with stubs.
+- **Open choice:** Genuinely independent. WP-A, WP-C, WP-D can all be started in any order — no shared substrate.
+
+## Transition States
+
+### TS-1: Migration tooling operational (after WP-A + WP-B)
+
+The `/rdd-conform migrate-to-rdd` subcommand exists and works. Hook scripts + test fixtures + manifest read `.rdd/` paths post-migration with backward-compat fallback to `docs/housekeeping/...`. Practitioners can run the migration on existing corpora; pre-migration corpora continue to operate under advisory disposition.
+
+System is coherent at this state: existing skill workflows continue to operate; migration is opt-in; advisory disposition handles both placements.
+
+### TS-2: Skill-side amendments operational (after WP-C + WP-D)
+
+`/rdd-research` includes the validation-spike decision step at the research → discover gate. Stop-hook advisory disposition is verified and the In-Progress Phase predicate suppresses noise during phase work. Practitioners running RESEARCH can choose to ground research in actual interaction via tightly-scoped prototyping. Advisory output is calibrated for visibility without ceremony.
+
+If TS-2 ships before TS-1: the skill-side changes operate; pre-migration corpora continue to use legacy paths in dispatch and audit artifacts.
+
+### TS-3: Documentation discharge complete (after WP-E)
+
+`field-guide.md` regenerates with the Cycle 017 path-and-disposition updates. The four-artifact downstream sweep from ADR-074 (system-design.md, system-design.agents.md, ORIENTATION.md, domain-model.md, field-guide.md) is fully discharged for Cycle 017's three concurrent supersessions (ADR-085, ADR-088, ADR-089).
+
+### TS-4: Graduation-check tooling available (after WP-F)
+
+The pre-graduation scan tool detects code → doc dangling references; integrated into `/rdd-graduate` workflow as recommended step. Issue #17's nomenclature-leakage thread has tooling support in addition to skill-text discipline.
+
+### TS-5: Full Cycle 017 operational (after WP-G)
+
+All boundary integration tests passing; conformance-scan-decide-017.md findings closed; plugin version bumped; release notes published. The methodology has gained: Cognitive-Economy Criterion / Outcome Test as admissibility criterion (cross-cutting); Pattern A/B catalog for agent-context placement (with the system-design split as canonical exemplar); `.rdd/` infrastructure relocation; v0.8.3 advisory disposition formalized; tightly-scoped prototyping as research method; AI-as-orienter non-adoption with future-cycle conditions; In-Progress Phase field role-shift; graduation-check tooling for code → doc dangling references.
+
+## Open Decision Points
+
+- **Order of TS-1 vs. TS-2.** Both are coherent transition states. The methodology has a slight bias toward TS-1 first because the migration unblocks the path-and-disposition updates in TS-3, but TS-2 first is also viable since skill text changes do not depend on migration. Builder choice based on context.
+- **Whether WP-F (graduation-check tooling) ships in this cycle or is deferred.** F is the most exploratory WP — the reverse-direction code → doc detection is a novel research/engineering contribution per essay 016 §4.3 with no direct prior art. If the implementation surfaces unanticipated complexity, F could be deferred to a dedicated cycle. If it ships now, the field evidence is captured in this cycle's BUILD.
+- **Hook backward-compat fallback duration.** WP-B's backward-compat fallback to `docs/housekeeping/...` paths supports pre-migration corpora indefinitely. A future cycle may consolidate the migrations or remove the fallback when migration adoption is complete. Open scope for follow-up.
+
+## Completed Work Log
 
 ### Cycle 016: Methodology Seams (Issues #10–#16)
 
 **Derived from:** ADRs 073-082, Essay 015, conformance-scan-decide-016.md (40 expected gaps in 8 groups)
 **Cycle type:** Batch cycle (multi-issue, mixed research depth)
-**Note:** Issues #10 (lifecycle composition) and #15 (regex defect) are not in this cycle's WPs — #10 is live-validated in BUILD against the existing ADR-071 mitigation; #15 is a pure-implementation fix that runs alongside the WPs without requiring an ADR.
+**Shipped across:** v0.8.0–v0.8.x (with v0.8.2 / v0.8.3 hotfixes during Cycle 017 entry)
 
-#### WP-A: cycle-status.md Schema Migration to Cycle Stack Format
+| WP | Title | Commit | Status |
+|----|-------|--------|--------|
+| A | cycle-status.md schema migration to Cycle Stack format (ADR-078) | b90d4a1 (2026-04-23) | Complete |
+| B | Hook layer changes — Cycle Stack parser, in-progress gate, applicable_when, legacy detection (ADRs 078/079/080/081) | f158af4 (2026-04-23) | Complete |
+| C | DECIDE skill amendments + ORIENTATION role-separation note (ADRs 073/074/075) | 06cfb50 (2026-04-23) | Complete |
+| D | ARCHITECT skill amendment — fitness criteria decomposition gate check (ADR-076) | b46eb4e (2026-04-23) | Complete |
+| E | BUILD skill amendments — Step 5.5 + Applicability Check (ADRs 073/077) | 677257a (2026-04-23) | Complete |
+| F | RESEARCH skill + reviewer agent + orchestrator — question-isolation protocol (ADR-082) | 9dd999e (2026-04-23) | Complete |
+| G | CONFORM skill cycle-shape audit operation (ADR-081) | 67b5ddf (2026-04-23) | Complete |
+| H | Integration verification + release housekeeping | (multiple) | Complete |
 
-**Status:** ✅ Shipped — b90d4a1 (2026-04-23). Cycle 016's active entry migrated to `## Cycle Stack` / `### Active:` format; orchestrator template updated with ADR-078/ADR-079 per-entry fields and nested-cycle spawn procedure; backward-compat with current Stop hook confirmed (no regression in Fails-Safe-to-Allow behavior on `BUILD (next)`).
+**Summary:**
+- Issue cluster (#10–#16) named seven methodology seams — boundaries where the methodology specified the shape on each side but not the relationship between them. Cycle 016 was a multi-issue batch cycle addressing all seven (Issue #15 — PostToolUse regex defect — was a pure-implementation fix that ran alongside the WPs without requiring an ADR).
+- **ADR-073** introduced the Cycle Acceptance Criteria Table for emergent/aggregate criteria with layer-match verification (Step 5.5 in BUILD).
+- **ADR-074** formalized ADR body immutability + status mutability + IETF-style Updates/Obsoletes supersession workflow with mandatory downstream-artifact sweep.
+- **ADR-075** introduced preservation scenarios as the negative-space complement to behavior scenarios.
+- **ADR-076** added the fitness-criteria decomposition gate check to ARCHITECT (qualitative claims must have adjacent `**Fitness:**` properties before phase advance).
+- **ADR-077** added the applicability check at BUILD pattern reuse with four-prompt form including consultation of system-design.md fitness properties (integrated structural defense per ADR-076 + ADR-077 prompt 4).
+- **ADR-078 + ADR-079 + ADR-080 + ADR-081** added the multi-cycle Cycle Stack schema with non-interrupting Stop predicate during in-progress gates, scope-adaptive enforcement via `applicable_when` precondition composition, and grandfathered enforcement for pre-ADR-072 cycles.
+- **ADR-082** added the 5-step question-isolation protocol at RESEARCH entry with constraint-removal as the seventh Question Toolkit form.
+- Mid-cycle, **two methodology hotfixes** shipped during Cycle 017 RESEARCH entry: v0.8.2 introduced the In-Progress Phase predicate to fix a Stop-hook cascade observed at RESEARCH Step 1.1; v0.8.3 demoted the manifest check to advisory across all modes after the user observed the original blocking semantic was never effective at agent-experience level. These hotfixes generated methodology debt — ADR-088 / ADR-089 / ADR-090 in Cycle 017 — but the structural shape of Cycle 016's interventions remains current.
 
-**Objective:** Migrate `docs/cycle-status.md` from per-file fields (ADR-072) to per-entry fields within a `## Cycle Stack` section, with the active entry on top and paused entries beneath. Establishes the schema that WP-B's hook reads.
-
-**Changes:**
-- `docs/cycle-status.md` — schema migration; current Cycle 016 entry becomes the first entry in a Cycle Stack
-- Per-entry fields added: `**Cycle number:**`, `**Started:**`, `**Current phase:**`, `**Cycle type:**`, `**Parent cycle:**`, `**Phase at pause:**`, `**Spawned by:**`, `**Pause-on-spawn policy:**`, `**Continue-parent rationale:**`, `**In-progress gate:**`. Existing fields (`**Skipped phases:**`, `**Paused:**`) remain valid per-entry
-- Backward-compat preserved: legacy single-entry format continues to work; ADR-072's two fields fold in as per-entry fields
-
-**Scenarios covered:** Multi-Cycle Schema in cycle-status.md (ADR-078) — all eight scenarios
-
-**Dependencies:** None — independent
-
----
-
-#### WP-B: Hook Layer Changes — Cycle Stack Parser, In-Progress Gate, Applicable_when, Legacy Detection
-
-**Status:** ✅ Shipped — f158af4 (2026-04-23). Hook parses Cycle Stack top entry; in-progress-gate predicate skips aid-cycle-gate-reflection for source phase; applicable_when evaluator supports 5 primitives (cycle_type_in, cycle_type_not_in, phase_not_skipped, parent_cycle_present, parent_cycle_absent) with skip logged to dispatch log; pre-ADR-072 legacy detection forces grandfathered advisory mode per cycle; BUILD (next) parens parse bug fixed. Manifest gained artifact_type on 6 gate-reflection entries and applicable_when on 4 research-phase entries. New hooks/tests/ infrastructure with 6 scenario tests (27 assertions, all green). Paused Cycle 016 via ADR-072 until BUILD phase-exit artifacts exist (8f8a14d) — known methodology gap: mid-phase active work lacks an enforcement-aware mitigation beyond the overbroad Paused field.
-
-**Objective:** Extend `hooks/scripts/tier1-phase-manifest-check.sh` to parse the multi-cycle Cycle Stack, evaluate the in-progress-gate predicate, evaluate `applicable_when` preconditions, and detect legacy pre-ADR-072 cycle-status format for grandfathered advisory mode. Add corresponding fields to `hooks/manifests/tier1-phase-manifest.yaml`.
-
-**Changes:**
-- `hooks/scripts/tier1-phase-manifest-check.sh` — Cycle Stack parser (top entry only); in-progress-gate predicate (selective skip on `artifact_type: aid-cycle-gate-reflection`); applicable_when evaluator (5 precondition primitives: `cycle_type_in`, `cycle_type_not_in`, `phase_not_skipped`, `parent_cycle_present`, `parent_cycle_absent`); legacy-format detection + grandfathered advisory mode
-- `hooks/manifests/tier1-phase-manifest.yaml` — optional `applicable_when` block per entry; optional `artifact_type` field per entry
-- New fixture tests: `test_hook_parses_multi_entry_stack.sh`, `test_hook_skips_gate_artifact_during_in_progress.sh`, `test_hook_detects_legacy_format_and_advisory.sh`, `test_hook_evaluates_applicable_when.sh`, plus nominal-conditions and backward-compat fixtures
-
-**Scenarios covered:** Multi-Cycle Schema (ADR-078) hook scenarios; Non-Interrupting Stop Predicate (ADR-079) all six scenarios; Scope-Adaptive Enforcement (ADR-080) all five scenarios; Grandfathered-Rule Migration (ADR-081) hook-detection scenario
-
-**Dependencies:** WP-A (hard dep — hook reads the schema; without WP-A's schema target, the hook has nothing to parse)
-
----
-
-#### WP-C: DECIDE Skill Amendments + ORIENTATION.md Role-Separation Note
-
-**Status:** ✅ Shipped — 06cfb50 (2026-04-23). `skills/decide/SKILL.md` extended with role-separation note in Step 2; new Step 2.5 ADR Lifecycle and Supersession Workflow (body-immutable/status-mutable rule, Superseded/Updates header formats, four-step workflow with fitness property for sweep verification, drift decision tree, Step 3.7 relationship); Step 4 extended with Preservation Scenarios subsection (ADR-075) and Cycle Acceptance Criteria Table subsection (ADR-073) with null-coverage judgments for both; Step 5 gained supersession gate check and extended highlights list. ADR template updated to reflect current corpus practice (Rejected alternatives + Provenance check). ADR-074 §3 downstream sweep for ADR-072 Updated by ADR-078 discharged: system-design.md already swept in v13.0 Amendment #14, ORIENTATION.md already swept during ARCHITECT regeneration, domain-model.md Amendment 20 recorded the supersession's impact with per-artifact sweep status, field-guide.md bundled with post-BUILD regeneration (WP-H). All 15 scenarios for ADRs 073/074/075 trace to skill text. ORIENTATION Section 4 role-separation paragraph was already in place from ARCHITECT regeneration — no further edit needed.
-
-**Objective:** Extend `skills/decide/SKILL.md` with Cycle Acceptance Criteria Table production (ADR-073), ADR Supersession Workflow (ADR-074), and Preservation Scenarios (ADR-075). Add the role-separation note (ADR-074) to `docs/ORIENTATION.md` Section 4.
-
-**Changes:**
-- `skills/decide/SKILL.md` — Step 4 amended with criteria table production + null-coverage judgment-note; Step 4 amended with preservation scenario production; new section on ADR supersession workflow (body-immutable rule, status-mutable rule, supersession header writer for total replacement and partial Updates relationship, mandatory downstream-artifact sweep, drift decision tree); gate check for supersession header presence on superseding ADRs
-- `docs/ORIENTATION.md` — Section 4 (artifact map) gains a brief role-separation paragraph: ADRs as historical record; system-design.md / ORIENTATION.md / domain-model.md / field-guide.md as current-state
-
-**Scenarios covered:** Cycle Acceptance Criteria Table (ADR-073) production scenarios; ADR Body Immutability + Supersession Workflow (ADR-074) all six scenarios; Preservation Scenarios (ADR-075) all four scenarios
-
-**Dependencies:** None — independent (skill text changes; user-facing artifact production)
-
----
-
-#### WP-D: ARCHITECT Skill Amendment — Fitness Criteria Decomposition Gate Check
-
-**Status:** ✅ Shipped — b46eb4e (2026-04-23). `skills/architect/SKILL.md` extended: Step 5 gained Qualitative Claim Identification subsection (agent walks responsibilities flagging quality language — transparent/seamless/backward-compatible/performant/lossless/isolated/etc. — while concrete responsibilities carry no overhead); Step 9 gained Decomposing Qualitative Claims into Fitness Properties subsection with `**Fitness:** <observable> — <how observed>` format, placement rules (inline or per-module subsection), refutability standard, compositional pathways into ADR-073/075/077, and direction-not-constraint signal for claims that resist decomposition; Step 10 Design Audit item 7 added as a hard gate that refuses advance on undecomposed qualitative claims; system-design.md template updated with optional **Fitness** subsection in Module Decomposition, responsibility-matrix inline-fitness convention, and clarified split between system-level criteria (table) and module-level fitness (inline with claim); Step 12 highlights list extended with decomposed qualitative claims + direction-not-constraint framing. All 5 scenarios for ADR-076 trace to skill text.
-
-**Objective:** Extend `skills/architect/SKILL.md` with the fitness-criteria decomposition gate check (ADR-076). Refuses to advance ARCHITECT phase when any qualitative claim in module responsibilities lacks adjacent `**Fitness:**` properties.
-
-**Changes:**
-- `skills/architect/SKILL.md` — Step 5 (Responsibility Allocation) and Step 9 (Fitness Criteria) amended with qualitative-claim identification step; gate check refuses advance unless decomposition is recorded; system-design.md template updated to show the `**Fitness:** <observable> — <how observed>` line format
-
-**Scenarios covered:** Fitness Criteria Decomposition (ADR-076) all five scenarios
-
-**Dependencies:** None — independent
-
----
-
-#### WP-E: BUILD Skill Amendments — Step 5.5 + Applicability Check
-
-**Status:** ✅ Shipped — 677257a (2026-04-23). `skills/build/SKILL.md` extended with Step 5.5 Cycle Criterion Verification (ADR-073) inserted between existing Step 5 (Integration Verification) and Step 6 (Generate Field Guide); reads the Cycle Acceptance Criteria Table from scenarios.md or acceptance-criteria.md, walks each entry, handles Layer-match yes/no/null-judgment, and triggers a Design Amendment when the specified layer is unreachable from the test harness. Tier 1b Applicability Check (ADR-077) added between Tier 1 and Tier 2 stewardship — triggered (not always-on) per the operative-trigger-only reclassification from the architect → build gate Grounding Reframe; four-prompt composition-not-recitation form with prompt 4 integrating ADR-076 fitness-property consultation; outcomes handle substantive answers, pauseable concerns, and Grounding Reframe fallback for unanswerable prompts; batched application affordance for refactoring-heavy sessions. All 6 ADR-077 scenarios and 2 BUILD-side ADR-073 scenarios trace to skill text (the other 3 ADR-073 scenarios are DECIDE-side and satisfied by WP-C).
-
-**Objective:** Extend `skills/build/SKILL.md` with Step 5.5 Cycle Criterion Verification (ADR-073) and the Applicability Check stewardship-checkpoint (ADR-077, four-prompt form including prompt 4 fitness-property consultation).
-
-**Changes:**
-- `skills/build/SKILL.md` — Step 5 amended with new Step 5.5 reading the Cycle Acceptance Criteria Table from `scenarios.md` and verifying each entry at its specified layer; Tier 1 Stewardship Check section amended with Applicability Check trigger conditions and four-prompt form (including prompt 4 reading `system-design.md` fitness properties); Grounding Reframe fallback for unanswerable prompts; "no declared fitness properties" judgment recording
-
-**Scenarios covered:** Cycle Acceptance Criteria Table (ADR-073) BUILD-side scenarios; Applicability Check (ADR-077) all six scenarios
-
-**Dependencies:** WP-C (implied logic — the criteria-table format is established in C; could be stubbed if E ships first); WP-D (implied logic — fitness-property format is established in D; could be stubbed if E ships first)
-
----
-
-#### WP-F: RESEARCH Skill + Reviewer Agent + Orchestrator — Question-Isolation Protocol
-
-**Status:** ✅ Shipped — 9dd999e (2026-04-23). `skills/research/SKILL.md` Step 1 rewritten as the Question-Isolation Entry Protocol with five substeps (1.1 articulate question in research log as first content, 1.2 agent composes specific-artifact-named constraint-removal prompt + user responds, 1.3 research-methods-reviewer dispatch with four criteria, 1.4 revise or accept, 1.5 research loop begins); classified first-line structural (Skill-Structure Layer per ADR-067) with cognitive component carried in prompt wording; greenfield and irreplaceable-artifact cases covered; honest scope-of-claim for pre-semantic priming residual. `agents/research-methods-reviewer.md` gained the fourth criterion (Incongruity Surfacing); Input section now describes the constraint-removal response as part of the reviewable question set; Process §3 extended so prior-art criterion can be satisfied by the constraint-removal response; Output template adds constraint-removal review and incongruity-surfacing sections. `skills/rdd/SKILL.md` Question Toolkit expanded from six to seven forms with the new Constraint-removal row (primary for research entry; available throughout cycle); the six existing forms remain unchanged. All 8 scenarios for ADR-082 trace to skill, agent, and orchestrator text.
-
-**Objective:** Extend `skills/research/SKILL.md` with the 5-step question-isolation entry protocol (ADR-082). Extend `agents/research-methods-reviewer.md` with the fourth review criterion (incongruity surfacing). Extend `skills/rdd/SKILL.md` Question Toolkit with the seventh form (constraint-removal).
-
-**Changes:**
-- `skills/research/SKILL.md` — new Step 0 / entry protocol (5 steps: question articulation, constraint-removal response, reviewer dispatch, revise/accept, research loop begins); classified explicitly as first-line structural (Skill-Structure Layer per ADR-067) with cognitive component
-- `agents/research-methods-reviewer.md` — fourth criterion (incongruity surfacing) added to the existing three (need-vs-artifact framing, embedded conclusions, prior-art treatment); reviewer's scope expanded to evaluate the question set as combined research questions + constraint-removal response
-- `skills/rdd/SKILL.md` Question Toolkit — seventh form added: "What would we build if [key infrastructure component] were not available?" — primary at research entry; existing six forms unchanged
-
-**Scenarios covered:** Question-Isolation Protocol (ADR-082) all eight scenarios
-
-**Dependencies:** None — independent (skill + agent + orchestrator text changes)
-
----
-
-#### WP-G: CONFORM Skill Cycle-Shape Audit Operation
-
-**Status:** ✅ Shipped — 67b5ddf (2026-04-23). `skills/conform/SKILL.md` Operations table expanded from seven to eight with the new Cycle-Shape Audit row; Operation 8 section added with the four-step workflow (Detect / Read and Infer / Prompt / Write Migrated Entry), preservation + non-rewrite guarantees, validation case naming Cycle 8 (rdd-pair), and three primary entry points (resuming pre-v0.7.0 paused cycles, unarchiving from `docs/cycle-archive/`, preparing corpora with multiple legacy cycles). Pause Log migration record format specified. All 6 WP-G-side ADR-081 scenarios trace to Operation 8; scenario #1 (hook legacy detection) is WP-B hook-side work already shipped.
-
-**Objective:** Extend `skills/conform/SKILL.md` with a new audit operation (cycle-shape audit) that detects pre-ADR-072 cycle-status.md and walks the user through field migration, preserving prose body verbatim (ADR-081).
-
-**Changes:**
-- `skills/conform/SKILL.md` — new operation in the operations table; four-step workflow (detect / read-and-infer / prompt-user / write-migrated-entry); validation case is Cycle 8 (rdd-pair, paused at MODEL, pre-hooks)
-
-**Scenarios covered:** Grandfathered-Rule Migration (ADR-081) audit + migration scenarios + archive-to-active edge case
-
-**Dependencies:** WP-A (hard — needs the new Cycle Stack format as the migration target)
-
----
-
-#### WP-H: Integration Verification + Release Housekeeping
-
-**Objective:** Verify the 13 boundary integration tests, the Cycle 016 acceptance scenarios, and the conformance-scan re-run. Address Issue #15 (PostToolUse regex defect) as a parallel pure-implementation fix. Live-validate Issue #10's ADR-071 mitigations during this cycle's BUILD work as the implementation evidence.
-
-**Changes:**
-- Integration verification: run all 13 new boundary integration tests against the modified system; capture results in `docs/housekeeping/audits/integration-verification-016.md`
-- Issue #15 fix: extend `hooks/scripts/post_tool_use.py` (or equivalent dispatch logger) regex to match markdown-formatted `Output path:` lines (bold, backticked, list-item variants) per the seven test fixtures specified in the issue body
-- Issue #10 live validation: BUILD's normal stewardship work exercises the ADR-071 lifecycle-composition mitigations; capture observed behavior as field evidence
-- Conformance-scan re-run: dispatch `/rdd-conform` after WP-A through WP-G complete; verify the 40 gaps from `conformance-scan-decide-016.md` have closed
-- Release housekeeping: bump plugin version in `.claude-plugin/plugin.json`; update README; release notes referencing all ADRs and Issues addressed
-
-**Scenarios covered:** Integration scenarios across all WPs; Issue #15 acceptance fixtures; Issue #10 live validation observations
-
-**Dependencies:** WP-A through WP-G (hard — verification requires the implementations to exist)
-
-## Dependency Graph
-
+**Dependency graph (as-built):**
 ```
-WP-A (cycle-status.md schema) ──┬── hard ──► WP-B (hook layer)
-                                │
-                                └── hard ──► WP-G (cycle-shape audit)
+WP-A (cycle-status schema) ──┬── hard ──► WP-B (hook layer)
+                             └── hard ──► WP-G (cycle-shape audit)
 
-WP-C (DECIDE skill) ────────── implied ────► WP-E (BUILD skill — criteria table consumer)
-
-WP-D (ARCHITECT skill) ─────── implied ────► WP-E (BUILD skill — fitness property consumer)
-
+WP-C (DECIDE skill) ────── implied ────► WP-E (BUILD skill — criteria table consumer)
+WP-D (ARCHITECT skill) ─── implied ────► WP-E (BUILD skill — fitness property consumer)
 WP-F (RESEARCH + reviewer + orchestrator) — independent
 
-WP-A, WP-B, WP-C, WP-D, WP-E, WP-F, WP-G ──── all hard ────► WP-H (integration verification + release)
+WP-A through WP-G ───────── all hard ───► WP-H (integration verification + release)
 ```
 
-**Classification key:**
-- **Hard dependency:** B cannot be built without A. Examples: WP-B's hook reads the schema WP-A defines; WP-G's audit migrates *to* the schema WP-A defines; WP-H's integration verification requires WP-A through WP-G to exist as targets.
-- **Implied logic:** Building A before B is simpler because B references concepts/formats A defines, but a stub is possible. Examples: WP-E's Step 5.5 reads the criteria-table format from WP-C, but BUILD-skill-only changes can be stubbed against a fixture if WP-C is delayed; WP-E's prompt 4 reads the fitness-property format from WP-D, similarly stubbable.
-- **Open choice:** Genuinely independent. Examples: WP-A and WP-C and WP-D and WP-F can all be started in any order — no shared substrate, no read/write coupling.
-
-## Transition States
-
-### TS-1: Hook-layer changes operational (after WP-A + WP-B)
-
-cycle-status.md uses the multi-cycle Cycle Stack format; the Stop hook parses it correctly; in-progress-gate cascade-blocks (the Cycle 015 failure mode) are prevented; mini-cycles get scope-adaptive enforcement via `applicable_when` preconditions; legacy pre-ADR-072 cycles get grandfathered advisory mode.
-
-System is coherent at this state: existing skill workflows continue to operate as today; the new infrastructure is available but skill-side workflows have not yet adopted the new patterns. The methodology has fixed its hook-layer pain points (Cycle 015's most acute concerns) without requiring skill adoption.
-
-### TS-2: Skill-side methodology amendments operational (after WP-C + WP-D + WP-E + WP-F + WP-G)
-
-DECIDE produces criteria tables, supersession headers, preservation scenarios; ARCHITECT enforces fitness decomposition; BUILD verifies criteria at specified layers and surfaces applicability checks at pattern reuse; RESEARCH applies the question-isolation protocol; CONFORM offers cycle-shape audit migration.
-
-If TS-2 ships before TS-1: the skill-side amendments operate against the legacy cycle-status format under grandfathered advisory mode (ADR-081 covers this) — methodology remains coherent but the hook-layer pain points persist.
-
-### TS-3: Full Cycle 016 operational (after WP-H)
-
-All boundary integration tests passing; Issue #15 regex defect fixed; Issue #10 live-validated. Plugin version bumped; release notes published. The methodology has gained: criterion-level verification, ADR lifecycle discipline, preservation coverage, fitness decomposition, applicability checks at pattern reuse, multi-cycle composition, non-interrupting in-progress-gate handling, scope-adaptive enforcement, grandfathered legacy support, and question-isolation at research entry.
-
-## Open Decision Points
-
-- **Order of TS-1 vs. TS-2.** Both are coherent transition states. The methodology has a slight bias toward TS-1 first because the in-progress-gate cascade-block is the most acute live-demonstrated failure (Cycle 015 BUILD gate), but TS-2 first is also viable since legacy cycles are advisory regardless. Builder choice based on context.
-- **Whether WP-F (question-isolation protocol) ships in this cycle or is deferred.** F has the highest cognitive overhead among the WPs and was reclassified at the DECIDE gate (essay §10 said second-line cognitive; ADR-082 reclassified to first-line structural). If the reclassification proves contested in practice, F could be deferred to a future cycle. If it ships now, the field evidence is captured in this cycle's BUILD.
-- **Whether Cycle 014 PLAY is folded into this cycle's BUILD or kept deferred.** PLAY remains deferred from Cycle 014; this cycle's WPs do not require PLAY work. Builder may choose to combine if scoped appropriately.
-
-## Completed Work Log
+---
 
 ### Cycle 15: Lifecycle Composition in Build Stewardship (+ ADR-072 mid-cycle)
 
 **Derived from:** ADRs 071, 072, Issue #10
-**Cycle type:** Methodology amendment (mini-cycle: DECIDE + BUILD only; RESEARCH / DISCOVER / MODEL / ARCHITECT skipped by explicit scoping)
+**Cycle type:** Methodology amendment (mini-cycle: DECIDE + BUILD only)
 **Shipped across:** v0.7.3
 
 | WP | Title | Status | Release |
 |----|-------|--------|---------|
 | A | Domain model glossary — Lifecycle Composition / Shared Mutable State / Lifecycle Boundary | Complete | v0.7.3 |
-| B | ADR-071 build skill edits — three-sided catch (COMPOSABLE TESTS §Lifecycle Composition + Step 5 anchor + Stewardship Tier 1 sub-item 6e) | Complete | v0.7.3 |
+| B | ADR-071 build skill edits — three-sided catch | Complete | v0.7.3 |
 | C | ADR-072 hook script — Stop hook honors Skipped phases and Paused fields | Complete | v0.7.3 |
-| D | ADR-072 convention documentation — cycle-status.md template + Pause Log in orchestrator skill | Complete | v0.7.3 |
+| D | ADR-072 convention documentation — cycle-status.md template + Pause Log | Complete | v0.7.3 |
 | E | Integration verification + housekeeping | Complete | v0.7.3 |
 
 **Summary:**
-- Issue #10 named a methodology gap: the build skill's test and stewardship guidance addresses integration risk at **type boundaries** (mock vs. real) and **structural boundaries** (wrong module, wrong direction) but not **lifecycle boundaries** — where shared mutable state, ordered operations, and ambiguous ownership across components determine correctness
-- **ADR-071** added *Lifecycle Composition* as a named category in the build skill, anchored at three existing concrete workflow steps to form a three-sided catch: design-time prompt (COMPOSABLE TESTS §Lifecycle Composition), verification-time anchor (Step 5 lifecycle-sequence guidance), and review-time detector (Stewardship Tier 1 Test quality sub-item 6e Shared mutable state). Three glossary entries added to the domain model (Lifecycle Composition, Shared Mutable State, Lifecycle Boundary)
-- **ADR-072 scope creep surfaced mid-cycle** in response to a live hook-loop failure: the Stop hook (ADR-064) fired 60+ times in succession while the user was away mid-DECIDE gate, because the methodology had no structural representation of skipped phases (mini-cycle shape) or paused cycles (user-away state). ADR-072 added two optional header fields to cycle-status.md (`**Skipped phases:**`, `**Paused:**`) plus a Pause Log section, and extended the Stop hook to honor them
-- **Known gap surfaced by BUILD-entry susceptibility snapshot, documented and deferred:** ADR-072's two-field design covers user-away and phase-skipped cases but not the in-gate-conversation mini-cycle case (no cycle-status.md field can be set before Stop fires between agent turns during an active gate). The gap manifested live twice during the DECIDE → BUILD gate itself. Documented in scenarios.md (deferred scenario under ADR-072 feature block), ADR-072 §Consequences (Negative), and cycle-status.md Deferred Work. Candidate follow-up: hook-side session-scoped block-then-advisory, or a third cycle-status.md marker (`**Gate in progress:**`)
-- Seven argument-audit passes on ADR-071 + ADR-072 + scenarios (clean on pass 7). Two susceptibility snapshots (`015-decide` pre-gate, `015-build` at BUILD entry — the latter producing a Grounding Reframe on the ADR-072 coverage gap)
-- Live smoke test: Cycle 015's own cycle-status.md gained `**Skipped phases:** research, discover, model, architect` as a permanent cycle-shape declaration; temporarily setting Phase=research confirmed the hook's Skipped phases bypass works on the real project structure. Six additional fixture tests (paused bypass, skipped non-match, full-pipeline regression, case-insensitive matching, session-scoped notice suppression) all pass
-
-**Dependency graph (as-built):**
-```
-WP-A (glossary)
-  │
-  hard dep
-  │
-  ▼
-WP-B (ADR-071 skill edits)     WP-C (hook)     WP-D (convention)
-                    │              │              │
-                    └──────────────┴──────────────┘
-                                   │
-                              hard dep
-                                   │
-                                   ▼
-                            WP-E (integration)
-```
-
-**Observed pattern:** The cycle dog-fooded the failure mode it was designing a fix for. The DECIDE gate's in-progress Stop hook loop was the empirical evidence that ADR-072's framing was under-specified — and a BUILD-entry susceptibility snapshot dispatched in a separate agent context caught the gap that the in-conversation agent had drifted past. Tier 1 Architectural Isolation (Cycle 9) firing on its own evidence within a cycle about extending the catchment.
+- Issue #10 named a methodology gap: the build skill's test and stewardship guidance addressed integration risk at type boundaries (mock vs. real) and structural boundaries (wrong module, wrong direction) but not lifecycle boundaries — where shared mutable state, ordered operations, and ambiguous ownership across components determine correctness.
+- **ADR-071** added Lifecycle Composition as a named category in the build skill, anchored at three concrete workflow steps (design-time prompt, verification-time anchor, review-time detector).
+- **ADR-072 scope creep surfaced mid-cycle** in response to a live hook-loop failure: the Stop hook fired 60+ times in succession while the user was away mid-DECIDE gate. ADR-072 added two optional header fields to cycle-status.md (`**Skipped phases:**`, `**Paused:**`) plus a Pause Log section, and extended the Stop hook to honor them.
+- Known gap surfaced and deferred: ADR-072's two-field design did not cover the in-progress-gate case — addressed by Cycle 016 ADR-079 with `**In-progress gate:**` field and non-interrupting Stop predicate.
 
 ---
 
@@ -243,35 +250,13 @@ WP-B (ADR-071 skill edits)     WP-C (hook)     WP-D (convention)
 | F | Verification Pass — behavioral + migration dogfood + remediation | Complete | v0.7.2 |
 
 **Summary:**
-- Added **Invariant 8** (mechanism execution must be structurally anchored) via domain model Amendment 17, with broad scope covering any unconditional structural mechanism the methodology specifies
-- Built the three-substrate enforcement architecture: Skill-Structure Layer (per-phase susceptibility snapshot dispatch at bottom-third position in all 8 phase skills with canonical prompt skeleton), Harness Layer (YAML manifest + PostToolUse dispatch logger + Stop hook compound check against per-phase manifest, with advisory/enforcement mode split and Fails-Safe-to-Allow), User-Tooling Layer (AID gate reflection note graduated from conversational form to artifact at canonical path)
-- Added `/rdd-conform migrate` 10-step subcommand that moves `docs/essays/audits/` → `docs/housekeeping/audits/`, `docs/cycle-status.md` → `docs/housekeeping/cycle-status.md`, creates `docs/housekeeping/gates/`, mechanically substitutes path references across the corpus (including `docs/system-design.md` per Finding #4), writes `docs/housekeeping/.migration-version` to transition the Stop hook to enforcement mode, and produces rollback manifest and summary report
-- Added three new `/rdd-conform` audit scopes (housekeeping directory organization, gate reflection note template alignment, dispatch prompt format) and the `mechanism_type: user-tooling` manifest field for distinguishing in-context orchestrator artifacts from isolated-subagent-produced artifacts
-- Verified 57 Cycle 10 scenarios (44 v0.7.0 + 13 v0.7.1) with WP-F surfacing **nine latent defects** in the hook infrastructure that the synthetic test suite had missed. All nine fixes committed inline during verification: Stop hook schema, E1 cycle-sensitivity, JSON null vs string, migrate file list, mechanism_type distinction, migrate internal link rewrite, plugin namespace prefix matching, plugin cache drift (documented manual sync procedure), and stdin input delivery across all hooks (the deepest defect — every input-dependent RDD hook had been silently non-functional in Claude Code's actual runtime since v0.6.0 because synthetic tests invoked scripts directly with `$1` while the runtime delivers payload via stdin)
-- **First live operational Tier 1 dispatch in project history** at the build phase boundary: the ADR-065 Skill-Structure anchor fired without ceremonial attention, produced a substantive snapshot, was logged by the PostToolUse hook, cross-referenced by the Stop hook compound check, and cleared the enforcement-mode block. ARCHITECT phase open question 1 answered empirically
-- **First gate reflection note** produced by the User-Tooling Layer graduated-artifact mechanism at `docs/housekeeping/gates/014-build-gate.md`
-- **Three preserved historical snapshots** at `docs/housekeeping/audits/` (`.pre-prefix-fix.md`, `.post-prefix-pre-stdin.md`, and canonical `susceptibility-snapshot-014-build.md`) document the defect surfacing through WP-F verification
-- Migration dogfood: the RDD plugin's own corpus migrated successfully (58 files changed — 40 moves + 15 reference updates + 2 new infrastructure files + 1 cycle-status move). The methodology is the first user of its own migration tool
-- Full RDD cycle: research (Essay 014, 4 spike reports, 2 literature reviews, 5 ceremonial susceptibility snapshots, citation/argument/framing audited) → discover (product discovery updated with per-entry Grounding Reframe pass) → model (22 new concepts, Invariant 8, Amendment 17) → decide (8 ADRs, ~45 scenarios, interaction specs) → architect (system design v12.0 Amendment #13, Appendix A with 8 per-phase briefs, roadmap Cycle 10) → build (manifest + 2 new hooks + 6 phase skill amendments + 4 WP-D orchestrator amendments + /rdd-conform migrate 10-step subcommand + 9 verification-driven remediation fixes)
-
-**Dependency graph (as-built):**
-```
-WP-A (Harness Layer)     WP-B (Skill-Structure)     WP-C (User-Tooling)     WP-D (Orchestrator)
-       │                         │                         │                       │
-  open choice              open choice                open choice             open choice
-       │                         │                         │                       │
-       └─────────────────────────┴─────────────────────────┴───────────────────────┘
-                                               │
-                                          hard dep
-                                               │
-                                WP-E (Migrate Subcommand, v0.7.1 atomic)
-                                               │
-                                          hard dep
-                                               │
-                                WP-F (Verification — v0.7.2 remediation)
-```
-
-**Observed pattern:** WP-F verification produced six commits worth of remediation that the synthetic test suite had missed, all surfacing because the methodology's own enforcement held under runtime conditions. The methodology caught its own implementation defects running against itself — both the catastrophic implementation quality signal (nine latent defects shipped) and the vindicating methodology design signal (the enforcement architecture detected them) are true simultaneously.
+- Added **Invariant 8** (mechanism execution must be structurally anchored) via domain model Amendment 17.
+- Built the three-substrate enforcement architecture: Skill-Structure Layer, Harness Layer, User-Tooling Layer.
+- Added `/rdd-conform migrate` 10-step subcommand for the housekeeping migration.
+- Added three new audit scopes (housekeeping organization, gate reflection note template alignment, dispatch prompt format).
+- WP-F verification surfaced **nine latent defects** in the hook infrastructure missed by the synthetic test suite, all fixed inline.
+- **First live operational Tier 1 dispatch in project history** at the build phase boundary.
+- **Note (Cycle 017 amendment):** ADR-064 / ADR-067 / ADR-070 amended in Cycle 017 (advisory-disposition demotion + path migration). The Cycle 10 architecture remains foundational; the Cycle 017 amendments calibrate the enforcement disposition and path placement.
 
 ---
 
@@ -287,41 +272,13 @@ WP-A (Harness Layer)     WP-B (Skill-Structure)     WP-C (User-Tooling)     WP-D
 | D | Orchestrator Integration | Complete |
 | E | Verification Pass | Complete |
 
-**Summary:**
-- Created research-methods-reviewer agent (belief-mapping question review, embedded conclusion detection, premature narrowing flags)
-- Created susceptibility-snapshot-evaluator agent (isolated signal evaluation, Grounding Reframe recommendations)
-- Extended argument auditor with framing audit (three structural questions, source material reading, two-section output)
-- Extended AID cycle across orchestrator + 6 phase skills: susceptibility signal observation, Question Toolkit with goal-first composition (6 research-grounded forms), assertion-aware observation, belief-mapping as Inversion Principle form
-- Added Two-Tier Sycophancy Resistance (Tier 1 unconditional: subagent audits, snapshots, research methods review; Tier 2 context-responsive: question forms, constraint intensity, assertion-aware observation)
-- Added Grounding Reframe pattern, essay-as-checkpoint enforcement, commitment gating
-- Updated cross-phase integration rules for new mechanisms
-- Verification: 28 scenarios verified (6 gaps found and fixed during first pass), 16 fitness criteria checked
-- Full RDD cycle: research (Essay 013, spike experiment, citation/argument audited) → discover (product discovery updated) → model (18 concepts, Amendment 16) → decide (8 ADRs, ~45 scenarios, interaction specs) → architect (system design v11.0, roadmap) → build (2 agents created, 1 agent amended, 7 skill files amended)
-
-**Dependency graph (as-built):**
-```
-WP-A (New Agents)          WP-B (Framing Audit Extension)
-       │                          │
-  open choice                open choice
-       │                          │
-       └──────── hard dep ────────┘
-                    │
-             WP-C (AID Extension)
-                    │
-               hard dependency
-                    │
-             WP-D (Orchestrator)
-                    │
-               hard dependency
-                    │
-             WP-E (Verification)
-```
+**Summary:** Two new specialist subagents (research-methods-reviewer, susceptibility-snapshot-evaluator); argument auditor extended with framing audit; AID cycle extended with susceptibility signals + Question Toolkit + assertion-aware observation; Two-Tier Sycophancy Resistance principle (Tier 1 unconditional + Tier 2 context-responsive); Grounding Reframe pattern; essay-as-checkpoint enforcement.
 
 ---
 
 ### Cycle 8: Pair-RDD (paused)
 
-*Cycle 8 research complete (Essay 012). Cycle paused — Cycle 9 (sycophancy) took priority.*
+*Cycle 8 research complete (Essay 012). Cycle paused — Cycle 9 (sycophancy) took priority. Resume requires reconciling corpus intersection vs. live pairing session as two distinct design problems.*
 
 ---
 
@@ -332,46 +289,13 @@ WP-A (New Agents)          WP-B (Framing Audit Extension)
 | WP | Title | Status |
 |----|-------|--------|
 | A | Context Gathering Protocol + Conformance Fixes | Complete |
-| B | Debug Skill (`skills/debug/SKILL.md`) | Complete |
-| C | Refactor Skill (`skills/refactor/SKILL.md`) | Complete |
-| D | Build Skill Rewrite (`skills/build/SKILL.md`) | Complete |
+| B | Debug Skill | Complete |
+| C | Refactor Skill | Complete |
+| D | Build Skill Rewrite | Complete |
 | E | Orchestrator Integration | Complete |
 | F | Verification Pass | Complete |
 
-**Summary:**
-- Defined shared Context Gathering protocol in orchestrator (5-step protocol with per-skill adaptation)
-- Created `/rdd-debug` with hypothesis-trace-understand-fix cycle, naming the misunderstanding as non-negotiable step
-- Created `/rdd-refactor` with Three-Level Refactor (smells → patterns → methodology), AI Smell Taxonomy (classical + AI-exacerbated), AI hygiene prompts (novel patterns — separate from detection)
-- Rewrote `/rdd-build` as outer loop: context-reconstructive mode, work decomposition from available sources, session artifacts (`session/` directory), time budget mechanism, seamless mode-shift composition to debug/refactor/review
-- Updated orchestrator: Available Skills includes debug and refactor, Artifacts Summary includes session artifacts, cross-phase integration describes composition
-- Updated `/rdd-review` with MODE SHIFT FROM BUILD section and Context Gathering protocol reference (ADR-054 supersedes ADR-046)
-- Fixed conformance violations: interaction-specs.md in build read list, /rdd-play in build NEXT PHASE
-- Verification: 2 structural + 5 cosmetic findings from conformance scan, all resolved
-- Full RDD cycle: research (Essay 011, citation/argument audited) → discover (product discovery updated — Everyday Developer stakeholder) → model (24 concepts, Amendment 15) → decide (7 ADRs, ~50 scenarios, interaction specs) → architect (system design v10.0, roadmap) → build (4 skill files created/rewritten + orchestrator)
-
-**Dependency graph (as-built):**
-```
-WP-A (Protocol + Fixes)
-       │
-  hard dependency
-       │
-       ├──────────────────────────┐
-       │                          │
-WP-C (Refactor Skill)     WP-B (Debug Skill)
-  open choice                 open choice
-       │                          │
-       └──── implied logic ───────┘
-                    │
-             WP-D (Build Rewrite)
-                    │
-               hard dependency
-                    │
-             WP-E (Orchestrator)
-                    │
-               hard dependency
-                    │
-             WP-F (Verification)
-```
+**Summary:** Shared Context Gathering protocol; `/rdd-debug` (hypothesis-trace-understand-fix); `/rdd-refactor` (Three-Level Refactor + AI Smell Taxonomy); `/rdd-build` rewrite as outer loop with mode-shift composition; orchestrator integration.
 
 ---
 
@@ -381,47 +305,18 @@ WP-C (Refactor Skill)     WP-B (Debug Skill)
 
 | WP | Title | Commit | Status |
 |----|-------|--------|--------|
-| A | Review Skill File (`skills/review/SKILL.md`) | d9a9937 | Complete |
+| A | Review Skill File | d9a9937 | Complete |
 | B | Build Skill Stewardship Callout | d9a9937 | Complete |
 | C | Orchestrator Integration | d9a9937 | Complete |
 | D | Verification Pass | d9a9937 | Complete |
 
-**Summary:**
-- Created `/rdd-review` utility skill with two operating modes (corpus-grounded, context-reconstructive), three-tier question-driven output, test quality evaluation with mutation testing lens, time-budget adaptation (ZPD), and reviewer autonomy safeguards
-- Added stewardship callout in build skill referencing `/rdd-review` after Tier 1 checks
-- Added `/rdd-review` to orchestrator Available Skills table
-- All 40 scenarios verified, 5 fitness criteria checked, plugin discovers 13 skills
-- Full RDD cycle: research (Essay 010, citation/argument audited) → discover (product discovery updated) → model (14 concepts added, Amendment 14) → decide (5 ADRs, 40 scenarios, interaction specs) → architect (system design v9.0, roadmap) → build (skill file + integration)
-
-**Dependency graph (as-built):**
-```
-WP-A (Review Skill)
-       │
-  implied logic
-       │
-WP-B (Build Callout)    WP-C (Orchestrator)
-       open choice              open choice
-              │                        │
-              └──── hard dependency ───┘
-                         │
-                  WP-D (Verification)
-```
+**Summary:** `/rdd-review` utility skill with two operating modes; three-tier question-driven output; test quality evaluation with mutation testing lens; time-budget adaptation; reviewer autonomy safeguards.
 
 ---
 
 ### Cycle 5: Adaptive Epistemic Gates
 
-**Derived from:** ADRs 040-042, Essay 009
-
-| WP | Title | Commit | Status |
-|----|-------|--------|--------|
-| A | AID Cycle in All Gate Sections | — | Pending |
-| B | Reflection Time Naming | — | Pending |
-| C | Orchestrator Gate Protocol Update | — | Pending |
-| D | /rdd-about Utility Skill | — | Pending |
-| E | Verification Pass | — | Pending |
-
-**Note:** Cycle 5 work packages are carried forward from the prior roadmap. They are independent of Cycle 7 (composable skill family) and can be built in any order relative to it.
+**Derived from:** ADRs 040-042, Essay 009 (work pending in roadmap as carried forward)
 
 ---
 
@@ -431,31 +326,10 @@ WP-B (Build Callout)    WP-C (Orchestrator)
 
 | WP | Title | Commit | Status |
 |----|-------|--------|--------|
-| A | Interaction Specification Layer (Decide Skill) | db28ebb | Complete |
+| A | Interaction Specification Layer | db28ebb | Complete |
 | B | Play Skill | db28ebb | Complete |
 | C | Orchestrator and Downstream Integration | db28ebb | Complete |
 | D | Verification Pass | db28ebb | Complete |
-
-**Summary:**
-- Created Play Skill with three-movement experiential discovery (inhabit → explore → reflect), gamemaster behavior, Stanislavski inhabitation structure
-- Added interaction specification production to Decide Skill
-- Updated orchestrator with PLAY in pipeline, state tracking, artifact summary, cross-phase play feedback integration
-- Updated discover (reads field notes), synthesize (reads field notes), epistemic-gate-enforcer (recognizes play subsumes gate)
-- All 36 scenarios verified by 3 parallel agents. Plugin discovers 10 skills.
-
-**Dependency graph (as-built):**
-```
-WP-A (Interaction Specs)     WP-B (Play Skill)
-       open choice                open choice
-              │                        │
-              └──── implied logic ──────┘
-                         │
-                  WP-C (Orchestrator + Downstream)
-                         │
-                    hard dependency
-                         │
-                  WP-D (Verification)
-```
 
 ---
 
@@ -466,104 +340,23 @@ WP-A (Interaction Specs)     WP-B (Play Skill)
 | WP | Title | Commit | Status |
 |----|-------|--------|--------|
 | A | Plugin Repository and Manifest | 22bf389 | Complete |
-| B | Auditor Agents (citation-auditor, argument-auditor) | 4cca9b5, f7a3ed5 | Complete |
-| C | Research Helper Agents (lit-reviewer, spike-runner) | 5f2faec, a976de0 | Complete |
-| D | Infrastructure Agents (conformance-scanner, orientation-writer) | 5f2faec, a976de0 | Complete |
-| E | Cross-Cutting Hooks (5 hooks) | 9203ad2 | Complete |
+| B | Auditor Agents | 4cca9b5, f7a3ed5 | Complete |
+| C | Research Helper Agents | 5f2faec, a976de0 | Complete |
+| D | Infrastructure Agents | 5f2faec, a976de0 | Complete |
+| E | Cross-Cutting Hooks | 9203ad2 | Complete |
 | F | Research Log Archival Update | 37884e6 | Complete |
 | G | Namespace Migration and Artifact Corpus | c97fbec, 315bdb8, 6349c67 | Complete |
-| — | Skill renames (rdd-product → rdd-discover, rdd-synthesis → rdd-synthesize) | a7d5f48, e6724ac | Complete |
-| — | Marketplace distribution (marketplace.json) | fe92881 | Complete |
-| — | README and manifesto | 59a2607+ | Complete |
 
-**Summary:**
-- Created `nrgforge/rdd` plugin repository with four-layer architecture: 9 skills, 6 specialist subagents, 5 cross-cutting hooks
-- Extracted citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner as isolated agents with artifact-mediated communication
-- Implemented invariant-reminder, epistemic-gate-enforcer, skill-activator, orientation-trigger, and sizing-check hooks
-- Renamed skills to verb forms matching the pipeline (discover, synthesize)
-- Renamed skill directories for clean plugin namespacing (drop `rdd-` prefix)
-- Discovered runtime uses hyphen separators not colons (ADR-034 amended)
-- Added marketplace.json for distribution via `/plugin marketplace add nrgforge/rdd`
-- Published manifesto at nrgforge.github.io/rdd/
-
-**Dependency graph (as-built):**
-```
-A (Plugin Repo) ←── prerequisite for all
-     │
-     ├── B (Auditor Agents)           F (Log Archival)
-     │        open choice                  independent
-     ├── C (Research Helper Agents)
-     │        open choice
-     ├── D (Infrastructure Agents)
-     │        open choice
-     ├── E (Cross-Cutting Hooks)
-     │        open choice
-     ├── G (Namespace + Corpus)
-     │        implied logic
-     │
-     └── Skill renames + marketplace + manifesto (emerged during build)
-```
+**Summary:** Created `nrgforge/rdd` plugin repository with four-layer architecture (9 skills + 6 specialist subagents + 5 cross-cutting hooks). Skill renames, marketplace distribution, manifesto.
 
 ---
 
 ### Cycle 2: Synthesis Enrichment
 
-**Derived from:** ADRs 027-030, Essay 006
-
-| WP | Title | Commit | Status |
-|----|-------|--------|--------|
-| A | Synthesis Skill — Framing Conversation Overhaul | a4abbf3 | Complete |
-| B | Synthesis Skill — Two-Register Outline | a4abbf3 | Complete |
-| C | Synthesis Skill — Re-Entry Logic | a4abbf3 | Complete |
-| D | Synthesis Conformance Verification | a4abbf3 | Complete |
-
-**Summary:**
-- Overhauled synthesis framing conversation with four-dimension navigation (discovery type, narrative form, audience constraint, epistemic posture) via structural experiments (a4abbf3)
-- Added two-register outline production (argumentative backbone + curatorial arrangement) and re-entry logic for RESEARCH when structural experiments surface gaps
-- All 31 synthesis enrichment scenarios verified, 7 fitness criteria checked, 3 boundary integration tests passed
-
-**Dependency graph (as-built):**
-```
-A (Framing Overhaul)
-     ├───── implied ─── B (Two-Register Outline)
-     ├───── implied ─── C (Re-Entry Logic)
-     └──── hard dep ────┴──── hard dep
-                        │
-                 D (Verification Pass)
-```
+**Derived from:** ADRs 027-030, Essay 006 (commit a4abbf3)
 
 ---
 
 ### Cycle 1: Roadmap, Field Guide, Conformance, Scoped Cycles
 
-**Derived from:** ADRs 022-026, Essay 005
-
-| WP | Title | Commit | Status |
-|----|-------|--------|--------|
-| A | Architect Skill — Roadmap Generation | 4ad5f24 | Complete |
-| B | Conformance Audit Skill | 4ad5f24 | Complete |
-| C | Build Skill — Field Guide Generation | 4ad5f24 | Complete |
-| D | Orchestrator — Artifact Hierarchy, Document Sizing, Available Skills | 4ad5f24 | Complete |
-| E | Orchestrator — Scoped Cycles and Deep Work Tool Framing | 4ad5f24 | Complete |
-| F | Verification Pass | 4ad5f24 | Complete |
-
-**Summary:**
-- Added roadmap generation to architect skill, field guide generation to build skill, and conformance audit as a new utility skill (4ad5f24)
-- Updated orchestrator with three-tier artifact hierarchy (roadmap at Tier 2, field guide at Tier 3), document sizing heuristics, scoped cycle workflow pattern, and deep work tool framing
-- All 33 scenarios (652-867) verified, 13 fitness criteria checked, 7 boundary integration tests passed
-
-**Dependency graph (as-built):**
-```
-A (Roadmap Gen)         B (Conformance Audit)         C (Field Guide Gen)
-     └───── implied ────────┴──── implied ────────────────┘
-                            │
-                     D (Orchestrator: Artifacts + Sizing)
-                            │
-                      implied logic
-                            │
-                     E (Orchestrator: Scoped Cycles)
-                            │
-                      hard dependency
-                            │
-                     F (Verification Pass)
-```
+**Derived from:** ADRs 022-026, Essay 005 (commit 4ad5f24)
