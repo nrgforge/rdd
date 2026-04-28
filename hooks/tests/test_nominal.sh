@@ -36,8 +36,8 @@ write_gate_reflection 016 build
 write_susceptibility_snapshot 016 build
 
 # Seed dispatch log with entries matching the mechanisms (so compound check passes)
-cat > "${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl" <<EOF
-{"timestamp":"2026-04-23T00:00:00Z","mechanism":"susceptibility-snapshot-evaluator","expected_path":"docs/housekeeping/audits/susceptibility-snapshot-016-build.md"}
+cat > "${FAKE_REPO}/.rdd/dispatch-log.jsonl" <<EOF
+{"timestamp":"2026-04-23T00:00:00Z","mechanism":"susceptibility-snapshot-evaluator","expected_path":".rdd/audits/susceptibility-snapshot-016-build.md"}
 EOF
 
 run_hook test-nominal

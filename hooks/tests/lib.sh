@@ -36,8 +36,9 @@ fail() { printf '  %sFAIL%s %s\n' "$C_RED" "$C_RESET" "$1"; FAILS=$((FAILS+1)); 
 # --- Fake repo setup ---------------------------------------------------------
 setup_fake_repo() {
     FAKE_REPO="$(mktemp -d -t rdd-hook-test-XXXXXX)"
-    mkdir -p "${FAKE_REPO}/docs/housekeeping/audits"
-    mkdir -p "${FAKE_REPO}/docs/housekeeping/gates"
+    # ADR-085 canonical placement: infrastructure under .rdd/ at repo root.
+    mkdir -p "${FAKE_REPO}/.rdd/audits"
+    mkdir -p "${FAKE_REPO}/.rdd/gates"
     mkdir -p "${FAKE_REPO}/docs/decisions"
     mkdir -p "${FAKE_REPO}/docs/essays"
     mkdir -p "${FAKE_REPO}/hooks/manifests"
@@ -64,7 +65,7 @@ write_manifest() {
 }
 
 write_migration_marker() {
-    printf '%s\n' "${1:-0.7.1}" > "${FAKE_REPO}/docs/housekeeping/.migration-version"
+    printf '%s\n' "${1:-0.7.1}" > "${FAKE_REPO}/.rdd/.migration-version"
 }
 
 write_gate_reflection() {
@@ -72,7 +73,7 @@ write_gate_reflection() {
     # pass. $1 = cycle number (e.g. 016), $2 = phase name (e.g. build).
     # Content is padded to clear the manifest's 800B min_bytes floor.
     local cycle="$1" phase="$2"
-    cat > "${FAKE_REPO}/docs/housekeeping/gates/${cycle}-${phase}-gate.md" <<EOF
+    cat > "${FAKE_REPO}/.rdd/gates/${cycle}-${phase}-gate.md" <<EOF
 # Gate Reflection: Cycle ${cycle} ${phase} → next
 
 **Date:** 2026-04-23
@@ -113,7 +114,7 @@ write_susceptibility_snapshot() {
     # Writes a plausible susceptibility snapshot at the canonical path.
     # Content is padded to clear the manifest's 400B min_bytes floor.
     local cycle="$1" phase="$2"
-    cat > "${FAKE_REPO}/docs/housekeeping/audits/susceptibility-snapshot-${cycle}-${phase}.md" <<EOF
+    cat > "${FAKE_REPO}/.rdd/audits/susceptibility-snapshot-${cycle}-${phase}.md" <<EOF
 # Susceptibility Snapshot
 
 Phase evaluated: ${phase}

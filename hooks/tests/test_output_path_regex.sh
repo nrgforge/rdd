@@ -68,7 +68,7 @@ assert_no_match() {
 
 # --- Fixtures per Issue #15 ---------------------------------------------------
 
-EXPECTED="docs/housekeeping/audits/report.md"
+EXPECTED=".rdd/audits/report.md"
 
 # 1. Canonical
 assert_extracts_to "canonical" \

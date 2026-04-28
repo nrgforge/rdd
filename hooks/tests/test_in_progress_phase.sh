@@ -21,14 +21,14 @@ phases:
       Test research-phase manifest for in-progress-phase predicate.
     required_mechanisms:
       - mechanism: research-methods-reviewer
-        path_template: docs/housekeeping/audits/research-design-review-{cycle}.md
+        path_template: .rdd/audits/research-design-review-{cycle}.md
         min_bytes: 2000
         required_headers:
           - "# Research Design Review"
         required_fields:
           - "Belief-mapping"
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md
+        path_template: .rdd/audits/susceptibility-snapshot-{cycle}-research.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"

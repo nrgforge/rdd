@@ -20,7 +20,20 @@ fi
 [[ -z "$INPUT" ]] && exit 0
 
 REPO_ROOT="$(pwd)"
-DISPATCH_LOG="${REPO_ROOT}/docs/housekeeping/dispatch-log.jsonl"
+
+# Dispatch log location precedence (ADR-085):
+#   1. .rdd/dispatch-log.jsonl              (canonical post-migration)
+#   2. docs/housekeeping/dispatch-log.jsonl (legacy ADR-070 placement)
+# Prefer .rdd/ if either it exists already or the .rdd/ directory exists
+# (post-ADR-085 corpus). Otherwise honor an existing docs/housekeeping/
+# placement. Fresh corpora default to .rdd/.
+if [[ -d "${REPO_ROOT}/.rdd" ]]; then
+    DISPATCH_LOG="${REPO_ROOT}/.rdd/dispatch-log.jsonl"
+elif [[ -d "${REPO_ROOT}/docs/housekeeping" ]]; then
+    DISPATCH_LOG="${REPO_ROOT}/docs/housekeeping/dispatch-log.jsonl"
+else
+    DISPATCH_LOG="${REPO_ROOT}/.rdd/dispatch-log.jsonl"
+fi
 
 # Tier 1 mechanism set — only these are logged
 TIER1_MECHANISMS="research-methods-reviewer citation-auditor argument-auditor susceptibility-snapshot-evaluator"

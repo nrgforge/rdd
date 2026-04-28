@@ -16,16 +16,40 @@ set -uo pipefail
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-.}"
 MANIFEST_PATH="${PLUGIN_ROOT}/hooks/manifests/tier1-phase-manifest.yaml"
 REPO_ROOT="$(pwd)"
-CYCLE_STATUS_POST="${REPO_ROOT}/docs/housekeeping/cycle-status.md"
+
+# Three-level cycle-status precedence:
+#   1. .rdd/cycle-status.md             (ADR-085 post-migration)
+#   2. docs/housekeeping/cycle-status.md (ADR-070 post-migration)
+#   3. docs/cycle-status.md              (pre-housekeeping legacy)
+CYCLE_STATUS_RDD="${REPO_ROOT}/.rdd/cycle-status.md"
+CYCLE_STATUS_HOUSEKEEPING="${REPO_ROOT}/docs/housekeeping/cycle-status.md"
 CYCLE_STATUS_PRE="${REPO_ROOT}/docs/cycle-status.md"
-# Post-migration path takes precedence
-if [[ -f "$CYCLE_STATUS_POST" ]]; then
-    CYCLE_STATUS="$CYCLE_STATUS_POST"
+if [[ -f "$CYCLE_STATUS_RDD" ]]; then
+    CYCLE_STATUS="$CYCLE_STATUS_RDD"
+elif [[ -f "$CYCLE_STATUS_HOUSEKEEPING" ]]; then
+    CYCLE_STATUS="$CYCLE_STATUS_HOUSEKEEPING"
 else
     CYCLE_STATUS="$CYCLE_STATUS_PRE"
 fi
-DISPATCH_LOG="${REPO_ROOT}/docs/housekeeping/dispatch-log.jsonl"
-MIGRATION_MARKER="${REPO_ROOT}/docs/housekeeping/.migration-version"
+
+# Two-level dispatch-log and migration-marker precedence (.rdd/ over
+# docs/housekeeping/). The pre-housekeeping placement does not have these
+# files — they are introduced by /rdd-conform migrate (ADR-070).
+#
+# Use directory presence (not file presence) so reads and writes target the
+# same location regardless of whether the file has been created yet. Matches
+# the precedence in hooks/scripts/tier1-verify-dispatch.sh so dispatch entries
+# and applicable_when skip entries land in the same log.
+if [[ -d "${REPO_ROOT}/.rdd" ]]; then
+    DISPATCH_LOG="${REPO_ROOT}/.rdd/dispatch-log.jsonl"
+    MIGRATION_MARKER="${REPO_ROOT}/.rdd/.migration-version"
+elif [[ -d "${REPO_ROOT}/docs/housekeeping" ]]; then
+    DISPATCH_LOG="${REPO_ROOT}/docs/housekeeping/dispatch-log.jsonl"
+    MIGRATION_MARKER="${REPO_ROOT}/docs/housekeeping/.migration-version"
+else
+    DISPATCH_LOG="${REPO_ROOT}/.rdd/dispatch-log.jsonl"
+    MIGRATION_MARKER="${REPO_ROOT}/.rdd/.migration-version"
+fi
 ADVISORY_MARKER="/tmp/rdd-advisory-notice-$$"
 
 # Claude Code delivers hook input via stdin, not as a command-line argument.
@@ -70,6 +94,43 @@ block() {
     local reason="$1"
     jq -nc --arg r "$reason" '{"decision":"block","reason":$r}'
     exit 0
+}
+
+# --- ADR-085 path resolution -------------------------------------------------
+# Manifest path_templates use the canonical .rdd/ form (post-ADR-085).
+# These helpers handle pre-migration corpora (artifacts at docs/housekeeping/)
+# and the transitional state where dispatch log entries may carry either form.
+
+# Given a manifest-substituted path (canonical .rdd/ form), return the
+# location where the artifact actually exists. Falls back to the legacy
+# docs/housekeeping/ path. Returns the canonical path if neither exists.
+resolve_artifact_path() {
+    local canonical="$1"
+    local legacy="${canonical//.rdd\//docs/housekeeping/}"
+    if [[ -f "${REPO_ROOT}/${canonical}" ]]; then
+        printf '%s' "$canonical"
+    elif [[ -f "${REPO_ROOT}/${legacy}" ]]; then
+        printf '%s' "$legacy"
+    else
+        printf '%s' "$canonical"
+    fi
+}
+
+# Returns 0 if the dispatch log has an entry matching mechanism + path
+# (in either canonical .rdd/ form or legacy docs/housekeeping/ form).
+dispatch_log_has_entry() {
+    local mech="$1" any_path="$2"
+    [[ -f "$DISPATCH_LOG" ]] || return 1
+    local legacy="${any_path//.rdd\//docs/housekeeping/}"
+    local canonical="${any_path//docs\/housekeeping\//.rdd/}"
+    local mech_matches
+    mech_matches="$(grep "\"mechanism\":\"${mech}\"" "$DISPATCH_LOG" 2>/dev/null)"
+    [[ -z "$mech_matches" ]] && return 1
+    if grep -qF "\"expected_path\":\"${canonical}\"" <<<"$mech_matches" \
+        || grep -qF "\"expected_path\":\"${legacy}\"" <<<"$mech_matches"; then
+        return 0
+    fi
+    return 1
 }
 
 # --- Check for RDD context ---------------------------------------------------
@@ -324,8 +385,12 @@ while IFS= read -r mech; do
     min_bytes="$(printf '%s' "$mech" | jq -r '.min_bytes // 500')"
 
     # Substitute template tokens: {cycle} and {phase}
-    path="${path_tmpl//\{cycle\}/$CURRENT_CYCLE}"
-    path="${path//\{phase\}/$CURRENT_PHASE}"
+    substituted="${path_tmpl//\{cycle\}/$CURRENT_CYCLE}"
+    substituted="${substituted//\{phase\}/$CURRENT_PHASE}"
+    # Resolve to wherever the artifact actually lives — .rdd/ (canonical post-
+    # ADR-085) or docs/housekeeping/ (legacy ADR-070 placement). Both forms
+    # are accepted during the transition window.
+    path="$(resolve_artifact_path "$substituted")"
     full_path="${REPO_ROOT}/${path}"
 
     # --- In-progress gate predicate (ADR-079) -------------------------------
@@ -397,19 +462,10 @@ while IFS= read -r mech; do
         if [[ "$mechanism_type" == "user-tooling" ]]; then
             FAILURES+=("${mechanism}: note was not produced at expected path ${path}")
         else
-            # Check dispatch log for cross-reference. Match on mechanism AND the
-            # substituted expected_path — matching on mechanism alone produces
-            # misleading "dispatched but no artifact" messages when a prior-cycle
-            # dispatch for the same mechanism exists in the log.
-            DISPATCHED=false
-            if [[ -f "$DISPATCH_LOG" ]]; then
-                if grep "\"mechanism\":\"${mechanism}\"" "$DISPATCH_LOG" 2>/dev/null \
-                    | grep -q "\"expected_path\":\"${path}\"" 2>/dev/null; then
-                    DISPATCHED=true
-                fi
-            fi
-
-            if $DISPATCHED; then
+            # Check dispatch log for cross-reference. Matches both canonical
+            # .rdd/ form and legacy docs/housekeeping/ form so the diagnostic
+            # message is correct during the transition window.
+            if dispatch_log_has_entry "$mechanism" "$path"; then
                 FAILURES+=("${mechanism}: mechanism was dispatched but did not produce its expected artifact at ${path}")
             else
                 FAILURES+=("${mechanism}: mechanism was not dispatched at all; expected artifact at ${path}")
@@ -456,17 +512,7 @@ while IFS= read -r mech; do
     # not enforcement — see "Advisory-only manifest check" note at the bottom
     # of this file).
     if [[ "$mechanism_type" != "user-tooling" ]]; then
-        DISPATCH_LOGGED=false
-        if [[ -f "$DISPATCH_LOG" ]]; then
-            # Check for a dispatch log entry matching both mechanism and path
-            # Each JSONL line is a separate JSON object; grep for lines with both fields
-            if grep "\"mechanism\":\"${mechanism}\"" "$DISPATCH_LOG" 2>/dev/null \
-                | grep -q "\"expected_path\":\"${path}\"" 2>/dev/null; then
-                DISPATCH_LOGGED=true
-            fi
-        fi
-
-        if ! $DISPATCH_LOGGED; then
+        if ! dispatch_log_has_entry "$mechanism" "$path"; then
             FAILURES+=("${mechanism}: artifact exists at ${path} but no corresponding dispatch was logged; this may indicate fabricated audit output")
         fi
     fi

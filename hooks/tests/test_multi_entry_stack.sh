@@ -12,8 +12,8 @@ write_migration_marker
 write_manifest
 write_gate_reflection 016 build
 write_susceptibility_snapshot 016 build
-cat > "${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl" <<EOF
-{"timestamp":"2026-04-23T00:00:00Z","mechanism":"susceptibility-snapshot-evaluator","expected_path":"docs/housekeeping/audits/susceptibility-snapshot-016-build.md"}
+cat > "${FAKE_REPO}/.rdd/dispatch-log.jsonl" <<EOF
+{"timestamp":"2026-04-23T00:00:00Z","mechanism":"susceptibility-snapshot-evaluator","expected_path":".rdd/audits/susceptibility-snapshot-016-build.md"}
 EOF
 
 # Stack: Active Cycle 016 (build) on top; Paused outer Cycle 015 beneath.

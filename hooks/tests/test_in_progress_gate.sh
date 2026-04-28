@@ -14,8 +14,8 @@ write_migration_marker
 # NOT skip this), but intentionally DO NOT produce the gate reflection note —
 # the predicate must let the hook proceed even though the gate note is missing.
 write_susceptibility_snapshot 016 build
-cat > "${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl" <<EOF
-{"timestamp":"2026-04-23T00:00:00Z","mechanism":"susceptibility-snapshot-evaluator","expected_path":"docs/housekeeping/audits/susceptibility-snapshot-016-build.md"}
+cat > "${FAKE_REPO}/.rdd/dispatch-log.jsonl" <<EOF
+{"timestamp":"2026-04-23T00:00:00Z","mechanism":"susceptibility-snapshot-evaluator","expected_path":".rdd/audits/susceptibility-snapshot-016-build.md"}
 EOF
 
 # Synthetic manifest: the build phase's gate-reflection entry is marked with
@@ -28,7 +28,7 @@ phases:
       Test build-phase manifest for in-progress-gate predicate.
     required_mechanisms:
       - mechanism: susceptibility-snapshot-evaluator
-        path_template: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-{phase}.md
+        path_template: .rdd/audits/susceptibility-snapshot-{cycle}-{phase}.md
         min_bytes: 400
         required_headers:
           - "# Susceptibility Snapshot"
@@ -37,7 +37,7 @@ phases:
       - mechanism: aid-cycle-gate-reflection
         mechanism_type: user-tooling
         artifact_type: aid-cycle-gate-reflection
-        path_template: docs/housekeeping/gates/{cycle}-{phase}-gate.md
+        path_template: .rdd/gates/{cycle}-{phase}-gate.md
         min_bytes: 800
         required_headers:
           - "# Gate Reflection:"

@@ -20,7 +20,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: test-precondition-unmet
-        path_template: docs/housekeeping/audits/never-created.md
+        path_template: .rdd/audits/never-created.md
         min_bytes: 400
         applicable_when:
           - cycle_type_in: [standard, batch]
@@ -65,7 +65,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: test-phase-not-skipped
-        path_template: docs/housekeeping/audits/never-created.md
+        path_template: .rdd/audits/never-created.md
         min_bytes: 400
         applicable_when:
           - phase_not_skipped: research
@@ -92,7 +92,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: test-parent-absent
-        path_template: docs/housekeeping/audits/never-created.md
+        path_template: .rdd/audits/never-created.md
         min_bytes: 400
         applicable_when:
           - parent_cycle_absent: true
@@ -119,7 +119,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: test-parent-present
-        path_template: docs/housekeeping/audits/never-created.md
+        path_template: .rdd/audits/never-created.md
         min_bytes: 400
         applicable_when:
           - parent_cycle_present: true
@@ -145,7 +145,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: test-default-fire
-        path_template: docs/housekeeping/audits/never-created.md
+        path_template: .rdd/audits/never-created.md
         min_bytes: 400
 '
 write_cycle_status '# RDD Cycle Status
@@ -174,7 +174,7 @@ phases:
   build:
     required_mechanisms:
       - mechanism: test-logs-skip
-        path_template: docs/housekeeping/audits/never-created.md
+        path_template: .rdd/audits/never-created.md
         min_bytes: 400
         applicable_when:
           - cycle_type_in: [standard]
@@ -190,14 +190,14 @@ write_cycle_status '# RDD Cycle Status
 **Current phase:** BUILD (next)
 **Cycle type:** mini-cycle
 '
-rm -f "${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl"
+rm -f "${FAKE_REPO}/.rdd/dispatch-log.jsonl"
 run_hook test-logs-skip
 assert_exit_zero "$HOOK_EXIT"
-if [[ -f "${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl" ]] \
-    && grep -q '"skipped":"applicable_when' "${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl"; then
+if [[ -f "${FAKE_REPO}/.rdd/dispatch-log.jsonl" ]] \
+    && grep -q '"skipped":"applicable_when' "${FAKE_REPO}/.rdd/dispatch-log.jsonl"; then
     pass "skip recorded in dispatch log"
 else
-    fail "dispatch log does not record applicable_when skip (got: $(cat ${FAKE_REPO}/docs/housekeeping/dispatch-log.jsonl 2>/dev/null || echo 'no log'))"
+    fail "dispatch log does not record applicable_when skip (got: $(cat ${FAKE_REPO}/.rdd/dispatch-log.jsonl 2>/dev/null || echo 'no log'))"
 fi
 
 report_summary
