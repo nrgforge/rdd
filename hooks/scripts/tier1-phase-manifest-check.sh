@@ -276,36 +276,42 @@ fi
 
 [[ -z "$CURRENT_PHASE" ]] && allow
 
-# --- In-progress phase predicate (v0.8.2) -----------------------------------
+# --- In-progress phase predicate (v0.8.2; role amended in v0.8.3 per ADR-090)
 # When the active entry carries **In-progress phase:** <phase> and the phase
-# names the currently-active phase, the entire manifest check short-circuits.
-# The manifest check is phase-EXIT verification; during the phase the agent is
-# producing artifacts in workflow order and cannot satisfy phase-exit
-# obligations yet. Blocking every mid-phase turn-end produces a runaway Stop
-# loop at pre-dispatch steps where the agent is awaiting user input (see
-# v0.8.2 release notes).
+# names the currently-active phase, the per-phase manifest advisory (missing
+# /non-compliant artifacts) is suppressed. The compound-check fabrication
+# detection (artifact present + no dispatch log entry) is unaffected — per
+# ADR-090 §1 the suppression is scoped to the per-phase manifest advisory
+# only. Compound-check signals continue to surface mid-phase.
+#
+# v0.8.2 introduced the field as a load-bearing predicate against the Stop-
+# hook blocking-loop failure mode at RESEARCH Step 1.1. v0.8.3's advisory
+# demotion (ADR-088) eliminated the loop; the field's amended role per
+# ADR-090 is advisory-noise suppression — not a correctness mechanism.
 #
 # Orchestrator discipline (see skills/rdd/SKILL.md): set **In-progress phase:**
 # when entering the phase; remove the line when ready for phase-exit
-# verification. The subsequent Stop fires the manifest check against the
+# verification. The subsequent Stop fires the manifest advisory against the
 # then-current phase. Legacy cycles without the field retain prior behavior.
 IN_PROGRESS_PHASE="$(grep -E '^\*\*In-progress phase:\*\*' <<<"$ACTIVE_ENTRY" 2>/dev/null \
     | tail -1 \
     | sed -E 's/^\*\*In-progress phase:\*\*[[:space:]]*([A-Za-z_-]+).*/\1/' \
     | tr '[:upper:]' '[:lower:]')"
 
+SUPPRESS_PHASE_ADVISORY=false
 if [[ -n "$IN_PROGRESS_PHASE" && "$IN_PROGRESS_PHASE" == "$CURRENT_PHASE" ]]; then
+    SUPPRESS_PHASE_ADVISORY=true
     IN_PROGRESS_PHASE_MARKER="/tmp/rdd-in-progress-phase-${SESSION_ID:-unknown}"
     if [[ ! -f "$IN_PROGRESS_PHASE_MARKER" ]] && [[ -n "$SESSION_ID" ]]; then
         touch "$IN_PROGRESS_PHASE_MARKER" 2>/dev/null
         cat >&2 <<EOF
 rdd-hook: in-progress phase (${IN_PROGRESS_PHASE})
-Manifest check is bypassed while **In-progress phase:** names the current phase.
+Per-phase manifest advisory is suppressed while **In-progress phase:** names
+the current phase. Compound-check fabrication detection still runs.
 Remove the line from the active entry in cycle-status.md when ready for
-phase-exit verification. Introduced in v0.8.2.
+phase-exit verification.
 EOF
     fi
-    allow
 fi
 
 # --- Determine current cycle number ------------------------------------------
@@ -368,8 +374,18 @@ PHASE_ENTRY="$(printf '%s' "$MANIFEST_JSON" \
 [[ -z "$PHASE_ENTRY" || "$PHASE_ENTRY" == "null" ]] && allow
 
 # --- Iterate required mechanisms ----------------------------------------------
-FAILURES=()
-REMINDERS=()
+# Failures partition by category so In-Progress Phase suppression (per ADR-090)
+# can drop per-phase manifest advisories while still surfacing compound-check
+# fabrication signals and revision reminders.
+#
+# Four-failure-mode classification (per ADR-088 §1):
+#   F1: missing artifact + no dispatch log entry  → FAILURES_PHASE
+#   F2: missing artifact + dispatch log entry     → FAILURES_PHASE
+#   F3: artifact exists + no dispatch log entry   → FAILURES_COMPOUND
+#   F4: artifact exists + assertion failure       → FAILURES_PHASE
+FAILURES_PHASE=()      # Per-phase manifest advisories (suppressed by In-Progress Phase)
+FAILURES_COMPOUND=()   # Compound-check fabrication signals (always surfaced)
+REMINDERS=()           # Revision-aware re-audit reminders (always surfaced)
 
 while IFS= read -r mech; do
     mechanism="$(printf '%s' "$mech" | jq -r '.mechanism')"
@@ -460,15 +476,15 @@ while IFS= read -r mech; do
     # E1: file exists
     if [[ ! -f "$full_path" ]]; then
         if [[ "$mechanism_type" == "user-tooling" ]]; then
-            FAILURES+=("${mechanism}: note was not produced at expected path ${path}")
+            FAILURES_PHASE+=("[F1: not-produced] ${mechanism}: note was not produced at expected path ${path}")
         else
             # Check dispatch log for cross-reference. Matches both canonical
             # .rdd/ form and legacy docs/housekeeping/ form so the diagnostic
             # message is correct during the transition window.
             if dispatch_log_has_entry "$mechanism" "$path"; then
-                FAILURES+=("${mechanism}: mechanism was dispatched but did not produce its expected artifact at ${path}")
+                FAILURES_PHASE+=("[F2: dispatched-no-output] ${mechanism}: mechanism was dispatched but did not produce its expected artifact at ${path}")
             else
-                FAILURES+=("${mechanism}: mechanism was not dispatched at all; expected artifact at ${path}")
+                FAILURES_PHASE+=("[F1: not-dispatched] ${mechanism}: mechanism was not dispatched at all; expected artifact at ${path}")
             fi
         fi
         continue
@@ -477,7 +493,7 @@ while IFS= read -r mech; do
     # S1: size floor
     actual_bytes="$(wc -c < "$full_path" | tr -d ' ')"
     if (( actual_bytes < min_bytes )); then
-        FAILURES+=("${mechanism}: artifact at ${path} is too small (${actual_bytes}B < ${min_bytes}B min) — likely empty or truncated")
+        FAILURES_PHASE+=("[F4: assertion-failure] ${mechanism}: artifact at ${path} is too small (${actual_bytes}B < ${min_bytes}B min) — likely empty or truncated")
         continue
     fi
 
@@ -486,7 +502,7 @@ while IFS= read -r mech; do
     while IFS= read -r hdr; do
         [[ -z "$hdr" ]] && continue
         if ! grep -qF "$hdr" "$full_path" 2>/dev/null; then
-            FAILURES+=("${mechanism}: artifact at ${path} missing required header '${hdr}'")
+            FAILURES_PHASE+=("[F4: assertion-failure] ${mechanism}: artifact at ${path} missing required header '${hdr}'")
         fi
     done <<< "$required_headers"
 
@@ -495,7 +511,7 @@ while IFS= read -r mech; do
     while IFS= read -r field; do
         [[ -z "$field" ]] && continue
         if ! grep -qF "$field" "$full_path" 2>/dev/null; then
-            FAILURES+=("${mechanism}: artifact at ${path} missing required field '${field}'")
+            FAILURES_PHASE+=("[F4: assertion-failure] ${mechanism}: artifact at ${path} missing required field '${field}'")
         fi
     done <<< "$required_fields"
 
@@ -513,7 +529,7 @@ while IFS= read -r mech; do
     # of this file).
     if [[ "$mechanism_type" != "user-tooling" ]]; then
         if ! dispatch_log_has_entry "$mechanism" "$path"; then
-            FAILURES+=("${mechanism}: artifact exists at ${path} but no corresponding dispatch was logged; this may indicate fabricated audit output")
+            FAILURES_COMPOUND+=("[F3: fabrication-signal] ${mechanism}: artifact exists at ${path} but no corresponding dispatch was logged; this may indicate fabricated audit output")
         fi
     fi
 
@@ -581,14 +597,25 @@ fi
 # The advisory message contains the same content the block would have, so
 # the agent and user still see what is missing. They are no longer wedged.
 
-if (( ${#FAILURES[@]} == 0 )); then
+# Compose the failures the hook will surface. When In-Progress Phase
+# suppression is active, drop the per-phase manifest failures (F1, F2, F4)
+# but retain the compound-check fabrication signals (F3) per ADR-090 §1.
+EMIT_FAILURES=()
+if $SUPPRESS_PHASE_ADVISORY; then
+    EMIT_FAILURES+=("${FAILURES_COMPOUND[@]}")
+else
+    EMIT_FAILURES+=("${FAILURES_PHASE[@]}")
+    EMIT_FAILURES+=("${FAILURES_COMPOUND[@]}")
+fi
+
+if (( ${#EMIT_FAILURES[@]} == 0 )); then
     allow
 fi
 
 MSG="rdd-hook: phase manifest advisory for phase '${CURRENT_PHASE}' (cycle ${CURRENT_CYCLE}). The following Tier 1 artifacts are missing or non-compliant:"$'\n'
-for f in "${FAILURES[@]}"; do
+for f in "${EMIT_FAILURES[@]}"; do
     MSG+="  - ${f}"$'\n'
 done
-MSG+=$'\n'"Do NOT fabricate these artifacts in your own context. Specialist subagents must produce them via isolated dispatch. The methodology relies on advisory verification + skill discipline + the dispatch-log compound check, not on a hard hook block (v0.8.3 change)."
+MSG+=$'\n'"Failure modes: F1 missing+not-dispatched, F2 missing+dispatched, F3 fabrication-signal (artifact present, no dispatch), F4 assertion-failure (size/header/field). Do NOT fabricate these artifacts in your own context. Specialist subagents must produce them via isolated dispatch. The methodology relies on advisory verification + skill discipline + the dispatch-log compound check, not on a hard hook block (v0.8.3 change)."
 
 allow_with_message "$MSG"

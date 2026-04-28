@@ -324,23 +324,43 @@ Present a summary listing:
 
 ---
 
-## Operation 5: Housekeeping Directory Organization Audit (ADR-070)
+## Operation 5: Housekeeping Directory Organization Audit (ADR-070, extended by ADR-085 / ADR-090)
 
 ### Purpose
 
-Verify the housekeeping directory structure matches expectations. Detects pre-migration state, incomplete migrations, and orphaned files.
+Verify the infrastructure directory structure matches expectations. Detects pre-migration state, incomplete migrations, orphaned files, and stale cycle-status hygiene.
 
 ### Checks
 
+**Post-ADR-085 (`.rdd/`) placement (preferred):**
+- `.rdd/` exists as a directory at the repository root
+- `.rdd/audits/` exists and contains audit files (if any audits exist)
+- `.rdd/gates/` exists
+- `.rdd/cycle-status.md` exists (if a cycle is active)
+- `.rdd/.migration-version` exists and matches the current plugin version
+
+**Legacy ADR-070 (`docs/housekeeping/`) placement:**
 - `docs/housekeeping/` exists as a directory
-- `docs/housekeeping/audits/` exists and contains audit files (if any audits exist in the project)
+- `docs/housekeeping/audits/` exists and contains audit files (if any audits exist)
 - `docs/housekeeping/gates/` exists
 - `docs/housekeeping/cycle-status.md` exists (if a cycle is active)
 - `docs/housekeeping/.migration-version` exists and matches the current plugin version
-- No orphaned audit files remain at `docs/essays/audits/` (pre-migration remnant)
-- No orphaned `docs/cycle-status.md` remains at the top level (pre-migration remnant)
 
-Findings are reported; the user decides whether to run `/rdd-conform migrate` to resolve them. **Do not auto-correct.**
+**Pre-migration remnants (any placement):**
+- No orphaned audit files remain at `docs/essays/audits/` (pre-ADR-070 remnant)
+- No orphaned `docs/cycle-status.md` remains at the top level (pre-ADR-070 remnant)
+- No `docs/housekeeping/` content remains alongside `.rdd/` (incomplete ADR-085 migration — surface for resolution)
+
+**In-Progress Phase field hygiene (ADR-090, soft note):**
+
+The audit emits an informational soft note — never a structural finding requiring remediation — when:
+
+- The active cycle entry has no `**In-progress phase:**` field during what appears to be active phase work (the phase has not produced its required artifacts yet). Soft note: *"the active entry has no In-progress phase field; advisory output may be noisy during phase work."* Per ADR-090 the field is optional UX, not correctness-critical; the absence does not produce a structural failure.
+- The `**In-progress phase:**` field is set to a phase that has been completed (per the entry's Phase Status table). Stewardship concern: *"the field names a completed phase; remove the line to clear stale state."* The remediation is a small mechanical edit; no methodology-level escalation.
+
+The In-Progress Phase soft notes are reported separately from structural and format gaps. **Do not auto-correct.**
+
+Findings are reported; the user decides whether to run `/rdd-conform migrate` (ADR-070) or `/rdd-conform migrate-to-rdd` (ADR-085) to resolve placement issues. **Do not auto-correct.**
 
 ---
 
