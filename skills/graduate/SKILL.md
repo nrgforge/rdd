@@ -49,6 +49,22 @@ Then ask the user:
 2. **What scope are we graduating?** — The whole RDD corpus, a scoped cycle subfolder, or specific artifacts?
 3. **Is there anything you're not ready to let go of?** — Some artifacts may still be actively useful even if the cycle is done. Essays might stand as reference material. The domain model might be the best vocabulary reference the project has.
 
+### Step 1b: Pre-Graduation Scan (recommended) — Issue #17
+
+Before sorting the knowledge and planning the migration, run the **pre-graduation scan** to detect corpus-internal identifier strings in the codebase that would become dangling references after graduation. The scan is the reverse direction of Tan et al. 2024's doc → code dangling reference detection — it looks for code references to corpus identifiers (WP-A, ADR-NNN, Cycle-N, axis labels, Tier-N, Spike-N, Invariant-N) that will no longer resolve once the artifact corpus is archived.
+
+The mechanism is structurally anchored at the moment of graduation per Invariant 8 — the scan fires here so the user can decide what to do about each match before the migration plan in Step 3 is approved.
+
+**Invocation:** suggest the user run `/rdd-conform graduation-check` (Operation 9 of `/rdd-conform`). The conformance skill produces a report classifying matches into three categories:
+
+- **Refactor candidates** — load-bearing references in code (e.g., test names, function comments documenting design intent). These should be refactored to native vocabulary as part of graduation.
+- **Inline-gloss candidates** — comments referring to corpus artifacts ("see ADR-085 for rationale"). The rationale should be inlined or the reference removed.
+- **Historical record** — references in commit messages, changelog entries, or migration notes. Acceptable as historical record.
+
+**The scan is recommended, not mandatory.** Per Invariant 8, mechanisms whose firing depends on judgment cannot be specified as unconditional structural mechanisms. The practitioner decides whether the scan's value is worth the time at this graduation moment. If the codebase is small or the corpus is shallow, the scan may surface no matches and the user may choose to skip; if the codebase is large or the cycle is deep, the scan is worth running before commitments harden.
+
+After reviewing the scan report, return to Step 2 with the dispositions in mind — refactor candidates may shift the migration plan's scope.
+
 ### Step 2: Sort the Knowledge
 
 Walk through the artifact corpus with the user, sorting each piece into one of three categories:

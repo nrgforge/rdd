@@ -18,7 +18,7 @@ $ARGUMENTS
 
 ## OPERATIONS
 
-This skill provides nine operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
+This skill provides ten operations. The user specifies which operation to run, or describes their situation and you determine the appropriate operation:
 
 | Operation | When to use |
 |-----------|-------------|
@@ -31,6 +31,7 @@ This skill provides nine operations. The user specifies which operation to run, 
 | **Gate Note Audit** | Verify gate reflection notes match the ADR-066 template |
 | **Dispatch Prompt Audit** | Verify skill file dispatch prompts follow the ADR-065 skeleton |
 | **Cycle-Shape Audit** | Detect pre-ADR-072 `cycle-status.md` entries and walk the user through field migration into the current ADR-078 Cycle Stack schema (ADR-081) |
+| **Graduation Check** | Pre-graduation scan for corpus-internal identifier strings (WP-*, ADR-NNN, Cycle-N, etc.) in the codebase that would become dangling references after `/rdd-graduate` (Issue #17) |
 
 If the user's request is ambiguous, ask which operation they need. If they describe a situation ("I just updated the RDD skills"), map it to the appropriate operation.
 
@@ -497,7 +498,98 @@ Findings and proposed migrations are presented to the user. **Do not auto-migrat
 
 ---
 
-## Operation 9: Migrate to `.rdd/` (ADR-085)
+## Operation 9: Graduation Check — Code → Doc Dangling Reference Scan (Issue #17)
+
+### Purpose
+
+Before `/rdd-graduate` folds RDD scaffolding into native project docs, scan the codebase for **corpus-internal identifier strings** that would become dangling references after graduation. The patterns the operation detects (WP-A, ADR-NNN, Cycle-N, axis labels) are meaningful while the RDD corpus is live; once the corpus is archived, references to them in the codebase point at nothing.
+
+The mechanism is structurally anchored at the moment of graduation per Invariant 8 — the scan fires before the migration plan is approved, so the user can decide whether to refactor the dangling references into native vocabulary, gloss them inline, or accept them as historical record.
+
+This operation is the **reverse direction** of Tan et al. 2024's doc → code dangling reference detection. Tan et al. 2024 detect doc references to code that no longer exists; this operation detects code references to doc identifiers that will no longer resolve after graduation. The detection logic mirrors theirs in the opposite direction.
+
+### When to Use
+
+- During `/rdd-graduate`, before the migration plan is approved (recommended).
+- Standalone, when the practitioner wants to audit the codebase for corpus-internal identifiers ahead of a future graduation.
+- After significant code changes that may have introduced new corpus-internal identifiers (e.g., new tests with WP-X scenario references).
+
+### Process
+
+#### Step 1: Determine Scan Patterns
+
+The default patterns the operation detects:
+
+- **Work-package identifiers:** `WP-[A-Z]` (e.g., `WP-A`, `WP-G`) and `WP-[A-Z][0-9]+` (e.g., `WP-A1`)
+- **ADR identifiers:** `ADR-[0-9]+` (e.g., `ADR-001`, `ADR-090`)
+- **Cycle identifiers:** `Cycle [0-9]+` and `Cycle-[0-9]+`
+- **Tier identifiers:** `Tier [0-9]+` and `Tier-[0-9]+`
+- **Spike identifiers:** `Spike S[0-9]+` and `S[0-9]+` axis labels declared in scoped-cycle artifacts
+- **Invariant identifiers:** `Invariant [0-9]+` and `Invariant-[0-9]+`
+
+Read scoped-cycle artifacts (essays, ADRs in the cycle-archive) to derive any project-specific axis labels, named cohorts, or codenames the corpus uses. Ask the user to confirm or extend the pattern set before the scan runs.
+
+#### Step 2: Scan the Codebase
+
+Use `Grep` (ripgrep-based) over the codebase, scoped to source-code paths and excluding the RDD artifact corpus itself. Default scope:
+
+- All source-code directories (e.g., `src/`, `lib/`, `app/`, `pkg/`, `cmd/`, `internal/`)
+- Test directories (e.g., `test/`, `tests/`, `spec/`, `__tests__/`)
+- Build configuration (e.g., `Makefile`, `package.json`, scripts)
+- Excludes: `docs/`, `docs/cycle-archive/`, `.rdd/`, `node_modules/`, `vendor/`, build outputs
+
+For each match, record: pattern matched, file path, line number, surrounding line content.
+
+#### Step 3: Classify Matches
+
+For each match, classify into one of three categories:
+
+- **Refactor candidate** — the corpus-internal identifier is load-bearing in the code (e.g., a test name `test_wp_a_migration_subcommand`). Refactor to native vocabulary as part of graduation.
+- **Inline-gloss candidate** — the identifier appears in a comment that describes intent ("see ADR-085 for rationale"). Either inline the rationale or remove the reference.
+- **Historical record** — the identifier appears in a commit message reference, changelog, or migration note. Acceptable as historical record; the dangling form is expected.
+
+The classification is the user's judgment call; the operation surfaces the matches and proposes a default classification, but does not auto-correct.
+
+#### Step 4: Produce Report
+
+Present the scan report:
+
+```markdown
+## Graduation Check Report — Code → Doc Dangling References
+
+**Scanned:** <N> source files
+**Matches found:** <M>
+
+### Refactor candidates (load-bearing in code)
+
+| Pattern | File | Line | Context |
+|---------|------|------|---------|
+| WP-A | tests/test_migration.sh | 12 | `# Test: WP-A migration subcommand idempotency` |
+| ADR-085 | src/migration.py | 47 | `# Implements ADR-085 path migration; supersedes ADR-070` |
+
+### Inline-gloss candidates (comments describing rationale)
+
+| Pattern | File | Line | Context |
+|---------|------|------|---------|
+
+### Historical record (commit messages, changelog references)
+
+| Pattern | File | Line | Context |
+|---------|------|------|---------|
+```
+
+Each match has each match's pattern, file path, line number, and surrounding context. The user reviews each candidate and decides the disposition before the migration plan is approved.
+
+### Important Principles
+
+- **Scan before graduation, not after.** The scan's value is upstream of `/rdd-graduate`'s migration plan — once artifacts are archived, the references are dangling regardless. Running the scan after graduation surfaces problems the practitioner has already accepted.
+- **The scan is recommended, not mandatory.** Per Invariant 8 anchoring requirements, mechanisms whose firing depends on judgment cannot be specified as unconditional structural mechanisms. The graduation-check is recommended at the structurally privileged moment (pre-graduation); the practitioner decides whether to run it.
+- **Pattern set is project-specific.** The default patterns cover RDD's vocabulary; cycle-specific axis labels (e.g., specific named cohorts in a study cycle) extend the pattern set. Ask the user to confirm or extend before the scan runs.
+- **Surfacing, not auto-correction.** The operation produces a report; the user decides each match's disposition during the migration plan.
+
+---
+
+## Operation 10: Migrate to `.rdd/` (ADR-085)
 
 ### Purpose
 
