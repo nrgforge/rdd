@@ -4,7 +4,7 @@
 
 ## Context
 
-ADR-070 (Cycle 10) committed the placement of infrastructure artifacts (audit reports, gate reflection notes, dispatch log, cycle-status, migration-version marker) under `docs/housekeeping/`. The decision was structured as the operational execution of ADR-064's centered-vs-infrastructure framing, with the user's stated rationale (DECIDE gate 2026-04-08) that operational files should live in the corpus alongside their peers, not as a hidden sidecar — *"come look under the hood, this is what we're doing."*
+ADR-070 (Cycle 10) committed the placement of infrastructure artifacts (audit reports, gate reflection notes, dispatch log, cycle-status, migration-version marker) under `.rdd/`. The decision was structured as the operational execution of ADR-064's centered-vs-infrastructure framing, with the user's stated rationale (DECIDE gate 2026-04-08) that operational files should live in the corpus alongside their peers, not as a hidden sidecar — *"come look under the hood, this is what we're doing."*
 
 Cycle 017's investigation of the corpus-comprehension failure surfaced a different concern about the `housekeeping/` placement than the framing audit had addressed:
 
@@ -21,15 +21,15 @@ This ADR supersedes ADR-070's `housekeeping/` placement and applies the four-ste
 
 ### 1. Relocate infrastructure artifacts to `.rdd/`
 
-The following relocate from `docs/housekeeping/` (ADR-070's placement) to `.rdd/` at the repository root:
+The following relocate from `.rdd/` (ADR-070's placement) to `.rdd/` at the repository root:
 
 | From | To |
 |---|---|
-| `docs/housekeeping/audits/` | `.rdd/audits/` |
-| `docs/housekeeping/gates/` | `.rdd/gates/` |
-| `docs/housekeeping/cycle-status.md` | `.rdd/cycle-status.md` |
-| `docs/housekeeping/dispatch-log.jsonl` | `.rdd/dispatch-log.jsonl` |
-| `docs/housekeeping/.migration-version` | `.rdd/.migration-version` |
+| `.rdd/audits/` | `.rdd/audits/` |
+| `.rdd/gates/` | `.rdd/gates/` |
+| `.rdd/cycle-status.md` | `.rdd/cycle-status.md` |
+| `.rdd/dispatch-log.jsonl` | `.rdd/dispatch-log.jsonl` |
+| `.rdd/.migration-version` | `.rdd/.migration-version` |
 
 The `session/` directory (BUILD context-reconstructive mode session artifacts; ADR-050) also relocates from its current root-level position to `.rdd/session/`.
 
@@ -57,31 +57,31 @@ The migration is a one-shot operation triggered by `/rdd-conform migrate-to-rdd`
 
 1. Checks whether `.rdd/.migration-version` exists at a value matching this ADR's release; if so, no-op.
 2. Creates `.rdd/` and subdirectories (`audits/`, `gates/`, `session/`).
-3. Moves `docs/housekeeping/audits/*` → `.rdd/audits/*` preserving subdirectory structure.
-4. Moves `docs/housekeeping/gates/*` → `.rdd/gates/*` preserving structure.
-5. Moves `docs/housekeeping/cycle-status.md` → `.rdd/cycle-status.md`.
-6. Moves `docs/housekeeping/dispatch-log.jsonl` → `.rdd/dispatch-log.jsonl` (if present; this is gitignored ephemera and may not exist in committed state).
-7. Moves `docs/housekeeping/.migration-version` → `.rdd/.migration-version`.
+3. Moves `.rdd/audits/*` → `.rdd/audits/*` preserving subdirectory structure.
+4. Moves `.rdd/gates/*` → `.rdd/gates/*` preserving structure.
+5. Moves `.rdd/cycle-status.md` → `.rdd/cycle-status.md`.
+6. Moves `.rdd/dispatch-log.jsonl` → `.rdd/dispatch-log.jsonl` (if present; this is gitignored ephemera and may not exist in committed state).
+7. Moves `.rdd/.migration-version` → `.rdd/.migration-version`.
 8. Moves `session/` → `.rdd/session/` if present.
-9. Removes the now-empty `docs/housekeeping/` directory.
-10. Performs reference updates across `docs/decisions/*.md`, `docs/essays/*.md`, `skills/**/SKILL.md`, `hooks/manifests/tier1-phase-manifest.yaml`, `hooks/scripts/*.sh`, `hooks/tests/**/*.sh`, `docs/domain-model.md`, `docs/ORIENTATION.md` — substituting `docs/housekeeping/` → `.rdd/` in path references. **Hook test fixtures are explicitly included** (the conformance scan for this cycle identified test fixtures at `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, and `test_parses_cycle_stack_phase.sh` that hardcode `docs/housekeeping/` paths and would break post-migration if not included in the substitution sweep).
-11. Updates `.gitignore`: removes `docs/housekeeping/dispatch-log.jsonl` entry; adds `.rdd/dispatch-log.jsonl` and `.rdd/session/`.
+9. Removes the now-empty `.rdd/` directory.
+10. Performs reference updates across `docs/decisions/*.md`, `docs/essays/*.md`, `skills/**/SKILL.md`, `hooks/manifests/tier1-phase-manifest.yaml`, `hooks/scripts/*.sh`, `hooks/tests/**/*.sh`, `docs/domain-model.md`, `docs/ORIENTATION.md` — substituting `.rdd/` → `.rdd/` in path references. **Hook test fixtures are explicitly included** (the conformance scan for this cycle identified test fixtures at `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, and `test_parses_cycle_stack_phase.sh` that hardcode `.rdd/` paths and would break post-migration if not included in the substitution sweep).
+11. Updates `.gitignore`: removes `.rdd/dispatch-log.jsonl` entry; adds `.rdd/dispatch-log.jsonl` and `.rdd/session/`.
 12. Writes `.rdd/.migration-version` with the plugin version performing the migration.
 13. Produces a summary report.
 
 The operation is idempotent. Running it on an already-migrated corpus detects the marker and no-ops.
 
-The operation depends on ADR-070's `/rdd-conform migrate` having previously run successfully on the corpus (i.e., the corpus is currently in the `docs/housekeeping/` placement, not in the pre-housekeeping placement). A corpus that has not yet migrated to `housekeeping/` runs `/rdd-conform migrate` first (the ADR-070 path), then `/rdd-conform migrate-to-rdd` (this ADR's path). A future cycle may consolidate the two operations into a single `/rdd-conform migrate` that targets the current canonical placement; that is out of scope here.
+The operation depends on ADR-070's `/rdd-conform migrate` having previously run successfully on the corpus (i.e., the corpus is currently in the `.rdd/` placement, not in the pre-housekeeping placement). A corpus that has not yet migrated to `housekeeping/` runs `/rdd-conform migrate` first (the ADR-070 path), then `/rdd-conform migrate-to-rdd` (this ADR's path). A future cycle may consolidate the two operations into a single `/rdd-conform migrate` that targets the current canonical placement; that is out of scope here.
 
 ### 5. Stop hook and PostToolUse hook updates
 
-ADR-064's hook scripts read paths from the manifest. The manifest's `path_template` values update from `docs/housekeeping/...` to `.rdd/...` as part of the migration. The hooks themselves are unchanged in logic; they consume whatever paths the manifest specifies.
+ADR-064's hook scripts read paths from the manifest. The manifest's `path_template` values update from `.rdd/...` to `.rdd/...` as part of the migration. The hooks themselves are unchanged in logic; they consume whatever paths the manifest specifies.
 
-The advisory-mode detection in the Stop hook (per ADR-088 amending ADR-064) reads `.rdd/.migration-version` instead of `docs/housekeeping/.migration-version`. The migration marker's location moves with the migration.
+The advisory-mode detection in the Stop hook (per ADR-088 amending ADR-064) reads `.rdd/.migration-version` instead of `.rdd/.migration-version`. The migration marker's location moves with the migration.
 
 ### 6. Skill text updates
 
-Phase skill files (`skills/**/SKILL.md`) reference `docs/housekeeping/` paths in dispatch instructions and artifact location specifications. The migration updates these references in lockstep with the directory move. ADR-065's canonical prompt skeleton (`Output path: <path>`) carries the new `.rdd/` paths; the skeleton itself is unchanged.
+Phase skill files (`skills/**/SKILL.md`) reference `.rdd/` paths in dispatch instructions and artifact location specifications. The migration updates these references in lockstep with the directory move. ADR-065's canonical prompt skeleton (`Output path: <path>`) carries the new `.rdd/` paths; the skeleton itself is unchanged.
 
 The orchestrator skill text references `cycle-status.md` at multiple locations. All references update.
 
@@ -93,7 +93,7 @@ README updates (project-level and `docs/README.md` if present) reference the new
 
 ## Rejected alternatives
 
-**Retain `docs/housekeeping/` placement (ADR-070's decision).** Rejected. The DISCOVER and MODEL gates of Cycle 017 explicitly committed relocation. The retain alternative is the status quo position; the cycle's evidence (external stakeholder confusion, hierarchical equivalence with product subdirectories, lack of structural process-vs-product signal) supports the relocation. Retaining `docs/housekeeping/` would amount to silently overriding the cycle's gate commitments at drafting time.
+**Retain `.rdd/` placement (ADR-070's decision).** Rejected. The DISCOVER and MODEL gates of Cycle 017 explicitly committed relocation. The retain alternative is the status quo position; the cycle's evidence (external stakeholder confusion, hierarchical equivalence with product subdirectories, lack of structural process-vs-product signal) supports the relocation. Retaining `.rdd/` would amount to silently overriding the cycle's gate commitments at drafting time.
 
 **Hidden sidecar at repo root (`.rdd-session/`, the original 2026-04-08 proposal).** Rejected for the same reasons it was rejected at DECIDE gate 2026-04-08: operational files should live at a discoverable path, not hidden from corpus inspection. `.rdd/` retains the corpus-visibility characteristic while signaling process-vs-product through the dotfile convention; a fully-hidden sidecar would forfeit corpus-visibility.
 
@@ -119,16 +119,16 @@ README updates (project-level and `docs/README.md` if present) reference the new
 
 - Migration touches many files (every ADR, essay, skill file, manifest, ORIENTATION.md, README references). The operation is mechanical but the diff is large. Mitigation: the migration is opt-in via `/rdd-conform migrate-to-rdd`, produces a summary report, and is `git diff`-reviewable before commit.
 - The `.rdd/` placement requires updating the methodology's existing references (manifest, hook scripts, ORIENTATION.md, README, skill text, ADR-070's body via supersession header). The supersession workflow's downstream-sweep step (ADR-074 Step 3) is the load-bearing migration step.
-- Older RDD corpora (pre-Cycle-017) using `docs/housekeeping/` need to migrate to receive the structural-visibility benefit. Pre-migration corpora continue to work; the methodology's hooks and skills handle both placements during the transition window. The advisory-mode behavior (per ADR-088) accommodates pre-`.rdd/` corpora.
+- Older RDD corpora (pre-Cycle-017) using `.rdd/` need to migrate to receive the structural-visibility benefit. Pre-migration corpora continue to work; the methodology's hooks and skills handle both placements during the transition window. The advisory-mode behavior (per ADR-088) accommodates pre-`.rdd/` corpora.
 - The cycle-archive (archived prior cycles) retains pre-migration paths. Readers of archived cycles encounter the older convention; a note in `docs/cycle-archive/README.md` (or equivalent) documents the path change.
 - The `.rdd/` placement may surprise practitioners coming from the methodology's prior framing; the "come look under the hood" 2026-04-08 framing remains true (artifacts are inspectable at a known path) but the visual signal has changed. The change carries some discontinuity cost.
-- **ADR-064's immutable body retains `docs/housekeeping/` path references after migration.** ADR-064's Decision section names the dispatch log path (`docs/housekeeping/dispatch-log.jsonl`), the migration-version marker path (`docs/housekeeping/.migration-version`), and the housekeeping directory throughout. ADR-074's body-immutability rule prevents correcting these references in ADR-064's body; they remain as historical record of what the paths were when ADR-064 was authored. Practitioners reading ADR-064 post-migration encounter paths that no longer exist in the live corpus. This is an expected artifact of body immutability + path migration together — not a documentation defect. The supersession header on ADR-064 (applied by ADR-088) names ADR-088 as the active authority; the path stale-ness is one specific consequence of the migration that readers composing ADR-064 with ADR-088 and ADR-085 need to navigate. ADR-088's supersession header on ADR-064 has been expanded (see ADR-088 amendment) to note this stale-path situation explicitly.
+- **ADR-064's immutable body retains `.rdd/` path references after migration.** ADR-064's Decision section names the dispatch log path (`.rdd/dispatch-log.jsonl`), the migration-version marker path (`.rdd/.migration-version`), and the housekeeping directory throughout. ADR-074's body-immutability rule prevents correcting these references in ADR-064's body; they remain as historical record of what the paths were when ADR-064 was authored. Practitioners reading ADR-064 post-migration encounter paths that no longer exist in the live corpus. This is an expected artifact of body immutability + path migration together — not a documentation defect. The supersession header on ADR-064 (applied by ADR-088) names ADR-088 as the active authority; the path stale-ness is one specific consequence of the migration that readers composing ADR-064 with ADR-088 and ADR-085 need to navigate. ADR-088's supersession header on ADR-064 has been expanded (see ADR-088 amendment) to note this stale-path situation explicitly.
 
 **Neutral:**
 
 - The artifact contents (audits, gates, cycle-status, dispatch log, migration marker) are unchanged. Only their location changes. Readers of any of those artifacts read the same content as before.
 - **`session/` inclusion in the relocation is an agent-composed extension of the gate commitment.** The DISCOVER and MODEL gates named "infrastructure artifacts (housekeeping/, session/, audit reports, dispatch logs)" as the relocation target. The specific inclusion of `session/` in this ADR's relocation scope (as opposed to a separate ADR) extends the gate commitment by applying the same process-vs-product axis to ADR-050's session artifacts, which carry `session-artifact: true` frontmatter explicitly classifying them as infrastructure. The extension is consistent with the gate commitment but the per-ADR scoping decision is agent-composed; practitioners reviewing the migration scope should be aware the session/ inclusion is not literally gate-itemized, only gate-axis-consistent.
-- The conformance audit (`/rdd-conform`) gains a new audit scope: detect orphaned `docs/housekeeping/` content (pre-migration detection) and flag it. The existing housekeeping audit scopes (organization audit, gate template audit, dispatch prompt format audit from ADR-070) are retained, parameterized by the active placement.
+- The conformance audit (`/rdd-conform`) gains a new audit scope: detect orphaned `.rdd/` content (pre-migration detection) and flag it. The existing housekeeping audit scopes (organization audit, gate template audit, dispatch prompt format audit from ADR-070) are retained, parameterized by the active placement.
 - The migration is **partially deferred**: the four-artifact downstream-sweep (ADR-074 Step 3) updates `system-design.md` and `field-guide.md` references at ARCHITECT and BUILD respectively, alongside the natural regeneration of those artifacts in the cycle. Per ADR-074's fitness property, the deferred sweep is recorded explicitly in cycle-status.md so it is discharged rather than silently dropped.
 
 ## ADR-070 supersession header to apply
@@ -136,12 +136,12 @@ README updates (project-level and `docs/README.md` if present) reference the new
 Per ADR-074 Step 2.5 supersession workflow, ADR-070 receives the following header at the top of its file (immediately below the `# ADR-070:` title):
 
 ```markdown
-> **Updated by ADR-085 on 2026-04-27.** ADR-085 relocates infrastructure artifacts from `docs/housekeeping/` to `.rdd/` and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.
+> **Updated by ADR-085 on 2026-04-27.** ADR-085 relocates infrastructure artifacts from `.rdd/` to `.rdd/` and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.
 ```
 
 ADR-070's Status field updates to `Updated by ADR-085`.
 
-This is a **partial supersession** (IETF *Updates* analog), not total replacement. ADR-070's centered-vs-infrastructure framing, the migration mechanics for content-and-process separation, the rdd-conform scope extension framing, the version marker mechanism, and the advisory-mode-vs-enforcement-mode commitment all remain current authority. ADR-085 updates only the directory placement (`docs/housekeeping/` → `.rdd/`) and the path-substitution scope.
+This is a **partial supersession** (IETF *Updates* analog), not total replacement. ADR-070's centered-vs-infrastructure framing, the migration mechanics for content-and-process separation, the rdd-conform scope extension framing, the version marker mechanism, and the advisory-mode-vs-enforcement-mode commitment all remain current authority. ADR-085 updates only the directory placement (`.rdd/` → `.rdd/`) and the path-substitution scope.
 
 ## Downstream artifact sweep status (per ADR-074 Step 3)
 
@@ -151,14 +151,14 @@ Required updates to current-state artifacts:
 |---|---|---|
 | `system-design.md` | **Deferred to ARCHITECT (Cycle 017)** | The ARCHITECT phase will restructure `system-design.md` per essay 016 §6 (F-pattern orientation lead, companion file via Pattern B in ADR-084, etc.); the `.rdd/` path updates fold into that restructuring rather than running separately. Deferred-sweep rationale recorded in cycle-status.md per ADR-074 fitness property. |
 | `ORIENTATION.md` | **Deferred to ARCHITECT (Cycle 017)** | ARCHITECT phase regenerates ORIENTATION.md after system-design restructuring; Section 4's path references update at that time, plus the new "process artifacts in `.rdd/`" sentence. Deferred-sweep rationale recorded. |
-| `domain-model.md` | **Deferred to ARCHITECT amendment-log entry** | The Amendment Log gains an entry recording ADR-085's supersession of ADR-070's path placement. References to `docs/housekeeping/` paths in domain-model.md update at the same time. Deferred-sweep rationale recorded. |
+| `domain-model.md` | **Deferred to ARCHITECT amendment-log entry** | The Amendment Log gains an entry recording ADR-085's supersession of ADR-070's path placement. References to `.rdd/` paths in domain-model.md update at the same time. Deferred-sweep rationale recorded. |
 | `field-guide.md` | **Deferred to BUILD (Cycle 017)** | The field-guide regenerates at BUILD completion; path references update at that time. Deferred-sweep rationale recorded. |
 
 The deferred sweeps are recorded explicitly in `.rdd/cycle-status.md` (post-migration path) under the DECIDE phase status entry, per ADR-074's fitness property. Each deferral names the natural regeneration moment that discharges it.
 
 ## Provenance check
 
-- **The `.rdd/` placement decision:** user-surfaced at the DISCOVER gate of Cycle 017 (recorded in `docs/housekeeping/gates/017-discover-gate.md` and the discover susceptibility snapshot Moment 3); confirmed at the model → decide gate. Driver-derived; user-surfaced.
+- **The `.rdd/` placement decision:** user-surfaced at the DISCOVER gate of Cycle 017 (recorded in `.rdd/gates/017-discover-gate.md` and the discover susceptibility snapshot Moment 3); confirmed at the model → decide gate. Driver-derived; user-surfaced.
 - **The infrastructure-vs-audience axis distinction:** user-surfaced at the DISCOVER gate (snapshot Moment 3) as the correction to the agent's §4.1 conflation. Driver-derived; user-surfaced.
 - **The dotfile-convention semantic argument:** drafting-time synthesis composed against existing software-corpus conventions (`.github/`, `.config/`, `.vscode/`). Agent composition; convention-derived.
 - **The visibility-vs-hiding distinction (`.rdd/` vs. hidden sidecar):** drafting-time synthesis applying ADR-070's user-surfaced "come look under the hood" framing to the new placement. The framing argument was that operational files should be discoverable; this ADR composes the same framing with a different placement. Agent composition; framing-derived.

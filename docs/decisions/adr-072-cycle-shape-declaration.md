@@ -10,7 +10,7 @@ Cycle 015 is a scoped DECIDE+BUILD mini-cycle addressing Issue #10. RESEARCH, DI
 
 At the DECIDE → BUILD boundary, the Stop hook (ADR-064) fired into an infinite loop. Its logic:
 
-1. Parse the `**Phase:**` field in `docs/housekeeping/cycle-status.md` to identify the current phase.
+1. Parse the `**Phase:**` field in `.rdd/cycle-status.md` to identify the current phase.
 2. Look up that phase in `hooks/manifests/tier1-phase-manifest.yaml`.
 3. Require every artifact the manifest lists for that phase to exist before allowing Stop.
 
@@ -28,7 +28,7 @@ This ADR introduces a minimal cycle-shape declaration schema in cycle-status.md 
 
 ## Decision
 
-Extend `docs/housekeeping/cycle-status.md` with two optional fields that the Stop hook honors:
+Extend `.rdd/cycle-status.md` with two optional fields that the Stop hook honors:
 
 **Field 1 — `**Skipped phases:**` — enumerated phases this cycle does not run.**
 
@@ -108,7 +108,7 @@ The Pause Log creates an audit trail: the pause is visible, not silent. Invarian
 - Introduces two new optional fields in cycle-status.md that future maintainers must understand. Mitigated by the fields being advisory (absent = default behavior).
 - Bypasses the compound check for the declared-skipped phases. This is the correct behavior for legitimate skips (Issue 10 has no research essay, so research-phase artifacts make no sense to require), but creates a narrow attack surface: a user could declare "skipped" to evade the check. This is equivalent to a user directly editing cycle-status.md to misrepresent cycle state, which the methodology already cannot prevent and is outside the compound check's threat model.
 - Pause-until-resumed is user-driven. If the user never resumes, the cycle remains paused indefinitely. The methodology's position: an indefinitely-paused cycle is a deliberately open state, not a closed or abandoned one — the Pause Log entry has no resume date and remains visible. This is distinct from Graduation (ADR-025) which formally closes a cycle, and from abandonment (no affordance in the methodology). The observability argument for Invariant 8 compatibility depends on the Pause Log being readable, which is a weak structural anchor (it relies on the human reader); acceptable because the pause itself is declared explicitly in cycle-status.md, not silent. A future ADR could add pause-staleness signaling (e.g., auto-surface pauses older than N days) if the accumulation of stale pauses becomes a problem.
-- **Known gap — in-progress gate case not covered.** ADR-072's two-field design handles user-away sessions (where `**Paused:**` is set before stepping away) and phase-skipped cycles (Mode D). It does not cover the case where a phase-boundary gate conversation is itself in progress and the user is actively present: neither `**Paused:**` nor `**Skipped phases:**` applies, so the hook runs the manifest check on every Stop between agent turns and blocks on the not-yet-produced gate reflection note. This was demonstrated live during Cycle 015's DECIDE → BUILD gate (two cascading loops) and surfaced by the BUILD-entry susceptibility snapshot (`docs/housekeeping/audits/susceptibility-snapshot-015-build.md`). The gap is documented in scenarios.md under ADR-072's feature block ("In-progress gate conversation does not cascade Stop-hook blocks — deferred") and is explicitly out of Cycle 015's scope (the cycle's target is Issue 10). Follow-up candidates for a future cycle include a hook-side session-scoped block-then-advisory supplement (the alternative flagged by the 015-decide snapshot) or a third cycle-status.md marker (`**Gate in progress:** <phase>`). Pragmatic mitigation until then: the user may set `**Paused:**` at the start of a gate conversation they expect to be interrupted, but this relies on user foresight rather than structural coverage.
+- **Known gap — in-progress gate case not covered.** ADR-072's two-field design handles user-away sessions (where `**Paused:**` is set before stepping away) and phase-skipped cycles (Mode D). It does not cover the case where a phase-boundary gate conversation is itself in progress and the user is actively present: neither `**Paused:**` nor `**Skipped phases:**` applies, so the hook runs the manifest check on every Stop between agent turns and blocks on the not-yet-produced gate reflection note. This was demonstrated live during Cycle 015's DECIDE → BUILD gate (two cascading loops) and surfaced by the BUILD-entry susceptibility snapshot (`.rdd/audits/susceptibility-snapshot-015-build.md`). The gap is documented in scenarios.md under ADR-072's feature block ("In-progress gate conversation does not cascade Stop-hook blocks — deferred") and is explicitly out of Cycle 015's scope (the cycle's target is Issue 10). Follow-up candidates for a future cycle include a hook-side session-scoped block-then-advisory supplement (the alternative flagged by the 015-decide snapshot) or a third cycle-status.md marker (`**Gate in progress:** <phase>`). Pragmatic mitigation until then: the user may set `**Paused:**` at the start of a gate conversation they expect to be interrupted, but this relies on user foresight rather than structural coverage.
 
 **Neutral:**
 

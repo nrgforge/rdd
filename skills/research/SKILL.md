@@ -80,7 +80,7 @@ Present a research plan (search terms, lit-reviewer dispatch, or spike-runner di
 - The research question set (the questions from Step 1.1)
 - The constraint-removal response (from Step 1.2) — the reviewer evaluates both artifacts as one "question set under review"
 - Prior research context (existing essays or research logs from prior cycles, if available)
-Output path: docs/housekeeping/audits/research-design-review-{cycle}.md
+Output path: .rdd/audits/research-design-review-{cycle}.md
 
 The agent reviews the question set against **four criteria** (extended per ADR-082 from the original three):
 
@@ -188,7 +188,7 @@ Present the essay to the user. If invariant tensions were found, highlight them 
 After the essay is written, dispatch the **citation-auditor** specialist subagent. Provide it with:
 - The essay file path
 - The research log file path (as evidence trail)
-Output path: docs/housekeeping/audits/citation-audit-{cycle}.md
+Output path: .rdd/audits/citation-audit-{cycle}.md
 
 The agent runs on Sonnet in an isolated context, reads the input files, verifies all references and factual claims, and writes a structured audit report to the output path.
 
@@ -204,7 +204,7 @@ The essay is the foundation for all downstream phases — bad citations here pro
 After citation audit passes, dispatch the **argument-auditor** specialist subagent. Provide it with:
 - The essay file path (primary document)
 - The research log file path (source material — the full evidence base the essay drew from)
-Output path: docs/housekeeping/audits/argument-audit-{cycle}.md
+Output path: .rdd/audits/argument-audit-{cycle}.md
 
 The agent runs on Sonnet in an isolated context and produces a **two-section** audit report:
 1. **Argument audit** — maps inferential chains from evidence to conclusions (existing)
@@ -340,7 +340,7 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the research → discover boundary. Research carries the highest sycophancy gradient in the methodology (Essay 013; Cycle 9). The primary risk at this boundary is framing adoption at essay crystallization moments — the "softer than sycophancy but real" pattern documented four times in Cycle 10's own research phase (see susceptibility-snapshot-014-research.md). The AID cycle's recorded signals for this phase are attached. Evaluate whether the essay that is about to enter downstream phases has been shaped by framings absorbed at synthesis moments without competing frames being independently surfaced — particularly where the essay's argumentative backbone crystallized. Pay attention to moments where user-provided framings became load-bearing without belief-mapping against alternatives.
 >
-> Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md
+> Output path: .rdd/audits/susceptibility-snapshot-{cycle}-research.md
 
 ---
 

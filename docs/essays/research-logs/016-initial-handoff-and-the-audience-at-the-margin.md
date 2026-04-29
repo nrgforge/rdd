@@ -108,7 +108,7 @@ Brought into the cycle by the user as framing material. Recorded faithfully here
 
 **Research plan (approved by user):** two-tier — web-search orientation pass on the question set first, then targeted lit-review dispatches likely on Q2 (cognitive/UX literature on first-encounter document design) and Q4 (HCI/conversational-agent literature on turn structure under cognitive load); Q1 and Q3 may be sufficiently practitioner-grounded to skip lit-review. No spikes proposed at this stage.
 
-**First reviewer dispatch.** Reviewer ran on Q1–Q4 + constraint-removal response. Output: `docs/housekeeping/audits/research-design-review-017.md`.
+**First reviewer dispatch.** Reviewer ran on Q1–Q4 + constraint-removal response. Output: `.rdd/audits/research-design-review-017.md`.
 
 ## Step 1.4 — First reviewer findings and user revisions
 
@@ -147,7 +147,7 @@ Should primarily-agent-facing documentation be separated from human-facing docum
 
 ## Step 1.3 (re-dispatch) — Second reviewer dispatch on revised question set
 
-Per the mandatory re-audit rule, the research-methods-reviewer was re-dispatched on the revised question set Q1–Q6 + constraint-removal response + thread-the-needle field evidence + first reviewer report. Output: `docs/housekeeping/audits/research-design-review-017-r2.md`.
+Per the mandatory re-audit rule, the research-methods-reviewer was re-dispatched on the revised question set Q1–Q6 + constraint-removal response + thread-the-needle field evidence + first reviewer report. Output: `.rdd/audits/research-design-review-017-r2.md`.
 
 ## Step 1.4 (post-re-audit) — Re-audit findings and final disposition
 

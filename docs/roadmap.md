@@ -29,12 +29,12 @@
 
 #### WP-B: Hook Script + Test Fixtures Path Substitution
 
-**Objective:** Update `hooks/scripts/tier1-verify-dispatch.sh`, `hooks/scripts/tier1-phase-manifest-check.sh`, and the manifest's `path_template` values to read/write `.rdd/...` paths post-migration. Add backward-compat fallback for pre-migration corpora reading `docs/housekeeping/...`.
+**Objective:** Update `hooks/scripts/tier1-verify-dispatch.sh`, `hooks/scripts/tier1-phase-manifest-check.sh`, and the manifest's `path_template` values to read/write `.rdd/...` paths post-migration. Add backward-compat fallback for pre-migration corpora reading `.rdd/...`.
 
 **Changes:**
-- `hooks/scripts/tier1-verify-dispatch.sh` — dispatch log path read from `.rdd/dispatch-log.jsonl` first; legacy fallback to `docs/housekeeping/dispatch-log.jsonl`
+- `hooks/scripts/tier1-verify-dispatch.sh` — dispatch log path read from `.rdd/dispatch-log.jsonl` first; legacy fallback to `.rdd/dispatch-log.jsonl`
 - `hooks/scripts/tier1-phase-manifest-check.sh` — cycle-status.md read from `.rdd/cycle-status.md` first; legacy fallback; `.rdd/.migration-version` mode marker check; same fallback pattern
-- `hooks/manifests/tier1-phase-manifest.yaml` — all `path_template` values updated from `docs/housekeeping/{audits,gates}/...` to `.rdd/{audits,gates}/...`
+- `hooks/manifests/tier1-phase-manifest.yaml` — all `path_template` values updated from `.rdd/{audits,gates}/...` to `.rdd/{audits,gates}/...`
 - **`hooks/hooks.json` (orientation-trigger matcher extension — surfaced at Cycle 017 ARCHITECT gate):** extend the orientation-trigger hook's PostToolUse matcher to fire on writes to `system-design.agents.md` alongside the existing system-design.md, domain-model.md, scenarios.md targets. One-line config edit; mechanical. Without it, edits to the companion file alone do not trigger ORIENTATION.md regeneration prompts — a sync-mechanism gap relative to the four sync mechanisms confirmed at the gate.
 - Hook test fixtures — `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, `test_parses_cycle_stack_phase.sh` — fixture data updated to `.rdd/...` paths
 - New fixture tests: `test_hook_reads_rdd_path_with_legacy_fallback.sh`, `test_hook_dispatch_log_writes_rdd_path.sh`, `test_orientation_trigger_fires_on_system_design_agents.sh`
@@ -80,7 +80,7 @@
 
 **Changes:**
 - `docs/references/field-guide.md` — full regeneration after Cycle 017 BUILD scope is implemented
-- References to `docs/housekeeping/` paths updated to `.rdd/` paths
+- References to `.rdd/` paths updated to `.rdd/` paths
 - References to ADR-064 / ADR-067 framings updated to v0.8.3 advisory-disposition language
 
 **Scenarios covered:** Field-guide regeneration (ADR-023 base scenarios + Cycle 017 path/disposition updates)
@@ -141,7 +141,7 @@ WP-A, WP-B, WP-C, WP-D, WP-E, WP-F ─── all hard ──► WP-G (integratio
 
 ### TS-1: Migration tooling operational (after WP-A + WP-B)
 
-The `/rdd-conform migrate-to-rdd` subcommand exists and works. Hook scripts + test fixtures + manifest read `.rdd/` paths post-migration with backward-compat fallback to `docs/housekeeping/...`. Practitioners can run the migration on existing corpora; pre-migration corpora continue to operate under advisory disposition.
+The `/rdd-conform migrate-to-rdd` subcommand exists and works. Hook scripts + test fixtures + manifest read `.rdd/` paths post-migration with backward-compat fallback to `.rdd/...`. Practitioners can run the migration on existing corpora; pre-migration corpora continue to operate under advisory disposition.
 
 System is coherent at this state: existing skill workflows continue to operate; migration is opt-in; advisory disposition handles both placements.
 
@@ -167,7 +167,7 @@ All boundary integration tests passing; conformance-scan-decide-017.md findings 
 
 - **Order of TS-1 vs. TS-2.** Both are coherent transition states. The methodology has a slight bias toward TS-1 first because the migration unblocks the path-and-disposition updates in TS-3, but TS-2 first is also viable since skill text changes do not depend on migration. Builder choice based on context.
 - **Whether WP-F (graduation-check tooling) ships in this cycle or is deferred.** F is the most exploratory WP — the reverse-direction code → doc detection is a novel research/engineering contribution per essay 016 §4.3 with no direct prior art. If the implementation surfaces unanticipated complexity, F could be deferred to a dedicated cycle. If it ships now, the field evidence is captured in this cycle's BUILD.
-- **Hook backward-compat fallback duration.** WP-B's backward-compat fallback to `docs/housekeeping/...` paths supports pre-migration corpora indefinitely. A future cycle may consolidate the migrations or remove the fallback when migration adoption is complete. Open scope for follow-up.
+- **Hook backward-compat fallback duration.** WP-B's backward-compat fallback to `.rdd/...` paths supports pre-migration corpora indefinitely. A future cycle may consolidate the migrations or remove the fallback when migration adoption is complete. Open scope for follow-up.
 
 ## Completed Work Log
 

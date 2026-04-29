@@ -16,7 +16,7 @@ write_migration_marker
 write_manifest
 
 # Cycle Stack format with BUILD (next). Intentionally NO gate reflection note
-# and NO susceptibility snapshot in docs/housekeeping/.
+# and NO susceptibility snapshot in .rdd/.
 write_cycle_status '# RDD Cycle Status
 
 ## Cycle Stack

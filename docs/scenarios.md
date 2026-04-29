@@ -1979,7 +1979,7 @@
 
 ### Scenario: cycle-status.md supports Skipped phases field
 **Given** a cycle runs under Mode D (Custom) with explicit phase-skipping
-**When** the user records the skipped phases in `docs/housekeeping/cycle-status.md`
+**When** the user records the skipped phases in `.rdd/cycle-status.md`
 **Then** the document contains a line of the form `**Skipped phases:** research, discover, model, architect` using canonical lowercase phase names
 **And** the field is optional (absent = no phases skipped, standard full-pipeline cycle)
 
@@ -2035,7 +2035,7 @@
 **And** the gate conversation proceeds to its natural close without hook-induced friction
 **And** the manifest check passes when the gate reflection note is produced at the gate's natural close
 
-**Coverage note:** This scenario is not satisfiable under ADR-072's Decision text as written. The hook short-circuits only on `**Paused:**` or `**Skipped phases:**`; an in-progress gate with a present, engaged user triggers neither. The manifest check runs on every Stop and blocks on the not-yet-produced gate reflection note. The scenario documents a known gap surfaced by the Cycle 015 BUILD-entry susceptibility snapshot (`docs/housekeeping/audits/susceptibility-snapshot-015-build.md`). Resolution is deferred to a follow-up cycle — candidates include a hook-side session-scoped block-then-advisory supplement (the alternative flagged by the snapshot) or a third cycle-status.md marker (`**Gate in progress:** <phase>`). Cycle 015's scope remains Issue 10 (lifecycle composition in build stewardship); the broader hook-state design problem is out of scope.
+**Coverage note:** This scenario is not satisfiable under ADR-072's Decision text as written. The hook short-circuits only on `**Paused:**` or `**Skipped phases:**`; an in-progress gate with a present, engaged user triggers neither. The manifest check runs on every Stop and blocks on the not-yet-produced gate reflection note. The scenario documents a known gap surfaced by the Cycle 015 BUILD-entry susceptibility snapshot (`.rdd/audits/susceptibility-snapshot-015-build.md`). Resolution is deferred to a follow-up cycle — candidates include a hook-side session-scoped block-then-advisory supplement (the alternative flagged by the snapshot) or a third cycle-status.md marker (`**Gate in progress:** <phase>`). Cycle 015's scope remains Issue 10 (lifecycle composition in build stewardship); the broader hook-state design problem is out of scope.
 
 ## Feature: Debug Skill (ADR-048)
 
@@ -2484,7 +2484,7 @@
 
 ### Scenario: Manifest catches missing required mechanism at phase end
 **Given** the current phase is `research`
-**And** the manifest specifies `susceptibility-snapshot-evaluator` as a required mechanism with path `docs/housekeeping/audits/susceptibility-snapshot-014-research.md`
+**And** the manifest specifies `susceptibility-snapshot-evaluator` as a required mechanism with path `.rdd/audits/susceptibility-snapshot-014-research.md`
 **When** the Stop event fires and the snapshot file does not exist
 **Then** the hook emits `block` with a reason naming the missing artifact
 **And** the agent sees the block reason as model-visible context on its next turn
@@ -2504,7 +2504,7 @@
 **When** the orchestrator dispatches the `argument-auditor` via the Task tool
 **Then** the PostToolUse hook matches `tool_name == "Agent"` and `subagent_type == "argument-auditor"`
 **And** the hook extracts the expected path from `tool_input.prompt` via regex matching the canonical `Output path:` line
-**And** the hook appends a JSONL entry to `docs/housekeeping/dispatch-log.jsonl` containing `{timestamp, session_id, mechanism, subagent_type, expected_path, tool_use_id}`
+**And** the hook appends a JSONL entry to `.rdd/dispatch-log.jsonl` containing `{timestamp, session_id, mechanism, subagent_type, expected_path, tool_use_id}`
 
 ### Scenario: PostToolUse hook ignores non-Tier-1 dispatches
 **Given** the orchestrator dispatches a subagent whose `subagent_type` is not in the Tier 1 set
@@ -2535,14 +2535,14 @@
 **And** no reason is injected into the agent's next-turn context
 
 ### Scenario: Compound check's structural guarantee holds only in enforcement mode
-**Given** the corpus has no `docs/housekeeping/` directory (pre-migration state)
+**Given** the corpus has no `.rdd/` directory (pre-migration state)
 **When** the Stop hook runs
 **Then** the hook enters advisory mode and does not perform the compound cross-reference
 **And** fabricated audit artifacts can exist at the expected paths without being caught
 **And** the structural guarantee from ADR-064 does not hold in this state
 
 ### Scenario: Compound check structural guarantee holds post-migration
-**Given** the corpus has been migrated and `docs/housekeeping/.migration-version` exists with the current plugin version
+**Given** the corpus has been migrated and `.rdd/.migration-version` exists with the current plugin version
 **When** the Stop hook runs the compound check
 **Then** sophisticated State C fabrication is structurally impossible because fabricating both an artifact and a matching dispatch log entry would require injecting a fake PostToolUse event
 **And** the agent cannot inject hook events
@@ -2550,20 +2550,20 @@
 ## Feature: Advisory Mode for Pre-Migration Corpora (ADR-064)
 
 ### Scenario: Hook enters advisory mode when housekeeping directory is absent
-**Given** `docs/housekeeping/` does not exist in the project
+**Given** `.rdd/` does not exist in the project
 **When** the Stop hook runs at phase-end
 **Then** the hook emits `allow` without running the compound check
 **And** the hook emits a stderr notice directing the user to `/rdd-conform` for migration
 **And** the notice fires once per session (session-scoped suppression marker)
 
 ### Scenario: Hook enters advisory mode when marker file is absent
-**Given** `docs/housekeeping/` exists but `docs/housekeeping/.migration-version` does not
+**Given** `.rdd/` exists but `.rdd/.migration-version` does not
 **When** the Stop hook runs at phase-end
 **Then** the hook enters advisory mode (migration in progress or incomplete)
 **And** the methodology continues to function without harness-layer verification
 
 ### Scenario: Hook enters enforcement mode when marker file is present
-**Given** `docs/housekeeping/.migration-version` exists containing a plugin version string
+**Given** `.rdd/.migration-version` exists containing a plugin version string
 **When** the Stop hook runs at phase-end
 **Then** the hook enters enforcement mode and runs the compound check as specified in ADR-064
 
@@ -2620,7 +2620,7 @@
 **When** the rdd-conform dispatch prompt format audit runs
 **Then** the audit finds a "Phase Boundary: Susceptibility Snapshot Dispatch" subsection
 **And** the subsection is located in the bottom third of the skill file (phase-end position)
-**And** the subsection contains the canonical prompt skeleton with `Output path: docs/housekeeping/audits/susceptibility-snapshot-{cycle}-research.md`
+**And** the subsection contains the canonical prompt skeleton with `Output path: .rdd/audits/susceptibility-snapshot-{cycle}-research.md`
 
 ### Scenario: Canonical dispatch prompt contains Output path line
 **Given** a Tier 1 dispatch instruction in any phase skill
@@ -2651,7 +2651,7 @@
 ### Scenario: Gate reflection note is produced at phase-end before phase completes
 **Given** the orchestrator is at a phase boundary with an AID cycle conversation completed
 **When** the orchestrator prepares to declare the phase complete
-**Then** a gate reflection note is written to `docs/housekeeping/gates/{cycle}-{phase-from}-to-{phase-to}.md`
+**Then** a gate reflection note is written to `.rdd/gates/{cycle}-{phase-from}-to-{phase-to}.md`
 **And** the note contains the composed belief-mapping question, the user's response, the selected pedagogical move, and the commitment gating outputs
 
 ### Scenario: Gate reflection note omits engagement interpretation
@@ -2759,36 +2759,36 @@
 ### Scenario: Migration moves audits from essays subdirectory to housekeeping
 **Given** `docs/essays/audits/` contains audit report files for cycles 001–014
 **When** `/rdd-conform migrate` runs
-**Then** all files under `docs/essays/audits/` are moved to `docs/housekeeping/audits/` preserving subdirectory structure
+**Then** all files under `docs/essays/audits/` are moved to `.rdd/audits/` preserving subdirectory structure
 **And** `docs/essays/audits/` no longer exists after migration
 
 ### Scenario: Migration moves cycle-status to housekeeping
 **Given** `docs/cycle-status.md` exists at the corpus root
 **When** `/rdd-conform migrate` runs
-**Then** the file is moved to `docs/housekeeping/cycle-status.md`
+**Then** the file is moved to `.rdd/cycle-status.md`
 **And** its content is unchanged
 
 ### Scenario: Migration creates gates directory empty
-**Given** no `docs/housekeeping/gates/` directory exists before migration
+**Given** no `.rdd/gates/` directory exists before migration
 **When** `/rdd-conform migrate` runs
-**Then** `docs/housekeeping/gates/` is created as an empty directory
+**Then** `.rdd/gates/` is created as an empty directory
 **And** subsequent gate reflection notes land at this location
 
 ### Scenario: Migration writes version marker file
 **Given** the migration operation completes successfully
 **When** the marker file is written
-**Then** `docs/housekeeping/.migration-version` contains the plugin version string that performed the migration
+**Then** `.rdd/.migration-version` contains the plugin version string that performed the migration
 **And** the Stop hook's subsequent runs enter enforcement mode on reading this marker
 
 ### Scenario: Migration updates path references across corpus mechanically
 **Given** prior ADRs, the Cycle 10 essay, spike reports, skill files, the manifest, the domain model, and ORIENTATION all reference pre-migration paths
 **When** `/rdd-conform migrate` runs the reference update pass
-**Then** all occurrences of `docs/essays/audits/` are replaced with `docs/housekeeping/audits/` in every affected file
-**And** all occurrences of `docs/cycle-status.md` are replaced with `docs/housekeeping/cycle-status.md`
+**Then** all occurrences of `docs/essays/audits/` are replaced with `.rdd/audits/` in every affected file
+**And** all occurrences of `docs/cycle-status.md` are replaced with `.rdd/cycle-status.md`
 **And** a summary report lists every file touched
 
 ### Scenario: Migration is idempotent on migrated corpus
-**Given** a corpus already has `docs/housekeeping/.migration-version` matching the current plugin version
+**Given** a corpus already has `.rdd/.migration-version` matching the current plugin version
 **When** `/rdd-conform migrate` runs
 **Then** the operation detects the marker and no-ops
 **And** no files are moved or modified
@@ -2808,13 +2808,13 @@
 ## Feature: rdd-conform Scope Extension (ADR-070)
 
 ### Scenario: Housekeeping directory organization audit detects missing directory
-**Given** a pre-migration corpus with no `docs/housekeeping/` directory
+**Given** a pre-migration corpus with no `.rdd/` directory
 **When** the user runs `/rdd-conform` (audit mode)
 **Then** the audit reports that the housekeeping directory is absent and suggests running `/rdd-conform migrate`
 **And** the audit does not auto-correct; it produces a finding report
 
 ### Scenario: Gate reflection note template alignment audit detects missing header
-**Given** a file at `docs/housekeeping/gates/014-research-to-discover.md` exists but does not contain the `## Belief-mapping question composed for this gate` header
+**Given** a file at `.rdd/gates/014-research-to-discover.md` exists but does not contain the `## Belief-mapping question composed for this gate` header
 **When** the gate reflection note template alignment audit runs
 **Then** the audit reports a missing required header
 **And** the audit does not audit content substance — only template alignment
@@ -2858,7 +2858,7 @@
 ### Scenario: Housekeeping migration enables enforcement-mode compound check
 **Given** a pre-migration corpus in advisory mode
 **When** the user runs `/rdd-conform migrate` and the migration completes
-**Then** `docs/housekeeping/.migration-version` is written and the corpus transitions to enforcement mode on the next session
+**Then** `.rdd/.migration-version` is written and the corpus transitions to enforcement mode on the next session
 **And** the compound check's structural guarantee against sophisticated State C becomes active
 **And** the Stop hook emits `block` on missing required artifacts rather than advisory notices
 
@@ -3241,7 +3241,7 @@
 |---|---|---|---|
 | Cognitive-Economy Outcome Test is encoded as methodology principle, applied at moments of artifact proposal | Methodology-principle level (Tier 2 cognitive mechanism per Invariant 8) | Atomic, 1:1 — see "Outcome Test as Admissibility Criterion" feature scenarios | yes |
 | Companion-file pattern (Pattern B at predictable path) is named alternative to audience-tagged sections (Pattern A); directory-level audience separation rejected | Per-artifact methodology pattern catalog | Atomic, 1:1 — see "Agent-Context Content Placement" feature scenarios | yes |
-| `.rdd/` infrastructure relocation completes correctly across hook scripts, manifest, skill files, ADR references, and hook test fixtures | Migration tooling + atomic shipping unit | **Emergent across multiple scenarios.** Migration scope correctness verifies via "infrastructure-relocation correctness" group; runtime behavior post-migration verifies via the existing housekeeping integration tests adapted to `.rdd/` paths; conformance audit detects orphaned `docs/housekeeping/` content. | yes — combined verification covers the migration boundary (file moves) and the runtime boundary (hook scripts and tests pass against the new paths) |
+| `.rdd/` infrastructure relocation completes correctly across hook scripts, manifest, skill files, ADR references, and hook test fixtures | Migration tooling + atomic shipping unit | **Emergent across multiple scenarios.** Migration scope correctness verifies via "infrastructure-relocation correctness" group; runtime behavior post-migration verifies via the existing housekeeping integration tests adapted to `.rdd/` paths; conformance audit detects orphaned `.rdd/` content. | yes — combined verification covers the migration boundary (file moves) and the runtime boundary (hook scripts and tests pass against the new paths) |
 | AI-as-orienter non-adoption decision is recorded; agent-mediated orientation does not become a structural methodology pattern | Methodology-decision level | Atomic, 1:1 — non-adoption is a decision, not a behavior; see "AI-as-Orienter Non-Adoption" feature | yes |
 | Validation spike decision is recorded at research → discover gate when research-phase claims meet trigger condition | Research-phase skill text + research log | Atomic, 1:1 — see "Validation Spikes in Research" feature scenarios | yes |
 | Stop hook manifest check operates in advisory disposition across all modes; PostToolUse dispatch log records every Tier 1 dispatch; compound-check fabrication detection surfaces as advisory | Hook-script implementation + manifest specification | **Aggregate** across hook-script behavior, manifest behavior, and advisory output content; the advisory-disposition commitment is verified at integration through the existing v0.8.3 hook tests (already passing per conformance scan). See "v0.8.3 Advisory Disposition" feature for behavior scenarios; the integration verification depends on `hooks/tests/*.sh` continuing to pass post-migration. | yes — hook-script tests verify advisory output content; integration tests verify multi-Stop-event behavior |
@@ -3342,18 +3342,18 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 ## Feature: `.rdd/` Infrastructure Relocation (ADR-085)
 
 ### Scenario: `/rdd-conform migrate-to-rdd` subcommand performs the relocation
-**Given** a corpus in the ADR-070 placement (`docs/housekeeping/`)
+**Given** a corpus in the ADR-070 placement (`.rdd/`)
 **When** the practitioner runs `/rdd-conform migrate-to-rdd`
 **Then** the operation creates `.rdd/` and subdirectories (`audits/`, `gates/`, `session/`)
-**And** moves `docs/housekeeping/audits/*` → `.rdd/audits/*`, `docs/housekeeping/gates/*` → `.rdd/gates/*`, `docs/housekeeping/cycle-status.md` → `.rdd/cycle-status.md`, `docs/housekeeping/dispatch-log.jsonl` → `.rdd/dispatch-log.jsonl`, `docs/housekeeping/.migration-version` → `.rdd/.migration-version`
+**And** moves `.rdd/audits/*` → `.rdd/audits/*`, `.rdd/gates/*` → `.rdd/gates/*`, `.rdd/cycle-status.md` → `.rdd/cycle-status.md`, `.rdd/dispatch-log.jsonl` → `.rdd/dispatch-log.jsonl`, `.rdd/.migration-version` → `.rdd/.migration-version`
 **And** moves `session/` → `.rdd/session/` if present
-**And** removes the now-empty `docs/housekeeping/` directory
+**And** removes the now-empty `.rdd/` directory
 **And** writes `.rdd/.migration-version` with the current plugin version
 
 ### Scenario: Reference updates substitute paths across all dependent files
 **Given** a corpus in the ADR-070 placement before migration
 **When** `/rdd-conform migrate-to-rdd` runs
-**Then** `docs/housekeeping/` → `.rdd/` substitution is applied to: `docs/decisions/*.md`, `docs/essays/*.md`, `skills/**/SKILL.md`, `hooks/manifests/tier1-phase-manifest.yaml`, `hooks/scripts/*.sh`, `hooks/tests/**/*.sh`, `docs/domain-model.md`, `docs/ORIENTATION.md`
+**Then** `.rdd/` → `.rdd/` substitution is applied to: `docs/decisions/*.md`, `docs/essays/*.md`, `skills/**/SKILL.md`, `hooks/manifests/tier1-phase-manifest.yaml`, `hooks/scripts/*.sh`, `hooks/tests/**/*.sh`, `docs/domain-model.md`, `docs/ORIENTATION.md`
 **And** hook test fixtures at `hooks/tests/lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_applicable_when.sh`, `test_in_progress_gate.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, `test_parses_cycle_stack_phase.sh` are explicitly included in the substitution sweep
 
 ### Scenario: Migration is idempotent
@@ -3366,7 +3366,7 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 **Given** ADR-085 is accepted
 **When** the supersession workflow runs
 **Then** ADR-070's body remains immutable
-**And** ADR-070 carries the header: `> **Updated by ADR-085 on 2026-04-27.** ADR-085 relocates infrastructure artifacts from docs/housekeeping/ to .rdd/ and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.`
+**And** ADR-070 carries the header: `> **Updated by ADR-085 on 2026-04-27.** ADR-085 relocates infrastructure artifacts from .rdd/ to .rdd/ and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.`
 **And** ADR-070's Status field is `Updated by ADR-085`
 
 ### Scenario: Downstream-sweep deferral is recorded with rationale
@@ -3379,7 +3379,7 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 **Given** a corpus has migrated to `.rdd/`
 **When** the Stop hook fires for advisory-mode detection
 **Then** the hook reads `.rdd/.migration-version` (post-migration path)
-**And** does not look at `docs/housekeeping/.migration-version` (pre-migration path) for the migrated corpus
+**And** does not look at `.rdd/.migration-version` (pre-migration path) for the migrated corpus
 
 ### Preservation: Pre-migration corpora continue to work in advisory mode
 **Given** a corpus in the ADR-070 placement that has not run `/rdd-conform migrate-to-rdd`
@@ -3496,7 +3496,7 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 **Given** ADR-088 amends ADR-064
 **When** ADR-064's file is read
 **Then** ADR-064's body remains immutable (compound check architecture, fails-safe-to-allow rationale, scope discipline, housekeeping framing, advisory-mode-vs-enforcement-mode commitment)
-**And** ADR-064 carries an expanded supersession header (per ADR-088) with two reading-time notes: enforcement-mode semantic shift and stale `docs/housekeeping/` paths post-migration
+**And** ADR-064 carries an expanded supersession header (per ADR-088) with two reading-time notes: enforcement-mode semantic shift and stale `.rdd/` paths post-migration
 
 ### Scenario: State-C claim is amended from impossibility to detectability
 **Given** the methodology's documented structural defense against sophisticated State C fabrication

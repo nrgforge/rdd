@@ -369,11 +369,11 @@ Findings are reported; the user decides whether to run `/rdd-conform migrate` (A
 
 ### Purpose
 
-Verify gate reflection notes at `docs/housekeeping/gates/` match the canonical template from ADR-066.
+Verify gate reflection notes at `.rdd/gates/` (or `docs/housekeeping/gates/` for pre-ADR-085 corpora) match the canonical template from ADR-066.
 
 ### Checks
 
-For each file in `docs/housekeeping/gates/`:
+For each file in `.rdd/gates/` (or `docs/housekeeping/gates/` for pre-ADR-085 corpora):
 - File matches canonical naming pattern (`{cycle}-{phase}-gate.md`)
 - Required headers present: `# Gate Reflection:`, `## Belief-mapping question composed for this gate`, `## User's response`, `## Pedagogical move selected`, `## Commitment gating outputs`
 - Required fields present: `**Phase boundary:**`, `**Settled premises`, `**Open questions`, `**Specific commitments`
@@ -394,7 +394,7 @@ Verify skill file dispatch prompts follow the canonical skeleton from ADR-065.
 
 For each skill file (`skills/**/SKILL.md`):
 - Every Tier 1 dispatch instruction contains the canonical prompt skeleton: `Dispatch the <subagent-type> subagent with the following brief:` + brief content + `Output path: <canonical path>`
-- The `Output path:` line uses post-migration paths (`docs/housekeeping/audits/` or `docs/housekeeping/gates/`)
+- The `Output path:` line uses post-migration paths (`.rdd/audits/` or `.rdd/gates/` for ADR-085 corpora; `docs/housekeeping/audits/` or `docs/housekeeping/gates/` for legacy ADR-070 corpora)
 - The dispatch instruction is placed at a structurally privileged position (top third or bottom third of the skill file) — flag any middle-third placements per Spike S4's position-effect finding
 - **Does not audit brief content** — audit is format-level, not content-level
 
@@ -420,7 +420,7 @@ This operation is opt-in per cycle. The methodology works without migration — 
 
 #### Step 1: Detect
 
-Read `docs/housekeeping/cycle-status.md` (or `docs/cycle-status.md` if pre-migration). Identify entries that match the **legacy pre-ADR-072 signature**:
+Read `.rdd/cycle-status.md` (post-ADR-085 placement), falling back to `docs/housekeeping/cycle-status.md` (ADR-070 placement) or `docs/cycle-status.md` (pre-housekeeping legacy). Identify entries that match the **legacy pre-ADR-072 signature**:
 
 - Single-entry format (no `## Cycle Stack` wrapper), OR an entry inside a Cycle Stack that lacks cycle-shape fields
 - No `**Skipped phases:**`, `**Paused:**`, or `**Cycle type:**` fields anywhere in the entry

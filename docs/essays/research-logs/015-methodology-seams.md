@@ -7,7 +7,7 @@
 
 **Cycle shape:** Batch cycle with mixed research depth per issue. Not themed. Experimental shape testing multi-cycle composition (#14) by doing it.
 
-**Reviewer audit:** [`./docs/housekeeping/audits/research-design-review-016.md`](../../housekeeping/audits/research-design-review-016.md) — Tier 1 dispatch executed; findings adopted in full.
+**Reviewer audit:** [`./.rdd/audits/research-design-review-016.md`](../../housekeeping/audits/research-design-review-016.md) — Tier 1 dispatch executed; findings adopted in full.
 
 ---
 
@@ -27,7 +27,7 @@
 
 ## Research Methods Reviewer Findings (recorded for in-context-recall mitigation)
 
-Full report: [`./docs/housekeeping/audits/research-design-review-016.md`](../../housekeeping/audits/research-design-review-016.md)
+Full report: [`./.rdd/audits/research-design-review-016.md`](../../housekeeping/audits/research-design-review-016.md)
 
 ### Top-level findings
 

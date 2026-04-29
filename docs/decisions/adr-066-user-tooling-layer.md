@@ -35,9 +35,9 @@ The domain model (Amendment #17) defines *Graduate Conversational Mechanism* as 
 
 The AID cycle at phase boundaries graduates from purely conversational to artifact-producing. At each phase gate, the orchestrator must produce a **gate reflection note** at a canonical path before the phase can be declared complete.
 
-**Canonical path:** `docs/housekeeping/gates/{cycle}-{phase-from}-to-{phase-to}.md`
+**Canonical path:** `.rdd/gates/{cycle}-{phase-from}-to-{phase-to}.md`
 
-This is a new directory under the housekeeping pattern established in ADR-064. It is parallel to `docs/housekeeping/audits/` (the migration target for audit reports per ADR-070): both are infrastructure artifacts under the centered-vs-infrastructure framing — they underpin framework operation (gate reflection notes are consumed by the Stop hook's manifest check; audits are consumed by the orchestrator and surfaced to users by the agent), without being centered for direct user reading in normal workflow. Users can read either directly if they choose, but the methodology does not expect them to browse these files as part of cycle work.
+This is a new directory under the housekeeping pattern established in ADR-064. It is parallel to `.rdd/audits/` (the migration target for audit reports per ADR-070): both are infrastructure artifacts under the centered-vs-infrastructure framing — they underpin framework operation (gate reflection notes are consumed by the Stop hook's manifest check; audits are consumed by the orchestrator and surfaced to users by the agent), without being centered for direct user reading in normal workflow. Users can read either directly if they choose, but the methodology does not expect them to browse these files as part of cycle work.
 
 **Required structure:**
 
@@ -88,7 +88,7 @@ The artifact respects AID privacy: a user reading the gate reflection note sees 
 
 ```yaml
 - mechanism: aid-cycle-gate-reflection
-  path_template: docs/housekeeping/gates/{cycle}-{phase-from}-to-{phase-to}.md
+  path_template: .rdd/gates/{cycle}-{phase-from}-to-{phase-to}.md
   min_bytes: 800
   required_headers:
     - "# Gate Reflection:"
@@ -162,13 +162,13 @@ The limitation is a specific instance of the broader "competence without indepen
 **Negative:**
 
 - **Every phase skill gains an additional artifact-production requirement.** The gate reflection note is new work at phase-end. Phase skills become more ritualistic as the artifact trail grows. Mitigation: the note format is structured and short; it is not a creative-writing exercise; the orchestrator produces it mechanically once the AID exchange completes.
-- **A broken or interrupted phase transition can wedge if the note cannot be written.** Mitigation: the advisory-mode fallback from ADR-064 applies — on pre-migration corpora, on hook-script errors, or when `docs/housekeeping/gates/` does not exist, the note requirement degrades to a stderr advisory rather than a block. On a post-migration corpus with working hooks, phase transition does block until the note is written — the desired behavior.
+- **A broken or interrupted phase transition can wedge if the note cannot be written.** Mitigation: the advisory-mode fallback from ADR-064 applies — on pre-migration corpora, on hook-script errors, or when `.rdd/gates/` does not exist, the note requirement degrades to a stderr advisory rather than a block. On a post-migration corpus with working hooks, phase transition does block until the note is written — the desired behavior.
 - **The compound defense is partial coverage even when all its components fire.** The reframe-derailed gate limitation is a real epistemic gap. The ADR acknowledges this honestly rather than claiming the User-Tooling Layer is complete. Users who want stronger guarantees have no additional lever available within the methodology's current scope.
 - **The gate reflection note format is new and will drift.** Template alignment over time is a conformance concern. `rdd-conform` should audit gate reflection notes for template alignment, which extends its scope alongside the existing housekeeping-audit extension in ADR-070.
 
 **Neutral:**
 
-- **The canonical path `docs/housekeeping/gates/` is a new directory under housekeeping.** Parallel to `docs/housekeeping/audits/`. Pre-migration path has no equivalent — this directory is created fresh at migration time per ADR-070.
+- **The canonical path `.rdd/gates/` is a new directory under housekeeping.** Parallel to `.rdd/audits/`. Pre-migration path has no equivalent — this directory is created fresh at migration time per ADR-070.
 - **The manifest format from ADR-063 extends natively.** The existing per-mechanism `required_mechanisms` structure supports the `aid-cycle-gate-reflection` entry without schema changes. The `{phase-from}` and `{phase-to}` substitution tokens extend the existing `{cycle}` substitution pattern.
 - **The AID cycle's engagement interpretation remains private even with the artifact requirement.** This ADR is the specific application of the AID Interpret privacy principle to file-based artifacts, not a revision of the principle. Prior principle → current encoding.
 
@@ -187,7 +187,7 @@ This ADR carries the most provenance-complex chain of the six structural ADRs, b
 - **The "compound defense" umbrella term:** **Agent-composed at MODEL 2026-04-08 during the User-Tooling Layer concept edit; user-endorsed at DECIDE 2026-04-08.** The term was not the user's original framing — it was the agent's synthesis of the user's pre-mortem observation into a named pattern. The user confirmed this retrospectively at DECIDE: *"It was your term to say compound-defense, which was why I couldn't recall the concept easily before, but it makes sense to me and is descriptive."* The DECIDE endorsement also added a substantive justification for retaining the term: its extensibility. "Compound defense" does not bake in a component count, so additional defenses can join the pattern without renaming. **Attribution: term agent-composed at MODEL, user-endorsed at DECIDE with extensibility rationale.**
 - **The compound defense's component breakdown (manifest + snapshot + belief-mapping covering non-overlapping failure modes):** **Hybrid provenance.** The snapshot and belief-mapping as complementary defenses were user-surfaced at MODEL in the User-Tooling Layer pre-mortem. The manifest-check component was agent-synthesized at MODEL during the User-Tooling Layer concept edit and user-endorsed at DECIDE 2026-04-08 after the DECIDE-phase provenance discrepancy surfacing resolved the question. The specific characterization of the components as covering "non-overlapping coverage zones" (structural floor / content ceiling / pre-artifact) is agent composition at DECIDE, building on the user's substantive endorsements. **Attribution: insights user-surfaced across MODEL and DECIDE; component taxonomy agent-composed at DECIDE.**
 - **The AID-privacy-respecting content design:** Derived from Cycle 10 feedback memory on AID Interpret privacy (durable user preference from earlier cycles). Applied in this ADR to file-based artifacts as a new application of the existing principle. Not user-surfaced for this specific ADR, but not agent synthesis either — it is a pre-existing user principle being applied to a new context.
-- **The `docs/housekeeping/gates/` path choice and the `{phase-from}-to-{phase-to}` substitution pattern:** Agent-composed at drafting time as a mechanical extension of the housekeeping pattern from ADR-064. Not from essay or user input.
+- **The `.rdd/gates/` path choice and the `{phase-from}-to-{phase-to}` substitution pattern:** Agent-composed at drafting time as a mechanical extension of the housekeeping pattern from ADR-064. Not from essay or user input.
 - **The scope boundary decisions (belief-mapping at pushback, assertion-aware observation, AID during standalone as explicit non-targets):** Agent-composed at drafting time as independent second-order critique of what this ADR commits to.
 
 **Watch item resolved at DECIDE.** This ADR originally drafted a "three-layer defense with zones" umbrella framing, flagged as a watch item because the user had not explicitly endorsed that specific umbrella. At the subsequent DECIDE turn, the user clarified that "compound defense" — the agent's own MODEL-phase term — is the right umbrella, for two reasons: it is descriptive, and it is extensible to future components without requiring a rename. The ADR was updated in the same DECIDE conversation to use "compound defense" consistently throughout. The first-draft "three-layer" terminology is preserved only in this provenance note for traceability. The watch item is resolved; no unresolved synthesis-moment framing adoption remains in the ADR.

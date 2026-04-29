@@ -205,7 +205,7 @@ Between every phase, you MUST run the Attend-Interpret-Decide (AID) cycle. No ga
 
 **When a blocking hook fires repeatedly.** If a Stop hook blocks with the same error across multiple turns without new information from the user, surface the issue once (state what is blocked, offer concrete remediation options), then stop producing content. Do not repeat the analysis on each fire — repeated re-surfacing is noise, not compliance. If the clearly-indicated remediation is autonomous (e.g., re-dispatching a subagent whose prior dispatch was malformed), prefer taking that action over re-surfacing the same options.
 
-**Gate Reflection Note (ADR-066).** After the gate conversation completes and before the phase is declared complete, produce a gate reflection note at `docs/housekeeping/gates/{cycle}-{phase}-gate.md`. Create the `docs/housekeeping/gates/` directory if it does not exist. This is a Tier 1 mechanism — the manifest check verifies the note exists at phase-end.
+**Gate Reflection Note (ADR-066).** After the gate conversation completes and before the phase is declared complete, produce a gate reflection note at `.rdd/gates/{cycle}-{phase}-gate.md`. Create the `.rdd/gates/` directory if it does not exist. This is a Tier 1 mechanism — the manifest check verifies the note exists at phase-end.
 
 The note captures evidence of gate activity without narrating engagement back to the user. Required structure:
 
@@ -344,7 +344,7 @@ The RDD corpus distinguishes two categories of artifact:
 - **Centered artifacts** — designed to be read, shared, or referenced by users: essays, system-design, product-discovery, roadmap, ORIENTATION, ADRs, domain-model. The public face of the methodology's work.
 - **Infrastructure artifacts** — underpin framework operation without being designed for direct user reading: audit reports (surfaced by the agent at gates), cycle-status (parsed by hooks), dispatch log (machine-only), gate reflection notes. Users can read these if they choose, but the workflow does not center them.
 
-The distinction is about what the methodology *centers*, not what is technically readable. `docs/housekeeping/` groups infrastructure artifacts; the name signals "come look under the hood" rather than "stay out."
+The distinction is about what the methodology *centers*, not what is technically readable. `.rdd/` groups infrastructure artifacts; the name signals "come look under the hood" rather than "stay out."
 
 ### Methodology Scope-of-Claim (ADR-069)
 
@@ -364,7 +364,7 @@ The distinction is about what the methodology *centers*, not what is technically
 2. "Independent" is load-bearing — second-order critique appears when the user operates in second-order mode or when an isolated evaluator runs. The agent-in-conversation does not generate it alone.
 3. The methodology's guarantee rests on the mechanisms firing, not on the agent's independent judgment. If Tier 1 mechanisms fail to fire (the pattern Invariant 8 addresses), sycophancy resistance degrades to "competent first-order analysis" alone.
 
-**Advisory-mode enforcement-conditional.** The compound check's structural guarantee against sophisticated State C holds only in enforcement mode (post-migration corpora with `docs/housekeeping/.migration-version`). Pre-migration corpora operate with the Skill-Structure Layer fix but without harness-layer compound verification.
+**Advisory-mode enforcement-conditional.** The compound check's structural guarantee against sophisticated State C holds only in enforcement mode (post-migration corpora with `.rdd/.migration-version`). Pre-migration corpora operate with the Skill-Structure Layer fix but without harness-layer compound verification.
 
 ### Essay as Research Phase Checkpoint
 

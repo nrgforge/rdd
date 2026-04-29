@@ -49,7 +49,7 @@ The research-methods-reviewer dispatch (ADR-060) is extended to include the **qu
 
 **The reviewer evaluates both artifacts produced in steps 1 and 2:** the research question(s) articulated in the research log (step 1) AND the constraint-removal response naming the most consequential existing artifact (step 2). The two artifacts are evaluated together as the **question set under review**. The third review criterion (at least one question treats existing artifacts as prior art) is satisfied either by an explicitly artifact-bracketing question in step 1 or by the step-2 constraint-removal response, which structurally treats the named artifact as prior art rather than as a constraint. Treating the two artifacts as one reviewable set closes the gap where step 1's questions might be wholly artifact-framed while step 2's response sits outside the reviewer's scope.
 
-The reviewer's output is the question-set review report, written to `docs/housekeeping/audits/research-methods-question-set-<NNN>.md`. The reviewer flags issues; the user revises the question set or accepts the issues with rationale. The pattern follows the existing argument auditor / framing auditor flow.
+The reviewer's output is the question-set review report, written to `.rdd/audits/research-methods-question-set-<NNN>.md`. The reviewer flags issues; the user revises the question set or accepts the issues with rationale. The pattern follows the existing argument auditor / framing auditor flow.
 
 **3. Inversion Principle augmentation at research entry.**
 

@@ -33,7 +33,7 @@ RDD adopts **precondition composition** as the scope-adaptive enforcement patter
 research:
   - artifact: docs/essays/<NNN>-<descriptive-name>.md
     description: Research essay (citation-audited, argument-audited, framing-audited)
-  - artifact: docs/housekeeping/audits/argument-audit-research-<NNN>.md
+  - artifact: .rdd/audits/argument-audit-research-<NNN>.md
     description: Argument and framing audit report
     applicable_when:
       - cycle_type_in: [standard, batch]
@@ -58,7 +58,7 @@ The primitives compose from the multi-cycle schema (ADR-078) — they read the s
 
 **Mini-cycle / batch-cycle implications.**
 
-A mini-cycle (e.g., the Cycle 015 DECIDE+BUILD scoped cycle) declares `**Cycle type:** mini-cycle` in its cycle-status entry. Existing manifest entries that depend on artifacts from skipped phases — for example, the research-essay citation-audit entry (`docs/housekeeping/audits/citation-audit-research-<NNN>.md`) — gain `applicable_when: [cycle_type_in: [standard, batch]]` so they no longer fire for mini-cycles that legitimately omit RESEARCH. The same manifest works for both cycle types; the precondition gates which checks fire.
+A mini-cycle (e.g., the Cycle 015 DECIDE+BUILD scoped cycle) declares `**Cycle type:** mini-cycle` in its cycle-status entry. Existing manifest entries that depend on artifacts from skipped phases — for example, the research-essay citation-audit entry (`.rdd/audits/citation-audit-research-<NNN>.md`) — gain `applicable_when: [cycle_type_in: [standard, batch]]` so they no longer fire for mini-cycles that legitimately omit RESEARCH. The same manifest works for both cycle types; the precondition gates which checks fire.
 
 A batch cycle (Cycle 016) declares `**Cycle type:** batch`. Most full-pipeline checks apply unchanged. The precondition framework provides the affordance for any future batch-specific manifest entries to gate themselves with `applicable_when: [cycle_type_in: [batch]]` — no concrete batch-specific entries exist in today's manifest, but the affordance is in place when one is needed.
 

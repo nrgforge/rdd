@@ -1,2 +1,2 @@
 # RDD session-scoped artifacts (not durable across sessions)
-session/
+.rdd/session/

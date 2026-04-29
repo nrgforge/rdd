@@ -8,7 +8,7 @@ Issue #14 question 4 names a concrete migration problem: pre-hook cycles (starte
 
 Essay 015 §5 names the **grandfathered-rule pattern** as the relevant precedent: Microsoft Dynamics 365 and Atlassian Connect both use the pattern where active legacy instances continue under the old enforcement regime until explicitly upgraded. The pattern preserves the durable record of legacy work while preventing new work from accumulating under the old regime.
 
-ADR-070 established the migration boundary for Cycle 10's structural ADRs: the `docs/housekeeping/.migration-version` file marks corpora as enforcement-mode (post-migration) versus advisory-mode (pre-migration). That migration handled the corpus-level transition; this ADR handles the per-cycle transition, where individual paused cycles may need to be brought under the new schema (ADR-072 cycle-shape fields, ADR-078 multi-cycle stack, ADR-079 in-progress-gate field, ADR-080 preconditions).
+ADR-070 established the migration boundary for Cycle 10's structural ADRs: the `.rdd/.migration-version` file marks corpora as enforcement-mode (post-migration) versus advisory-mode (pre-migration). That migration handled the corpus-level transition; this ADR handles the per-cycle transition, where individual paused cycles may need to be brought under the new schema (ADR-072 cycle-shape fields, ADR-078 multi-cycle stack, ADR-079 in-progress-gate field, ADR-080 preconditions).
 
 The decision posed: how does a pre-ADR-072 cycle resume under post-ADR-072 enforcement without forced rewrites and without losing enforcement guarantees for the cycles that have been migrated?
 
