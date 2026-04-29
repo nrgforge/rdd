@@ -26,6 +26,43 @@ research → product → model → decide → architect → BUILD → synthesis
 
 ## PROCESS
 
+### BUILD Mode Selection (ADR-091)
+
+Before Step 0, check the active cycle entry in `cycle-status.md` for `**BUILD mode:**`. The methodology recognizes two BUILD patterns:
+
+- **Gated mode (default).** Per-scenario-group EPISTEMIC GATES with the AID cycle. Stewardship checkpoints surfaced for practitioner input. Mode shifts to Debug / Refactor / Review proposed for practitioner approval. The practitioner is in the loop throughout BUILD.
+- **Auto mode.** Agent executes the BUILD scope autonomously after high-level practitioner direction. Stewardship checks run as self-administered conformance passes. Work-package commits are the natural review points. The practitioner engages at start (direction), at mid-cycle break points (course corrections), and at the end (cycle close).
+
+**Read `**BUILD mode:**` from the active cycle entry.** Absence defaults to `gated` — the existing canonical pattern and the safer choice. `auto` is opt-in by deliberate practitioner declaration.
+
+**If `**BUILD mode:** auto`:**
+
+- Skip per-scenario-group EPISTEMIC GATES (Step 4) — proceed through scenarios without surfacing reflection-time prompts at each boundary.
+- Suppress Tier 1 stewardship surfacing (Step 4 §6) for routine conformance checks — the agent self-administers and only surfaces results that would shift the implementation.
+- Tier 1b Applicability Check (ADR-077) at pattern reuse **still fires** — the four-prompt form is a separate Tier 2 mechanism whose value (schema comparison against analogical assumption) is not gated by mode.
+- Mode shifts to Debug / Refactor / Review proceed without explicit practitioner approval — the agent surfaces the shift in commit messages and proceeds.
+- Step 5 (Integration Verification), Step 5.5 (Cycle Criterion Verification), Step 6 (Field Guide), and the build-phase Susceptibility Snapshot Dispatch fire as specified — auto mode does not suppress phase-end obligations.
+
+**If `**BUILD mode:** gated` or absent:**
+
+- Proceed with the canonical pattern as specified in this skill: per-scenario-group gates, AID cycle at each gate, stewardship checks surfaced for practitioner input, mode shifts proposed for approval.
+
+**Mode-selection axes (judgment-applied; for choosing the mode at cycle entry).** Per ADR-091 §3:
+
+1. **Mechanical vs. generative work character (primary).** Auto when the BUILD scope is mostly anchored in audited ADRs (claims have been validated upstream); gated when build is likely to reveal new questions or design flaws.
+2. **Practitioner availability and cognitive budget.** Auto shifts cognitive load to start-and-end review; gated distributes it across scenario-group boundaries.
+3. **Cycle stakes and reversibility.** Auto for low-stakes / reversible work; gated for high-stakes / hard-to-reverse work.
+4. **Stewardship locality (catching vs. teaching).** Auto delivers catching (drift, test failures, integration gaps) but not teaching (design-alternative examination, reflection-in-action, scoping-judgment surfacing). Gated mode is required when teaching is the primary need.
+
+**Auto-mode failure modes (honest scope-of-claim).** Auto mode does not catch:
+
+- **Design-alternative examination.** When the agent chooses an implementation pattern, no alternative is surfaced for practitioner evaluation. The pattern works; the alternative is not examined. (Cycle 017 WP-D's FAILURES_PHASE / FAILURES_COMPOUND partition was the named example.)
+- **Scoping-judgment surfacing.** When a work-package spec admits multiple legitimate scopes, the scoping choice does not surface as a user-reviewable decision. (Cycle 017 WP-E was the named example.)
+
+These costs are real and methodology-recognized — the practitioner running auto mode knows what they are accepting. Practitioners running cycles where these failure modes would be consequential should declare gated mode.
+
+**Mid-phase shift.** The mode declaration can change mid-phase if circumstances change. A cycle that started in auto mode can shift to gated if a WP surfaces unexpected complexity; a cycle that started gated can shift to auto if the practitioner needs to step away and the remaining WPs are mechanical. The shift is a small edit to `cycle-status.md` updating `**BUILD mode:**`.
+
 ### Step 0: Context Gathering and Orientation
 
 Follow the Context Gathering protocol defined in the orchestrator (`skills/rdd/SKILL.md`, § Context Gathering Protocol).

@@ -1,5 +1,45 @@
 # Changelog
 
+## v0.8.5
+
+Patch release: methodology amendment from the Cycle 017 BUILD-exit gate. ADR-091 (Dual-Mode BUILD) names auto-mode and gated-mode as both legitimate patterns with mode-selection axes the practitioner uses to choose between them. The `/rdd-build` skill reads the new `**BUILD mode:**` field on the active cycle entry and adapts.
+
+### Why
+
+Cycle 017's BUILD ran in auto mode after the practitioner's high-level direction at the start. The agent executed all seven work packages autonomously across seven commits; stewardship was self-administered. The build-phase Susceptibility Snapshot named this as Feed-forward Signal E to the methodology itself: the AID cycle's user-engagement moments are designed to surface design-alternative examination and scoping-judgment surfacing, which self-administered stewardship does not reach. The BUILD-exit gate produced the practitioner commitment that auto-mode and gated-mode are both applicable for different cycle characteristics — and that the methodology should name the framing so practitioners and agents have language and axes for the choice in future cycles.
+
+The methodology had no language for auto-mode BUILD before this patch. Practitioners running the pattern had no axes for deciding when it was appropriate, and the build skill described only the gated pattern as canonical. This patch closes the methodology-vs-practice gap.
+
+### New ADR
+
+- **ADR-091 — Dual-Mode BUILD: Auto-Mode and Gated-Mode as Methodology-Recognized Patterns.** Names both patterns as legitimate. Four mode-selection axes (mechanical-vs-generative work character; practitioner availability and cognitive budget; cycle stakes and reversibility / epistemic cost; stewardship locality catching-vs-teaching). `**BUILD mode:**` per-entry declaration field on the active cycle entry; default is `gated` (existing canonical pattern); `auto` is opt-in by deliberate practitioner declaration. Mid-phase shift mechanic supported via small `cycle-status.md` edit. Cross-cycle inheritance is not supported — each cycle re-evaluates the mode against its own four-axis assessment. Skill-Structure Layer behavior (per ADR-067); not enforced by hook.
+
+### Skill amendments
+
+- **`/rdd-build`** — new "BUILD Mode Selection" subsection at the top of `## PROCESS` (before Step 0). Documents both modes, the four mode-selection axes, the auto-mode failure modes (design-alternative examination, scoping-judgment surfacing) as honest scope-of-claim, and the mid-phase shift mechanic. The skill reads `**BUILD mode:**` from the active cycle entry and adapts: in auto mode, scenario-group EPISTEMIC GATES are suppressed and stewardship runs as self-administered conformance passes; in gated mode, the canonical pattern fires as currently specified. The Tier 1b Applicability Check (ADR-077) at pattern reuse fires regardless of mode.
+- **`/rdd` orchestrator** — cycle-status.md schema documentation gains the `**BUILD mode:**` per-entry field with full per-field documentation and ADR-091 cross-reference.
+
+### Test fixtures
+
+- **One new fixture test:** `test_build_mode_selection_documented.sh` verifies the dual-mode framing is encoded in `/rdd-build` (section header, ADR-091 reference, both modes named, default-gated documented, all four axis terms present, auto-mode failure modes named, mid-phase shift documented, section position before Step 0) and the `**BUILD mode:**` field is documented in the orchestrator's cycle-status schema.
+- All 19 hook tests pass.
+
+### Audit passes
+
+- Three argument-audit passes on ADR-091 (initial pass: 4 P2 + 2 P3 + 3 framing-audit findings; r2 after corrections: 2 new P3s introduced by the lifecycle correction; r3 after fixes: CLEAN).
+- The two framing-audit findings (FF-P2.1 design-alternative-examination compensating mechanism gap; FF-P3.1 heavy-lifting-argument vs. gated-default tension) are carried forward as user-judgment future-cycle scope per the framing-audit-findings-not-auto-corrected policy.
+
+### What this changes for practitioners
+
+- **Cycles where BUILD is mostly mechanical** (claims audited at upstream phases, scenarios well-specified, ADR coverage clean) can declare `**BUILD mode:** auto` at BUILD entry and run autonomously through WP commits, with practitioner engagement at start (direction), at mid-cycle break points (course corrections), and at the end (cycle close).
+- **Cycles where BUILD is generative** (likely to reveal new questions, undecided territory, or design flaws) stay in `gated` mode (the default) and engage the practitioner at scenario-group boundaries.
+- **Cycles where the practitioner wants targeted teaching engagement on specific WPs without committing the whole BUILD to gated mode** can start in auto mode and shift to gated mid-phase via `cycle-status.md` edit, then shift back when the remaining WPs are mechanical.
+
+### Methodology scope-of-claim
+
+- Auto mode does not catch design-alternative examination or scoping-judgment surfacing. These costs are real and methodology-recognized — the practitioner running auto mode knows what they are accepting. ADR-091 §5 names this explicitly; it does not claim auto mode catches what gated mode catches.
+- The four mode-selection axes are judgment-applied; cycle character determines the right mode. The methodology surfaces the question; the practitioner answers it. Per Invariant 8, the mode-selection is not promoted to an unconditional structural mechanism.
+
 ## v0.8.4
 
 Cycle 017 release: Readability & Comprehensibility. Eight new ADRs (083–090); supersession headers on ADR-064/067/070; `.rdd/` infrastructure relocation tooling; four-failure-mode classification on the Stop-hook advisory output; In-Progress Phase predicate scope narrowed to per-phase advisories only; `/rdd-research` validation-spike decision step; `/rdd-conform` graduation-check operation. The Pattern A/B catalog for agent-context content placement (ADR-084) shipped, with the system-design split as the canonical Pattern B exemplar.
