@@ -1,5 +1,73 @@
 # Changelog
 
+## v0.8.4
+
+Cycle 017 release: Readability & Comprehensibility. Eight new ADRs (083–090); supersession headers on ADR-064/067/070; `.rdd/` infrastructure relocation tooling; four-failure-mode classification on the Stop-hook advisory output; In-Progress Phase predicate scope narrowed to per-phase advisories only; `/rdd-research` validation-spike decision step; `/rdd-conform` graduation-check operation. The Pattern A/B catalog for agent-context content placement (ADR-084) shipped, with the system-design split as the canonical Pattern B exemplar.
+
+### Why
+
+Cycle 017's external-stakeholder field evidence diagnosed a corpus-comprehension failure: a mature RDD artifact corpus feels overwhelming on first encounter. The cycle's investigation surfaced **context-mismatch** (initial-handoff vs ongoing-reference are structurally different reading tasks) as the primary mechanism, with audience-conflation, density-ordering, and artifact-form-mismatch as named-inside co-mechanisms. The release ships the methodology amendments and tooling that follow from the diagnosis.
+
+### New ADRs (eight)
+
+- **ADR-083 — Cognitive-Economy Criterion as Outcome Test with In-Place-First Default.** The Outcome Test ("does this produce direct human understanding without AI as workaround?") is the admissibility criterion for human-facing artifacts. In-place-first as default intervention move; bolt-on / felt-additional as failure-mode signal. Methodology-wide default with four named exception conditions.
+- **ADR-084 — Agent-Context Content Placement.** Pattern catalog: Pattern A (audience-tagged sections) below ~50% threshold; Pattern B (companion file at predictable path `<artifact>.agents.md`) above. Directory-level audience separation rejected.
+- **ADR-085 — `.rdd/` Infrastructure Relocation.** Process-vs-product directory separation via dotfile convention. Relocation of `docs/housekeeping/` → `.rdd/`. Partially supersedes ADR-070. Migration tooling: `/rdd-conform migrate-to-rdd`.
+- **ADR-086 — AI-as-Orienter Non-Adoption Pending Operational Criterion.** Default position preserved: corpus directly readable; agent assists pragmatic work. AID-gate bounded agent-mediated dialogue exempt from non-adoption.
+- **ADR-087 — Validation Spikes as Research Method, with Grounding Reframe of the Beck Port.** Tightly-scoped prototyping as research method alongside lit-review/search/methods. Anti-elaboration positioning. Beck-port reframed: useful conceptual frame, not load-bearing structural evidence.
+- **ADR-088 — ADR-064 Amendment for v0.8.3 Advisory Demotion.** Stop-hook manifest check operates in advisory disposition across all modes. Compound check retained but advisory. State-C "structurally impossible" claim amended to "structurally detectable."
+- **ADR-089 — ADR-067 Harness Layer Technique Revision.** Three-Tier Classification's Harness Layer row amended to advisory disposition; substrate primacy ordering preserved.
+- **ADR-090 — In-Progress Phase Field Role-Shift Documentation.** Field role amended from v0.8.2 load-bearing predicate to v0.8.3 advisory-noise suppressor; suppression scoped to per-phase manifest advisory only.
+
+### Tooling (skill operations)
+
+- **`/rdd-conform migrate-to-rdd`** (Operation 10) — relocates `docs/housekeeping/` → `.rdd/` per ADR-085 §4. Twelve-step idempotent operation with explicit hook-test-fixture enumeration in the substitution sweep. Refuses uncommitted changes; produces summary report; `git diff`-reviewable in entirety.
+- **`/rdd-conform graduation-check`** (Operation 9) — pre-graduation scan for code → doc dangling references (Issue #17). Reverse-direction Tan et al. 2024 detection. Patterns: WP-[A-Z], ADR-NNN, Cycle-N, Tier-N, Spike-N, Invariant-N. Three-category classification: refactor / inline-gloss / historical record. Recommended (not mandatory) at the moment of graduation per Invariant 8.
+- **Operation 5 (Housekeeping Audit) extended** with `.rdd/` placement check + In-Progress Phase field hygiene soft notes per ADR-090 §5.
+
+### Skill amendments
+
+- **`/rdd-research` Step 4c (Validation-Spike Decision)** — felt-trigger question (interaction-grounding rationale OR possibility-space-pruning rationale) at the research → discover gate per ADR-087 §3. Optional, not mandatory; rejection with rationale recorded visibly.
+- **`/rdd-graduate` Step 1b (Pre-Graduation Scan)** — references `/rdd-conform graduation-check` as the recommended pre-graduation scan; structurally anchored at the moment of graduation.
+
+### Hook layer
+
+- **`tier1-phase-manifest-check.sh`**: three-level cycle-status precedence (.rdd/ → docs/housekeeping/ → docs/); two-level dispatch-log and migration-marker precedence (directory presence); new `resolve_artifact_path` helper (canonical-then-legacy fallback); new `dispatch_log_has_entry` helper (matches both forms); failures partitioned into FAILURES_PHASE (F1/F2/F4 — suppressed by In-Progress Phase) and FAILURES_COMPOUND (F3 fabrication-signal — always surfaced); four-failure-mode classification labels (`[F1: not-dispatched]`, `[F2: dispatched-no-output]`, `[F3: fabrication-signal]`, `[F4: assertion-failure]`) inline on each FAILURE message; advisory message ends with the four-failure-mode legend.
+- **`tier1-verify-dispatch.sh`**: dispatch log written to `.rdd/dispatch-log.jsonl` when `.rdd/` directory exists; falls back to `docs/housekeeping/dispatch-log.jsonl` for pre-migration corpora; defaults to `.rdd/` on fresh corpora.
+- **`orientation-trigger.sh`**: extended to fire on writes to `system-design.agents.md` per ADR-084 Pattern B. Latent regex bug fixed — the previous pattern required quoted bare filenames and never matched real absolute-path JSON inputs; the new pattern matches the basename portion via `[/"]filename"` anchoring.
+- **Manifest path templates**: all `path_template` values migrated from `docs/housekeeping/...` to `.rdd/...` per ADR-085. Hook scripts apply legacy fallback transparently so pre-migration corpora continue to operate.
+
+### Test fixtures
+
+- All eight existing hook test fixtures updated to reference `.rdd/...` paths (`lib.sh`, `test_nominal.sh`, `test_in_progress_phase.sh`, `test_in_progress_gate.sh`, `test_applicable_when.sh`, `test_legacy_format.sh`, `test_multi_entry_stack.sh`, `test_output_path_regex.sh`, `test_parses_cycle_stack_phase.sh`).
+- **Seven new fixture tests:** `test_conform_migrate_to_rdd_basic.sh`, `test_conform_migrate_to_rdd_idempotent.sh`, `test_conform_migrate_to_rdd_hook_fixtures.sh`, `test_orientation_trigger_fires_on_system_design_agents.sh`, `test_hook_reads_rdd_path_with_legacy_fallback.sh`, `test_hook_dispatch_log_writes_rdd_path.sh`, `test_research_validation_spike_step_anchored.sh`, `test_hook_manifest_check_advisory.sh`, `test_hook_in_progress_phase_suppresses_advisory.sh`, `test_graduation_check_detects_code_doc_dangling_refs.sh`.
+- All 18 hook tests pass.
+
+### Documentation
+
+- **`field-guide.md`** regenerated for Cycle 016 + 017 amendments per ADR-074 four-artifact downstream sweep. Header updated to v14.0; new System Design Companion File module entry; updated Conformance Audit (10 operations), Research (validation-spike), Build (lifecycle composition, cycle criterion verification, applicability check), Decide (preservation scenarios, cycle acceptance criteria, supersession workflow); Tier 1 hook entries updated for advisory disposition + path resolution.
+- **`system-design.md`** restructured to slim human-facing v14.0 with companion `system-design.agents.md` (Pattern B per ADR-084).
+- **`ORIENTATION.md`** regenerated with Zero-Prior-Familiarity Reader's reading path, corpus map with audience and purpose annotations, and `.rdd/` sentence per ADR-085 §7.
+
+### User action — opt-in migration
+
+Run `/rdd-conform migrate-to-rdd` when ready to relocate `docs/housekeeping/` → `.rdd/`. The operation:
+
+1. Refuses uncommitted changes
+2. Verifies prerequisites (corpus is at the ADR-070 housekeeping placement)
+3. Creates `.rdd/` and subdirectories
+4. Moves audits, gates, cycle-status, dispatch log, migration marker, session/
+5. Performs reference substitution across ADRs, essays, skills, hooks, manifests, and the eight enumerated hook test fixtures
+6. Updates `.gitignore`
+7. Writes the new migration marker
+8. Produces a summary report
+
+The diff is large but mechanical and `git diff`-reviewable. Hook scripts continue to operate transparently against either placement during the transition window.
+
+### Methodology scope-of-claim
+
+Per ADR-087 §4, the cycle-as-instance reflection encodes a standing caveat: research-phase essays and ADRs reflect the cycle's understanding at the time of authoring, audited against literature and conversation. They have not necessarily been validated against built artifacts at the scale the methodology operates. Cycle 017's claims about readability and corpus-comprehension are research-grade evidence at the cycle's encoded scope until tested against actual zero-prior-familiarity reader feedback (the architect-snapshot Signal E "product-facing Outcome Test").
+
 ## v0.8.3
 
 Patch release: demotes the Tier 1 phase-manifest check from blocking enforcement to advisory-only. Follow-up to v0.8.2's mid-phase-loop fix, addressing the underlying brittleness rather than patching one more failure path.

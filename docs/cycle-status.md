@@ -8,6 +8,7 @@
 **Started:** 2026-04-24
 **Current phase:** BUILD
 **Cycle type:** standard
+**In-progress phase:** build
 **Plugin version at cycle start:** v0.8.1 → patched mid-entry to v0.8.2 (In-progress phase predicate) → patched again to v0.8.3 (manifest check demoted to advisory). DECIDE conducted on v0.8.3.
 
 **Artifact base:** `./docs/`

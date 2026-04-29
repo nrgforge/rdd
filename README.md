@@ -86,9 +86,11 @@ RDD is a four-layer Claude Code plugin:
 
 - **Skills** (15) — orchestrate phases, composable build/debug/refactor/review family, utility skills, adaptive reflection time
 - **Agents** (8) — specialist subagents for citation auditing, argument auditing (with framing audit), literature review, conformance scanning, orientation writing, code spikes, research methods review, and susceptibility snapshot evaluation
-- **Hooks** (5) — passive enforcement of invariants, reflection time, document sizing, and orientation regeneration
+- **Hooks** (7) — five context-injection hooks (invariant reminders, reflection time, document sizing, orientation regeneration, skill activation) plus two Harness Layer hooks (Tier 1 dispatch log writer + Stop-hook advisory compound check)
 
 Agents follow an artifact-mediated communication pattern: they read input files, perform analysis in isolation, and write structured output files. Every finding is durable and inspectable.
+
+Process artifacts (audits, gate reflection notes, cycle status, dispatch log) live under `.rdd/` at the repo root once the optional `/rdd-conform migrate-to-rdd` operation has run; pre-migration corpora keep them under `docs/housekeeping/` and the harness reads both placements transparently.
 
 ## Method vs. Implementation
 
