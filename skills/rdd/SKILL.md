@@ -1,6 +1,6 @@
 ---
 name: rdd
-description: Research-Driven Development workflow. Orchestrates a phased process: Research (citation-audited essay), Discover (stakeholder maps, value tensions, assumption inversions), Model (domain vocabulary), Decide (ADRs, scenarios, interaction specs), Architect (system design), Build (BDD → TDD), and optionally Play (experiential discovery) and Synthesize (artifact trail mining → essay outline). Use when starting a new project or feature that needs research before code.
+description: Research-Driven Development workflow. Orchestrates a phased process: Research (citation-audited Essay-Outline), Discover (stakeholder maps, value tensions, assumption inversions), Model (domain vocabulary), Decide (ADRs, scenarios, interaction specs), Architect (system design), Build (BDD → TDD), and optionally Play (experiential discovery) and Synthesize (artifact trail mining → synthesis outline). Use when starting a new project or feature that needs research before code.
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write, Edit, Task, Bash
 ---
 
@@ -18,10 +18,10 @@ $ARGUMENTS
 
 | Skill | Purpose | Invoke with |
 |-------|---------|-------------|
-| `/rdd-research` | Ideation → research/spike loop → citation-audited, argument-audited, and framing-audited essay | Topic or question |
-| `/rdd-discover` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay |
-| `/rdd-model` | Extract domain vocabulary from essay + product discovery | Essay + product discovery artifact |
-| `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay + domain model + prior ADRs |
+| `/rdd-research` | Ideation → research/spike loop → citation-audited, argument-audited (with pyramid graph-traversal per ADR-093), and framing-audited Essay-Outline (per ADR-092) | Topic or question |
+| `/rdd-discover` | Product discovery — stakeholder maps, jobs, value tensions, assumption inversions | Essay-Outline (or legacy essay) |
+| `/rdd-model` | Extract domain vocabulary from Essay-Outline + product discovery | Essay-Outline (or legacy essay) + product discovery artifact |
+| `/rdd-decide` | ADRs + argument audit + refutable behavior scenarios | Essay-Outline (or legacy essay) + domain model + prior ADRs |
 | `/rdd-architect` | System design with responsibility allocation + provenance | Domain model + ADRs + scenarios |
 | `/rdd-build` | Outer loop of composable skill family — BDD/TDD with seamless mode shifts to debug, refactor, review. Pipeline or context-reconstructive mode | Scenarios + domain model (pipeline) or ticket/codebase (context-reconstructive) |
 | `/rdd-debug` | Hypothesis-trace-understand-fix debugging cycle — names the misunderstanding before fixing | Bug description + codebase (standalone) or inherited build context (mode shift) |
@@ -83,7 +83,7 @@ Run everything in order. For projects that need research before code.
 
 ```
 Phase 1: RESEARCH
-└── /rdd-research — Research loop → citation-audited and argument-audited essay
+└── /rdd-research — Research loop → citation-audited and argument-audited Essay-Outline
     [Epistemic gate: User explains key findings and how their thinking shifted.]
 
 Phase 2: DISCOVER
@@ -120,13 +120,13 @@ Phase 7: SYNTHESIZE (optional)
 Phase 1 only. Use when the goal is understanding, not building.
 
 ```
-└── /rdd-research — Research loop → citation-audited and argument-audited essay
-[Deliver essay. Done.]
+└── /rdd-research — Research loop → citation-audited and argument-audited Essay-Outline
+[Deliver Essay-Outline. Done.]
 ```
 
 ### Mode C: Resume from Decisions
 
-User already has research/essay. Start at the domain model bridge.
+User already has research/Essay-Outline (or a legacy prose essay from a pre-ADR-092 cycle). Start at the domain model bridge.
 
 ```
 Phase 2: DISCOVER
@@ -322,7 +322,7 @@ Any unconditional structural mechanism must be anchored to one of three substrat
 
 | Substrate | Mechanism type | Enforcement technique | Example |
 |-----------|---------------|----------------------|---------|
-| **Skill-Structure Layer** | Concrete workflow step in a named skill | Dispatch instruction at structurally privileged position with canonical `Output path:` line | Citation auditor at "after the essay is written" |
+| **Skill-Structure Layer** | Concrete workflow step in a named skill | Dispatch instruction at structurally privileged position with canonical `Output path:` line | Citation auditor at "after the Essay-Outline is written" |
 | **Harness Layer** | Phase-boundary verification, silent-fallback detection | PostToolUse dispatch log + Stop hook manifest compound check | Revision-aware re-audit reminder; compound check against fabrication |
 | **User-Tooling Layer** | Conversational mechanism with a natural artifact moment | Graduate to artifact-producing form at canonical path; verify via manifest | AID gate reflection note |
 
@@ -366,11 +366,11 @@ The distinction is about what the methodology *centers*, not what is technically
 
 **Advisory-mode enforcement-conditional.** The compound check's structural guarantee against sophisticated State C holds only in enforcement mode (post-migration corpora with `.rdd/.migration-version`). Pre-migration corpora operate with the Skill-Structure Layer fix but without harness-layer compound verification.
 
-### Essay as Research Phase Checkpoint
+### Essay-Outline as Research Phase Checkpoint
 
-The essay is where research understanding crystallizes. Every substantial change — from framing audit findings, discovery feedback, or reflections — circles back to essay revision before the pipeline advances past RESEARCH. The essay that enters downstream phases is audited and revised, not a first draft.
+The Essay-Outline is where research understanding crystallizes (per ADR-092; legacy prose essays from pre-ADR-092 cycles played the same role). Every substantial change — from framing audit findings, expansion-fidelity violations, discovery feedback, or reflections — circles back to Essay-Outline revision before the pipeline advances past RESEARCH. The Essay-Outline that enters downstream phases is audited and revised, not a first draft.
 
-This is enforced by the research skill: if a substantial framing change is identified (by the framing audit, the user, or discovery feedback), the pipeline does not advance until the essay is revised and re-audited. The research phase's structural advantage is its iterability — multiple passes happen before advancing, and each pass is another chance for consequential omissions to surface.
+This is enforced by the research skill: if a substantial framing change is identified (by the framing audit, the user, or discovery feedback), or if the argument-audit reports P1 expansion-fidelity violations (Boundary 1/2/3 or Reverse 1/2), the pipeline does not advance until the Essay-Outline is revised and re-audited. The research phase's structural advantage is its iterability — multiple passes happen before advancing, and each pass is another chance for consequential omissions to surface.
 
 ### State Tracking
 
@@ -543,15 +543,15 @@ The four composable skills — `/rdd-build`, `/rdd-debug`, `/rdd-refactor`, `/rd
 
 Findings from earlier phases inform later ones:
 - `/rdd-research` dispatches the **research-methods-reviewer** agent before the first research loop and before each subsequent loop after substantial revision — reviews question framing, embedded conclusions, and premature narrowing (Tier 1 unconditional, ADR-060)
-- `/rdd-research` runs citation audit and argument audit (with framing audit) on the essay before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, claims don't overreach evidence, and alternative framings are surfaced. The framing audit makes the negative space of content selection visible. The essay that enters downstream phases is citation-audited, argument-audited, and framing-audited.
-- `/rdd-research` enforces essay-as-checkpoint: if the framing audit, discovery feedback, or reflections surface substantial reframing, the essay is revised and re-audited before the pipeline advances past RESEARCH
-- `/rdd-research` essay provides context for `/rdd-discover` product discovery and `/rdd-model` vocabulary extraction
+- `/rdd-research` runs citation audit and argument audit (with framing audit, and — for Essay-Outline genre per ADR-093 — pyramid graph-traversal + expansion-fidelity verification with Discrimination Test routing on Boundary 1 / Boundary 2 P1 findings) on the Essay-Outline before the epistemic gate — verifies citations exist, quotes are accurate, conclusions follow from findings, claims don't overreach evidence, alternative framings are surfaced, and the four-section refinement hierarchy (Abstract / Argument-Graph / Citation-Embedded Outline / References) expands cleanly at each level. The framing audit makes the negative space of content selection visible. The Essay-Outline that enters downstream phases is citation-audited, argument-audited, framing-audited, and expansion-fidelity verified.
+- `/rdd-research` enforces Essay-Outline-as-checkpoint: if the framing audit, expansion-fidelity findings, discovery feedback, or reflections surface substantial reframing, the Essay-Outline is revised and re-audited before the pipeline advances past RESEARCH
+- `/rdd-research` Essay-Outline provides context for `/rdd-discover` product discovery and `/rdd-model` vocabulary extraction
 - `/rdd-discover` stakeholder maps and jobs inform `/rdd-model` vocabulary extraction — the Product Vocabulary Table feeds the Product Origin provenance column in the domain model
 - `/rdd-discover` value tensions propagate as open questions into the domain model
 - `/rdd-discover` assumption inversions become candidate behavior scenarios in `/rdd-decide`
 - `/rdd-model` vocabulary must be used consistently in `/rdd-decide` ADRs and scenarios
 - `/rdd-decide` checks ADRs against unexamined product assumptions — if an ADR's context references a product assumption, the assumption should be validated through product discovery
-- `/rdd-decide` runs `/rdd-argument-audit` on ADRs + essay + prior ADRs to verify logical consistency before writing scenarios
+- `/rdd-decide` runs `/rdd-argument-audit` on ADRs + Essay-Outline (or legacy essay) + prior ADRs to verify logical consistency before writing scenarios
 - `/rdd-decide` conformance audit checks existing code against accepted ADRs — producing a debt list that informs scenario writing
 - `/rdd-decide` ADR decisions constrain what `/rdd-architect` designs and `/rdd-build` implements
 - `/rdd-decide` behavior scenarios drive `/rdd-build` test-first process
@@ -572,7 +572,7 @@ Findings from earlier phases inform later ones:
 - `/rdd-play` field notes feed back to prior phases: missing scenarios → DECIDE, usability friction → DISCOVER (as value tensions), new questions → RESEARCH, challenged assumptions → DISCOVER (as assumption inversions), interaction gaps → interaction specifications. Play's feedback sustains the pipeline's iterative character.
 - `/rdd-play` field notes feed forward to SYNTHESIS: delight entries and surprising discoveries contribute experiential findings as candidate novelty signals.
 - `/rdd-discover` in update mode reads prior field notes alongside new research — usability friction surfaces as candidate value tensions, challenged assumptions surface as candidate assumption inversions.
-- `/rdd-synthesize` reads the **full artifact trail** — all essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, system design, and field notes from play. It does not read just the preceding phase's output.
+- `/rdd-synthesize` reads the **full artifact trail** — all Essay-Outlines and legacy essays, research logs, reflections, product discovery, domain model, ADRs, scenarios, system design, and field notes from play. It does not read just the preceding phase's output.
 - `/rdd-synthesize` invokes `/rdd-citation-audit` on the outline's pre-populated references before finalization — same external invocation pattern as `/rdd-research` invoking `/rdd-lit-review`
 - `/rdd-synthesize` invokes `/rdd-argument-audit` on the outline after citation audit passes — verifies narrative arc is logically sound, claims are supported by cited material, and framing does not overreach the evidence. Same `/rdd-argument-audit` that `/rdd-decide` invokes on ADRs, applied to the narrative genre
 - The synthesis essay, when written by the user, serves as a **narrative context rollup** — the orchestrator should treat it as a primary context source when bootstrapping new sessions for the project. It answers "what was discovered, and why does it matter?" where structured artifacts answer "what was decided?"
@@ -584,8 +584,9 @@ Findings from earlier phases inform later ones:
 | Phase | Artifact | Location |
 |-------|----------|----------|
 | RESEARCH | Research log | `./docs/essays/research-logs/research-log.md` |
-| RESEARCH | Essay | `./docs/essays/NNN-descriptive-name.md` |
-| RESEARCH | Reflections | `./docs/essays/reflections/NNN-descriptive-name.md` |
+| RESEARCH | Essay-Outline (canonical form per ADR-092) | `./docs/essays/essay-outline-NNN-<slug>.md` |
+| RESEARCH | Legacy prose essay (pre-ADR-092 cycles; no retroactive migration) | `./docs/essays/NNN-<slug>.md` |
+| RESEARCH | Reflections (narrative form retained per ADR-092 §8) | `./docs/essays/reflections/NNN-<slug>.md` |
 | DISCOVER | Product discovery document | `./docs/product-discovery.md` |
 | MODEL | Domain model/glossary | `./docs/domain-model.md` |
 | DECIDE | ADRs | `./docs/decisions/adr-NNN-*.md` |
@@ -681,7 +682,7 @@ This applies to all prose produced by every phase. It is a cross-cutting rule.
 ## IMPORTANT PRINCIPLES
 
 - **User controls the workflow**: Always present options and let the user decide. Never auto-advance past a gate without confirmation.
-- **Research produces writing, not just notes**: The essay artifact distinguishes this from typical dev workflows. If you can't write it clearly, you don't understand it.
+- **Research produces structured content, not just notes**: The Essay-Outline (per ADR-092) is the canonical RESEARCH artifact form — four-section refinement hierarchy (Abstract / Argument-Graph / Citation-Embedded Outline / References) with Pyramid Refinement as a verifiable structural property. The forcing function is structural decomposition: if the Abstract's conclusions cannot decompose into a coherent Argument-Graph, and the Argument-Graph cannot expand into citation-grounded body bullets, the research is not yet ready to advance.
 - **Domain vocabulary is the connective tissue**: The glossary from `/rdd-model` threads through every later artifact. Inconsistent naming signals incomplete understanding.
 - **Stop at uncertainty**: If a decision or scenario depends on something unknown, go back to `/rdd-research` and investigate. Don't speculate past what's known.
 - **Don't repeat work**: Pass relevant findings forward between skills. If `/rdd-research` already surfaced a tradeoff, `/rdd-decide` should reference it, not rediscover it.

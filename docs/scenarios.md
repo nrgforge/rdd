@@ -3668,3 +3668,252 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 **Then** existing pipeline phases (RESEARCH, DISCOVER, MODEL, DECIDE, ARCHITECT, BUILD, PLAY, SYNTHESIZE) continue to function
 **And** existing AID-gate protocols, susceptibility snapshots, conformance audits, and supersession workflows continue to operate
 **And** existing artifacts retain their authority unless explicitly superseded by Cycle 017 ADRs (only ADR-070, ADR-064, ADR-067 are superseded)
+
+---
+
+## Cycle 018 — Essay-Outline form change (ADR-092 + ADR-093)
+
+**Cycle Acceptance Criteria — null-coverage judgment.** Product-discovery's Cycle 018 acceptance criteria for the form change are atomic and have 1:1 scenario mapping at their specified layer (skill-text instruction in `/rdd-research`; agent-behavior instruction in `argument-auditor.md`). The cycle's central claim about susceptibility-surface-area reduction is an **emergent multi-cycle empirical question** (held as Open Question 7 — Kim et al. input-side susceptibility — and as the Target 3 citation-comparison scope caveat). It is not a DECIDE-phase acceptance criterion and is not addressed by scenarios here; future cycles producing multi-cycle production comparison data may revisit. No emergent or aggregate criteria identified; all DECIDE-phase criteria are atomic with 1:1 scenario mapping.
+
+## Feature: Essay-Outline as RESEARCH Artifact Form (ADR-092)
+
+### Scenario: `/rdd-research` produces a four-section Essay-Outline
+**Given** the `/rdd-research` skill has completed its research loop
+**When** the skill writes the research artifact
+**Then** the artifact contains exactly four sections in order: Abstract Section, Argument-Graph, Citation-Embedded Outline, References
+**And** the file is named with the pattern `essay-outline-NNN-<slug>.md` under `./docs/essays/`
+**And** the file is NOT a single block of connective-tissue prose
+
+### Scenario: Abstract Section presents conclusions
+**Given** an Essay-Outline produced by `/rdd-research`
+**When** the Abstract Section is read
+**Then** the section succinctly presents the research and the conclusions
+**And** each Abstract conclusion has a stable identifier (matching the Argument-Graph's top-level claim labels)
+
+### Scenario: Argument-Graph uses structured-bullet hierarchy with named identifiers
+**Given** an Essay-Outline produced by `/rdd-research`
+**When** the Argument-Graph Section is read
+**Then** the section is structured as a hierarchical bullet list
+**And** top-level claims are labeled `C1`, `C2`, ...
+**And** warrants under each claim are labeled `W1.1`, `W1.2`, ...
+**And** evidence under each warrant is labeled `E1.1.1`, `E1.1.2`, ... with reference keys
+
+### Scenario: Citation-Embedded Outline body section anchors to graph identifiers
+**Given** an Essay-Outline produced by `/rdd-research`
+**When** a Citation-Embedded Outline body subsection is read
+**Then** the section heading ends with a parenthetical containing one or more Argument-Graph node identifiers
+**For example** `### Section 3: Argument-graph parallels in research-essay corpora (C1)` or `### Section 7: Susceptibility evidence (W1.2, E1.2.1)`
+
+### Scenario: Non-developmental body sections use META anchor
+**Given** an Essay-Outline body section that is methodology preamble, scope-setting, or appendix-style
+**When** the section heading is written
+**Then** the heading ends with the parenthetical `(META)`
+**And** the section is recognized as deliberately non-developmental rather than as a missing anchor
+
+### Scenario: References section contains every cited source
+**Given** an Essay-Outline produced by `/rdd-research`
+**When** the References Section is read
+**Then** every reference key cited in Argument-Graph evidence nodes appears as a Reference entry
+**And** every Reference entry is cited at least once in the Argument-Graph or Citation-Embedded Outline
+
+### Scenario: Outline-Production Discipline is encoded in `/rdd-research`
+**Given** the `/rdd-research` skill file (`skills/research/SKILL.md`) after ADR-092 BUILD
+**When** the skill file is read
+**Then** the file specifies Outline-Production Discipline as production requirements
+**And** the requirements include explicit Synthesis Bullets, scope-qualification bullets, CONFIDENCE-LEVEL tags, and named meta-moves (PROVENANCE CORRECTION, SCOPE QUALIFICATION)
+**And** the four-section template (Abstract / Argument-Graph / Citation-Embedded Outline / References) is documented with the format conventions from ADR-092 §4
+
+### Preservation: Reflections retain prose form
+**Given** the `/rdd-research` skill produces an Essay-Outline
+**When** the cycle's reflections are written to `./docs/essays/reflections/NNN-<slug>.md`
+**Then** the reflections file is written in narrative prose form (not Essay-Outline)
+**And** the reflections' role as meaning-making artifact is unchanged
+
+### Preservation: Synthesis Essay retains prose form
+**Given** an `/rdd-synthesize` invocation
+**When** the user writes the synthesis essay from the synthesis outline
+**Then** the synthesis essay is written in narrative prose form (not Essay-Outline)
+**And** SYNTHESIZE's existing outline-then-user-writes-prose pattern is unchanged
+
+### Preservation: Existing prose-essay artifacts remain readable in their existing form
+**Given** prose-form essays produced before ADR-092 (`./docs/essays/001-*.md` through `017-*.md`)
+**When** the methodology operates after ADR-092 ships
+**Then** the existing prose essays remain at their existing paths under their existing names
+**And** no retroactive migration is required
+**And** the filename pattern distinguishes legacy prose essays (`NNN-*.md`) from new Essay-Outlines (`essay-outline-NNN-*.md`)
+
+## Feature: Pyramid Refinement Compliance Test (ADR-092 §3)
+
+### Scenario: Compliance test (a) — no orphan abstract claims
+**Given** an Essay-Outline being checked against Pyramid Refinement
+**When** each Abstract conclusion is traced
+**Then** each Abstract conclusion has at least one corresponding body subsection developing it
+**And** the trace passes through one or more Argument-Graph nodes
+
+### Scenario: Compliance test (b) — no orphan body sections
+**Given** an Essay-Outline being checked against Pyramid Refinement
+**When** each Citation-Embedded Outline body section is read
+**Then** every body section cites at least one entry in the References
+
+### Scenario: Compliance test (c) — CLAIM/WARRANT/EVIDENCE bullets in developmental body sections
+**Given** an Essay-Outline being checked against Pyramid Refinement
+**When** each developmental (non-META) body section is read
+**Then** the section contains explicit CLAIM, WARRANT, and EVIDENCE bullets (or recognized synonyms per Outline-Production Discipline)
+
+### Scenario: Compliance test (d) — no orphan Argument-Graph nodes
+**Given** an Essay-Outline whose Argument-Graph section is present
+**When** each Argument-Graph node is traced
+**Then** every node has an Abstract-claim parent above (or is itself an Abstract-claim)
+**And** every node has Citation-Embedded Outline body content below developing it
+
+### Scenario: Violation — Abstract claim with no Argument-Graph node
+**Given** an Essay-Outline where the Abstract contains conclusion C3
+**And** the Argument-Graph contains no node labeled C3
+**When** the Pyramid Refinement compliance test is run
+**Then** the test reports a Boundary 1 violation (Abstract → Argument-Graph expansion fails for C3)
+
+### Scenario: Violation — Argument-Graph node with no body content
+**Given** an Essay-Outline whose Argument-Graph contains warrant W2.1
+**And** no Citation-Embedded Outline body section anchors to W2.1
+**When** the Pyramid Refinement compliance test is run
+**Then** the test reports a Boundary 2 violation (Argument-Graph → Citation-Embedded Outline expansion fails for W2.1)
+
+### Scenario: Violation — body section with no graph anchor
+**Given** an Essay-Outline body subsection whose heading has no parenthetical anchor
+**When** the Pyramid Refinement compliance test is run
+**Then** the test reports a Reverse Boundary 2 violation (the body section has no Argument-Graph anchor)
+
+## Feature: Argument-Auditor Essay-Outline Genre Handling (ADR-093)
+
+### Scenario: Argument-auditor recognizes Essay-Outline as fourth genre
+**Given** the `argument-auditor.md` agent definition after ADR-093 BUILD
+**When** the agent reads its Process section
+**Then** the genre list contains four named genres: research essays, ADRs, synthesis outlines, Essay-Outline
+**And** Essay-Outline is described as requiring Pyramid Refinement verification (Boundary 1/2/3 plus reverse-direction)
+
+### Scenario: Argument-auditor performs pyramid graph-traversal on Essay-Outline
+**Given** an argument-auditor dispatch on an Essay-Outline primary document
+**When** the auditor runs
+**Then** the auditor reads the four sections as a four-tier pyramid
+**And** the auditor parses the Argument-Graph as structured input (not as narrative)
+**And** the auditor builds a coverage map showing which Abstract conclusions trace through which Argument-Graph nodes to which body sections to which References
+
+### Scenario: Argument-auditor reports P1 boundary violation as expansion-fidelity finding
+**Given** an argument-auditor dispatch on an Essay-Outline with an orphan Argument-Graph node (W2.1 with no body anchor)
+**When** the auditor produces its report
+**Then** the report contains an "Expansion-fidelity findings" subsection within Section 1
+**And** the W2.1 violation is listed with severity P1 and pyramid coordinates (`W2.1 → no body anchor`)
+**And** the violation is named as a Boundary 2 expansion-fidelity violation
+
+### Scenario: Argument-auditor outputs pyramid coverage map for Essay-Outline genre
+**Given** an argument-auditor dispatch on a well-formed Essay-Outline
+**When** the auditor produces its report
+**Then** Section 1 of the report contains a "Pyramid coverage map" subsection (compact table or list showing the four-tier trace)
+**And** Section 1 contains zero P1 expansion-fidelity findings
+**And** Section 2 (framing audit) runs unchanged in scope
+
+### Scenario: META audit-time review — clean META section
+**Given** an Essay-Outline body section labeled (META) containing only methodology preamble bullets
+**When** the argument-auditor reviews the META section's bullet content
+**Then** the auditor does NOT report a META misclassification
+**And** the section is recognized as deliberately non-developmental
+
+### Scenario: META audit-time review — developmental content in META section
+**Given** an Essay-Outline body section labeled (META) containing claim, warrant, and evidence bullets
+**When** the argument-auditor reviews the META section's bullet content
+**Then** the auditor reports a P2 META misclassification finding
+**And** the finding names the META section and the developmental bullets present within it
+**And** the finding cites ADR-092 §4 ("META is a deliberate non-developmental marker, not an opt-out for developmental content")
+
+### Scenario: Boundary 3 severity coordination with citation-auditor — citation-auditor has run
+**Given** an argument-auditor dispatch on an Essay-Outline
+**And** the dispatch brief indicates the citation-auditor has already run on the same artifact
+**When** the auditor detects a citation with no matching References entry
+**Then** the auditor reports the violation at severity P2 (citation-auditor's P1 takes precedence)
+
+### Scenario: Boundary 3 severity coordination with citation-auditor — citation-auditor has NOT run
+**Given** an argument-auditor dispatch on an Essay-Outline
+**And** the dispatch brief indicates the citation-auditor has NOT yet run on the same artifact
+**When** the auditor detects a citation with no matching References entry
+**Then** the auditor reports the violation at severity P1 (escalated)
+**And** the report names the citation-auditor as the primary verifier
+
+### Preservation: Argument-auditor behavior on research essays (prose) unchanged
+**Given** an argument-auditor dispatch on a prose research essay primary document
+**When** the auditor runs
+**Then** the auditor performs the five existing within-document verifications (logical soundness, hidden assumptions, scope accuracy, internal consistency, terminology consistency)
+**And** the auditor runs the framing audit per the existing two-section output template
+**And** the auditor does NOT attempt pyramid graph-traversal (the prose-essay genre does not have an Argument-Graph section)
+**And** the output template's pyramid-coverage-map and expansion-fidelity-findings subsections are absent (they appear only for Essay-Outline genre)
+
+### Preservation: Argument-auditor behavior on ADRs unchanged
+**Given** an argument-auditor dispatch on an ADR set primary document
+**When** the auditor runs
+**Then** the auditor performs the five existing within-document verifications plus framing audit
+**And** the auditor's output for ADR genre is unchanged from its pre-ADR-093 form
+
+### Preservation: Argument-auditor behavior on synthesis outlines (`/rdd-synthesize` output) unchanged
+**Given** an argument-auditor dispatch on a SYNTHESIZE-phase synthesis outline primary document
+**When** the auditor runs
+**Then** the auditor handles the genre per its existing instructions
+**And** Essay-Outline pyramid graph-traversal does NOT fire (SYNTHESIZE outlines are a distinct genre)
+
+### Preservation: Citation-auditor scope unchanged
+**Given** ADR-093 ships
+**When** the citation-auditor is dispatched on any genre (including Essay-Outline)
+**Then** the citation-auditor's responsibilities and behavior are unchanged by ADR-093
+**And** Essay-Outline References are verified by the citation-auditor in the same way prose-essay References are verified
+
+## Feature: Outline-Coherence Signal as Stewardship Trigger (ADR-092 §6)
+
+### Scenario: Signal fires on Pyramid Refinement P1 expansion-fidelity violations
+**Given** an Essay-Outline whose argument-audit reports one or more P1 expansion-fidelity violations
+**When** the practitioner (or the orchestrator at gate time) reviews the audit
+**Then** the Outline-Coherence Signal is recognized as having fired
+**And** the discrimination test (which boundary failed) is consulted to route the diagnosis
+
+### Scenario: Discrimination test routes Abstract → Argument-Graph failure to scope
+**Given** an Essay-Outline whose argument-audit reports Boundary 1 violations (Abstract conclusions with no matching Argument-Graph nodes)
+**When** the discrimination test is applied
+**Then** the diagnosis is "scope is suspect" — the cycle is researching more than one cohesive argument can carry
+**And** the stewardship response is to split the cycle into multiple smaller cycles each with a focused argument-graph
+
+### Scenario: Discrimination test routes Argument-Graph → Outline failure to discipline
+**Given** an Essay-Outline whose argument-audit reports Boundary 2 violations (Argument-Graph nodes with no body content)
+**When** the discrimination test is applied
+**Then** the diagnosis is "discipline is suspect" — the production work was not completed at sufficient depth
+**And** the stewardship response is to re-run the production with discipline tightening (no scope change required)
+
+### Scenario: Discrimination test on Abstract orphans — trace to determine route
+**Given** an Essay-Outline whose argument-audit reports Reverse Boundary 1 violations (Argument-Graph claims with no Abstract-conclusion parent)
+**When** the discrimination test is applied
+**Then** the trace identifies which level the missing relationship is at
+**And** the diagnosis routes to scope or discipline based on the specific missing relationship
+
+### Preservation: Outline-Coherence Signal is a trigger, not an auto-action
+**Given** an Outline-Coherence Signal that has fired (Pyramid Refinement violation detected)
+**When** the practitioner reviews the signal
+**Then** the practitioner decides whether to split the cycle, tighten discipline, or accept the artifact with the gap recorded as a scope-of-claim caveat
+**And** the methodology does NOT automatically split a cycle or re-dispatch production based on the signal alone
+
+## Feature: Cross-ADR Integration (ADR-092 + ADR-093)
+
+### Scenario: Form-change ADR and auditor-amendment ADR ship together at BUILD
+**Given** the BUILD phase that lands ADR-092's `/rdd-research` skill-text edit
+**When** the same BUILD phase runs
+**Then** the phase also lands ADR-093's `argument-auditor.md` skill-text edit
+**And** the layer-separation guarantee in ADR-092 §5 (Pyramid Refinement audit catches discipline failures at the structural level) is operative because both ADRs ship together
+**And** neither ADR is shipped alone (a single-ADR BUILD would leave the layer separation degraded to discipline-alone)
+
+### Scenario: Argument-Graph section as structured input to the auditor
+**Given** an Essay-Outline whose Argument-Graph section is present and uses the structured-bullet hierarchy from ADR-092 §4
+**When** the argument-auditor runs under ADR-093 §2 Tier 2 instructions
+**Then** the auditor parses the Argument-Graph identifiers (`C1`, `W1.1`, `E1.1.1`) as first-class references
+**And** the auditor does NOT re-derive argument structure from prose
+**And** the coverage map's edges are constructed from the parsed identifiers and the body-section anchors
+
+### Scenario: ADR-093's skill-text amendment anchors the auditor's expanded scope at the Skill-Structure Layer
+**Given** ADR-093's amendment to `agents/argument-auditor.md` has shipped
+**When** any subsequent argument-auditor dispatch reads the agent file
+**Then** the agent's behavior on Essay-Outline genre is determined by the skill text (not by judgment under task load)
+**And** the pyramid graph-traversal and expansion-fidelity verification fire as specified in the Process section

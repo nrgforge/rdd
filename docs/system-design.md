@@ -1,8 +1,8 @@
 # System Design: Pedagogical RDD
 
-**Version:** 14.0
+**Version:** 15.0
 **Status:** Current
-**Last amended:** 2026-04-28
+**Last amended:** 2026-05-14
 
 ---
 
@@ -136,6 +136,26 @@ The full driver list, module amendments, and integration contracts for these cha
 
 ---
 
+## How the Cycle 018 amendments fit
+
+Cycle 018 (Essay-Outline Form Change) makes a focused architectural change to the RESEARCH artifact form and the argument-auditor's scope:
+
+1. **Essay-Outline replaces prose essay as the RESEARCH artifact form.** ADR-092 introduces a four-section artifact (Abstract Section / Argument-Graph / Citation-Embedded Outline / References) under **Pyramid Refinement** — a structural property in which each level expands cleanly into the next. The form is RESEARCH-scoped; SYNTHESIZE's existing outline-then-user-writes-prose pattern is unchanged. Reflections and synthesis essays retain narrative prose form. Legacy prose essays remain at their existing paths under their existing names (no retroactive migration); the filename pattern (`essay-outline-NNN-*.md` vs. legacy `NNN-*.md`) distinguishes the forms.
+
+2. **Argument-auditor scope extended to Essay-Outline as fourth named genre.** ADR-093 extends the argument-auditor's responsibilities to consume the Argument-Graph section as **structured input**, traverse the four-tier pyramid, verify expansion fidelity at three boundaries plus reverse-direction, and apply META audit-time review. The Skill-Structure Layer amendment to `agents/argument-auditor.md` anchors the auditor's Essay-Outline behavior per Invariant 8 — the mechanism is not judgment-anchored.
+
+3. **Outline-Coherence Signal as stewardship trigger.** ADR-092 §6 names the signal that fires when the pyramid does not read cleanly within a cycle's scope, with a discrimination test routing the diagnosis: Boundary 1 (Abstract → Argument-Graph) failure → scope-suspect (consider splitting the cycle); Boundary 2 (Argument-Graph → Citation-Embedded Outline) failure → discipline-suspect (re-run production with discipline tightening). The signal is a stewardship trigger, not an auto-action.
+
+4. **Layer separation between structural verification and conventional discipline.** ADR-092 §5 separates the verification layers: Outline-Production Discipline (per-bullet — Synthesis Bullets, scope-qualification bullets, CONFIDENCE-LEVEL tags, named meta-moves) is anchored conventionally in `/rdd-research` skill text; pyramid expansion fidelity is anchored structurally in the argument-audit per ADR-093. The methodology does not claim per-bullet discipline is reliable under task load — Outline-Production Discipline's reliability is held as an open question structurally analogous to Cycle 10's prose-hardening-doesn't-work finding. What IS anchored is the pyramid-expansion check, which fires structurally regardless of whether per-bullet discipline was achieved.
+
+5. **Scope-of-claim caveats encoded for downstream consumption.** Downstream artifacts citing the cycle's CRESS-convergence or citation-comparison evidence carry: (a) the CRESS scope-transfer-via-analogy caveat (the two-thread convergence reaches the same diagnostic through a shared analogy rather than through two fully independent frameworks); (b) the citation-comparison method-scope caveat (the 3 unique-to-prose vs. 0 unique-to-outline P1 errors is scoped to Cycle 018's prose-production method); (c) the Kim et al. Open Question 7 caveat (output-side susceptibility reduction during production may be offset by input-side regressive-sycophancy effects in downstream consumers — held as Neutral consequence with future-cycle empirical test framing).
+
+6. **Ship-together constraint for ADR-092 + ADR-093.** The two ADRs ship together at BUILD: the layer separation in ADR-092 §5 (Pyramid Refinement audit catches discipline failures at the structural level) is operative only when both ADRs ship together. A single-ADR BUILD would leave the layer separation degraded to discipline-alone — the Invariant 8 risk the form change is designed to mitigate.
+
+The full module amendments, responsibility-matrix entries (24 new domain concepts + 2 actions from Amendment 23), Cycle 018 fitness criteria, and boundary integration tests live in [system-design.agents.md § Cycle 018 amendments](./system-design.agents.md#cycle-018-amendments--v150-essay-outline-form-change). Cycle 018 introduces no new modules in the dependency graph; two modules are amended (Research Skill, Argument Auditor Agent) plus four cross-cutting amendments (Orchestrator, ORIENTATION.md, this system-design pair, Domain Model follow-on Amendment 24 post-BUILD). The downstream-artifact sweep is deferred to the BUILD phase; the unified pre-BUILD sweep checklist consolidates ADR-092 §10, ADR-093 §5, and conformance-scan-018-decide.md targets into eight files plus two fixture tests.
+
+---
+
 ## Roadmap
 
 See [`./roadmap.md`](./roadmap.md) for the active roadmap — work packages, classified dependencies, transition states, and open decision points. Cycle 017's BUILD work packages (the `/rdd-conform migrate-to-rdd` subcommand, the `/rdd-research` skill-text edit, hook-script and test-fixture path substitutions, field-guide regeneration, the code→doc dangling-reference graduation-check) are the active set going into BUILD.
@@ -148,6 +168,7 @@ The full log of design amendments — Cycle 1 through Cycle 016 with rationale a
 
 | # | Date | What Changed |
 |---|------|------------|
+| 16 | 2026-05-14 | **System design v15.0 — Cycle 018 Essay-Outline Form Change.** Introduced Essay-Outline as the canonical RESEARCH artifact form (ADR-092) — four sections (Abstract / Argument-Graph / Citation-Embedded Outline / References) under Pyramid Refinement as structural property; operational compliance test (a)/(b)/(c)/(d); Outline-Production Discipline (Synthesis Bullets, CONFIDENCE-LEVEL tags, named meta-moves) anchored conventionally in `/rdd-research` skill text; pyramid expansion fidelity anchored structurally in argument-audit. Outline-Coherence Signal as stewardship trigger with discrimination test (Boundary 1 → scope-suspect; Boundary 2 → discipline-suspect). Argument-auditor scope extended to Essay-Outline as fourth named genre per ADR-093 — pyramid graph-traversal, expansion-fidelity verification at three boundaries plus reverse-direction, META audit-time review, pyramid coverage map + expansion-fidelity findings as output additions. Skill-Structure Layer anchoring per ADR-067-as-updated-by-ADR-089 in `agents/argument-auditor.md`. Form change is RESEARCH-scoped; SYNTHESIZE pattern unchanged; reflections + synthesis essays retain narrative prose form. Filename pattern `essay-outline-NNN-<slug>.md` co-exists with legacy `NNN-*.md` (no retroactive migration). Two new ADRs (092, 093); domain-model Amendment 23 landed at MODEL (24 new concepts + 2 actions); zero new code modules; zero invariant changes; two modules amended (Research Skill, Argument Auditor Agent) plus four cross-cutting amendments. Per ADR-076 each amendment carries decomposed `**Fitness:**` properties. ADR-092 + ADR-093 ship together at BUILD (layer separation degrades to discipline-alone if either ships without the other). Scope-of-claim caveats encoded: CRESS scope-transfer-via-analogy; citation-comparison method-scope; Kim et al. Open Question 7 input-side susceptibility. |
 | 15 | 2026-04-28 | **System design v14.0 — Cycle 017 Readability & Comprehensibility.** Adopted companion-file pattern (ADR-084) — this document split from `system-design.agents.md`. Encoded Outcome Test as design principle (ADR-083). Path migration `.rdd/` → `.rdd/` (ADR-085, deferred sweep). Tier 1 Harness Layer demoted to advisory across all modes (ADRs 088 / 089 amending ADR-064 / ADR-067). In-progress phase field role-shift documented (ADR-090). Tightly-scoped prototyping added as Research-phase method (ADR-087 §3). AI-as-orienter explicitly non-adopted pending operational criterion (ADR-086). One new artifact module (`system-design.agents.md`); zero new code modules. Eight new ADRs (083–090); supersession headers on ADR-064 / ADR-067 / ADR-070; domain-model Amendment 22 landed at DECIDE. |
 
 ---

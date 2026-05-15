@@ -426,3 +426,51 @@
 ### Task: Surface the v0.8.3 amendment correctly when practitioners read prior ADRs
 
 **Interaction mechanics:** When the agent encounters ADR-064 in the corpus (e.g., during conformance audit, during cycle resumption, during methodology-debt review), the agent reads the supersession header expanded by ADR-088 — including the two reading-time notes (enforcement-mode semantic shift and stale `.rdd/` paths post-migration). The agent presents ADR-064's body as historical record of what was decided when, with ADR-088 as the active authority. Practitioners querying "what does the manifest check do?" receive the v0.8.3 advisory-disposition answer; practitioners querying "what was originally specified?" can read ADR-064's preserved body. The same pattern applies to ADR-067 (active authority is ADR-089) and ADR-070 (active authority is ADR-085).
+
+---
+
+## Stakeholder: Solo Developer-Researcher (Cycle 018 — Essay-Outline RESEARCH author)
+
+**Super-Objective:** "I want the RESEARCH artifact to propagate the right information forward to downstream phases, not to perform readability that no one consumes"
+
+### Task: Receive an Essay-Outline at the RESEARCH gate
+
+**Interaction mechanics:** The practitioner invokes `/rdd-research` for a cycle. The skill runs its research loop (ideation → spike → synthesis) per its existing pattern. At the artifact-production step, the skill writes a four-section Essay-Outline (Abstract Section / Argument-Graph / Citation-Embedded Outline / References) to `./docs/essays/essay-outline-NNN-<slug>.md` per ADR-092. The practitioner reads the four-section structure at the gate. The Abstract is what the practitioner reads first if they want a quick orientation; the Argument-Graph is what they read if they want to see how the conclusions are decomposed; the Citation-Embedded Outline is what they read if they want to verify the working; the References are where citations resolve. The form preserves audit-attestation (citation-audited, argument-audited, framing-audited) while removing connective-tissue prose. The practitioner's role at the gate is the same as before — engage with the artifact, respond to belief-mapping or pre-mortem questions, decide whether to advance — but the artifact they engage with has a four-tier structural shape.
+
+### Task: Read an Essay-Outline as feed-forward input to a downstream phase
+
+**Interaction mechanics:** During DISCOVER, MODEL, DECIDE, ARCHITECT, or BUILD, the practitioner (or a downstream agent on the practitioner's behalf) consults the Essay-Outline produced by RESEARCH for a specific input. The four-tier structure makes targeted consumption efficient: claims-only consumption reads the Abstract Section and Argument-Graph; warrant-and-evidence consumption traverses the Argument-Graph and pulls from Citation-Embedded Outline body sections anchored to the relevant graph nodes; reference consumption goes directly to the References section. The practitioner does not need to read prose connective tissue to extract structured content. When a downstream artifact (ADR, domain-model entry, scenario) needs to cite RESEARCH findings, it cites the Argument-Graph node identifier (`C1`, `W1.2`, `E1.2.1`) so the citation is structurally traceable rather than a paragraph-pointer.
+
+### Task: Interpret an Outline-Coherence Signal at the RESEARCH gate
+
+**Interaction mechanics:** The argument-audit on an Essay-Outline runs and reports one or more P1 expansion-fidelity violations (a Boundary 1, 2, or 3 violation per ADR-093 §3). The orchestrator surfaces the Outline-Coherence Signal as having fired. The practitioner applies the discrimination test from ADR-092 §6: which boundary failed? If Boundary 1 (Abstract → Argument-Graph) failed, the diagnosis is scope-suspect — the cycle is researching more than one cohesive argument can carry — and the stewardship response is to consider splitting the cycle into smaller scoped cycles. If Boundary 2 (Argument-Graph → Citation-Embedded Outline) failed, the diagnosis is discipline-suspect — the production work was not completed at sufficient depth — and the stewardship response is to re-run the production with discipline tightening, no scope change. The practitioner decides; the methodology does not split the cycle or re-dispatch production automatically. The decision is recorded in the cycle-status so future readers can see the stewardship outcome.
+
+### Task: Produce a synthesis essay from a synthesis outline (unchanged from prior cycles)
+
+**Interaction mechanics:** SYNTHESIZE phase is unchanged by Cycle 018. The practitioner invokes `/rdd-synthesize` after BUILD (or another terminal phase). The skill mines the artifact trail and produces a synthesis outline. The practitioner writes the synthesis essay from the outline in narrative prose form — the synthesis essay's role is *sharing* (publishable narrative; narrative context rollup), which is the role where narrative form remains useful per ADR-092 §8. The form change at RESEARCH does not propagate to SYNTHESIZE.
+
+---
+
+## Stakeholder: AI Agent (Argument-Auditor, executing on Essay-Outline genre per ADR-093)
+
+**Super-Objective:** "Verify that an Essay-Outline's Pyramid Refinement structural property holds, with operational compliance and violation tests anchored in skill text — not in judgment under task load"
+
+### Task: Detect Essay-Outline genre on dispatch
+
+**Interaction mechanics:** When the auditor is dispatched on a primary document, it reads the document's structure. If the document contains the four named sections (Abstract Section / Argument-Graph / Citation-Embedded Outline / References) in the conventions ADR-092 §4 specifies, the auditor recognizes Essay-Outline as the genre. When in doubt, the dispatch brief names the genre explicitly. Detection routes the auditor to the Essay-Outline-specific Process step (pyramid graph-traversal + expansion-fidelity verification) in addition to the five within-document verifications and the framing audit.
+
+### Task: Perform pyramid graph-traversal
+
+**Interaction mechanics:** The auditor reads the Abstract Section to identify each conclusion with its Argument-Graph identifier (`C1`, `C2`, ...). The auditor parses the Argument-Graph as structured input — claims, warrants, evidence are first-class references with hierarchical labels. The auditor reads each Citation-Embedded Outline body subsection's parenthetical anchor to identify which Argument-Graph node(s) the subsection develops. The auditor verifies that References contain every cited reference key. From the traversal, the auditor builds a pyramid coverage map: which Abstract conclusions trace through which Argument-Graph nodes to which body sections to which References. The coverage map appears as a subsection within Section 1 of the audit report.
+
+### Task: Report expansion-fidelity violations with pyramid coordinates
+
+**Interaction mechanics:** When the traversal detects a boundary violation (an Abstract conclusion with no Argument-Graph node; an Argument-Graph node with no body content; a body section with no Argument-Graph anchor), the auditor reports the violation in the "Expansion-fidelity findings" subsection within Section 1, with severity P1 (boundary violations break the pyramid) and pyramid coordinates (`C3 → no Argument-Graph node`; `W2.1 → no body anchor`; `Section 4 → no graph anchor`). Weak expansions (the section exists but does not visibly develop the warrants) are reported as P2. Minor coverage gaps are P3. Boundary 3 violations (citation with no References entry) are reported as P2 when the citation-auditor has already run on the same artifact, or P1 with an escalation note when it has not.
+
+### Task: Apply META audit-time review
+
+**Interaction mechanics:** For each body subsection anchored to the reserved `META` identifier, the auditor checks the section's bullet content. If the section contains methodology preamble, scope-setting, or appendix-style content (no claim/warrant/evidence bullets developing a graph node), the auditor recognizes it as deliberately non-developmental and does NOT report a violation. If the section contains claim/warrant/evidence bullets (i.e., the author labeled it META but the content develops a graph node), the auditor reports a P2 META misclassification finding citing ADR-092 §4. The check guards against META being used as a judgment-anchored bypass for the MUST anchor convention under task load.
+
+### Task: Preserve existing genre handling
+
+**Interaction mechanics:** When the dispatched document is a research essay (prose), an ADR set, or a synthesis outline (the three pre-ADR-093 genres), the auditor's behavior is unchanged. The five within-document verifications and the framing audit run per the existing two-section output template. The Essay-Outline-specific Process step (pyramid graph-traversal + expansion-fidelity verification) does not fire. The output template's pyramid-coverage-map and expansion-fidelity-findings subsections do not appear. The auditor's responsibility extension is genre-scoped, not corpus-wide.

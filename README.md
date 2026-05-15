@@ -4,6 +4,8 @@
 
 A methodology for building software you understand. AI in the loop — not human in the loop.
 
+**New to the corpus? Start at [docs/ORIENTATION.md](docs/ORIENTATION.md).**
+
 **[Read the manifesto](https://nrgforge.github.io/rdd/)**
 
 ## Why
