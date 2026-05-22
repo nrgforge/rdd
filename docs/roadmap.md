@@ -1,19 +1,218 @@
 # Roadmap: Pedagogical RDD
 
-**Updated:** 2026-05-14
-**Derived from:** System Design v15.0, ADRs 001-093
+**Updated:** 2026-05-22
+**Derived from:** System Design v16.0, ADRs 001-098
 
 ## Work Packages
 
-*No active cycle. Cycle 018 (Essay-Outline Form Change) shipped at v0.8.6 — see Completed Work Log below. Active WPs would appear here when a cycle is in progress.*
+*No active cycle. Cycle 019 (Empirical-Grounding Filter and related methodology amendments) shipped at v0.8.7 — see Completed Work Log below.*
 
-<!-- Archived from active: Cycle 018 detailed WP block. Compact as-built record is in the Completed Work Log below. The full active-section detail (per-WP objectives, scenarios covered, dependency classifications, transition states TS-1 through TS-4, and Open Decision Points) is preserved in the cycle's archived cycle-status (post-graduation) and in `.rdd/audits/integration-verification-018.md`. -->
+<!-- Archived from active: Cycle 019 detailed WP block (A through F with dependency graph, transition states TS-1 through TS-5, four Open Decision Points). The compact as-built record is in the Completed Work Log below. Full per-WP detail is preserved in `.rdd/audits/integration-verification-019.md` and in the cycle-status archive (post-graduation). -->
 
 ### (No active cycle WPs.)
 
-The Cycle 018 detailed active block — per-WP objectives, scenarios covered, dependency classifications, transition states TS-1 through TS-4, and Open Decision Points — was archived to the Completed Work Log below at v0.8.6 release. The full per-WP detail is preserved in `.rdd/audits/integration-verification-018.md` (the BUILD WP-F audit) and in the cycle-status archive (post-graduation).
+The Cycle 019 detailed active block was archived to the Completed Work Log below at v0.8.7 release. Full per-WP detail is preserved in `.rdd/audits/integration-verification-019.md`.
+
+<!-- Cycle 019 active block (archived) — kept for reference until graduation:
+
+### Cycle 019: Empirical-Grounding Filter and related methodology amendments (ADRs 094–098)
+
+**Cycle:** *Does RDD Over-Engineer?* — five ADRs at standalone scope with reading-path artifact as navigation layer.
+**Target release:** v0.8.7
+**BUILD mode:** auto (per ADR-091 — mechanical work; moderate stakes; catching-dominant stewardship; confirmed at BUILD entry).
+
+### WP-A: ADR-094 naming clarification
+
+**Objective:** Apply the naming clarification per conformance-scan §Cluster 1 before BUILD. ADR-094 currently references three files including a non-existent `framing-auditor.md`; restate as two-file enumeration covering `agents/argument-auditor.md` (combined dispatch with both argument-audit and framing-audit sections per ADR-061) and `agents/citation-auditor.md`.
+
+**Changes:**
+- `docs/decisions/adr-094-audit-round-count-convergence-saturation.md` — §"Signal-evaluation step (skill-text amendment)" — replace three-file enumeration with two-file enumeration; update §"Negative" consequences to match; update §Provenance check naming-clarification note.
+
+**Scenarios covered:** *Argument-auditor appends verdict line at round-end* (scenarios.md §Feature: Audit Round-Count Convergence-Saturation Signal); the clarification is a precondition for WP-B and WP-C's correct scoping.
+
+**Dependencies:** None — this is an in-place ADR clarification before BUILD begins. The ADR's body is immutable per ADR-074 for status field changes, but conformance-scan-recommended naming corrections to non-existent file references are within scope for pre-BUILD precision (analogous to Cycle 018 Cluster-1 pre-BUILD precision).
+
+---
+
+### WP-B: `agents/argument-auditor.md` Convergence-Saturation Signal verdict-line step (ADR-094)
+
+**Objective:** Add the Convergence-Saturation Signal verdict-line step to the argument-auditor's combined dispatch. The signal appears at both Section 1 (argument-audit) round-end and Section 2 (framing-audit) round-end per ADR-061.
+
+**Changes:**
+- `agents/argument-auditor.md` — add verdict-line step at the round-end position for both Section 1 and Section 2 of the combined dispatch; specify threshold values (P1 = 0; P2-new ≤ 1; no new framings); document form-change baseline-reset rule; document standard-sequence vs. re-audit-after-revision distinction; document ESCALATE branch for practitioner-judgment uncertainty cases; document default-round-count-3 with rounds 4–5 conditional and rounds-beyond-5 with explicit practitioner authorization.
+
+**Scenarios covered:** *Argument-auditor appends verdict line at round-end*, *Convergence-Saturation Signal triggers at R3 — orchestrator stops*, *Convergence-Saturation Signal does not trigger at R3 — orchestrator continues*, *Round 5 fires only if R4 itself surfaces a new P1*, *Rounds beyond R5 require explicit practitioner authorization*, *Preservation: Existing audit dispatch protocol unchanged for non-iterative audits*, *Preservation: Architectural Isolation (ADR-058) preserved at each round* (scenarios.md §Feature: Audit Round-Count Convergence-Saturation Signal).
+
+**Dependencies:** WP-A (hard) — the naming clarification must land first so WP-B knows it amends one file (argument-auditor with combined dispatch), not two.
+
+---
+
+### WP-C: `agents/citation-auditor.md` Convergence-Saturation Signal verdict-line step (ADR-094)
+
+**Objective:** Add the Convergence-Saturation Signal verdict-line step to the citation-auditor. Format and thresholds match WP-B's encoding per the cross-skill consistency requirement.
+
+**Changes:**
+- `agents/citation-auditor.md` — add verdict-line step at the round-end position; match argument-auditor's threshold values and form-change baseline-reset rule; match the standard-sequence vs. re-audit distinction; match the ESCALATE branch.
+
+**Scenarios covered:** Same scenarios as WP-B (the signal applies symmetrically to citation-auditor round-ends).
+
+**Dependencies:** WP-A (hard); WP-B (implied logic — natural to amend argument-auditor first as the more complex case, then mirror to citation-auditor; but no hard dependency between WP-B and WP-C).
+
+---
+
+### WP-D: `skills/research/SKILL.md` Patch-Switching Criterion (ADR-096)
+
+**Objective:** Add the Patch-Switching Criterion at the research-loop-end boundary. The amendment is ~10–15 lines localized to the line-147 area where the agent currently asks "loop again with a new question, or proceed to the Essay-Outline?"
+
+**Changes:**
+- `skills/research/SKILL.md` line 147 area — replace or augment the bare prompt with the Pirolli-Card-anchored criterion question; add the verdict-line format with three-way recommendation (CONTINUE-this-patch / SWITCH-patch / SWITCH-to-synthesis); document the practitioner-elicited expected-observation prompt with reflexive-vs-genuine pre-mortem discrimination diagnostic; document late patch-additions accommodation (the Cycle 019 Loop 6 pattern).
+
+**Scenarios covered:** *Practitioner-and-agent dyad applies Patch-Switching Criterion at research-loop boundary*, *Patch-Switching Criterion triggers SWITCH-to-synthesis when framing has stabilized*, *Patch-Switching Criterion triggers CONTINUE-this-patch when high-marginal-yield is anticipated*, *Late patch-addition during synthesis re-invokes the criterion*, *Preservation: RESEARCH loop substance unchanged*, *Preservation: Practitioner override authority preserved* (scenarios.md §Feature: RESEARCH Patch-Switching Criterion).
+
+**Dependencies:** None — independent of WP-A/B/C. The Patch-Switching Criterion fires at a different workflow boundary than the Convergence-Saturation Signal.
+
+---
+
+### WP-E: Orchestrator vocabulary additions (ADRs 095 / 097 / 098)
+
+**Objective:** Add the five Tier-2 / named-deferral vocabulary additions to the orchestrator's "Important Principles" section (or equivalent cross-cutting position): Empirical-Grounding Filter (with four grounding-mechanism paths); Agent Outcome Test (with consumer-naming-actionability requirement); FF1 / FF3 named-deferrals (with two-direction graduation triggers); Three-Application F-P2 Pattern (held as question); form-change baseline-reset rule reference.
+
+**Changes:**
+- `skills/rdd/SKILL.md` — "Important Principles" section: add five Tier-2 / named-deferral vocabulary entries with cross-references to ADRs 094 / 095 / 097 / 098.
+
+**Scenarios covered:** *Practitioner-and-agent dyad applies Empirical-Grounding Filter at ADR-drafting*, *Practitioner-and-agent dyad applies Agent Outcome Test at agent-facing artifact creation*, *FF1 graduation trigger condition recording*, *FF3 graduation trigger condition recording*, *F-P2 Pattern recorded as held question, not resolved finding*, plus all preservation scenarios for ADRs 095 / 097 / 098 (scenarios.md §Features for ADRs 095, 097, 098, and Cross-ADR F-P2 Pattern Recognition).
+
+**Dependencies:** None — independent of WP-A/B/C/D. Pure skill-text vocabulary additions.
+
+---
+
+### WP-F: Integration verification + Cycle 019 release housekeeping
+
+**Objective:** Verify all Cycle 019 WPs landed correctly; ship v0.8.7 release.
+
+**Changes:**
+- Plugin version bump v0.8.6 → v0.8.7.
+- ADRs 094, 095, 096, 097, 098 status move Proposed → Accepted.
+- CHANGELOG v0.8.7 entry.
+- Integration verification audit at `.rdd/audits/integration-verification-019.md` — skill-text inspection of WP-A through WP-E targets; cycle's fitness criteria from system-design.agents.md §Cycle 019 Fitness Criteria verified satisfied.
+- Roadmap migration — move Cycle 019 WPs from active to Completed Work Log.
+
+**Scenarios covered:** All Cycle 019 scenarios verified end-to-end against the landed skill-text amendments. Cycle Acceptance Criteria Table (scenarios.md §Cycle 019) atomic 1:1 mapping verified at the methodology-application layer.
+
+**Dependencies:** WP-B, WP-C, WP-D, WP-E (all hard — integration verification requires all skill-text amendments to be in place). WP-A is a hard dependency for WP-B and WP-C; transitively hard for WP-F.
+
+---
+
+## Dependency Graph
+
+```
+WP-A (ADR-094 naming clarification) ───── hard ──► WP-B (argument-auditor verdict-line)
+WP-A ──────────────────────────────────── hard ──► WP-C (citation-auditor verdict-line)
+                                          (WP-B and WP-C are independent of each other given WP-A; WP-C can be built before WP-B if convenient, though WP-B → WP-C is the implied-logic order)
+
+WP-D (research skill Patch-Switching) — independent
+WP-E (orchestrator vocabulary additions) — independent
+
+WP-A, WP-B, WP-C, WP-D, WP-E ────── all hard ──► WP-F (integration verification + v0.8.7 release)
+```
+
+**Classification key:**
+- **Hard dependency:** WP-A → WP-B and WP-A → WP-C (the naming clarification scopes the two-file amendment correctly); WP-B/C/D/E → WP-F (integration verification requires all amendments in place).
+- **Implied logic:** WP-B → WP-C (natural to amend argument-auditor first as the more complex combined-dispatch case, then mirror to citation-auditor); WP-D ↔ WP-E (both independent skill-text additions; either order fine).
+- **Open choice:** WP-D vs. WP-E first — pure independence.
+
+## Transition States
+
+### TS-1: ADR-094 naming clarification applied (after WP-A)
+
+ADR-094 references the correct two-file amendment scope; no broken file references in the document. Pre-BUILD precision achieved. The cycle has not yet started skill-text amendments, but the ADR is internally consistent with the codebase structure.
+
+### TS-2: Audit-round saturation signal operative (after WP-B + WP-C)
+
+Both audit subagents (argument-auditor and citation-auditor) emit Convergence-Saturation Signal verdict lines at round-end. The orchestrator can read the signal and decide round-count action. The form-change baseline-reset rule is documented in both agent files. The Iterative-Audit Pattern (Cycle 018 domain-model vocabulary) is now operationalized at the workflow level. ADR-094 is functionally Accepted; status transition pending WP-F.
+
+### TS-3: Research-loop termination criterion operative (after WP-D)
+
+The `/rdd-research` skill prompts the practitioner with the Pirolli-Card-anchored Patch-Switching Criterion at each loop-end. Verdict lines record the dyad's decision; late patch-additions can re-invoke the criterion. The Cycle 019 Loop 6 pattern is accommodated. ADR-096 is functionally Accepted; status transition pending WP-F.
+
+### TS-4: Tier-2 vocabulary fully named in orchestrator (after WP-E)
+
+The orchestrator's "Important Principles" section names all five Cycle 019 Tier-2 / named-deferral vocabulary additions. Future cycles can reference these vocabulary entries when applying the felt-triggers at workflow boundaries. ADRs 095, 097, 098 are functionally Accepted; status transition pending WP-F.
+
+### TS-5: v0.8.7 release (after WP-F)
+
+All five Cycle 019 ADRs are Accepted; integration verification artifact records satisfaction of Cycle 019 fitness criteria; CHANGELOG and plugin version updated. The cycle's BUILD debt is discharged. Cycle 019 WPs migrate to the Completed Work Log; Cycle 019 is closed for future-cycle reference.
+
+## Open Decision Points
+
+- **WP-B/WP-C ordering within the pair:** WP-B → WP-C is the implied-logic order (argument-auditor's combined dispatch is the more complex case; citation-auditor's mirroring is simpler). The builder can choose either order; both must complete before WP-F.
+- **WP-D / WP-E ordering:** genuinely independent; the builder picks based on convenience.
+- **Whether to ship a Cycle 019 fixture test for the verdict-line format presence:** Cycle 019 does not introduce new fixture tests by default — the skill-text amendments are inspection-level verifiable through grep. If the builder judges that future practice would benefit from a fixture test covering ADR-094's verdict-line format or ADR-096's Patch-Switching Criterion presence, the test would be added at WP-F. This is a stewardship judgment at BUILD entry; the cycle's evidence does not require it.
+- **Whether the form-change baseline-reset rule warrants its own narrow fixture test:** the rule was operationally demonstrated by Cycle 019's own R3 audit. Future cycles applying form-change events will provide the multi-cycle evidence. A pre-emptive fixture test is optional at this stage.
+
+-->
 
 ## Completed Work Log
+
+### Cycle 019: Empirical-Grounding Filter and related methodology amendments (ADRs 094–098)
+
+**Derived from:** ADR-094 (Convergence-Saturation Signal — Skill-Structure Layer; form-change baseline-reset rule); ADR-095 (Agent Outcome Test — Tier-2); ADR-096 (Patch-Switching Criterion — Skill-Structure Layer); ADR-097 (Empirical-Grounding Filter at DECIDE — Tier-2; central commitment); ADR-098 (FF1 + FF3 Named-Deferrals with two-direction graduation triggers); essay-outline-018 (*Does RDD Over-Engineer?*; Loop 6 cross-project evidence — zani, llm-orc, plexus; ~26 sampled ADRs in depth); Domain Model Amendments #25 / #26 / #28; conformance-scan-decide-019.md (3 BUILD-debt items + 1 structural clarification + 3 conforming ADRs)
+**Cycle type:** Standard cycle (focused methodology amendment)
+**Shipped:** v0.8.7 (2026-05-22) — BUILD mode auto per ADR-091
+
+| WP | Title | Status |
+|----|-------|--------|
+| A | ADR-094 naming clarification — replace three-file enumeration (including non-existent `framing-auditor.md`) with two-file enumeration covering `argument-auditor.md` (combined dispatch per ADR-061) + `citation-auditor.md` in `docs/decisions/adr-094-audit-round-count-convergence-saturation.md` (verified at draft time — clarification already present) | Complete |
+| B | `agents/argument-auditor.md` Convergence-Saturation Signal verdict-line step at round-end position covering both Section 1 argument-audit and Section 2 framing-audit of combined dispatch; threshold values; form-change baseline-reset rule; standard-sequence vs. re-audit distinction; ESCALATE branch; default round count 3 with rounds 4–5 conditional and R6+ practitioner-authorized | Complete |
+| C | `agents/citation-auditor.md` Convergence-Saturation Signal verdict-line step at round-end position; threshold values matching argument-auditor; form-change baseline-reset rule; standard-sequence vs. re-audit distinction; ESCALATE branch | Complete |
+| D | `skills/research/SKILL.md` Patch-Switching Criterion at line 147 area — Pirolli-Card-anchored question; practitioner-elicited expected-observation prompt; reflexive-vs-genuine pre-mortem discrimination diagnostic; three-way verdict-line format (CONTINUE-this-patch / SWITCH-patch / SWITCH-to-synthesis); late patch-additions accommodation; practitioner override authority preserved | Complete |
+| E | `skills/rdd/SKILL.md` Important Principles vocabulary additions for ADRs 094 / 095 / 097 / 098 — Empirical-Grounding Filter with four grounding-mechanism paths; Agent Outcome Test with consumer-naming-actionability requirement; FF1 / FF3 named-deferrals with two-direction graduation triggers; Three-Application F-P2 Pattern as held question; form-change baseline-reset rule reference. Auxiliary edit: `skills/decide/SKILL.md` Step 2 ADR-drafting principles list extended with explicit cross-reference to the Empirical-Grounding Filter (addresses ARCHITECT-gate WP-E reachability advisory per practitioner's BUILD-time choice) | Complete |
+| F | Integration verification + Cycle 019 release housekeeping — plugin version bumped 0.8.6 → 0.8.7; ADRs 094 / 095 / 096 / 097 / 098 status Proposed → Accepted; CHANGELOG v0.8.7 entry; `.rdd/audits/integration-verification-019.md` audit (all Cycle 019 Fitness Criteria verified satisfied via skill-text grep); ORIENTATION.md regenerated post-ARCHITECT; roadmap migration (this entry) | Complete |
+
+**Summary:**
+
+- Cycle 019 produced five methodology amendments addressing the C7 over-engineering failure mode named in essay-outline-018 — *research-surveyed possibilities surviving into ADRs without empirical filter*. Three ADRs at Tier-2 (095, 097, 098) with multi-cycle graduation triggers; two at Skill-Structure Layer (094, 096) at narrow workflow boundaries (audit-round-end; research-loop-end). The cycle's reflexive logic — heavy structural amendment from thin evidence would itself instantiate the C7 pattern — drove the Tier-2 scope choices; the multi-cycle graduation triggers name the conditions under which broader structural enforcement would be warranted.
+- The DECIDE phase made three structural shifts (5 ADRs → 1 consolidated ADR → 5 ADRs + reading-path artifact). The R3 narrow audit on the briefly-consolidated form caught the FA-R3-P1 framing finding (the consolidation moment did not surface "five ADRs + reading-path artifact" as an option); the practitioner restored the five-ADR form. The reading-path artifact at `docs/decisions/cycle-019-adr-index.md` addresses the working-memory-budget concern as a navigation layer — **Cycle 019-scoped, NOT a generalized methodology pattern** (clarified at ARCHITECT gate).
+- The **form-change baseline-reset rule** (added at R3) was operationally demonstrated by Cycle 019's own R3 audit catching three P2-new findings on the consolidated form that the R2 verdict on the prior form would have suppressed if erroneously carried over. The rule's load-bearing methodology insight: substantive revisions need fresh audit eyes, regardless of the prior form's convergence verdict.
+- Zero new code modules; zero new specialist subagents; zero invariant changes. Three modules amended (Argument Auditor Agent, Citation Auditor Agent, Research Skill); two cross-cutting documentation amendments (Orchestrator vocabulary additions; Decide Skill cross-reference). No fixture tests required this cycle — amendments are inspection-level verifiable through skill-text grep.
+- BUILD ran in auto mode per ADR-091. The cycle's character (mechanically well-specified amendments anchored in ADR-specified sites) matched the auto-mode profile. Auto-mode failure modes (design-alternative examination, scoping-judgment surfacing) did not bite — design-alternative examination was front-loaded at ARCHITECT (the "Alternatives considered and rejected" preamble; auditor-coordination agent and `/rdd-patch-switch` skill both rejected); scoping-judgment was specified at the ADR level. The auto-mode pattern is replicating: Cycle 017 / Cycle 018 / Cycle 019 all ran auto-mode BUILD on tightly-specified amendments without the named failure modes biting.
+- One BUILD-time judgment exercised: the ARCHITECT-gate advisory observation #1 (WP-E reachability gap) was punted to BUILD time per the practitioner's choice. The auto-mode call: add the Decide Skill cross-reference. Low cost (~3 lines); addresses a real reachability gap; matches the methodology's Skill-Structure Layer placement pattern for Tier-2 references.
+
+**Dependency graph (as-built):**
+```
+WP-A (ADR-094 naming clarification) ─── verified at draft time ──► (no gate needed)
+                                  ─── hard ──► WP-B (argument-auditor verdict-line)
+                                  ─── hard ──► WP-C (citation-auditor verdict-line)
+
+WP-B ─── implied ──► WP-C (argument-auditor first; citation-auditor mirrors)
+
+WP-D (research skill Patch-Switching) — independent
+WP-E (orchestrator vocabulary + Decide Skill cross-reference) — independent
+
+WP-A, WP-B, WP-C, WP-D, WP-E ────── all hard ──► WP-F (integration verification + v0.8.7 release)
+```
+
+**Open Decision Points (resolved at BUILD):**
+
+- WP-B → WP-C ordering: chose implied-logic order (argument-auditor first; citation-auditor mirrors).
+- WP-D / WP-E ordering: independent; ran in sequence by natural reading order.
+- Cycle 019 fixture tests: not added this cycle per ARCHITECT decision; skill-text grep verification suffices.
+- Form-change baseline-reset narrow fixture test: deferred to future-cycle multi-cycle evidence accrual.
+- WP-E reachability advisory (ARCHITECT-gate carry-forward): addressed at BUILD with Decide Skill cross-reference.
+
+**Open questions held into future cycles:**
+
+- Corpus-level granularity — whether ~100-ADR corpus accretion rate is itself an over-engineering signal the methodology's current criteria don't catch.
+- Knowledge-graph corpus collapse — practitioner-named future-cycle research topic.
+- Consolidation-as-F-P2-instance — whether the DECIDE-gate consolidation-then-restoration is the cycle's reflexive correction OR another instance of the F-P2 pattern. The multi-cycle graduation trigger for ADR-097 is the assessability test.
+
+**Methodology-level observations (for future-cycle methodology scope):**
+
+- Cycle 019's evidence base is single-cycle (the cycle's own reflexive working-through). Multi-cycle evidence accumulates as future cycles apply ADRs 094–098 in practice. The three Open Questions are the future-cycle research scope.
+- The reading-path artifact pattern is Cycle 019-scoped — the user's clarification at the ARCHITECT gate prevented it from being quietly promoted to methodology-level. The pattern (gate-conversation framings may quietly propagate into architectural language; the architect must surface them as questions, not record them as decided) is a stewardship observation worth recognizing for future cycles' ARCHITECT phase but not a methodology amendment.
+- Auto-mode BUILD ran a load-bearing methodology amendment to completion; the cycle's character matched the mode. The mode-recognized failure modes did not bite. Pattern replicating across Cycle 017 / Cycle 018 / Cycle 019.
+
+---
 
 ### Cycle 018: Essay-Outline Form Change (ADR-092 + ADR-093)
 

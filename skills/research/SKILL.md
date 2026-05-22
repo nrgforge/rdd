@@ -144,7 +144,33 @@ After each research iteration, update the running log:
 
 Write the log to `./docs/essays/research-logs/research-log.md` and update it after each loop iteration.
 
-Present a summary to the user and ask: **loop again with a new question, or proceed to the Essay-Outline?**
+#### Patch-Switching Criterion (ADR-096)
+
+At the end of each research loop, the practitioner-and-agent dyad applies the **Patch-Switching Criterion** (Pirolli & Card 1999 information-foraging) before deciding whether to loop again or proceed to the Essay-Outline. The criterion scaffolds the loop-end judgment with a literature-anchored test for marginal yield vs. opportunity cost; the practitioner retains override authority.
+
+**The criterion:**
+
+> *"Does the current research patch's marginal information value exceed the opportunity cost of staying in it? If no, switch — either to a new patch (a different research thread a prior loop surfaced) or to synthesis (the Essay-Outline production work)."*
+
+**Practitioner-elicited expected observation.** Before appending the verdict line, prompt the practitioner: *"What specific observation in the next loop would change your reading of the problem space — not deepen it, but change it?"* The response populates the verdict line's *Practitioner expected observation* field. Absence of substantive engagement reads as "none (practitioner did not specify)" and triggers the switch condition.
+
+**Reflexive-vs-genuine pre-mortem discrimination.** A reflexive answer ("more evidence for what's already established") **triggers the switch condition, not the stay condition** — extending findings is not the same as changing the reading. The Einstellung effect (Bilalic et al. 2008; domain model Invariant 8 extension at Cycle 016) makes reflexive answers more likely after several iterations. If the practitioner cannot name an observation that would **change** (not merely deepen) the reading, the switch condition applies.
+
+**Verdict-line format.** After each research loop, append a structured verdict line to the research log:
+
+```
+**Patch-Switching Criterion (loop N → loop N+1 decision):**
+- Marginal yield this loop: [P1 / P2 / P3 findings; new framings; questions answered]
+- Specific question for next loop: [name it, or "none"]
+- Practitioner expected observation: [practitioner's response, or "none (practitioner did not specify)"]
+- Recommendation: [CONTINUE-this-patch | SWITCH-patch | SWITCH-to-synthesis]
+```
+
+**Late patch-additions.** If synthesis (Step 4 below) surfaces a question the prior loops did not address, the criterion can be re-invoked — the new patch's marginal-yield rationale or scope-of-claim-encoding alternative is recorded in the research log. (The Cycle 019 Loop 6 pattern is the institutional reference.)
+
+**Override.** The practitioner can override the recommendation at any loop boundary. The override and rationale are recorded in the research log. The criterion scaffolds the judgment; it does not replace practitioner authority.
+
+After appending the verdict line, present the summary to the user and ask: **loop again with a new question, or proceed to the Essay-Outline?** The Patch-Switching Criterion verdict informs the answer; the practitioner decides.
 
 ### Step 4: Essay-Outline
 

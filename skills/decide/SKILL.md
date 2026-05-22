@@ -99,6 +99,7 @@ Write ADRs to `./docs/decisions/adr-NNN-<slug>.md`.
 - **Use domain vocabulary** — every noun and verb should come from the glossary
 - **Body-immutable once accepted** — the Context, Decision, Rejected alternatives, Consequences, and Provenance check sections do not change after acceptance. Only the Status field and a dated supersession/update header may change. When a decision changes, file a new ADR via Step 2.5
 - **Check for unexamined product assumptions** — if an ADR's context references a product assumption (how users work, what they need, which workflows matter), check whether that assumption has been validated through product discovery. If not, flag it as a potential inversion principle violation
+- **Apply the Empirical-Grounding Filter** (ADR-097; orchestrator Important Principles) — for any ADR committing to a feature based on research-surfaced possibility, the practitioner-and-agent dyad invokes the felt-trigger at drafting time against the four grounding-mechanism paths (PLAY evidence; stakeholder-articulated demand; spike validation; structural operationalization). When none applies, the ADR takes Conditional Acceptance annotation or the `adr-deferred-` filename pattern. The filter is Tier-2 (felt-judgment-anchored); the practitioner records the choice and rationale in the ADR's Provenance check or Rationale section
 
 Present ADRs to the user for approval before proceeding.
 

@@ -88,9 +88,31 @@ At each level boundary, verify the Pyramid Refinement compliance test from ADR-0
 
 The Discrimination Test routing field on Boundary 1 and Boundary 2 P1 findings surfaces the Outline-Coherence Signal's diagnosis directly in the auditor's output. Downstream readers (the practitioner at the gate, future audits) receive the stewardship signal without cross-referencing `/rdd-research` skill text.
 
+## Convergence-Saturation Signal (ADR-094)
+
+After the audit findings are compiled (Section 1 argument audit + Section 2 framing audit), evaluate the **Convergence-Saturation Signal** and append a structured verdict line to the end of the audit artifact. The signal calibrates audit round-count discipline at the workflow level.
+
+**Default audit round count: 3.** R1 + R2 + R3 is the methodology's default discipline. Round 4 fires only when the signal does not trigger by R3; round 5 fires only if R4 surfaces a new P1; rounds beyond 5 require explicit practitioner authorization (the dispatch must record the rationale).
+
+**Signal evaluation.** The signal triggers (recommendation: STOP at this round) when **all three** conditions hold for this round:
+
+1. **P1 count = 0** — no Must-Fix findings in either Section 1 (argument audit P1) or Section 2 (framing audit P1).
+2. **P2 count this round (new, non-carry-over) ≤ 1** — at most one new P2 finding that did not appear in any prior round's findings (across both sections combined).
+3. **No new framings or claim-scope expansions** — the round did not surface warrants or claim-scope characterizations that prior rounds' finding records did not name.
+
+If any of the three conditions fails, the signal does NOT trigger and the recommendation is CONTINUE to next round.
+
+**ESCALATE branch (practitioner-judgment-anchored — per ADR-094 P2-R5-2).** The "no new framings" criterion is hard for the agent to evaluate reliably under task load: practitioner-introduced framings can be difficult to distinguish from agent-introduced framings. When uncertain whether the round's new warrants or claim-scope characterizations represent material framing shifts, the recommendation is **ESCALATE for practitioner judgment**. The verdict line reports the new entries; the practitioner reviews and decides the next-round action.
+
+**Form-change baseline-reset rule (ADR-094 P2-R3-3).** Form-change events (document restructuring, consolidation, or replacement rather than in-place revision) **reset the round-count baseline**: the first audit on the new form is treated as R1 for saturation-signal purposes, not as a continuation of the prior document's round count. A TRIGGERED verdict on a prior form does **not** carry over to the new form; the new form's first audit is its R1.
+
+**Standard-sequence vs. re-audit-after-revision (ADR-094 P3-R5-1).** The signal applies to the cycle's primary audit sequence (R1, R2, R3, ...). A re-audit dispatched specifically to verify the repair of a prior round's P1 findings runs **unconditionally** per the orchestrator's re-audit-after-revision rule and does **not** append a Convergence-Saturation Signal verdict line. (Dogfooding exception per P2-R2-1: when a re-audit is also the first operational application of the verdict-line mechanism itself, the verdict line may be appended as a calibration artifact with a distinguishing note.)
+
+**Where the verdict line appears.** Append the verdict line to the **end of the audit artifact**, after Section 2 (Framing Audit). The signal evaluates both sections at the combined dispatch's end — there is one verdict line per dispatch, not one per section. The verdict-line format is fixed (see Output template below).
+
 ## Output
 
-Write your audit report to the output file path provided. The report has **two sections**: the argument audit (logical structure) and the framing audit (content selection visibility). Both sections run on every dispatch — the framing audit is not optional.
+Write your audit report to the output file path provided. The report has **two sections** plus the Convergence-Saturation Signal verdict line: the argument audit (logical structure), the framing audit (content selection visibility), and the verdict line at the end. All three run on every standard-sequence dispatch — the framing audit is not optional, and the verdict line is not optional (except for single-purpose re-audits per the rule above).
 
 For Essay-Outline genre, Section 1 adds two subsections: a **pyramid coverage map** and **expansion-fidelity findings** (per ADR-093 §4). For other genres (legacy prose essays, ADRs, synthesis outlines) the existing output template is unchanged.
 
@@ -199,6 +221,17 @@ Take the document's dominant framing and invert it. What does the inverted frami
 ### Framing Issues
 
 [P1/P2/P3 issues specific to framing, using the same format as the argument audit. P1: consequential omissions where the source material contains findings that would change the document's conclusions. P2: underrepresented alternatives that should be acknowledged. P3: minor framing choices that could be more balanced.]
+
+## Convergence-Saturation Signal (ADR-094)
+
+**Convergence-Saturation Signal:** [TRIGGERED | NOT TRIGGERED]
+- Round number: [R1 / R2 / R3 / ...]
+- P1 count this round: [N — sum across Section 1 + Section 2]
+- P2 count this round (new, non-carry-over): [N — sum across Section 1 + Section 2]
+- New framings or claim-scope expansions: [list each new warrant or claim-scope characterization the round surfaced, or write "none"]
+- Recommendation: [STOP at this round | CONTINUE to next round | ESCALATE for practitioner judgment]
+
+*Single-purpose re-audits (dispatched per the re-audit-after-revision rule) omit this section. Form-change events reset the round-count baseline — the first audit on a new form is its R1.*
 ```
 
-If no issues are found in either section, write a clean report with zero issues. For Essay-Outline genre, even a clean report includes the pyramid coverage map (the map is the structural evidence the audit produces, not a violation report).
+If no issues are found in either section, write a clean report with zero issues plus the verdict line (recommendation: STOP). For Essay-Outline genre, even a clean report includes the pyramid coverage map (the map is the structural evidence the audit produces, not a violation report).

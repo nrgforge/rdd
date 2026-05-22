@@ -3917,3 +3917,229 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 **When** any subsequent argument-auditor dispatch reads the agent file
 **Then** the agent's behavior on Essay-Outline genre is determined by the skill text (not by judgment under task load)
 **And** the pyramid graph-traversal and expansion-fidelity verification fire as specified in the Process section
+
+---
+
+# Cycle 019 — Does RDD Over-Engineer?
+
+**Restoration note (per R3 audit FA-R3-P1 resolution 2026-05-22):** the cycle's five ADRs were briefly consolidated into ADR-097 at the DECIDE gate but **restored to their standalone form** after the R3 framing audit identified the "five ADRs + reading-path artifact" alternative the consolidation moment did not surface. The reading-path artifact (`docs/decisions/cycle-019-adr-index.md`) addresses the working-memory-budget concern without structural deletion. The five ADRs each retain their standalone rationale chains.
+
+**Cycle Acceptance Criteria Table.** Cycle 019's ADRs are methodology-level — four are vocabulary amendments and skill-text additions; one is a named-deferral of future amendments. The cycle does not introduce end-user product features. Acceptance is at the methodology-application level: do the vocabulary, skill-text amendments, and named-deferrals behave as specified when the methodology is applied? All criteria are atomic with 1:1 scenario mapping at the criterion's specified layer (methodology-application layer, observable through verdict-line presence, ADR drafting behavior, and graduation-trigger condition recording). *No emergent or aggregate acceptance criteria identified.*
+
+## Feature: Audit Round-Count Convergence-Saturation Signal (ADR-094)
+
+### Scenario: Argument-auditor appends verdict line at round-end
+**Given** an argument-auditor dispatch on an artifact
+**When** the auditor completes a round (R1, R2, or R3)
+**Then** the audit artifact ends with a structured verdict line naming the round's P1 count, P2-new count, new framings or claim-scope expansions, and a recommendation (STOP / CONTINUE / ESCALATE)
+
+### Scenario: Convergence-Saturation Signal triggers at R3 — orchestrator stops
+**Given** an argument-audit R3 verdict line with P1 count = 0, P2-new count ≤ 1, and no new framings
+**When** the orchestrator reads the verdict
+**Then** the signal is recognized as TRIGGERED
+**And** the audit cycle stops (no R4 is dispatched)
+**And** the artifact's audit status is recorded as clean
+
+### Scenario: Convergence-Saturation Signal does not trigger at R3 — orchestrator continues
+**Given** an argument-audit R3 verdict line with P1 count ≥ 1 OR P2-new count > 1 OR new framings introduced
+**When** the orchestrator reads the verdict
+**Then** the signal is recognized as NOT TRIGGERED
+**And** R4 is dispatched with the prior rounds' findings as context
+
+### Scenario: Round 5 fires only if R4 itself surfaces a new P1
+**Given** an R4 audit that introduces a new P1 finding (not a carry-over from prior rounds)
+**When** the orchestrator reads the R4 verdict
+**Then** R5 is dispatched
+**Given** an R4 audit that is clean or introduces only P2/P3 polish
+**When** the orchestrator reads the R4 verdict
+**Then** R4 is the final round; R5 is not dispatched
+
+### Scenario: Rounds beyond R5 require explicit practitioner authorization
+**Given** an R5 audit has completed
+**When** the practitioner requests R6 or further rounds
+**Then** the orchestrator records the practitioner's rationale in the audit dispatch (e.g., "user requested R6 to verify Z")
+**And** the additional rounds run with the rationale recorded as part of the audit-trail
+
+### Preservation: Existing audit dispatch protocol unchanged for non-iterative audits
+**Given** a single-purpose re-audit dispatch (per orchestrator's Re-audit after revision rule)
+**When** the re-audit runs
+**Then** the Convergence-Saturation Signal does not gate the re-audit's continuation
+**And** the re-audit produces its own verdict per its dispatch scope
+**And** the round-count discipline (default 3; rounds 4–5 conditional) applies to the standard audit sequence (R1, R2, R3, ...), not to single-purpose re-audits
+
+### Preservation: Architectural Isolation (ADR-058) preserved at each round
+**Given** the Convergence-Saturation Signal at any round
+**When** the next round is dispatched (or not)
+**Then** each round still runs in its own isolated agent context
+**And** the agent reading the verdict line is the orchestrator, not the auditor itself
+**And** Architectural Isolation's separation between subagent and orchestrator decision-making is preserved
+
+## Feature: RESEARCH Patch-Switching Criterion (ADR-096)
+
+### Scenario: Practitioner-and-agent dyad applies Patch-Switching Criterion at research-loop boundary
+**Given** a research loop has completed (ideation → research/spike → synthesis)
+**When** the research-loop-end boundary is reached
+**Then** the agent prompts the practitioner with the Patch-Switching Criterion's question composed against the loop's marginal yield
+**And** the dyad's decision (CONTINUE-this-patch / SWITCH-patch / SWITCH-to-synthesis) is recorded as a structured verdict line in the research log
+
+### Scenario: Patch-Switching Criterion triggers SWITCH-to-synthesis when framing has stabilized
+**Given** a research loop whose marginal yield is P3 polish only
+**And** the practitioner cannot name a specific question the next loop would address
+**When** the Patch-Switching Criterion is applied
+**Then** the recommendation is SWITCH-to-synthesis
+**And** the Essay-Outline production begins from the current loop's findings
+
+### Scenario: Patch-Switching Criterion triggers CONTINUE-this-patch when high-marginal-yield is anticipated
+**Given** a research loop that surfaced a specific question the next loop has a credible path to answering
+**And** the practitioner can name what they expect to observe that would change their reading
+**When** the Patch-Switching Criterion is applied
+**Then** the recommendation is CONTINUE-this-patch
+**And** the next loop is dispatched with the specific question recorded
+
+### Scenario: Late patch-addition during synthesis re-invokes the criterion
+**Given** Essay-Outline synthesis has begun after a SWITCH-to-synthesis verdict
+**When** the synthesis pass surfaces a question the prior loops did not address
+**Then** the Patch-Switching Criterion is re-invoked
+**And** the dyad decides whether the new patch (additional loop) is high-marginal-yield or whether scope-of-claim language can encode the question without another loop
+
+### Preservation: RESEARCH loop substance unchanged
+**Given** a research loop running under ADR-096
+**When** the loop's content work (ideation → research/spike → synthesis) executes
+**Then** the loop's substantive activities are unchanged from prior cycles
+**And** only the loop-boundary judgment is scaffolded by the criterion
+
+### Preservation: Practitioner override authority preserved
+**Given** a Patch-Switching Criterion verdict
+**When** the practitioner disagrees with the recommendation
+**Then** the practitioner can override the recommendation
+**And** the override and its rationale are recorded in the research log
+
+## Feature: Empirical-Grounding Filter at DECIDE (ADR-097)
+
+### Scenario: Practitioner-and-agent dyad applies Empirical-Grounding Filter at ADR-drafting
+**Given** an ADR draft is being prepared at DECIDE
+**And** the ADR commits to a feature based on research-surfaced possibility
+**When** the felt-trigger question is invoked at ADR-drafting time
+**Then** the dyad evaluates whether one of the four grounding-mechanism paths (PLAY evidence, stakeholder-articulated demand, spike validation, structural operationalization) applies to the commitment
+**And** the dyad's evaluation is recorded in the ADR's Provenance check or Rationale section
+
+### Scenario: ADR is empirically grounded — proceeds through DECIDE normally
+**Given** a candidate ADR whose commitment is empirically grounded (one of the four paths applies)
+**When** DECIDE drafts the ADR
+**Then** the ADR proceeds through standard DECIDE process (argument audit, conformance scan, presentation, gate)
+**And** the ADR's status is Proposed → Accepted via standard transition
+
+### Scenario: ADR is not yet empirically grounded — Conditional Acceptance pattern
+**Given** a candidate ADR whose commitment is not empirically grounded by the four paths
+**And** the commitment is expected to land (the structural lock is taken; validation is pending)
+**When** DECIDE drafts the ADR
+**Then** the ADR is accepted with the status annotation *"conditional acceptance — first-deployment evidence pending"*
+**And** the ADR's Conditional Acceptance status is the methodology-recognized lifecycle state pending validation
+
+### Scenario: ADR is not yet empirically grounded — adr-deferred- Filename Pattern
+**Given** a candidate ADR whose commitment is not empirically grounded AND requires further deliberation before commitment
+**When** DECIDE drafts the ADR
+**Then** the ADR is filed with the filename prefix `adr-deferred-NNN-<slug>.md` rather than `adr-NNN-<slug>.md`
+**And** the ADR's research basis is recorded but commitment is held until empirical grounding accrues
+
+### Scenario: Discriminating-criterion gap (Target 2) acknowledged in ADR-097 rationale
+**Given** an ADR drafting moment where the practitioner invokes the Kitchen-Sink Mechanism vs. Outcome distinction
+**When** the practitioner cannot invoke one of the four grounding-mechanism paths to ground the outcome judgment
+**Then** the outcome judgment is recognized as practitioner-judgment-alone
+**And** the Tier-2 structural limit applies — the methodology recognizes the limit explicitly; the distinction's operational status is subject to multi-cycle observation
+
+### Preservation: ADRs unaffected by the filter when commitments are empirically grounded
+**Given** an ADR whose commitment is empirically grounded by one of the four paths
+**When** DECIDE drafts the ADR
+**Then** the ADR's drafting process is unchanged from prior cycles (per ADR-073 / ADR-074 conventions)
+**And** the filter adds no overhead to grounded commitments — it only changes status/filename for non-grounded ones
+
+### Preservation: ADR-083 (human-facing Outcome Test) operates independently
+**Given** an artifact admissibility decision at DECIDE involving a human-facing artifact
+**When** both ADR-083 (human-facing) and ADR-097 (research-surveyed → ADR commitment) could apply
+**Then** ADR-083's Outcome Test applies to the human-facing artifact admissibility judgment
+**And** ADR-097's Empirical-Grounding Filter applies to the ADR commitment grounding judgment
+**And** the two tests operate on different decisions; neither subsumes the other
+
+## Feature: Agent Outcome Test (ADR-095)
+
+### Scenario: Practitioner-and-agent dyad applies Agent Outcome Test at agent-facing artifact creation
+**Given** a new agent-facing artifact is proposed (ADR, scenario block, domain-model entry, system-design section, audit-report template, skill text addition)
+**When** the felt-trigger question is invoked at artifact creation
+**Then** the dyad evaluates whether the artifact's intended consumer is named, the consumer consumes at the artifact's specified layer (per Read Contract), and the artifact does not duplicate already-available content
+
+### Scenario: Agent Outcome Test passes — artifact proceeds to creation
+**Given** a proposed agent-facing artifact whose intended consumer is named, layer-match holds, and content is non-duplicative
+**When** the felt-trigger question is invoked
+**Then** the artifact passes the test and proceeds to creation through the standard methodology phase
+**And** the artifact's intended consumer and layer-match assessment are recorded in the artifact's frontmatter or provenance section
+
+### Scenario: Agent Outcome Test fails — Bolt-On / Felt Additional signal fires
+**Given** a proposed agent-facing artifact whose intended consumer is unnamed, OR which feels additional to the existing corpus
+**When** the felt-trigger question is invoked
+**Then** the test fails (the Bolt-On / Felt Additional signal at the agent-facing layer)
+**And** the practitioner either narrows the artifact's scope, names the consumer explicitly, or declines to create the artifact
+
+### Preservation: ADR-083 (human-facing Outcome Test) and ADR-095 (Agent Outcome Test) operate independently
+**Given** a proposed artifact that has both human-facing and agent-facing consumers
+**When** the admissibility decision is made
+**Then** ADR-083's Outcome Test is applied to the human-facing consumption
+**And** ADR-095's Agent Outcome Test is applied to the agent-facing consumption
+**And** the artifact must pass both tests independently; failure of one does not auto-exempt the other
+
+### Preservation: Pre-Cycle-019 agent-facing artifacts unaffected
+**Given** an agent-facing artifact that existed before Cycle 019
+**When** any subsequent agent dispatch consumes the artifact
+**Then** the artifact's consumption is unaffected by ADR-095's adoption (the test applies to new artifacts going forward, not retroactively)
+**And** the methodology does not retroactively audit the existing corpus against the new criterion
+
+## Feature: Methodology Audit Gap Named-Deferrals (ADR-098)
+
+### Scenario: FF1 graduation trigger condition recording
+**Given** a future cycle's susceptibility snapshot at a phase boundary surfaces practitioner-originated framing absorption
+**And** the practitioner does not pursue the recommended grounding action
+**And** a downstream phase or BUILD demonstrates the absorbed framing was the failure mode
+**When** the cycle's record is reviewed at next-cycle entry
+**Then** the FF1 graduation trigger condition is recognized as one instance
+**And** the cycle-status records the instance contributing to the multi-cycle trigger evidence
+
+### Scenario: FF3 graduation trigger condition recording
+**Given** a future cycle's MODEL gate (or later phase) applies in-place amendments to RESEARCH-phase artifact warrants
+**And** the cycle does not run narrow re-audit on the amended warrants
+**And** the amendments would have benefited from re-audit
+**When** the cycle's record is reviewed at next-cycle entry
+**Then** the FF3 graduation trigger condition is recognized as one instance
+**And** the cycle-status records the instance contributing to the multi-cycle trigger evidence
+
+### Scenario: 2–4 cycles of evidence accrue — graduation trigger fires
+**Given** the multi-cycle evidence threshold for FF1 or FF3 has been met (2–4 cycles depending on the specific pattern)
+**When** a future cycle's research phase reviews the accumulated evidence
+**Then** the candidate Skill-Structure Layer amendment becomes a future-cycle ADR scope
+**And** the future-cycle ADR specifies the structural mechanism (belief-mapping question dispatch points for FF1; phase-skill workflow step for narrow re-audit for FF3)
+
+### Scenario: R5 audit pattern applied to a future cycle
+**Given** a future cycle's susceptibility snapshot at a phase boundary recommends narrow re-audit (the R5 audit pattern)
+**When** the practitioner pursues the recommended grounding action
+**Then** the narrow re-audit is dispatched on the amended warrants
+**And** the re-audit's findings inform whether the amendments hold or need narrowing
+**And** the pattern is recorded as the cycle's compound defense for the in-cycle gap
+
+### Preservation: Recognition without enforcement is operationally honest
+**Given** the methodology's current operating posture (named-deferral with graduation trigger)
+**When** a Cycle 019-adjacent future cycle encounters FF1 or FF3 patterns
+**Then** the methodology recognizes the patterns at the vocabulary level without claiming structural enforcement
+**And** the practitioner's response is felt-judgment-applied; the methodology does not auto-correct or block
+
+## Feature: Three-Application F-P2 Pattern Recognition (cross-ADR)
+
+### Scenario: F-P2 Pattern recorded as held question, not resolved finding
+**Given** Cycle 019's ADRs (094, 095, 097, 098) collectively exhibit scope-limiting reasoning at consequential junctures
+**When** DECIDE drafts the ADRs and the cycle's audit-trail is reviewed
+**Then** the F-P2 Pattern is acknowledged in ADR-097's and ADR-098's rationale as a held question
+**And** the pattern is not resolved within Cycle 019; multi-cycle graduation triggers (per ADR-097, ADR-098) are the conditions under which the pattern's coherent-application vs. content-selection reading becomes assessable
+
+### Preservation: F-P2 Pattern recognition does not trigger structural intervention this cycle
+**Given** F-P2 Pattern is recognized as held question
+**When** the cycle proceeds to ARCHITECT and BUILD
+**Then** no structural intervention is triggered by the pattern's recognition alone
+**And** the methodology's Tier-2 vocabulary (Practitioner Agency load-bearing; multi-cycle graduation triggers) is the operating mechanism for tracking the pattern across cycles
