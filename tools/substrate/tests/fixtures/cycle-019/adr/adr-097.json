@@ -1,0 +1,40 @@
+{
+  "id": "adr-097",
+  "type": "adr",
+  "form": "full",
+  "slug": "empirical-grounding-filter-at-decide",
+  "title": "Empirical-Grounding Filter at DECIDE (Tier-2 Methodology Vocabulary)",
+  "status": "Accepted",
+  "cycle": "019",
+  "workflow_point": "ADR-drafting",
+  "mechanism": "empirical-grounding felt-trigger",
+  "summary": "At ADR-drafting time the dyad asks whether the commitment is grounded by PLAY evidence, stakeholder-articulated demand, spike validation, or structural operationalization; when none applies the ADR takes Conditional Acceptance or the adr-deferred- filename pattern.",
+  "context": "Cycle 019's research named C7: the over-engineering failure mode, where it occurs, traces to research-surveyed possibilities surviving into ADRs without an empirical filter. Loop 6's cross-project investigation showed YAGNI as the dominant pattern when DECIDE applies an empirical filter and kitchen-sink as the localized failure mode when it does not.",
+  "commitment": "At ADR-drafting time, the practitioner-and-agent dyad applies a felt-trigger asking whether the commitment is empirically grounded by one of four paths: PLAY evidence; stakeholder-articulated demand; spike validation; structural operationalization. When grounded, the ADR proceeds. When not, it takes the Conditional Acceptance annotation or the `adr-deferred-` filename pattern.",
+  "warrants": [
+    {"claim": "Cross-project evidence (zani, llm-orc, plexus; ~26 ADRs sampled) shows YAGNI when an empirical filter is applied at DECIDE and kitchen-sink when it is not.", "warrants_for": "commitment"},
+    {"claim": "The methodology's own evidence base is single-cycle and agent-conducted, which supports vocabulary-level recognition but not heavy structural enforcement.", "warrants_for": "sub-decision: Target 3"}
+  ],
+  "sub_decisions": [
+    {"title": "Target 2: Discriminating criterion", "commitment": "The Kitchen-Sink Mechanism versus Kitchen-Sink Outcome distinction is acknowledged as a gap; no discriminating criterion is committed this cycle.", "rationale": "The cycle's evidence does not supply a criterion that separates over-engineering from legitimate elaboration without a trivially-passing escape hatch."},
+    {"title": "Target 3: Standalone at commitment time", "commitment": "Two senses of standalone are distinguished: commitment-time (the ADR commits now) and grounding-completion (validation accrues later).", "rationale": "Conditional Acceptance is the institutional pattern (llm-orc ADR-016) for committing now and validating on the way; conflating the two senses would either block commitment or hide the pending validation."}
+  ],
+  "rejected_alternatives": [
+    {"title": "Hard gate blocking ungrounded ADRs", "reason": "Would itself instantiate the C7 pattern: heavy structural enforcement from a thin, single-cycle evidence base."},
+    {"title": "No filter; rely on PLAY to pull features back", "reason": "PLAY operates after BUILD; the kitchen-sink mechanism operates upstream at DECIDE."}
+  ],
+  "graduation_trigger": "If two to four cycles record the felt-trigger at ADR-drafting with Conditional Acceptance or adr-deferred- forms in use, the filter becomes a Decide Skill step; if the forms go unused, the vocabulary is retained and the step is not added.",
+  "consequences": {
+    "positive": ["ADRs carry their grounding path explicitly."],
+    "negative": ["The discriminating-criterion gap is acknowledged, not resolved."],
+    "neutral": ["Conditional Acceptance and adr-deferred- are institutional patterns borrowed from llm-orc and plexus."]
+  },
+  "provenance": ["Essay-Outline 018 C7; research log Loop 6.", "Drafting-time synthesis: the four-path enumeration."],
+  "links": [
+    {"type": "applies-pattern", "target": "pattern-calibration-with-graduation-trigger", "note": "Tier-2 application at ADR-drafting; the felt-trigger record in the ADR's Provenance check is the audit-bearing artifact"},
+    {"type": "motivates", "target": "adr-098", "note": "ADR-098 applies this filter reflexively to scope its own deferrals"},
+    {"type": "shares-structural-limit-with", "target": "adr-095", "note": "discriminating-criterion / trivially-passing escape hatch"},
+    {"type": "cross-project-evidence", "target": "external:llm-orc-adr-016", "note": "Conditional Acceptance pattern; first-deployment evidence pending"},
+    {"type": "references", "target": "invariant-0"}
+  ]
+}

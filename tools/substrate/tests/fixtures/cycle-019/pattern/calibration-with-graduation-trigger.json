@@ -1,0 +1,20 @@
+{
+  "id": "pattern-calibration-with-graduation-trigger",
+  "type": "pattern",
+  "title": "Calibration-with-Graduation-Trigger Pattern",
+  "statement": "A methodology amendment at a named workflow point specifies a calibration mechanism, a tier classification (Skill-Structure Layer or Tier-2 felt-trigger), an audit-bearing artifact that records the mechanism's operation, and a graduation trigger stating the multi-cycle evidence that promotes or relaxes the mechanism.",
+  "summary": "The one decision-structure the five Cycle 019 ADRs each instantiate: workflow point + calibration mechanism + tier + audit-bearing artifact + graduation trigger.",
+  "applications": ["adr-094", "adr-095", "adr-096", "adr-097", "adr-098"],
+  "caveats": [
+    "Also applied by ADR-083 (Cycle 017) and ADR-091 (Cycle 018); the five-ADR clustering at one level did not recur in Cycles 017 and 018 (Grounding Loop 4), so its topology-level diagnostic value is single-cycle evidence.",
+    "Inherits the kitchen-sink caveat (Essay-Outline 020 C7): diagnostic value depends on producing actionable distinctions at artifact-creation moments."
+  ],
+  "provenance": "Essay-Outline 020 C1; research log Loop 1; spike-020.",
+  "links": [
+    {"type": "applied-by", "target": "adr-094", "note": "audit-round-end: convergence-saturation signal with round-count thresholds"},
+    {"type": "applied-by", "target": "adr-095", "note": "agent-facing artifact creation: felt-trigger admissibility test parallel to ADR-083"},
+    {"type": "applied-by", "target": "adr-096", "note": "research-loop-end: patch-switching criterion with three-way verdict"},
+    {"type": "applied-by", "target": "adr-097", "note": "ADR-drafting: empirical-grounding felt-trigger with four grounding paths"},
+    {"type": "applied-by", "target": "adr-098", "note": "methodology-audit gaps FF1 and FF3 as named deferrals with two-direction graduation triggers"}
+  ]
+}

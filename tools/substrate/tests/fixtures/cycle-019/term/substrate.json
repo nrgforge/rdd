@@ -1,0 +1,13 @@
+{
+  "id": "term-substrate",
+  "type": "term",
+  "title": "Substrate",
+  "cycle": "020",
+  "definition": "The layer of structured records, one per governance unit, that carries audit-substance and provenance via Typed Links. Agent-facing primarily; human-readable via Surface Views.",
+  "product_origin": "\"a graph behind a human-friendly format\" (Solo Developer, research log §Step 1.4)",
+  "aliases": ["Knowledge graph", "KG", "record layer"],
+  "related": ["Surface View", "Typed Link", "Note Discipline"],
+  "links": [
+    {"type": "defined-by", "target": "adr-097", "note": "fixture-only link so the term participates in the surrounding-records footer"}
+  ]
+}

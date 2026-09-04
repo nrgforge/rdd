@@ -1,0 +1,17 @@
+{
+  "id": "adr-095",
+  "type": "adr",
+  "form": "index",
+  "title": "Agent Outcome Test for Agent-Facing Artifact Admissibility",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-095-agent-outcome-test.md",
+  "summary": "A Tier-2 felt-trigger at agent-facing artifact creation, parallel to ADR-083's human-facing Outcome Test: does this artifact produce direct agent consumption without re-orientation cost, or does it feel additional to the agent-facing corpus?",
+  "compressed": true,
+  "workflow_point": "agent-facing artifact creation",
+  "mechanism": "felt-trigger admissibility test",
+  "links": [
+    {"type": "applies-pattern", "target": "pattern-calibration-with-graduation-trigger", "note": "Tier-2 application; graduation trigger names a candidate /rdd-conform audit step"},
+    {"type": "shares-structural-limit-with", "target": "adr-097", "note": "both inherit the discriminating-criterion limit: a trivially-passing answer (naming any consumer) satisfies the letter of the test"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "adr-096",
+  "type": "adr",
+  "form": "index",
+  "title": "Patch-Switching Criterion for RESEARCH Loop Termination",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-096-research-patch-switching-criterion.md",
+  "summary": "Pirolli and Card's information-foraging patch-switching applied at research-loop-end: a three-way verdict (continue this patch, switch patch, switch to synthesis) against marginal yield versus opportunity cost, with a practitioner-elicited expected observation and a reflexive-versus-genuine pre-mortem check.",
+  "compressed": true,
+  "workflow_point": "research-loop-end",
+  "mechanism": "patch-switching verdict line",
+  "links": [
+    {"type": "applies-pattern", "target": "pattern-calibration-with-graduation-trigger", "note": "Skill-Structure Layer application at research-loop-end"},
+    {"type": "parallel-to", "target": "adr-094", "note": "same tier, distinct workflow point"}
+  ]
+}

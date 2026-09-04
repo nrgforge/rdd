@@ -1,0 +1,11 @@
+{
+  "$comment": "Shared Typed Link sub-schema (ADR-099 constraints 1 and 2). `type` is any non-empty string (extensible). `note` is required unless `type` is in noteRequiredUnlessType (the trivial set; Note Discipline).",
+  "type": "object",
+  "required": ["type", "target"],
+  "properties": {
+    "type": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "note": { "type": "string", "minLength": 1 }
+  },
+  "noteRequiredUnlessType": ["references"]
+}

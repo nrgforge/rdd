@@ -1,0 +1,20 @@
+{
+  "$comment": "Vocabulary-term record (ADR-099 constraint 3). Rendered by the deriver into the marked region of docs/domain-model.md in the Concepts table's four-column form (Term, Definition, Product Origin, Related).",
+  "type": "object",
+  "required": ["id", "type", "title", "definition", "cycle", "links"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "type": { "const": "term" },
+    "title": { "type": "string", "minLength": 1 },
+    "definition": { "type": "string", "minLength": 1 },
+    "cycle": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "kind": { "enum": ["concept", "action"] },
+    "actor": { "type": "string" },
+    "object": { "type": "string" },
+    "product_origin": { "type": "string" },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "related": { "type": "array", "items": { "type": "string" } },
+    "links": { "type": "array", "items": { "$ref": "link" } }
+  }
+}

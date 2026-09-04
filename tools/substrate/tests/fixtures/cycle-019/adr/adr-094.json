@@ -1,0 +1,18 @@
+{
+  "id": "adr-094",
+  "type": "adr",
+  "form": "index",
+  "title": "Audit Round-Count Calibration via Convergence-Saturation Signal",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-094-audit-round-count-convergence-saturation.md",
+  "summary": "Default audit round count is 3; rounds 4 and 5 fire only when the convergence-saturation signal (P1 = 0, P2-new <= 1, no new framings) has not triggered; rounds beyond 5 need practitioner authorization. Form-change events reset the round-count baseline.",
+  "compressed": true,
+  "workflow_point": "audit-round-end",
+  "mechanism": "convergence-saturation verdict line",
+  "links": [
+    {"type": "applies-pattern", "target": "pattern-calibration-with-graduation-trigger", "note": "Skill-Structure Layer application at audit-round-end; the verdict line is the audit-bearing artifact"},
+    {"type": "parallel-to", "target": "adr-096", "note": "same tier, distinct workflow point: round-count calibration at audit-round-end versus loop termination at research-loop-end"},
+    {"type": "references", "target": "adr-098"}
+  ]
+}

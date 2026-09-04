@@ -1,0 +1,17 @@
+{
+  "id": "adr-098",
+  "type": "adr",
+  "form": "index",
+  "title": "Methodology-Level Audit Gap: Named Deferrals (FF1 + FF3)",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-098-methodology-audit-gap-deferrals.md",
+  "summary": "FF1 (practitioner-originated framing absorption) and FF3 (Essay-Outline amendment re-audit protocol) are recognized at vocabulary level with two-direction graduation triggers (harm evidence or reliance evidence over two to four cycles); the structural amendments are deferred.",
+  "compressed": true,
+  "workflow_point": "methodology audit coverage",
+  "mechanism": "named deferral with two-direction graduation trigger",
+  "links": [
+    {"type": "applies-pattern", "target": "pattern-calibration-with-graduation-trigger", "note": "the graduation-trigger element applied to a deferral rather than a mechanism"},
+    {"type": "continues-discussion-of", "target": "adr-097", "note": "Three-Application F-P2 Pattern thread; applies ADR-097's filter reflexively to its own scope choice"}
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "$comment": "ADR record. Two forms selected by the record's `form` field: `full` (post-ADR-099 unit; the record is the canonical body) and `index` (legacy unit; compressed index of a canonical prose file). Required sets per system-design.agents.md §Record Validator. Optional fields may be added by BUILD; required ones need a design amendment.",
+  "forms": {
+    "full": {
+      "type": "object",
+      "required": ["id", "type", "form", "slug", "title", "status", "cycle", "context", "commitment", "warrants", "rejected_alternatives", "links"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "const": "adr" },
+        "form": { "const": "full" },
+        "slug": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 },
+        "cycle": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "workflow_point": { "type": "string" },
+        "mechanism": { "type": "string" },
+        "audit_trail": { "type": "string" },
+        "context": { "type": "string", "minLength": 1 },
+        "commitment": { "type": "string", "minLength": 1 },
+        "warrants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["claim", "warrants_for"],
+            "properties": {
+              "claim": { "type": "string", "minLength": 1 },
+              "warrants_for": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "sub_decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["commitment", "rationale"],
+            "properties": {
+              "title": { "type": "string", "minLength": 1 },
+              "commitment": { "type": "string", "minLength": 1 },
+              "rationale": { "type": "string", "minLength": 1 },
+              "status": { "type": "string" },
+              "options": { "type": "array", "items": { "type": "object", "required": ["label", "text"], "properties": { "label": { "type": "string", "minLength": 1 }, "text": { "type": "string", "minLength": 1 } } } }
+            }
+          }
+        },
+        "rejected_alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["reason"],
+            "properties": {
+              "label": { "type": "string" },
+              "title": { "type": "string" },
+              "reason": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "graduation_trigger": { "type": "string", "minLength": 1 },
+        "consequences": {
+          "type": "object",
+          "properties": {
+            "positive": { "type": "array", "items": { "type": "string" } },
+            "negative": { "type": "array", "items": { "type": "string" } },
+            "neutral": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "provenance": { "type": ["string", "array"], "items": { "type": "string" } },
+        "supersession": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "date", "text"],
+            "properties": {
+              "kind": { "enum": ["superseded-by", "updated-by", "erratum", "deprecated"] },
+              "by": { "type": "string" },
+              "date": { "type": "string", "minLength": 10 },
+              "text": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "links": { "type": "array", "items": { "$ref": "link" } }
+      }
+    },
+    "index": {
+      "type": "object",
+      "required": ["id", "type", "form", "title", "status", "canonical_source", "summary", "compressed", "links"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "const": "adr" },
+        "form": { "const": "index" },
+        "title": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 },
+        "cycle": { "type": "string" },
+        "canonical_source": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "compressed": { "const": true },
+        "workflow_point": { "type": "string" },
+        "mechanism": { "type": "string" },
+        "supersession": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "date", "text"],
+            "properties": {
+              "kind": { "enum": ["superseded-by", "updated-by", "erratum", "deprecated"] },
+              "by": { "type": "string" },
+              "date": { "type": "string", "minLength": 10 },
+              "text": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "links": { "type": "array", "items": { "$ref": "link" } }
+      }
+    }
+  }
+}

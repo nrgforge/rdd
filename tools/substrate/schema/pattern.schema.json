@@ -1,0 +1,16 @@
+{
+  "$comment": "Pattern record (ADR-099 constraint 3: differs materially from ADR; no rejected_alternatives field). `applications` lists the record ids that instantiate the pattern.",
+  "type": "object",
+  "required": ["id", "type", "title", "statement", "applications", "links"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "type": { "const": "pattern" },
+    "title": { "type": "string", "minLength": 1 },
+    "statement": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "applications": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "caveats": { "type": "array", "items": { "type": "string" } },
+    "provenance": { "type": ["string", "array"], "items": { "type": "string" } },
+    "links": { "type": "array", "items": { "$ref": "link" } }
+  }
+}
