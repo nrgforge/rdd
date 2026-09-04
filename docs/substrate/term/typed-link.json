@@ -1,0 +1,26 @@
+{
+  "id": "term-typed-link",
+  "type": "term",
+  "title": "Typed Link",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "A directed relationship between two Substrate records carrying a type (e.g., `applied-by`, `supersedes`, `parallel-to`, `cross-project-evidence`) and note text explaining the specific relationship. The type set is extensible: the spike's four starting types covered roughly half the relationships five ADRs needed (C4). Subject to Note Discipline.",
+  "related": [
+    "Substrate",
+    "Note Discipline",
+    "Provenance Chain",
+    "Supersession"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-099",
+      "note": "constraint 1: any string is a valid link type"
+    },
+    {
+      "type": "related-to",
+      "target": "term-note-discipline",
+      "note": "subject to Note Discipline"
+    }
+  ]
+}

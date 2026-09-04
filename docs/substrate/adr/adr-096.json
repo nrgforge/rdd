@@ -1,0 +1,30 @@
+{
+  "id": "adr-096",
+  "type": "adr",
+  "form": "index",
+  "title": "Patch-Switching Criterion for RESEARCH Loop Termination",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-096-research-patch-switching-criterion.md",
+  "summary": "Pirolli and Card's information-foraging patch-switching applied at research-loop-end: a three-way verdict (continue this patch, switch patch, switch to synthesis) against marginal yield versus opportunity cost, with a practitioner-elicited expected observation and a reflexive-versus-genuine pre-mortem discrimination. Late patch-additions accommodated. Skill-Structure Layer in /rdd-research.",
+  "compressed": true,
+  "workflow_point": "research-loop-end",
+  "mechanism": "Patch-Switching Criterion verdict line",
+  "links": [
+    {
+      "type": "applies-pattern",
+      "target": "pattern-calibration-with-graduation-trigger",
+      "note": "Skill-Structure Layer application at research-loop-end; the verdict line in the research log is the audit-bearing artifact"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-094",
+      "note": "same tier, distinct workflow point"
+    },
+    {
+      "type": "composed-with-by",
+      "target": "adr-100",
+      "note": "ADR-100 bounds items per loop; this ADR bounds loops. Pre-triage at loop-end records under \"Findings and orchestrator triage\""
+    }
+  ]
+}

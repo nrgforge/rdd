@@ -1,0 +1,25 @@
+{
+  "id": "adr-092",
+  "type": "adr",
+  "form": "index",
+  "title": "Essay-Outline as the RESEARCH Artifact Form",
+  "status": "Accepted (Cycle 018 BUILD shipped WP-A; v0.8.6)",
+  "cycle": "018",
+  "canonical_source": "docs/decisions/adr-092-essay-outline-as-research-artifact.md",
+  "summary": "The RESEARCH artifact is an Essay-Outline with four sections (Abstract, Argument-Graph, Citation-Embedded Outline, References); the form change applies going forward with no retroactive migration, so the essay corpus mixes forms.",
+  "compressed": true,
+  "workflow_point": "RESEARCH artifact production",
+  "mechanism": "Essay-Outline form",
+  "links": [
+    {
+      "type": "precedent-for",
+      "target": "adr-099",
+      "note": "ADR-099 §Authority option C follows this ADR's no-retroactive-migration precedent: the record form applies to units authored after the ADR and the corpus mixes forms"
+    },
+    {
+      "type": "lineage-of",
+      "target": "adr-099",
+      "note": "one of the six prior audience-bifurcation ADRs (research-artifact form); complete answer to its own problem under the alternative reading"
+    }
+  ]
+}

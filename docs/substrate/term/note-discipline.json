@@ -1,0 +1,24 @@
+{
+  "id": "term-note-discipline",
+  "type": "term",
+  "title": "Note Discipline",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "The rule that every non-trivial Typed Link carries note text; the link type alone is not semantic payload. Absence is silent failure: cross-reference resolution depends on the note (C4 constraint 5). Small but binding; ADR-CANDIDATE-020.3.",
+  "related": [
+    "Typed Link",
+    "Substrate"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-099",
+      "note": "constraint 2: schema validation rejects an unnoted non-trivial link; the only trivial type is references"
+    },
+    {
+      "type": "related-to",
+      "target": "term-typed-link",
+      "note": "the rule every non-trivial Typed Link satisfies"
+    }
+  ]
+}

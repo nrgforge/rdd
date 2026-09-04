@@ -1,0 +1,24 @@
+{
+  "id": "adr-058",
+  "type": "adr",
+  "form": "index",
+  "title": "Unconditional Architectural Floor for Sycophancy Resistance",
+  "status": "Proposed (operating as accepted)",
+  "cycle": "9",
+  "canonical_source": "docs/decisions/adr-058-unconditional-architectural-floor.md",
+  "summary": "Genuine Structural Resistance operates in two tiers: Tier 1 unconditional architectural mechanisms (specialist subagent dispatch for audits, susceptibility snapshot at phase boundaries, research-methods review, mandatory structural output sections) that no context relaxes, and Tier 2 context-responsive conversational mechanisms calibrated by phase vulnerability, engagement quality, and content trajectory.",
+  "compressed": true,
+  "workflow_point": "cross-phase (sycophancy resistance)",
+  "mechanism": "two-tier enforcement floor",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-056"
+    },
+    {
+      "type": "composed-with-by",
+      "target": "adr-100",
+      "note": "ADR-100 names in-context pre-triage as a Tier 2 mechanism and makes the isolated snapshot (Tier 1) the reader of its triage record"
+    }
+  ]
+}

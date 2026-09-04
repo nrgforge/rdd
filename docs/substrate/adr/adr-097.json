@@ -1,0 +1,67 @@
+{
+  "id": "adr-097",
+  "type": "adr",
+  "form": "index",
+  "title": "Empirical-Grounding Filter at DECIDE (Tier-2 Methodology Vocabulary)",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-097-empirical-grounding-filter-at-decide.md",
+  "summary": "At ADR-drafting time the dyad asks whether the commitment is empirically grounded by one of four paths (PLAY evidence; stakeholder-articulated demand; spike validation; structural operationalization); when none applies the ADR takes Conditional Acceptance or the adr-deferred- filename pattern. Two nested sub-decisions: Target 2 (the discriminating criterion is acknowledged, not resolved) and Target 3 (standalone at commitment time, in two senses). Tier-2; graduation trigger after 2–4 cycles.",
+  "compressed": true,
+  "workflow_point": "ADR-drafting",
+  "mechanism": "Empirical-Grounding Filter felt-trigger",
+  "links": [
+    {
+      "type": "applies-pattern",
+      "target": "pattern-calibration-with-graduation-trigger",
+      "note": "Tier-2 application at ADR-drafting; the felt-trigger record in the ADR's Provenance check is the audit-bearing artifact"
+    },
+    {
+      "type": "motivates",
+      "target": "adr-098",
+      "note": "ADR-098 applies this filter reflexively to scope its own deferrals"
+    },
+    {
+      "type": "shares-structural-limit-with",
+      "target": "adr-095",
+      "note": "discriminating-criterion / trivially-passing escape hatch"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-099",
+      "note": "ADR-099 takes Conditional Acceptance on paths 2 (stakeholder demand) and 3 (spike); path 4 (corpus-scale BUILD) is what transitions it to Accepted"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-100",
+      "note": "ADR-100 takes Conditional Acceptance on path 2 with a named grounding action (targeted lit-review) for the Conditional period"
+    },
+    {
+      "type": "cross-project-evidence",
+      "target": "external:llm-orc-adr-016",
+      "note": "Conditional Acceptance institutional pattern; transitioned to full acceptance at WP-H4 close 2026-05-12"
+    },
+    {
+      "type": "cross-project-evidence",
+      "target": "external:plexus-adr-038",
+      "note": "explicit refusal (YAGNI) at DECIDE"
+    },
+    {
+      "type": "cross-project-evidence",
+      "target": "external:plexus-adr-024",
+      "note": "cancellation of previously-deferred work"
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

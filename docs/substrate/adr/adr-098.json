@@ -1,0 +1,30 @@
+{
+  "id": "adr-098",
+  "type": "adr",
+  "form": "index",
+  "title": "Methodology-Level Audit Gap: Named Deferrals (FF1 + FF3)",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-098-methodology-audit-gap-deferrals.md",
+  "summary": "FF1 (practitioner-originated framing absorption is not audited by any specialist subagent) and FF3 (in-place amendments to RESEARCH artifacts during downstream phases have no re-audit protocol) are recorded as recognized gaps at vocabulary level; structural amendment is deferred with two-direction graduation triggers (harm evidence or reliance evidence over 2–4 cycles). The R5 post-gate narrow re-audit pattern is named as the current compound defense.",
+  "compressed": true,
+  "workflow_point": "methodology audit coverage",
+  "mechanism": "named deferral with two-direction graduation trigger",
+  "links": [
+    {
+      "type": "applies-pattern",
+      "target": "pattern-calibration-with-graduation-trigger",
+      "note": "the graduation-trigger element applied to a deferral rather than a mechanism; two-direction trigger closes the asymmetry a harm-only trigger would create"
+    },
+    {
+      "type": "continues-discussion-of",
+      "target": "adr-097",
+      "note": "applies ADR-097's filter reflexively to its own scope choice; extends the Three-Application F-P2 Pattern count to six"
+    },
+    {
+      "type": "precedent-for",
+      "target": "adr-100",
+      "note": "ADR-100's two-direction graduation trigger (reliance and harm) follows this ADR's form"
+    }
+  ]
+}

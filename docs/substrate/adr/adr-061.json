@@ -1,0 +1,20 @@
+{
+  "id": "adr-061",
+  "type": "adr",
+  "form": "index",
+  "title": "Framing Audit as Argument Auditor Extension",
+  "status": "Proposed (operating as accepted)",
+  "cycle": "9",
+  "canonical_source": "docs/decisions/adr-061-framing-audit-as-argument-auditor-extension.md",
+  "summary": "The argument auditor gains a second section, the framing audit: what alternative framings did the evidence support, what truths were available but not featured, what would change if the dominant framing were inverted. A Content Selection check on the negative space, run in the same isolated dispatch.",
+  "compressed": true,
+  "workflow_point": "argument audit dispatch",
+  "mechanism": "framing-audit section",
+  "links": [
+    {
+      "type": "composed-with-by",
+      "target": "adr-100",
+      "note": "ADR-100 rule 4: framing-class findings are never silently resolved by pre-triage; they reach the presentation with the analysis done"
+    }
+  ]
+}

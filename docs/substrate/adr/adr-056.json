@@ -1,0 +1,28 @@
+{
+  "id": "adr-056",
+  "type": "adr",
+  "form": "index",
+  "title": "Research-Grounded Question Toolkit for AID Cycle",
+  "status": "Updated by ADR-100",
+  "cycle": "9",
+  "canonical_source": "docs/decisions/adr-056-research-grounded-question-toolkit-for-aid.md",
+  "summary": "Six research-grounded question forms (belief-mapping, pre-mortem, warrant elicitation, rebuttal elicitation, commitment gating, open-question reframing) the AID cycle composes with phase content; the non-formulaic requirement is a first-order constraint. Since ADR-100 the first pass of each form at a gate is performed by the agent on itself and the practitioner rules on the surviving pivot.",
+  "compressed": true,
+  "workflow_point": "AID gate (Decide step)",
+  "mechanism": "question-form toolkit",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "by": "adr-100",
+      "date": "2026-09-03",
+      "text": "The six question forms and the phase-specific mapping stand. What changes: the first pass of each form at a gate is performed by the agent on itself (both sides developed, recommendation stated), and the practitioner's epistemic act is the ruling on the surviving pivot point."
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-100",
+      "note": "first pass of each question form moves to the agent; forms and phase mapping unchanged; commitment gating becomes agent-proposed, practitioner-confirmed"
+    }
+  ]
+}

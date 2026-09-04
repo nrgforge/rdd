@@ -1,0 +1,33 @@
+{
+  "id": "term-corpus-overwhelm",
+  "type": "term",
+  "title": "Corpus Overwhelm",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "The felt experience at holistic-synthesis moments (gates, architecture review, onboarding, re-entry after time away, graduation) when the count of mutually-referencing artifacts that must be held simultaneously exceeds working capacity. Mechanism: Sweller's element interactivity (C2); moment-independent, with graduation the widest-scope case, not a different case. Two components with different remedies: reading load (per-item cost; addressed by Surface Views and gate tooling) and Adjudication Load (item count; not addressed by either).",
+  "product_origin": "\"it takes a long time and it's a lot of text to read\"; \"no one reads them\" (Solo Developer, 2026-09-03 and research log §User reframing)",
+  "related": [
+    "Adjudication Load",
+    "Cognitive Load",
+    "Substrate-and-Surface Separation",
+    "Zero-Prior-Familiarity Reader",
+    "Expertise Reversal Effect"
+  ],
+  "links": [
+    {
+      "type": "addressed-by",
+      "target": "adr-099",
+      "note": "the reading-load component (per-item cost) via Surface Views"
+    },
+    {
+      "type": "addressed-by",
+      "target": "adr-100",
+      "note": "the Adjudication Load component (item count) via rules 1–5; reading load in the conversation via rules 6–7"
+    },
+    {
+      "type": "related-to",
+      "target": "term-adjudication-load",
+      "note": "one of its two components"
+    }
+  ]
+}

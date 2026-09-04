@@ -1,0 +1,34 @@
+{
+  "id": "term-surface-view",
+  "type": "term",
+  "title": "Surface View",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "A view of the corpus computed single-source from the Substrate at a chosen resolution (overview first, drill-in on demand), preserving surrounding context at drill-in (focus+context, Cockburn et al. 2008) and signaling its own incompleteness. The human-facing read of the corpus. Never hand-maintained in parallel with the Substrate. Named \"Surface View\" rather than \"Surface\" to avoid collision with the action *Surface* (user surfaces tacit knowledge); \"surface\" as the noun half of \"substrate-and-surface\" remains acceptable in the compound.",
+  "product_origin": "\"a high-level picture that then leads to sub-system pictures\"; \"see it at different resolutions\" (Solo Developer, research log §Step 1.4)",
+  "aliases": [
+    "Surface (as a noun, outside the compound \"substrate-and-surface\")",
+    "rendered view",
+    "projection"
+  ],
+  "related": [
+    "Substrate",
+    "Substrate-and-Surface Separation",
+    "Orientation Document",
+    "Artifact Legibility",
+    "Outcome Test",
+    "Artifact Hierarchy"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-099",
+      "note": "never hand-maintained; derived single-source"
+    },
+    {
+      "type": "related-to",
+      "target": "term-substrate",
+      "note": "computed from the Substrate"
+    }
+  ]
+}

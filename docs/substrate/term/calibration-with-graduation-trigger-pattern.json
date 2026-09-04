@@ -1,0 +1,29 @@
+{
+  "id": "term-calibration-with-graduation-trigger-pattern",
+  "type": "term",
+  "title": "Calibration-with-Graduation-Trigger Pattern",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "The single decision-structure the five Cycle 019 ADRs (094–098) each instantiate: workflow point + calibration mechanism + tier classification + audit-bearing artifact + graduation trigger (C1). Also applied by ADR-083 (Cycle 017) and ADR-091 (Cycle 018). Compresses to one Pattern record plus per-application Substrate entries without audit-substance loss, provided the Substrate is auditable. Recurs as methodology vocabulary across cycles; the five-ADR clustering at one level does not recur (Grounding Loop 4), so its topology-level diagnostic value is single-cycle evidence and it inherits the kitchen-sink caveat (C7).",
+  "product_origin": "\"middle of the road choices as opposed to one big bold choice\" (Solo Developer, theater metaphor, Cycle 019 DECIDE gate)",
+  "related": [
+    "Substrate",
+    "Empirical-Grounding Filter",
+    "Convergence-Saturation Signal",
+    "Agent Outcome Test",
+    "Kitchen-Sink Mechanism",
+    "Three-Application F-P2 Pattern"
+  ],
+  "links": [
+    {
+      "type": "record",
+      "target": "pattern-calibration-with-graduation-trigger",
+      "note": "the Pattern record is the Substrate form of this concept"
+    },
+    {
+      "type": "named-in",
+      "target": "adr-099",
+      "note": "ADR-099 §Context: the C1 finding that opened the cycle"
+    }
+  ]
+}

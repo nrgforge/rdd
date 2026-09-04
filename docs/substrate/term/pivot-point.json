@@ -1,0 +1,26 @@
+{
+  "id": "term-pivot-point",
+  "type": "term",
+  "title": "Pivot Point",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "A finding or decision that changes the destination: what gets built, who it is built for, or why (Invariant 0's own list). The unit that reaches the practitioner after Pre-Triage. Route-level choices (how to get there) are presented as overridable defaults; engine-level detail (the process being orchestrated) stays with the agent, inspectably. The criterion is the agent's gloss on the practitioner's ruling and is itself a candidate for refinement at DECIDE.",
+  "product_origin": "\"Come to me with real pivot points\"; \"sometimes we learn something new that needs to change the destination\" (Solo Developer, DISCOVER gate 2026-09-03)",
+  "related": [
+    "Adjudication Load",
+    "Pre-Triage",
+    "Belief-Mapping Question",
+    "Grounding Reframe"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-100",
+      "note": "rule 2: a finding is a pivot when it changes what gets built, for whom, or why"
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

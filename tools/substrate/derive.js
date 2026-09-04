@@ -197,7 +197,7 @@ function renderAdrBody(rec, byId, { headingLevel = 2 } = {}) {
     if (sd.status) out.push(`**Status.** ${sd.status}`, '');
     if (sd.options && sd.options.length) {
       out.push('**Options.**', '');
-      for (const o of sd.options) out.push(`- **${o.label}.** ${o.text}`);
+      for (const o of sd.options) out.push(`- **${o.label}.${o.title ? ` ${o.title}` : ''}** ${o.text}`);
       out.push('');
     }
     out.push(`**Commitment.** ${sd.commitment}`, '', `**Rationale.** ${sd.rationale}`, '');

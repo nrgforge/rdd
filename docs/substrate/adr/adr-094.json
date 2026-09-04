@@ -1,0 +1,35 @@
+{
+  "id": "adr-094",
+  "type": "adr",
+  "form": "index",
+  "title": "Audit Round-Count Calibration via Convergence-Saturation Signal",
+  "status": "Accepted",
+  "cycle": "019",
+  "canonical_source": "docs/decisions/adr-094-audit-round-count-convergence-saturation.md",
+  "summary": "Default audit round count is 3; round 4 fires only when the Convergence-Saturation Signal (R3: P1 = 0, P2-new ≤ 1, no new framings) has not triggered; round 5 only if R4 surfaces a new P1; rounds beyond 5 need explicit practitioner authorization. A structured verdict line closes each round. Form-change events reset the round-count baseline (the first audit on a new form is its R1). Skill-Structure Layer in argument-auditor.md and citation-auditor.md.",
+  "compressed": true,
+  "workflow_point": "audit-round-end",
+  "mechanism": "Convergence-Saturation Signal verdict line",
+  "links": [
+    {
+      "type": "applies-pattern",
+      "target": "pattern-calibration-with-graduation-trigger",
+      "note": "Skill-Structure Layer application at audit-round-end; the verdict line is the audit-bearing artifact; threshold recalibration after 2–4 cycles is the graduation trigger"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-096",
+      "note": "same tier, distinct workflow point: round-count calibration at audit-round-end versus loop termination at research-loop-end"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-099",
+      "note": "the form-change baseline-reset rule governs the WP-D narrow audit on the derived ADR-099/100 markdown (R1 on the new form)"
+    },
+    {
+      "type": "composed-with-by",
+      "target": "adr-100",
+      "note": "pre-triage runs after the round's verdict line is read; the round decision precedes finding dispositions (preservation scenario)"
+    }
+  ]
+}

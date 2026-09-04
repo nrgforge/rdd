@@ -1,0 +1,25 @@
+{
+  "id": "adr-083",
+  "type": "adr",
+  "form": "index",
+  "title": "Cognitive-Economy Criterion as Outcome Test with In-Place-First Default",
+  "status": "Proposed (operating as accepted)",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-083-cognitive-economy-criterion.md",
+  "summary": "Human-facing artifacts are admissible when they produce direct human understanding without AI as workaround (the Outcome Test); the default intervention on a reading failure is in-place restructuring of the existing artifact; a bolt-on or felt-additional artifact is the failure-mode signal. A methodology-wide default with named exception conditions.",
+  "compressed": true,
+  "workflow_point": "human-facing artifact proposal",
+  "mechanism": "Outcome Test felt-trigger",
+  "links": [
+    {
+      "type": "parallel-to",
+      "target": "adr-095",
+      "note": "ADR-095 is the agent-facing analog of this human-facing Outcome Test; the two are parallel, not hierarchical"
+    },
+    {
+      "type": "lineage-of",
+      "target": "adr-099",
+      "note": "one of the six prior audience-bifurcation ADRs; under the alternative reading a complete answer to a different problem (human-facing admissibility), not a step toward Substrate-and-Surface"
+    }
+  ]
+}

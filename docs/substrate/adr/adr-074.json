@@ -1,0 +1,28 @@
+{
+  "id": "adr-074",
+  "type": "adr",
+  "form": "index",
+  "title": "ADR Body Immutability, Status Mutability, and Supersession Workflow",
+  "status": "Updated by ADR-099",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-074-adr-supersession-workflow.md",
+  "summary": "ADRs are the historical record and current-state artifacts carry currency; an accepted ADR's body is immutable while its status and a dated supersession or update header are mutable; a four-step supersession workflow and a drift-resolution decision tree govern changes. Since ADR-099 the immutable body of a post-ADR-099 unit is its Substrate record and the markdown file is derived.",
+  "compressed": true,
+  "workflow_point": "ADR lifecycle (DECIDE Step 2.5)",
+  "mechanism": "body-immutable, status-mutable rule",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "by": "adr-099",
+      "date": "2026-09-03",
+      "text": "For governance units authored after ADR-099 (§Authority option C), the immutable body is the Substrate record; the markdown ADR file is a derived Surface View. Legacy units (ADRs 001 through 098) remain canonical in their files."
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-099",
+      "note": "for units authored after ADR-099 the immutable body is the Substrate record; legacy units 001–098 stay canonical in their files; nested sub-decision status defined"
+    }
+  ]
+}

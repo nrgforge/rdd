@@ -1,0 +1,38 @@
+{
+  "id": "term-adjudication-load",
+  "type": "term",
+  "title": "Adjudication Load",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "The number of decisions handed back to the practitioner per loop or audit round: findings, framing questions, grounding actions, held-open readings. Grows with loop depth. Distinct from reading load: making each item cheaper to read does not reduce the count. The methodology's existing bounds (Convergence-Saturation Signal; patch-switching) limit rounds and loops, not items per round. Reduced by Pre-Triage.",
+  "product_origin": "\"loops peel back more layers of the onion that need more adjudication by the reader. So it's exhausting\" (Solo Developer, 2026-09-03)",
+  "aliases": [
+    "Decision fatigue",
+    "gate fatigue (both conflate count with cost)"
+  ],
+  "related": [
+    "Corpus Overwhelm",
+    "Pre-Triage",
+    "Pivot Point",
+    "Convergence-Saturation Signal",
+    "Grounding Reframe",
+    "Framing Audit"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-100",
+      "note": "the count of decisions handed back per loop; reduced by Pre-Triage"
+    },
+    {
+      "type": "related-to",
+      "target": "term-pivot-point",
+      "note": "what survives pre-triage"
+    },
+    {
+      "type": "related-to",
+      "target": "term-corpus-overwhelm",
+      "note": "the item-count component"
+    }
+  ]
+}

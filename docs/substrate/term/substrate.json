@@ -1,0 +1,41 @@
+{
+  "id": "term-substrate",
+  "type": "term",
+  "title": "Substrate",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "The layer of structured records, one per ADR, invariant, pattern, vocabulary term, scenario, or other governance unit, that carries audit-substance (thresholds, felt-trigger phrasings, rejected alternatives, graduation triggers) and provenance via Typed Links. Agent-facing primarily; human-readable via Surface Views. Treated as a first-class auditable layer (C1). Record shape is per type, not universal; the type set is extensible (C4). Whether the Substrate or the source ADRs are canonical is held open for DECIDE. Need not be a stored graph artifact (GraphReader 2024): the navigational scaffolding, not the storage form, carries the gain.",
+  "product_origin": "\"a graph behind a human-friendly format\" (Solo Developer, research log §Step 1.4); \"good for agent context\"",
+  "aliases": [
+    "Knowledge graph",
+    "KG (the practitioner's candidate; the Substrate need not be a stored graph)",
+    "record layer"
+  ],
+  "related": [
+    "Surface View",
+    "Substrate-and-Surface Separation",
+    "Typed Link",
+    "Note Discipline",
+    "Audit Artifact",
+    "Companion File",
+    "Agent Outcome Test",
+    "Artifact Hierarchy"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-099",
+      "note": "ADR-099 §The architecture commits to the Substrate layer"
+    },
+    {
+      "type": "related-to",
+      "target": "term-surface-view",
+      "note": "the human-facing read derived from it"
+    },
+    {
+      "type": "related-to",
+      "target": "term-typed-link",
+      "note": "records carry provenance via Typed Links"
+    }
+  ]
+}

@@ -122,6 +122,9 @@
                       "type": "string",
                       "minLength": 1
                     },
+                    "title": {
+                      "type": "string"
+                    },
                     "text": {
                       "type": "string",
                       "minLength": 1

@@ -1,0 +1,62 @@
+{
+  "id": "pattern-calibration-with-graduation-trigger",
+  "type": "pattern",
+  "title": "Calibration-with-Graduation-Trigger Pattern",
+  "statement": "A methodology amendment at a named workflow point specifies a calibration mechanism, a tier classification (Skill-Structure Layer or Tier-2 felt-trigger), an audit-bearing artifact that records the mechanism's operation, and a graduation trigger stating the multi-cycle evidence that promotes, relaxes, or revises the mechanism.",
+  "summary": "The single decision-structure the five Cycle 019 ADRs (094 through 098) each instantiate: workflow point + calibration mechanism + tier classification + audit-bearing artifact + graduation trigger (Essay-Outline 020 C1).",
+  "applications": [
+    "adr-094",
+    "adr-095",
+    "adr-096",
+    "adr-097",
+    "adr-098"
+  ],
+  "caveats": [
+    "Also applied by ADR-083 (Cycle 017; Outcome Test with in-place-first default) and ADR-091 (Cycle 018; dual-mode BUILD). The five-ADR clustering at one level did not recur in Cycles 017 and 018 (research log Grounding Loop 4), so the pattern's topology-level diagnostic value is single-cycle evidence.",
+    "Inherits the kitchen-sink caveat (Essay-Outline 020 C7; ADR-097): its diagnostic value depends on producing actionable distinctions at artifact-creation moments, not on being retrospectively applicable to any artifact.",
+    "The Pattern does not itself reject specific alternatives; the rejected alternatives live in each application record (spike-020 §6)."
+  ],
+  "provenance": [
+    "Essay-Outline 020 C1 (five ADRs compress to one Pattern record plus five entries without audit-substance loss).",
+    "Research log Loop 1 (topology confirmation) and Grounding Loop 4 (cross-cycle check).",
+    "spike-020 §1–§7 (the record shape this Pattern was first authored in).",
+    "domain-model Amendment #29 (Calibration-with-Graduation-Trigger Pattern as a concept)."
+  ],
+  "links": [
+    {
+      "type": "applied-by",
+      "target": "adr-094",
+      "note": "audit-round-end: Convergence-Saturation Signal with round-count thresholds; Skill-Structure Layer; verdict line is the audit-bearing artifact"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-095",
+      "note": "agent-facing artifact creation: Agent Outcome Test felt-trigger; Tier-2; graduation trigger names a /rdd-conform audit step"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-096",
+      "note": "research-loop-end: Patch-Switching Criterion with three-way verdict; Skill-Structure Layer; verdict line in the research log"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-097",
+      "note": "ADR-drafting: Empirical-Grounding Filter with four grounding paths; Tier-2; Conditional Acceptance and adr-deferred- forms"
+    },
+    {
+      "type": "applied-by",
+      "target": "adr-098",
+      "note": "methodology audit coverage: FF1 and FF3 as named deferrals with two-direction graduation triggers"
+    },
+    {
+      "type": "named-in",
+      "target": "adr-099",
+      "note": "ADR-099 §Context: the Pattern is the C1 finding that opened the cycle; the Substrate is the form in which a Pattern plus entries is auditable"
+    },
+    {
+      "type": "named-in",
+      "target": "term-calibration-with-graduation-trigger-pattern",
+      "note": "the domain-model concept this record is the Substrate form of"
+    }
+  ]
+}

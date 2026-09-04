@@ -1,0 +1,28 @@
+{
+  "id": "adr-066",
+  "type": "adr",
+  "form": "index",
+  "title": "User-Tooling Layer: Graduating Conversational Mechanisms to Artifact-Producing Form",
+  "status": "Updated by ADR-100",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-066-user-tooling-layer.md",
+  "summary": "Conversational mechanisms that cannot be step-anchored or hook-verified are made governable by requiring them to produce an artifact at a canonical path (the gate reflection note is the first instance); the manifest check enforces existence and shape, not epistemic substance (the reframe-derailed gate limitation).",
+  "compressed": true,
+  "workflow_point": "phase boundary (gate note)",
+  "mechanism": "canonical-path artifact requirement",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "by": "adr-100",
+      "date": "2026-09-03",
+      "text": "The gate reflection note's required structure gains one section: \"Susceptibility snapshot findings and orchestrator triage\" (or \"Findings and orchestrator triage\" at non-gate practitioner-facing moments). The reframe-derailed gate limitation remains current and applies to the triage record as well."
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-100",
+      "note": "the gate reflection note gains the required section \"Susceptibility snapshot findings and orchestrator triage\" (finding, disposition, what was done)"
+    }
+  ]
+}

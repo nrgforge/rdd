@@ -1,0 +1,30 @@
+{
+  "id": "term-substrate-and-surface-separation",
+  "type": "term",
+  "title": "Substrate-and-Surface Separation",
+  "cycle": "020",
+  "kind": "concept",
+  "definition": "Cycle 020's central architectural commitment (C3): audit-substance and provenance live in the Substrate; humans read Surface Views derived from it; single-source derivation (a toolchain artifact, not a discipline) prevents dual-maintenance drift. Complemented, not replaced, by gate-conversation tooling that inlines referenced content at the point of use (Grounding Loop 4b). The architecture is committed; the record format is deferred to DECIDE and ARCHITECT (C6). Inherits the kitchen-sink caveat: its diagnostic value depends on producing actionable distinctions at artifact-creation moments (C7).",
+  "product_origin": "\"user-friendly and also still enabling for agentic flows\" (Solo Developer, research log §User reframing)",
+  "related": [
+    "Substrate",
+    "Surface View",
+    "Typed Link",
+    "Calibration-with-Graduation-Trigger Pattern",
+    "Companion File",
+    "Kitchen-Sink Mechanism",
+    "Artifact Hierarchy"
+  ],
+  "links": [
+    {
+      "type": "introduced-by",
+      "target": "adr-099",
+      "note": "the cycle's central architectural commitment (Essay-Outline 020 C3)"
+    },
+    {
+      "type": "related-to",
+      "target": "term-calibration-with-graduation-trigger-pattern",
+      "note": "the C1 finding whose auditable form the separation provides"
+    }
+  ]
+}
