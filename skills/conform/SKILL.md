@@ -176,6 +176,8 @@ The agent scans the codebase against ADR declarations and produces a structured 
 
 #### Step 2: Read Artifacts and Code
 
+**Substrate drift (ADR-099).** When `tools/substrate/` and `docs/substrate/` both exist, run `node tools/substrate/validate.js docs/substrate` and `node tools/substrate/derive.js --check`. A non-zero exit is documentation drift: a record that no longer validates, a hand-edited view or derived ADR file, a stale derivation, or a stale view for a removed record. List each path the check names under Stale Documentation below; the fix is always to correct the record and re-run `derive.js`, never to edit the view.
+
 Read the project's remaining RDD artifacts (system design, domain model, scenarios) and compare them against the implementation — supplementing the conformance scanner's ADR-focused report with broader checks:
 
 - **System design vs. code:** Do the module boundaries, responsibility allocations, and dependency directions in the system design match the actual codebase structure?

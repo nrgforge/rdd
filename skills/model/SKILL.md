@@ -73,6 +73,12 @@ Extract and organize into:
 |---|------|-----------|--------|-------------|
 ```
 
+#### Author Substrate Record for terms (ADR-099 §Authority option C)
+
+**If `tools/substrate/` exists in the plugin and the project has `docs/substrate/`,** each new concept or action gets a `term` record at `docs/substrate/term/<slug>.json` — `id` (`term-<slug>`), `type`, `title`, `definition`, `cycle`, `links[]` (typed, noted), and where useful `kind` (`concept` or `action`), `product_origin` (the user's phrase from product discovery), `aliases[]`, `related[]`. The Concepts-table row for a post-ADR-099 term is produced by `node tools/substrate/derive.js` into the region of `docs/domain-model.md` between `<!-- substrate:terms:begin -->` and `<!-- substrate:terms:end -->`; the deriver never inserts the markers, so place them once (around the rows the records own) the first time a project adopts the toolchain. Rows outside the markers are hand-maintained and canonical. Run `node tools/substrate/validate.js` after drafting; correct the record until it exits 0. AI drafts the record; the user rules on its pivots at the gate (Invariant 3).
+
+**If the toolchain is not present,** the table above is the form; nothing else changes.
+
 ### Step 3: Check Consistency
 
 Review the model for:
@@ -92,6 +98,8 @@ Invariants are the highest-authority artifact in the RDD process. When updating 
 - **Record** every amendment in the Amendment Log section of the domain model, noting the date, what changed, and what documents need review
 
 When the domain model is new (no prior version), skip this step.
+
+**Derive Surface View (ADR-099; phase exit).** When `tools/substrate/` and `docs/substrate/` both exist, run `node tools/substrate/derive.js` and then `node tools/substrate/derive.js --check`; the check must exit 0 before the gate.
 
 ### Step 4: Present for Approval
 

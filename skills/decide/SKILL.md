@@ -90,6 +90,18 @@ the driver chain, label it so the reader can distinguish.]
 
 Write ADRs to `./docs/decisions/adr-NNN-<slug>.md`.
 
+#### Author Substrate Record (ADR-099 §Authority option C)
+
+**If `tools/substrate/` exists in the plugin and the project has (or is starting) `docs/substrate/`,** the record is the canonical body and the markdown above is its derived form:
+
+1. Draft `docs/substrate/adr/adr-NNN.json` with `form: full` — `id`, `type`, `form`, `slug` (the `<slug>` of the markdown path), `title`, `status`, `cycle`, `context`, `commitment` (may carry `###` sub-sections), `warrants[]` (each tagged `warrants_for`), `rejected_alternatives[]` (each with `reason`; a required field, so the analytical engagement the prose habit supplied is a schema requirement), `links[]` (typed, with note text on every non-`references` link), and where they exist `sub_decisions[]` (nested commitments with their own rationale), `graduation_trigger`, `consequences`, `provenance`, `supersession`. The schemas are in `tools/substrate/schema/`; `tools/substrate/README.md` is one screen.
+2. Run `node tools/substrate/validate.js`. Read its stderr verbatim; correct the record and re-run until it exits 0. A record that cannot be made to validate is a schema question for a design amendment, not a reason to skip validation.
+3. Run `node tools/substrate/derive.js`. It writes the markdown at `docs/decisions/adr-NNN-<slug>.md` with a header naming the record as canonical, plus the record's Surface Views under `docs/views/`. Do not hand-edit the derived file; correct the record and re-run.
+
+Legacy ADRs (authored before ADR-099) stay canonical in their files and are represented by `form: index` records (identifier, title, status, `canonical_source`, `summary`, `compressed: true`, typed links). When a new decision supersedes or updates a legacy ADR, add the dated header to the legacy file by hand (Step 2.5) and give the new record a `supersedes` or `updates` link with note text; promote the legacy unit to a full record only when the cycle touches it substantively.
+
+**If the toolchain is not present,** the prose template above is the form; nothing else changes.
+
 ### ADR Principles
 
 - **One decision per ADR** — don't bundle unrelated decisions
@@ -111,7 +123,7 @@ This step fires whenever a new ADR genuinely supersedes or partially updates a p
 
 For accepted ADRs:
 
-- **Immutable** — Context, Decision, Rejected alternatives, Consequences, Provenance check. The decision text does not change after acceptance.
+- **Immutable** — Context, Decision, Rejected alternatives, Consequences, Provenance check. The decision text does not change after acceptance. For units authored after ADR-099 (§Authority option C; ADR-074 as updated), the immutable body is the Substrate record `docs/substrate/adr/adr-NNN.json`; the markdown file is derived from it and carries a header saying so. Supersession and update headers on a derived file come from the record's `supersession` field; on a legacy file they are written by hand.
 - **Mutable** — the Status field and a dated supersession or update header at the top of the ADR.
 
 If a decision has actually changed, file a new ADR. Do not edit the accepted one to match a new direction — silent amendment destroys the historical record that the supersession workflow exists to preserve.
@@ -338,6 +350,8 @@ Each interaction specification entry must:
 - Use **domain vocabulary** from the domain model consistently
 
 ### Step 5: Present for Approval
+
+**Derive Surface View (ADR-099; phase exit).** When `tools/substrate/` and `docs/substrate/` both exist, run `node tools/substrate/derive.js` and then `node tools/substrate/derive.js --check`; the check must exit 0 before the gate. The orchestrator's gate presentation may quote a drill-in's summary line from `docs/views/` inline (ADR-100 rule 6).
 
 Before presenting, run the **supersession gate check**: for every new ADR whose Decision, Rejected alternatives, or Context explicitly names a prior accepted ADR as being superseded, updated, or replaced by this one, verify that:
 
