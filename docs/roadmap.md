@@ -1,233 +1,11 @@
 # Roadmap: Pedagogical RDD
 
-**Updated:** 2026-09-04 (Cycle 020 ARCHITECT)
+**Updated:** 2026-09-04 (Cycle 020 BUILD complete; block migrated to the Completed Work Log)
 **Derived from:** system-design v17.0 (Amendment #18); ADR-099 (incl. §Authority option C); ADR-100; scenarios §Cycle 020; conformance-scan-decide-020
 
 ## Work Packages
 
-### Cycle 020: Substrate-and-Surface Separation and Pre-Triage (ADRs 099–100)
-
-**Cycle:** *Corpus Topology and Agent-Navigable Compaction* — two ADRs, both Conditional Acceptance; first cycle since Cycle 10 to add code modules.
-**Target release:** v0.9.0 (new toolchain under `tools/substrate/`; new artifact directories `docs/substrate/` and `docs/views/`).
-**BUILD mode:** auto (per ADR-091; the DECIDE-gate default "driving mode continues for ARCHITECT and BUILD" stood by non-objection; confirmed at BUILD entry). Stewardship is catching-dominant for the toolchain and generative for the record-authoring discipline; the WP-D form change and WP-E cost measurement are the two places a gated checkpoint is worth considering (see Open Decision Points).
-**Derived from:** system-design v17.0 (Amendment #18); ADR-099 (incl. §Authority option C); ADR-100; scenarios §Cycle 020; conformance-scan-decide-020.
-
----
-
-### WP-A: Hook defect fix and stale-path corrections
-
-**Objective:** Clear the two retrofit bugs before the toolchain and the ADR-100 brief amendments land on top of them.
-
-**Changes:**
-- `hooks/scripts/tier1-verify-dispatch.sh` — add `s/\*\*$//` to the `EXPECTED_PATH` sed pipeline after the backtick-stripping rules.
-- `hooks/tests/test_output_path_regex.sh` — update the extractor copy in lockstep; add the fixture `**Output path: .rdd/audits/x.md**` → `.rdd/audits/x.md`.
-- `skills/decide/SKILL.md:195` and `skills/conform/SKILL.md:173` — example conformance-report path `./docs/essays/audits/…` → `.rdd/audits/…`.
-
-**Scenarios covered:** none directly (pre-existing defects); the fitness criteria *Bold-wrapped lines extract cleanly* and *Existing variants still extract* in system-design.agents.md §Tier 1 Verify Dispatch Hook.
-
-**Dependencies:** None.
-
----
-
-### WP-B: Substrate schemas and Record Validator
-
-**Objective:** Deliver the per-type record schemas and the validator that enforces them and Note Discipline, with tests.
-
-**Changes:**
-- `tools/substrate/schema/link.schema.json` — `type` any non-empty string; `target` a record id; `note` required unless `type` is `references`.
-- `tools/substrate/schema/adr.schema.json` (forms `full` and `index`), `pattern.schema.json`, `term.schema.json` — minimal required sets per system-design.agents.md §Record Validator; optional fields permitted.
-- `tools/substrate/validate.js` — CLI and exported `validateAll(dir)`; exit codes and stderr format per the integration contract; zero dependencies.
-- `tools/substrate/tests/validate-fixture-corpus.test.js` — positive fixtures (Cycle 019 Pattern + five index records; one `adr` full fixture with two nested sub-decisions) and negative fixtures (unnoted link; missing required field per type; unknown link type with note validates).
-- `tools/substrate/README.md` — one screen: what the tool is, the commands, where records and views live.
-
-**Scenarios covered:** *Note Discipline validation rejects an unnoted non-trivial link*; *Per-type schemas permit absent fields*; *Link types are extensible*; *ADR record with sub-decisions nests them* (the schema half).
-
-**Dependencies:** None.
-
----
-
-### WP-C: Surface Deriver
-
-**Objective:** Deliver single-source derivation of every Surface View, the derived ADR markdown, and the `domain-model.md` term region, with `--check` and determinism tests.
-
-**Changes:**
-- `tools/substrate/derive.js` — calls the validator first; overview composition (patterns, then ADRs by number, then terms; one-line summary plus co-located typed cross-references with note text); drill-in composition (full record; "Surrounding records" footer with id, title, one-line summary; back-link); compressed marker on index views; derived ADR markdown with the canonical-record header and ADR template section order, nested sub-decisions as sub-sections; `domain-model.md` marked-region rewrite; `--check`; `--replace` (refused unless the target file lacks the deriver header; used once at WP-D); sorted keys, LF endings, no timestamps.
-- `tools/substrate/tests/derive-refuses-invalid.test.js`, `derive-overview-and-drillin.test.js`, `derive-adr-markdown.test.js`, `derive-term-region.test.js`, `derive-deterministic.test.js`.
-
-**Scenarios covered:** *Records with Typed Links derive to an overview and drill-in views*; *Drill-in view preserves focus+context*; *Surface View signals its own incompleteness*; *Regeneration is deterministic and single-source*; *ADR record with sub-decisions nests them* (the rendering half); *A new governance unit is authored as a record and its markdown is derived*; preservation *Legacy ADR files are unchanged by derivation*.
-
-**Dependencies:** WP-B (hard — the deriver calls the validator and renders from its parsed records).
-
----
-
-### WP-D: First corpus — Cycle 019 sample, ADR-099 and ADR-100 as records, Cycle 020 terms
-
-**Objective:** Populate the Substrate with the records the scenarios name, make ADR-099 and ADR-100 the first post-ADR-099 units authored as records, and run the first real derivation.
-
-**Changes:**
-- `docs/substrate/pattern/calibration-with-graduation-trigger.json` — the Pattern record (re-authored from spike-020 to the schema).
-- `docs/substrate/adr/adr-094.json` … `adr-098.json` — index records (identifier, title, status, typed links with notes, compressed summary, canonical source).
-- `docs/substrate/adr/adr-099.json`, `adr-100.json` — full records; ADR-099 carries §Authority as a nested sub-decision; ADR-100 carries rules 1–7 as the commitment's structure and its two-direction graduation trigger.
-- `docs/substrate/term/*.json` — the nine Cycle 020 concepts (Substrate, Surface View, Substrate-and-Surface Separation, Typed Link, Note Discipline, Corpus Overwhelm, Adjudication Load, Pivot Point, Calibration-with-Graduation-Trigger Pattern) with product-origin and aliases from Amendment #29.
-- `docs/domain-model.md` — place the `<!-- substrate:terms:begin/end -->` markers around the nine Cycle 020 Concepts rows (MODEL's one-time marker placement); the deriver then owns the region.
-- `docs/decisions/adr-099-*.md`, `adr-100-*.md` — replaced by derived markdown via `derive --replace` (one-time form change).
-- `docs/views/` — first generated set.
-- `.rdd/audits/argument-audit-decide-020-derived-r1.md` — one narrow argument-audit round on the two derived ADR files against the prose they replace (form-change baseline reset per ADR-094: R1 on the new form; P1 must be 0; heading set and rejected-alternative count identical).
-
-**Scenarios covered:** *A new governance unit is authored as a record and its markdown is derived*; *A legacy unit is indexed, not migrated*; preservation *Body immutability holds for legacy ADRs*; preservation *Centered and infrastructure categories per ADR-085 hold*; the ADR-099 scenarios composed on the Cycle 019 sample (Acceptance Criteria Table row 1, sample half).
-
-**Dependencies:** WP-B (hard — records must validate); WP-C (hard — views and derived markdown are its output).
-
----
-
-### WP-E: Legacy index records for ADRs 001–093, cost measured
-
-**Objective:** Author the remaining legacy index records so the overview is the whole ADR corpus, and record what it cost.
-
-**Changes:**
-- `docs/substrate/adr/adr-001.json` … `adr-093.json` — index records (ADR-003 Superseded; the `Updated by` relationships from ADR-085/088/089/099/100 as `updates` links with notes).
-- Optional: `tools/substrate/index-legacy.js` — scaffold that emits a skeleton index record (id, title, status, canonical source, `references` links from `ADR-NNN` mentions) for the agent to complete with notes and summary. The scaffold is mechanical; the notes are the interpretive cost ADR-099 constraint 6 names.
-- `docs/cycle-status.md` §From BUILD — records-per-hour, the share of time on note text, and any friction the spike did not see (cross-cycle link consistency; namespace collisions; cycle-archive interaction).
-
-**Scenarios covered:** *A legacy unit is indexed, not migrated* at corpus scale; the fitness criterion *Legacy index authoring cost is measured*.
-
-**Dependencies:** WP-B (hard); WP-D (implied logic — author six records first, learn the shape, then scale; a builder could start WP-E in parallel after WP-B if the shape is clear).
-
----
-
-### WP-F: ADR-099 skill-text steps (Author Substrate Record; Derive Surface View)
-
-**Objective:** Anchor the two ADR-099 actions as concrete skill steps now that the toolchain exists and runs on this corpus.
-
-**Changes:**
-- `skills/decide/SKILL.md` — Step 2: record-first authoring for new ADRs (draft record → `validate.js` → `derive.js`), branching on the presence of `tools/substrate/` with the prose template as the fallback; Step 2.5: record-as-body for post-ADR-099 units (ADR-074 update landing); phase exit: Derive Surface View and `derive --check` before the gate.
-- `skills/model/SKILL.md` — Step 2: term records for new concepts and actions; phase exit: derive.
-- `skills/conform/SKILL.md` — drift detection runs `validate.js` and `derive.js --check` when both directories exist.
-- `skills/rdd/SKILL.md` — Artifacts Summary rows for `docs/substrate/` and `docs/views/`; Orientation Document tier list (Tier 2 gains `views/`, Tier 3 gains `substrate/`).
-
-**Scenarios covered:** *A legacy unit is promoted on supersession* (the Decide Skill step that performs it); the Decide Skill and Model Skill fitness properties.
-
-**Dependencies:** WP-C (hard — the steps name a tool that must exist and pass its tests); WP-D (implied logic — the steps are written against a corpus that already has records).
-
----
-
-### WP-G: ADR-100 skill text — orchestrator pre-triage, presentation rule, gate-note template, toolkit first pass, non-gate record sites
-
-**Objective:** Anchor the ADR-100 mechanism in the orchestrator and the phase skills' gate steps.
-
-**Changes:**
-- `skills/rdd/SKILL.md` Stage Gates — new **Pre-triage** step between Attend and Interpret (three dispositions; pivot criterion; agent-first question pass; framing-class rule; reflexive opt-in); presentation rule in the Decide step (one screen, one ruling; cited content inlined); Gate Reflection Note template gains `## Susceptibility snapshot findings and orchestrator triage` and the conditional `## Argument-audit findings and orchestrator triage`; Question Toolkit preamble gains the agent-first-pass sentence (ADR-056 update landing).
-- `skills/research/SKILL.md`, `discover`, `model`, `decide`, `architect`, `build` — one sentence in each EPISTEMIC GATE Decide step pointing to the orchestrator's Pre-triage step and presentation rule.
-- `skills/research/SKILL.md` — `## Findings and orchestrator triage` heading in the research-log loop-end template (line 127–146 area) and the argument-audit handling step (line 330–371 area).
-
-**Scenarios covered:** *The gate reflection note carries a triage record*; *A framing-class finding is never silently resolved*; *A pivot is presented with referenced content inline*; *A route-level choice is presented as an overridable default*; *The agent runs the question form on itself before asking*; *A reflexive cycle can opt into engine-level presentation*; preservation *The gate reflection note keeps every ADR-066 section*; preservation *Framing-audit findings are still surfaced, never auto-corrected*; preservation *The convergence-saturation verdict is still read at round end*.
-
-**Dependencies:** None (independent of the toolchain).
-
----
-
-### WP-H: ADR-100 snapshot briefs and evaluator agent
-
-**Objective:** Make the isolated reader read the triage record at every boundary.
-
-**Changes:**
-- `skills/research/SKILL.md:478`, `discover:294`, `model:166`, `decide:420`, `architect:527`, `build:741`, `play:154`, `synthesize:388` — each brief gains `Triage record: <path> §<section>` and the three questions immediately before the unchanged `Output path:` line (Play and Synthesize point at the producing artifact's non-gate section).
-- `agents/susceptibility-snapshot-evaluator.md` — Input gains the triage record; Process gains step 4 *Triage-record evaluation* (first check: does the pivot criterion as applied match Invariant 0's list); Output template gains `## Triage evaluation` before `## Recommendation`; missing or empty record is reported, never treated as clean.
-- `hooks/tests/run_tests.sh` — run after the brief edits to confirm `Output path:` extraction is unaffected.
-
-**Scenarios covered:** *The snapshot brief evaluates the triage record*; the evaluator fitness properties.
-
-**Dependencies:** WP-G (implied logic — the brief names the section heading the template defines; a builder can write both in either order if the heading text is fixed first).
-
----
-
-### WP-I: ADR-100 named grounding action — targeted lit-review
-
-**Objective:** Run the RESEARCH-phase grounding ADR-100 lacks, as a bounded lit-review, and record what it changes.
-
-**Changes:**
-- Dispatch `lit-reviewer` with the three named literatures (management by exception; escalation and hand-off policy in human-automation teaming; triage in human-AI decision systems) and the specific question: under what conditions does agent pre-triage with an inspectable record preserve the principal's authority, and what escalation rule do the literatures recommend. `Output path: docs/essays/research-logs/lit-review-020-triage-and-escalation.md`.
-- `docs/cycle-status.md` §From BUILD — findings recorded as Conditional-period evidence; if the review recommends tightening the pivot criterion or moving triage to an isolated context (ADR-100 alternative D), that is carried to the next cycle's DECIDE, not applied in BUILD.
-
-**Scenarios covered:** none (grounding action, not behavior); ADR-100 §Scope, tier, and grounding.
-
-**Dependencies:** None. Open choice whether it runs before the skill-text WPs (so findings can shape the pivot-criterion wording) or after.
-
----
-
-### WP-J: Downstream sweep, Step 5.5 corpus-scale read, integration verification, v0.9.0 release
-
-**Objective:** Land the deferred sweep where ARCHITECT said it lands, verify the cycle's fitness criteria on the real corpus, and ship.
-
-**Changes:**
-- BUILD Step 5.5: `validate.js && derive.js && derive.js --check` on this repository; `git diff --stat docs/decisions/adr-0{01..98}-*.md` empty; the practitioner reads `docs/views/overview.md` at the BUILD gate (Acceptance Criteria Table row 1, corpus half). Row 2 (fewer decisions per loop) is observed at the BUILD gate's triage record and carried to PLAY and the ADR-100 graduation trigger.
-- `docs/system-design.md`, `docs/system-design.agents.md` — final pass (any BUILD discoveries as Design Amendments; Amendment #18 status to Accepted).
-- `docs/ORIENTATION.md` — regenerated: §4 ADR-074 paragraph gains the record-as-body sentence; Tier 2 gains `views/`; Tier 3 gains `substrate/`; §5 current state.
-- `docs/references/field-guide.md` — new "Module: Substrate Toolchain"; Orchestrator gains pre-triage; Decide and Model gain Author Substrate Record.
-- `.rdd/audits/integration-verification-020.md` — each Cycle 020 fitness criterion checked; `hooks/tests/run_tests.sh` and `node --test tools/substrate/tests/` both green.
-- `CHANGELOG.md` v0.9.0; `.claude-plugin/plugin.json` version bump; ADR-099 and ADR-100 remain Conditional Acceptance (their triggers are multi-cycle); `docs/roadmap.md` Cycle 020 block migrates to the Completed Work Log.
-
-**Scenarios covered:** all Cycle 020 scenarios verified end-to-end; the Cycle 020 Acceptance Criteria Table's two layer-match "no" rows addressed at the layer named (row 1 at Step 5.5; row 2 recorded as first-cycle evidence).
-
-**Dependencies:** WP-A through WP-H (hard); WP-I (implied logic — the release note should say whether the grounding action ran; the release does not wait on it if the practitioner defers it).
-
----
-
-## Dependency Graph
-
-```
-WP-A (hook fix; stale paths) ───────────────── independent
-
-WP-B (schemas + validator) ──── hard ──► WP-C (deriver) ──── hard ──► WP-D (first corpus; ADR-099/100 as records)
-WP-B ─────────────────────────── hard ──► WP-E (legacy index 001–093)   [implied: after WP-D]
-WP-C ─────────────────────────── hard ──► WP-F (ADR-099 skill steps)    [implied: after WP-D]
-
-WP-G (ADR-100 orchestrator + gate text) ── implied ──► WP-H (briefs + evaluator)
-WP-I (grounding lit-review) ────────────── independent
-
-WP-A … WP-H ──────────────────── all hard ──► WP-J (sweep; Step 5.5; v0.9.0)
-WP-I ─────────────────────────── implied ──► WP-J
-```
-
-**Classification key:**
-- **Hard dependency:** WP-B → WP-C (the deriver calls the validator); WP-C → WP-D (records need views to be derived); WP-B → WP-E (records must validate); WP-C → WP-F (skill steps name a tool that must exist); A–H → WP-J.
-- **Implied logic:** WP-D → WP-E (learn the index shape on six records before ninety-three); WP-D → WP-F (write the steps against a populated corpus); WP-G → WP-H (the brief cites the section heading the template defines); WP-I → WP-J.
-- **Open choice:** WP-A, WP-B, WP-G, WP-I can all start first; the toolchain track (B → C → D → E/F) and the pre-triage track (G → H) are independent of each other until WP-J.
-
-## Transition States
-
-### TS-1: Hook logs clean paths (after WP-A)
-
-The dispatch log stops accumulating trailing-`**` paths; the compound check's path matching is reliable for bold-wrapped briefs. Skill example paths point at `.rdd/audits/`. Nothing about the corpus has changed.
-
-### TS-2: Toolchain green on the fixture (after WP-B + WP-C)
-
-`node --test tools/substrate/tests/` passes; every ADR-099 scenario that can run on a fixture runs. The real corpus is untouched; a project without `docs/substrate/` is unaffected. This is a coherent stopping point for a release that ships the tool without records.
-
-### TS-3: First real Substrate (after WP-D)
-
-`docs/views/overview.md` shows the Pattern record, five Cycle 019 index records, ADR-099 and ADR-100 as full records, and nine terms. Two ADR files are derived; ninety-eight are legacy canonical. `derive --check` exits 0. The practitioner can read a Surface View of the cycle's own decisions.
-
-### TS-4: Pre-triage anchored (after WP-G + WP-H)
-
-Every gate from here on writes the triage section and every snapshot reads it. Independent of TS-2/TS-3; a release could ship this track alone.
-
-### TS-5: Corpus-scale Substrate and skill steps live (after WP-E + WP-F)
-
-The overview covers all 100 ADRs. DECIDE and MODEL author records as a step. The cost of the legacy index is recorded. This is the state ADR-099's graduation trigger observes from.
-
-### TS-6: v0.9.0 (after WP-J)
-
-Sweep landed; Step 5.5 read done; integration verification recorded; both ADRs still Conditional with their triggers named.
-
-## Open Decision Points
-
-- **WP-E before or after WP-F.** Authoring the ninety-three index records is the cycle's cost measurement; writing the skill steps is small. Either order; the builder picks by whether they want the corpus-scale read (TS-5) or the skill steps first.
-- **Whether to write the `index-legacy.js` scaffold.** It cuts the mechanical part of WP-E; the interpretive part (notes, summaries) is unchanged. Write it if the first ten hand-authored index records show the mechanical part dominating.
-- **Gated checkpoints inside auto mode.** Two moments warrant considering a gated pause even under auto: the WP-D `--replace` of ADR-099 and ADR-100 (a form change to two accepted ADRs; the narrow audit round is the structural check, but the practitioner may want to see the derived ADR-099 before it replaces the prose) and the WP-E cost report (the number ADR-099's graduation trigger will be judged against).
-- **WP-I timing.** Before the skill-text WPs if the practitioner wants the escalation literature to shape the pivot-criterion wording; after, or deferred to the next cycle, if the practitioner wants BUILD to stay mechanical. Deferral is recorded in cycle-status, not silent.
-- **Test runner convention.** The plugin's tests are bash under `hooks/tests/`; the toolchain tests are `node --test` under `tools/substrate/tests/`. Two runners for two languages is the default; a top-level `make test` or `scripts/test.sh` that runs both is a small addition the builder may make at WP-J.
-- **Out of this cycle's scope, carried:** the `/rdd-conform` backlog (78 bare-`Proposed` ADRs operating as accepted; the domain-model Concepts table header); a Surface View of `product-discovery.md` (needs stakeholder and tension record types; next cycle's candidate); invariant and scenario record types.
+*No active work packages. Cycle 020's block moved to the Completed Work Log on 2026-09-04; the next cycle's ARCHITECT generates the next block.*
 
 <!-- Cycle 019 active block (archived) — kept for reference until graduation:
 
@@ -369,6 +147,40 @@ All five Cycle 019 ADRs are Accepted; integration verification artifact records 
 -->
 
 ## Completed Work Log
+
+### Cycle 020: Substrate-and-Surface Separation and Pre-Triage (ADRs 099–100)
+
+**Derived from:** ADR-099 (Substrate-and-Surface Separation; §Authority option C ruled by the practitioner); ADR-100 (Pre-Triage and Plain-Language Presentation); system-design v17.0 Amendment #18 and BUILD Amendment #19; scenarios §Cycle 020 (18 scenarios + Acceptance Criteria Table); conformance-scan-decide-020
+**Cycle type:** Standard cycle (Mode A; first code modules since Cycle 10)
+**Shipped:** v0.9.0 (2026-09-04, pending the BUILD-gate ruling) — BUILD mode auto per ADR-091
+
+| WP | Title | Status |
+|----|-------|--------|
+| A | Hook defect fix (`tier1-verify-dispatch.sh` trailing `**`; two fixtures) and stale `docs/essays/audits/` example paths in Decide and Conform | Complete (`8c47e80`) |
+| B | Substrate schemas (`link`, `adr` full/index, `pattern`, `term`) and Record Validator with the Cycle 019 fixture corpus and 11 tests | Complete (`7ab4260`) |
+| C | Surface Deriver (overview, drill-ins with compressed marker and Surrounding records, derived ADR markdown, term region, `--check`, `--replace`) with 18 tests | Complete (`856028f`) |
+| D | First corpus: Pattern record, 12 index records, ADR-099/100 as full records with derived markdown (narrow audit R1 on the new form: P1 = 0), nine term records, domain-model markers | Complete (`11a7743`) |
+| E | Legacy index records 001–093 (86, via the `index-legacy.js` scaffold plus four parallel authoring agents); cost measured in cycle-status §From BUILD; audit corrections to the 099/100 records | Complete (`74848df`) |
+| F | ADR-099 skill steps: Author Substrate Record (Decide, Model), Derive Surface View at phase exit, Conform drift check, orchestrator artifact rows and tier list | Complete (`5fc38a0`) |
+| G | ADR-100 orchestrator text: Pre-triage step, presentation rule, gate-note triage sections, agent-first question pass; phase-skill pointers; Research non-gate headings | Complete (`58b50f3`) |
+| H | ADR-100 snapshot briefs (8) and evaluator agent (`## Triage evaluation`); Play/Synthesize non-gate record instruction | Complete (`92f6bb4`) |
+| I | ADR-100 grounding lit-review (22 sources; recommendations carried to the next DECIDE) | Complete (`9fcb6ba`) |
+| J | Sweep (field guide, system-design Amendment #19, ORIENTATION), Step 5.5 corpus-scale derivation, integration verification, CHANGELOG, roadmap migration, BUILD gate note and snapshot; `release: v0.9.0` on the gate ruling | Complete (housekeeping commit) |
+
+**Summary:**
+
+- ADR-099 shipped as a zero-dependency Node toolchain (`tools/substrate/`), a corpus of 110 records, and generated views; every fitness criterion in system-design §Cycle 020 verified (`.rdd/audits/integration-verification-020.md`). Legacy files byte-identical after every derive; `domain-model.md` touched only inside the term markers; manifest and all other hooks unchanged.
+- ADR-100 shipped as skill text: the orchestrator's Pre-triage step and presentation rule, the gate-note triage tables, eight amended snapshot briefs, and the evaluator's Triage evaluation. Practiced at every Cycle 020 gate before it was anchored; the BUILD gate is the first gate run on the anchored text.
+- Cost of the legacy index (ADR-099 constraint 6): 117–161 records per agent-hour, link notes 25–35 % of the time, agent-parallel; no link rot at 100 ADRs. The overview at corpus scale is 1,179 lines; whether that is the read the practitioner uses is the gate's ruling and the ADR-099 graduation trigger's observable.
+- Auto mode ran the whole scope with no practitioner turn. The two named gated-pause candidates were handled by structural guards (the narrow audit on the form change; the cost report) rather than a pause, because the practitioner was absent and both are reversible in git. Auto-mode failure modes: design-alternative examination happened in the gate note's engine-disposition table (each choice logged with its alternative), which is catching, not teaching; scoping judgments (WP-E scaffold; agent-parallel authoring; Play/Synthesize instruction beyond WP-G's scope) are logged and presented as route defaults.
+
+**Dependency graph (as-built):** WP-A, WP-B, WP-G ran first; B → C → D → F → E (the roadmap's open choice resolved as F before E, so the skill steps were written against the WP-D corpus); G → H; I ran in parallel with E; J last. Same edges as planned.
+
+**Open Decision Points (resolved at BUILD):** WP-E after WP-F; the scaffold was written (mechanical fields worth automating at 86 records); no gated pause under auto mode (structural guards and disclosure instead); WP-I during BUILD, after G/H; two test runners kept (`hooks/tests/run_tests.sh`; `node --test 'tools/substrate/tests/*.test.js'`), no top-level wrapper added.
+
+**Open questions held into future cycles:** the lit-review's tightens/adds/moves recommendations (next DECIDE); a body-correction governance check for `/rdd-conform`; invariant and scenario record types; a product-discovery Surface View; the `/rdd-conform` backlog (78 bare-`Proposed` ADRs; domain-model Concepts header); the ADR-099 and ADR-100 graduation triggers.
+
+---
 
 ### Cycle 019: Empirical-Grounding Filter and related methodology amendments (ADRs 094–098)
 

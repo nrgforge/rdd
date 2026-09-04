@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.9.0
+
+Cycle 020 release: **Substrate-and-Surface Separation and Pre-Triage** (ADRs 099 and 100, both Conditional Acceptance). The first cycle since Cycle 10 to add code: a zero-dependency Node toolchain under `tools/substrate/`, a Substrate of typed JSON records under `docs/substrate/`, and generated Surface Views under `docs/views/`. The orchestrator now pre-triages every finding before it reaches the practitioner and presents what survives on one screen with cited content inlined.
+
+### Why
+
+The practitioner returned after three months and reported using RDD much less: "it takes a long time and it's a lot of text to read," and loops "peel back more layers of the onion that need more adjudication by the reader." Cycle 020's research located two mechanisms behind that: reading load (one artifact serving two audiences, the agent needing the granular record and the human needing the corpus at the resolution the moment calls for) and Adjudication Load (the count of decisions handed back per loop, which no existing bound limited). ADR-099 answers the first with an architecture; ADR-100 answers the second with a rule set and an inspectable record.
+
+### New: Substrate toolchain (ADR-099)
+
+- **`tools/substrate/validate.js`** — validates every record under `docs/substrate/` against per-type schemas (`adr` full/index, `pattern`, `term`) and Note Discipline (every link needs a note unless its type is `references`; any other type string is valid). Exit 1 names the record and the field or `links[i]`. In-corpus link targets must resolve.
+- **`tools/substrate/derive.js`** — validates first, then regenerates every Surface View in one deterministic pass: `docs/views/overview.md` (patterns, then ADRs by number, then terms; one-line summary with typed cross-references co-located), one drill-in per record (compressed marker naming the canonical file for legacy units; a Surrounding records footer; a back-link), derived ADR markdown for `form: full` records at the usual `docs/decisions/` path with a header naming the record as canonical, and the marked term region of `docs/domain-model.md`. `--check` reports drift and writes nothing; `--replace` is required once to replace a prose file.
+- **`tools/substrate/index-legacy.js`** — scaffolds skeleton index records for legacy ADRs (mechanical fields only; never overwrites).
+- **Tests:** `node --test 'tools/substrate/tests/*.test.js'` (29 cases, including the boundary tests named in the system design).
+- **First corpus:** 100 ADR records (ADR-099 and ADR-100 as full records, authored from their prose with a narrow argument-audit round on the derived form; 98 legacy ADRs as compressed index records with typed links and notes), the Calibration-with-Graduation-Trigger Pattern record, and the nine Cycle 020 terms. `docs/views/overview.md` is the intended read on re-entry and at gates (ARCHITECT-gate ruling).
+- **Authority (ADR-099 §Authority option C, the practitioner's ruling):** records are canonical for units authored after ADR-099; legacy ADRs 001–098 stay canonical in their files. ADR-074 is updated accordingly.
+
+### New: Pre-triage and plain-language presentation (ADR-100)
+
+- **`skills/rdd/SKILL.md`** Stage Gates gains step 4 **Pre-triage**: every finding is sorted into resolve, carry forward, or pivot (a pivot changes what gets built, for whom, or why); route choices are presented as overridable defaults; engine detail is logged; the agent runs the question form on itself first; framing-class findings are never silently resolved; the record is written before the presentation. The Decide step gains the presentation rule (one screen, one ruling; cited content inlined; snapshot-caught triage errors disclosed). The Gate Reflection Note template gains the triage tables. The Question Toolkit states the agent-first pass (ADR-056 update). The manifest is unchanged (hook enforcement is ADR-100's graduation target).
+- **All eight phase skills:** the snapshot brief names the gate note's triage record and asks three questions; Research, Play, and Synthesize write the non-gate `Findings and orchestrator triage` record.
+- **`agents/susceptibility-snapshot-evaluator.md`** reads the triage record and writes `## Triage evaluation` (per-row verdicts; a missing or empty record is reported, never treated as clean).
+
+### Skill amendments (ADR-099)
+
+- **`skills/decide/SKILL.md`** — Author Substrate Record (record-first authoring; validate then derive; legacy units indexed); record-as-body in Step 2.5; Derive Surface View at phase exit.
+- **`skills/model/SKILL.md`** — term records; the deriver owns the marked region of `domain-model.md`; phase-exit derive.
+- **`skills/conform/SKILL.md`** — drift detection runs `validate.js` and `derive.js --check`.
+
+### Fixes
+
+- **`hooks/scripts/tier1-verify-dispatch.sh`** — a fully bold-wrapped `**Output path: X**` line no longer leaves a trailing `**` in the dispatch log (fixture added).
+- Stale `docs/essays/audits/` example paths in the Decide and Conform skills and the snapshot evaluator corrected to `.rdd/audits/`.
+
+### Documentation
+
+- `docs/system-design.md` / `.agents.md` v17.0 with Design Amendments #18 (Accepted) and #19 (BUILD-time refinements, route defaults). `docs/references/field-guide.md` gains the Substrate Toolchain module. `docs/ORIENTATION.md` regenerated. `docs/essays/research-logs/lit-review-020-triage-and-escalation.md` (ADR-100's named grounding action; recommendations carried to the next DECIDE). `.rdd/audits/integration-verification-020.md`.
+- Both ADRs remain Conditional Acceptance; their graduation triggers are multi-cycle. The legacy-index authoring cost is recorded in `docs/cycle-status.md` §From BUILD.
+
 ## v0.8.7
 
 Cycle 019 release: **Empirical-Grounding Filter and related methodology amendments**. Five new ADRs (094, 095, 096, 097, 098) at standalone scope addressing the C7 failure mode named in essay-outline-018 — *research-surveyed possibilities surviving into ADRs without empirical filter*. The cycle's central question (*"Does RDD over-engineer?"*) found that the failure mode is localized to research-driven cascades lacking an empirical filter at DECIDE; the methodology already has structural defenses against it at other layers. The amendments are vocabulary-and-skill-text-level, not module-additions.

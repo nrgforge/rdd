@@ -1,13 +1,15 @@
 # Field Guide: Pedagogical RDD
 
-**Updated:** 2026-04-28
-**Derived from:** System Design v14.0 Amendment #15, current implementation (SKILL.md files, agent files, Harness Layer hook scripts and manifest)
+**Updated:** 2026-09-04 (Cycle 020 BUILD)
+**Derived from:** System Design v17.0 Amendment #18, current implementation (SKILL.md files, agent files, Harness Layer hook scripts and manifest, Toolchain Layer under `tools/substrate/`)
 
 ## How to Use This Guide
 
 This guide maps the system design's modules to their current implementation state. Each skill module is a single SKILL.md file — the "code" in this meta-project is prompt text that instructs an AI agent. Each Harness Layer module is a bash or YAML file operating at the Claude Code runtime level. For the overall architecture, start with the slim `system-design.md`; for the dense reference detail (architectural drivers, responsibility matrix, integration contracts, fitness criteria) consult the companion `system-design.agents.md` (ADR-084 Pattern B). For routing to the right document, read `ORIENTATION.md`.
 
 **Cycle 016 / 017 amendments reflected here:** ADR-084 Pattern B companion file (system-design.agents.md); ADR-085 `.rdd/` infrastructure relocation (path migration from `.rdd/` to `.rdd/`); ADR-088 / ADR-089 advisory-disposition demotion (Stop-hook manifest check is advisory across all modes, with skill-text anchoring as the load-bearing enforcement layer); ADR-090 In-Progress Phase field role-shift (advisory-noise suppressor scoped to per-phase manifest advisory only). Cycle 016 added preservation scenarios (ADR-075), Cycle Acceptance Criteria Table (ADR-073, BUILD Step 5.5), supersession workflow (ADR-074), Cycle Stack schema (ADR-078–081), question-isolation protocol (ADR-082), and applicability check at BUILD pattern reuse (ADR-077).
+
+**Cycle 020 amendments reflected here (ADR-099, ADR-100; v0.9.0):** a new **Substrate Toolchain** module (`tools/substrate/`) with its data (`docs/substrate/`) and generated views (`docs/views/`); the Orchestrator's Pre-triage step and presentation rule; Author Substrate Record steps in Decide and Model; the snapshot evaluator's Triage evaluation; the dispatch hook's trailing-`**` fix. See the module entries marked *Cycle 020*.
 
 **Path placement note.** Hook scripts read both placements transparently: `.rdd/...` (canonical post-ADR-085) takes precedence; `.rdd/...` (legacy ADR-070) is the fallback. Pre-migration corpora continue to operate; the migration is opt-in via `/rdd-conform migrate-to-rdd` (Operation 10).
 
@@ -36,12 +38,18 @@ This guide maps the system design's modules to their current implementation stat
 | Grounding Reframe (pattern) | Three-step naming/offering/making-visible pattern | SKILL.md §Grounding Reframe |
 | Essay-as-checkpoint (cross-cutting) | Enforces essay revision before pipeline advances past RESEARCH | SKILL.md §Essay as Research Phase Checkpoint |
 | Susceptibility Snapshot Dispatch | Tier 1 dispatch of susceptibility-snapshot-evaluator at every phase boundary | SKILL.md §Susceptibility Snapshot Dispatch |
+| Pre-Triage (ADR-100; *Cycle 020*) | Stage Gates step 4: every finding sorted into resolve / carry forward / pivot by the Pivot Point criterion (what gets built, for whom, why); route defaults with alternatives; engine detail logged; agent runs the question form on itself first; framing-class findings never silently resolved; record written before the presentation; reflexive opt-in | SKILL.md §Stage Gates step 4 |
+| Plain-language presentation rule (ADR-100 rules 6–7; *Cycle 020*) | One screen, one ruling; cited content quoted or glossed inline; snapshot-caught triage errors disclosed | SKILL.md §Stage Gates step 6 (Decide) |
+| Gate Reflection Note triage sections (ADR-066 as updated by ADR-100; *Cycle 020*) | `## Susceptibility snapshot findings and orchestrator triage` and the conditional `## Argument-audit findings and orchestrator triage` tables in the note template; manifest unchanged | SKILL.md §Gate Reflection Note |
+| Substrate and Surface Views (ADR-099; *Cycle 020*) | Artifacts Summary rows for `docs/substrate/<type>/<id>.json` and `docs/views/`; Orientation tier list (views/ in Tier 2, substrate/ in Tier 3) | SKILL.md §Artifacts Summary, §Orientation Document |
 
 ### Design Rationale
 
 The orchestrator is the only module that depends on nothing and is depended on by everything. It defines the contract (epistemic gate protocol) that all skills implement. It does NOT contain phase logic — each skill owns its own process. The orchestrator's job is sequencing, cross-cutting principles, and state tracking.
 
 The "compiled rollup" principle means the system design absorbs upstream context so downstream phases don't need the full artifact trail. The orchestrator enforces this by instructing `/rdd-build` to read system-design.md as its primary context.
+
+*Cycle 020.* Pre-triage is content selection by the party under audit; it lives in the orchestrator because that is where the findings arrive, and it is kept honest by the record (the triage tables in the gate note) that the isolated snapshot at the next boundary reads. Hook enforcement of the record is deliberately not added this cycle: ADR-100 is Conditional, and the manifest check is its graduation target.
 
 ### Key Integration Points
 
@@ -120,7 +128,7 @@ The skill runs in every pipeline cycle past RESEARCH — even when `product-disc
 
 **Implementation state:** Complete
 **Code location:** `skills/model/SKILL.md`
-**Stability:** Settled
+**Stability:** Settled (Cycle 020 added the term-record step, conditional on the toolchain)
 
 ### Domain Concepts in Code
 
@@ -130,6 +138,7 @@ The skill runs in every pipeline cycle past RESEARCH — even when `product-disc
 | Product Origin (provenance) | Product Origin column in Concepts table | SKILL.md §Step 2 template |
 | Invariant (constitutional authority) | Step 3.5: Constitutional Authority section | SKILL.md §Step 3.5 |
 | Amendment Log | Amendment Log table in domain model template | SKILL.md §Step 2 template |
+| Author Substrate Record for terms (ADR-099; *Cycle 020*) | Step 2: a `term` record per new concept or action; the deriver owns the marked region of `domain-model.md` (`<!-- substrate:terms:begin/end -->`); rows outside the markers stay hand-maintained; phase-exit derive | SKILL.md §Step 2 Author Substrate Record for terms; §Derive Surface View |
 
 ### Design Rationale
 
@@ -146,7 +155,7 @@ Invariants are the highest-authority artifact. The Constitutional Authority step
 
 **Implementation state:** Complete
 **Code location:** `skills/decide/SKILL.md`
-**Stability:** In flux — Cycle 016 added preservation scenarios (ADR-075), Cycle Acceptance Criteria Table (ADR-073), ADR supersession workflow (ADR-074 with body-immutability + IETF Updates/Obsoletes); Cycle 017 used the supersession workflow on ADR-064/067/070 (eight new ADRs 083–090)
+**Stability:** In flux — Cycle 016 added preservation scenarios (ADR-075), Cycle Acceptance Criteria Table (ADR-073), ADR supersession workflow (ADR-074 with body-immutability + IETF Updates/Obsoletes); Cycle 017 used the supersession workflow on ADR-064/067/070 (eight new ADRs 083–090); Cycle 020 added record-first authoring (ADR-099) conditional on the toolchain
 
 ### Domain Concepts in Code
 
@@ -161,6 +170,9 @@ Invariants are the highest-authority artifact. The Constitutional Authority step
 | Backward Propagation | Step 3.7: sweep prior docs when invariants change | SKILL.md §Step 3.7 |
 | Behavior Scenario (artifact) | Step 4: Given/When/Then format with integration scenarios | SKILL.md §Step 4 |
 | Interaction Specification (ADR-039) | Workflow-level task decomposition by stakeholder; appended to interaction-specs.md | SKILL.md §Interaction Specifications |
+| Author Substrate Record (ADR-099 §Authority C; *Cycle 020*) | Step 2: for a new ADR, draft `docs/substrate/adr/adr-NNN.json` (form `full`), run `validate.js`, then `derive.js`; the markdown at the usual path is derived. Legacy ADRs indexed, promoted only on substantive touch. Prose template remains the form when `tools/substrate/` is absent | SKILL.md §Step 2 Author Substrate Record |
+| Record-as-body (ADR-074 as updated by ADR-099; *Cycle 020*) | Step 2.5: for post-ADR-099 units the immutable body is the record; supersession headers on derived files come from the record's `supersession` field | SKILL.md §Step 2.5 |
+| Derive Surface View at phase exit (*Cycle 020*) | Step 5: `derive.js` then `derive.js --check` must exit 0 before the gate | SKILL.md §Step 5 |
 
 ### Design Rationale
 
@@ -349,6 +361,7 @@ Architectural Isolation is the point: the reviewer runs in a fresh context befor
 | Pattern Interpretation | Earned confidence vs. sycophantic reinforcement distinction | agents/susceptibility-snapshot-evaluator.md §Pattern Interpretation |
 | Grounding Reframe Recommendation | Recommends when multiple signals converge + early phase + downstream inheritance | agents/susceptibility-snapshot-evaluator.md §Grounding Reframe Recommendation |
 | Self-Correction Blind Spot (exploit) | Fresh context treats prior output as external input | agents/susceptibility-snapshot-evaluator.md §opening |
+| Triage-record evaluation (ADR-100; *Cycle 020*) | Input: the triage record the brief names; Process step 3: per-row verdict (Warranted / Should have been a pivot / Should have been surfaced / Not found in presentation), pivot criterion checked against Invariant 0's list first, framing-class rule, record accuracy; missing or empty record reported, never treated as clean; Output: `## Triage evaluation` before `## Recommendation` | agents/susceptibility-snapshot-evaluator.md §Input, §3, §Output |
 
 ### Design Rationale
 
@@ -389,6 +402,38 @@ The two-section output is a Tier 1 unconditional mechanism. The framing audit ma
 
 ---
 
+## Module: Substrate Toolchain (NEW in v0.9.0 — ADR-099; Cycle 020)
+
+**Implementation state:** Complete
+**Code location:** `tools/substrate/validate.js`, `tools/substrate/derive.js`, `tools/substrate/index-legacy.js`, `tools/substrate/schema/*.schema.json`, `tools/substrate/tests/*.test.js` (run with `node --test 'tools/substrate/tests/*.test.js'`), `tools/substrate/README.md`. Data: `docs/substrate/<type>/<file>.json`. Generated: `docs/views/overview.md`, `docs/views/<id>.md`, `docs/decisions/adr-NNN-<slug>.md` for `form: full` records, and the marked region of `docs/domain-model.md`.
+**Stability:** In flux — first corpus-scale run this cycle; ADR-099 is Conditional Acceptance; record types beyond `adr`, `pattern`, `term` are deferred
+
+### Domain Concepts in Code
+
+| Concept | Code Manifestation | Location |
+|---------|-------------------|----------|
+| Substrate | One plain-JSON record per governance unit; `id` is `adr-NNN` or `<type>-<file stem>`; `form: full` (record is the canonical body) or `form: index` (compressed index of a legacy file with `canonical_source`) | `docs/substrate/`; `schema/adr.schema.json` |
+| Typed Link | `links[]` entries `{type, target, note}`; `type` is any non-empty string (extensible); in-corpus targets (`adr-`, `pattern-`, `term-`) must resolve, others (`invariant-N`, `external:…`) pass unresolved | `schema/link.schema.json`; `validate.js` cross-record checks |
+| Note Discipline | `noteRequiredUnlessType: ["references"]` in the link schema; enforced by the validator with the record and link index named | `schema/link.schema.json`; `validate.js` matchSchema |
+| Per-type record schema | `adr` (full / index), `pattern`, `term`; `rejected_alternatives` required only for `adr` full; sub-decisions nest with their own commitment and rationale | `schema/*.schema.json` |
+| Derive Surface View | `derive.js`: validate first (refuses on any invalid record, writes nothing); overview (patterns, ADRs by number, terms; one-line summary with typed cross-references co-located); drill-ins with the compressed marker on index records and a Surrounding records footer; derived ADR markdown with the canonical-record header; term rows in the marked region; `--check` drift mode; `--replace` one-time prose replacement; stale views removed | `tools/substrate/derive.js` |
+| Surface View | `docs/views/` (Tier 2; never hand-edited; `derive --check` is the drift check `/rdd-conform` runs) | `docs/views/` |
+| Legacy index scaffold | `index-legacy.js`: skeleton index records (title, status, canonical source, supersession headers, `references` links from ADR mentions, first-paragraph placeholder summary); never overwrites; the interpretive fields are the agent's | `tools/substrate/index-legacy.js` |
+
+### Design Rationale
+
+The two-layer system is kept honest architecturally, not by discipline: the deriver is the only writer of every view, refuses to run on an invalid Substrate, and `--check` makes any hand edit visible. Records are plain JSON with typed links because the typed edge is the provenance payload (YAML frontmatter loses it; JSON-LD adds an ontology no reader needs). Node with zero dependencies because `hooks.json` already requires Node. Records live under `docs/` (product, not process, on the ADR-085 axis); views join Tier 2 because the overview is what the practitioner reads on re-entry. Authority follows ADR-099 §Authority option C (the practitioner's ruling): records canonical for post-ADR-099 units, legacy files canonical for themselves with index records. Two BUILD-time refinements within ARCHITECT's stated latitude: in-corpus link targets must resolve (dangling provenance was the spike's named link-rot risk), and an ADR record may carry `additional_sections` so a derived file keeps a non-template heading such as ADR-100's Supersession notes.
+
+### Key Integration Points
+
+- Decide Skill and Model Skill — Author Substrate Record (draft → `validate.js` → `derive.js`); Derive Surface View at phase exit
+- Conformance Audit Skill — `validate.js` and `derive.js --check` in Drift Detection Step 2
+- `docs/decisions/` — derived files for full records only; legacy files never written (fitness: `git diff --stat` on ADR-001–098 empty after derive)
+- `docs/domain-model.md` — only the text between the term markers changes
+- BUILD Step 5.5 — the corpus-scale derivation and the practitioner's overview read (Acceptance Criteria Table row 1)
+
+---
+
 ## Module: Tier 1 Phase Manifest (NEW in v0.7.0; path templates migrated to .rdd/ in v0.8.4 per ADR-085)
 
 **Implementation state:** Complete
@@ -423,7 +468,7 @@ The manifest is the single source of truth for phase-boundary Tier 1 obligations
 
 ---
 
-## Module: Tier 1 Dispatch Logger Hook (NEW in v0.7.0; .rdd/ path support added in v0.8.4 per ADR-085)
+## Module: Tier 1 Dispatch Logger Hook (NEW in v0.7.0; .rdd/ path support added in v0.8.4 per ADR-085; trailing-`**` extraction fix in v0.9.0, Cycle 020 WP-A)
 
 **Implementation state:** Complete
 **Code location:** `hooks/scripts/tier1-verify-dispatch.sh`
