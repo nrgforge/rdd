@@ -192,7 +192,7 @@ After the agent completes, read the audit report. The two sections are handled d
 After the argument audit passes, dispatch the **conformance-scanner** specialist subagent. Provide it with:
 - The ADR file paths (both new and prior)
 - The codebase root path
-- An output path for the conformance report (e.g., `./docs/essays/audits/conformance-scan-NNN.md`)
+- An output path for the conformance report (e.g., `.rdd/audits/conformance-scan-decide-NNN.md`)
 
 The agent runs on Sonnet in an isolated context, scans the codebase against ADR declarations, and writes a structured conformance debt table with file:line references for violations.
 

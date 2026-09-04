@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Test: tier1-verify-dispatch.sh Output path: extraction handles markdown-
-# formatted variants (Issue #15). Seven fixtures: six positive variants that
-# must match and extract the bare path, one negative prose prescription that
-# must not match.
+# formatted variants (Issue #15) and the fully bold-wrapped form (Cycle 020
+# WP-A). Positive fixtures must match and extract the bare path; the one
+# negative prose prescription must not match.
 #
 # This test exercises the extraction logic directly by copy-paste from the
 # hook script — a focused unit check, not a full hook harness invocation.
@@ -38,6 +38,7 @@ extract_output_path() {
             s/^`(.*)`$/\1/
             s/\*\*Output path:\*\*/Output path:/
             s/^.*Output path:[[:space:]]*//
+            s/\*\*$//
             s/^`//
             s/`$//
             s/[[:space:]]+$//
@@ -129,6 +130,20 @@ Output path: docs/first.md
 assert_extracts_to "leading whitespace + list" \
     "Preamble.
    -   Output path: $EXPECTED
+Content." \
+    "$EXPECTED"
+
+# 10. Fully bold-wrapped line (Cycle 020 WP-A defect fix — trailing ** must be stripped)
+assert_extracts_to "fully bold-wrapped line" \
+    "Preamble.
+**Output path: $EXPECTED**
+Content." \
+    "$EXPECTED"
+
+# 11. Fully bold-wrapped line with backticked path
+assert_extracts_to "fully bold-wrapped + backticked path" \
+    "Preamble.
+**Output path: \`$EXPECTED\`**
 Content." \
     "$EXPECTED"
 

@@ -76,8 +76,9 @@ $IS_TIER1 || exit 0
 # Match filter (grep): line contains "Output path:" after optional leading
 # whitespace, list marker (- or *), markdown bold (**), or wrapping backtick.
 # Extraction (sed): strip list marker, wrapping backticks, markdown bold
-# around the label, then take everything after "Output path:", strip
-# backticks around the path, strip trailing whitespace.
+# around the label, then take everything after "Output path:", strip a
+# trailing ** (fully bold-wrapped line, Cycle 020 WP-A), strip backticks
+# around the path, strip trailing whitespace.
 PROMPT="$(printf '%s' "$INPUT" | jq -r '.tool_input.prompt // empty' 2>/dev/null)"
 EXPECTED_PATH="$(printf '%s' "$PROMPT" \
     | grep -E '^[[:space:]]*([-*][[:space:]]+)?(\*\*)?`?Output path:' \
@@ -87,6 +88,7 @@ EXPECTED_PATH="$(printf '%s' "$PROMPT" \
         s/^`(.*)`$/\1/
         s/\*\*Output path:\*\*/Output path:/
         s/^.*Output path:[[:space:]]*//
+        s/\*\*$//
         s/^`//
         s/`$//
         s/[[:space:]]+$//
