@@ -297,6 +297,8 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the discover → model boundary. Product discovery crystallizes user-facing language (stakeholder maps, value tensions, assumption inversions, product vocabulary) into an artifact that model and decide both inherit. The canonical failure mode at this boundary was documented in Cycle 10's own discover phase (susceptibility-snapshot-014-discover.md Finding 1): research-phase framings propagating into product vocabulary and value tensions without attribution. Evaluate the attached AID signals for two specific patterns: (a) research-essay framings inherited into product-facing language without being tested against user voice, and (b) value tensions that surfaced as spectra but collapsed into binary framings without the alternatives being examined. The product discovery artifact entering model phase should read in user voice, not methodology voice.
 >
+> Triage record: .rdd/gates/{cycle}-discover-gate.md §Susceptibility snapshot findings and orchestrator triage (and §Argument-audit findings and orchestrator triage when an audit ran in the phase). Evaluate it per ADR-100: were pivots correctly identified (first check: does the pivot criterion as applied match Invariant 0's list — what was built, for whom, why); were framing-class findings surfaced rather than resolved; did any resolve disposition hide a destination change? A missing or empty record is reported in the snapshot, never treated as clean.
+>
 > Output path: .rdd/audits/susceptibility-snapshot-{cycle}-discover.md
 
 ---

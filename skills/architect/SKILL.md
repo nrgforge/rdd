@@ -530,6 +530,8 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the architect → build boundary. Architect phase composes modules from the domain model, ADRs, and scenarios. The specific risk is that module boundaries and responsibility allocations encode unexamined assumptions — particularly the assumption that a boundary serves the developer's mental model when it should serve the user's. The Inversion Principle check at architecture is the designed counterweight but can be performed pro forma. Evaluate the attached AID signals for solution-space narrowing on boundary choices and framing adoption from DECIDE-phase ADRs (the system design inherits ADR framings — was the inheritance examined or automatic?). Check whether the proposed module boundaries would survive a product-facing reading: do they track user mental models or only developer convenience?
 >
+> Triage record: .rdd/gates/{cycle}-architect-gate.md §Susceptibility snapshot findings and orchestrator triage (and §Argument-audit findings and orchestrator triage when an audit ran in the phase). Evaluate it per ADR-100: were pivots correctly identified (first check: does the pivot criterion as applied match Invariant 0's list — what was built, for whom, why); were framing-class findings surfaced rather than resolved; did any resolve disposition hide a destination change? A missing or empty record is reported in the snapshot, never treated as clean.
+>
 > Output path: .rdd/audits/susceptibility-snapshot-{cycle}-architect.md
 
 ---

@@ -423,6 +423,8 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the decide → architect boundary. Decide phase produces ADRs, behavior scenarios, and interaction specifications. The primary risk is that ADR framings originate from agent synthesis during drafting rather than from architectural drivers (research findings, domain model concepts, prior ADRs). Cycle 10's ADRs 063-070 introduced the provenance check subsection pattern specifically to make drafting-time synthesis visible as labeled content — so the absence of a provenance check from an ADR whose framings are not driver-derived is itself a signal. Evaluate the attached AID signals for rebuttal-elicitation failures on rejected alternatives, and for cross-ADR compositions where one ADR's framing was adopted by another within the same cycle without being independently tested. Check whether each ADR's core framing traces to its driver chain or to drafting-time composition.
 >
+> Triage record: .rdd/gates/{cycle}-decide-gate.md §Susceptibility snapshot findings and orchestrator triage (and §Argument-audit findings and orchestrator triage when an audit ran in the phase). Evaluate it per ADR-100: were pivots correctly identified (first check: does the pivot criterion as applied match Invariant 0's list — what was built, for whom, why); were framing-class findings surfaced rather than resolved; did any resolve disposition hide a destination change? A missing or empty record is reported in the snapshot, never treated as clean.
+>
 > Output path: .rdd/audits/susceptibility-snapshot-{cycle}-decide.md
 
 ---

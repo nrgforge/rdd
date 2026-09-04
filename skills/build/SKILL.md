@@ -744,6 +744,8 @@ Before completing this phase, dispatch the susceptibility-snapshot-evaluator sub
 
 > This is the build phase boundary (typically build → play or build → [cycle end]). Build is the most empirically grounded phase per the sycophancy gradient — test execution grounds commitments in observable outcomes, which resists framing adoption more structurally than earlier phases. The residual risks are in the spaces tests do not reach: stewardship-checkpoint commitments that adopt rejected-alternative framings without surfacing them, debug hypotheses that absorb a "this must be because X" framing without belief-mapping X, and mode-shift transitions (debug/refactor/review) where the user's mental model may drift without being tested. Evaluate the attached AID signals with build's empirical grounding as the baseline — concerning signals here are patterns the tests did not catch. Pay particular attention to any work package commitment that closed without examining an alternative the scenarios did not specify.
 >
+> Triage record: .rdd/gates/{cycle}-build-gate.md §Susceptibility snapshot findings and orchestrator triage (and §Argument-audit findings and orchestrator triage when an audit ran in the phase). Evaluate it per ADR-100: were pivots correctly identified (first check: does the pivot criterion as applied match Invariant 0's list — what was built, for whom, why); were framing-class findings surfaced rather than resolved; did any resolve disposition hide a destination change? A missing or empty record is reported in the snapshot, never treated as clean.
+>
 > Output path: .rdd/audits/susceptibility-snapshot-{cycle}-build.md
 
 ---

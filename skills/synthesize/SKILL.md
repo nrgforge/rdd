@@ -239,6 +239,8 @@ After citation audit passes, dispatch the **argument-auditor** specialist subage
 - The full artifact trail file paths (source material — the evidence base the outline draws from)
 Output path: .rdd/audits/argument-audit-synthesize-{cycle}.md
 
+After reading the audit, pre-triage its findings (ADR-100 rule 5; orchestrator Stage Gates step 4): read the ADR-094 verdict line, record the round decision, sort every argument and framing finding into resolve, carry forward, or pivot, and append the record to the audit report under `## Findings and orchestrator triage`. Framing findings reach the writer whole; only pivots and route defaults are put as questions.
+
 The agent produces a **two-section** audit report: argument audit (narrative arc logical soundness) and framing audit (alternative narrative framings the material could support).
 
 After the agent completes, read the audit report. The two sections are handled differently:
@@ -390,6 +392,8 @@ Re-entry is the exception, not the rule. Most synthesis cycles produce an outlin
 Before completing this phase, dispatch the susceptibility-snapshot-evaluator subagent with the following brief:
 
 > This is the synthesize phase boundary (typically terminal for the cycle; or synthesize → research re-entry if structural experiments surface new questions). Synthesis is the canonical location where the "softer than sycophancy but real" framing-adoption pattern was first named in Cycle 10 — narrative framings composed at synthesis moments carry the highest risk because they shape what the cycle will be remembered as. The four-dimension framing navigation (discovery type, narrative form, audience constraint, epistemic posture) provides structural scaffolding, but the framings that emerge can still be shaped by synthesis-moment adoption. Evaluate the attached AID signals with particular emphasis on framing adoption and declining alternative engagement during the framing conversation. The outline about to become the writer's essay should carry framings the writer owns, not framings they inherited from agent composition or from the artifact trail without examining the alternatives.
+>
+> Triage record: the synthesis outline's argument-audit report (.rdd/audits/argument-audit-synthesize-{cycle}.md) §Findings and orchestrator triage (synthesize subsumes its gate; the record is appended to the producing artifact per ADR-100 rule 5). Evaluate it per ADR-100: were pivots correctly identified (first check: does the pivot criterion as applied match Invariant 0's list — what was built, for whom, why); were framing-class findings surfaced rather than resolved; did any resolve disposition hide a destination change? A missing or empty record is reported in the snapshot, never treated as clean.
 >
 > Output path: .rdd/audits/susceptibility-snapshot-{cycle}-synthesize.md
 
