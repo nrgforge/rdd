@@ -1,0 +1,24 @@
+{
+  "id": "adr-007",
+  "type": "adr",
+  "form": "index",
+  "title": "Product Discovery Artifact Structure",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-007-product-discovery-artifact-structure.md",
+  "summary": "Defines the product discovery artifact as a single markdown document (./docs/product-discovery.md) with five sections: Stakeholder Map (direct and indirect stakeholders, not personas), Jobs and Mental Models (per-stakeholder jobs and mental models, the primary input for User Mental Model validation), Value Tensions (held as open questions rather than resolved prematurely), Assumption Inversions (output of the Inversion Principle procedural step), and a Product Vocabulary Table (terms in user-facing language with stakeholder attribution). The five sections map to five feed-forward channels: two into MODEL, two into DECIDE, one into ARCHITECT.",
+  "compressed": true,
+  "workflow_point": "Product Discovery phase artifact (ADR-006)",
+  "mechanism": "five-section markdown structure feeding forward into MODEL, DECIDE, and ARCHITECT",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-006",
+      "note": "Defines the artifact structure that the Product Discovery phase established by ADR-006 produces."
+    },
+    {
+      "type": "precedent-for",
+      "target": "adr-009",
+      "note": "Section 5 (Product Vocabulary Table) is the source that ADR-009's domain-model Product Origin column traces provenance back to."
+    }
+  ]
+}

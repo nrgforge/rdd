@@ -1,0 +1,24 @@
+{
+  "id": "adr-018",
+  "type": "adr",
+  "form": "index",
+  "title": "Defer Cross-Project Synthesis Operationalization",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-018-defer-cross-project-synthesis.md",
+  "summary": "Distinguishes two levels of cross-project synthesis. Level 1, conversational cross-project prompting, is available now as part of the synthesis framing conversation: the agent asks whether the volta or key discoveries resonate with the writer's other work, without reading other project trails. Level 2, full portfolio mode (simultaneous review of multiple artifact trails), is deferred because its mechanics — cross-project file access, whether it is a new skill or a mode of the existing one — depend on operational experience that does not yet exist from single-project synthesis. Sets a revisit trigger: after 2-3 single-project synthesis cycles, ask whether cross-domain connections surfaced naturally through Level 1 prompting and what file-access patterns would help, then initiate a new RDD research cycle on portfolio-mode mechanics.",
+  "compressed": true,
+  "workflow_point": "synthesis framing conversation, Phase 3 of ADR-013 (Level 1, now); future dedicated research cycle (Level 2, deferred)",
+  "mechanism": "Level 1 conversational prompting now; Level 2 portfolio-mode mechanics deferred with a revisit trigger",
+  "links": [
+    {
+      "type": "parallel-to",
+      "target": "adr-005",
+      "note": "The Level-2 deferral rationale explicitly parallels ADR-005's fading-implementation deferral: avoid designing a mechanism before operational experience exists to inform it."
+    },
+    {
+      "type": "applies",
+      "target": "adr-013",
+      "note": "Level 1 cross-project prompting is implemented as part of ADR-013's Phase 3 framing conversation."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "adr-035",
+  "type": "adr",
+  "form": "index",
+  "title": "Skill Activator for Explicit Workflow Requests",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-035-skill-activator-for-explicit-requests.md",
+  "summary": "Ships a UserPromptSubmit hook (the skill activator) that detects explicit RDD-workflow requests and injects context telling the agent to proceed directly to the requested phase, because RDD research already serves as the brainstorming/exploration step that the superpowers plugin would otherwise intercept for. This is the interim, self-contained fix; the durable fix proposed alongside it is an upstream superpowers rule that an explicitly named workflow request overrides the brainstorm-first default for any plugin with its own exploration phase.",
+  "compressed": true,
+  "workflow_point": "UserPromptSubmit, before phase skill selection",
+  "mechanism": "interim UserPromptSubmit hook injecting override context, plus a proposed upstream superpowers precedence rule",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-033",
+      "note": "the skill activator is implemented as one of ADR-033's UserPromptSubmit hooks."
+    }
+  ]
+}

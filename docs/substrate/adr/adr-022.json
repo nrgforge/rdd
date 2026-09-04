@@ -1,0 +1,26 @@
+{
+  "id": "adr-022",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Roadmap Artifact with Dependency Classification",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-022-add-roadmap-artifact.md",
+  "summary": "Adds a Roadmap document as a Tier 2 artifact containing work packages (derived from the system design's module decomposition), dependencies classified as hard dependency, implied logic, or open choice, transition states (coherent intermediate architectures), and open decision points — explicitly excluding detailed task lists, timelines, or single-commit prescriptions, so developers own their own sequencing decisions. The roadmap is a pragmatic artifact (Invariant 3): agent-generated from the system design and ADRs within the ARCHITECT phase, user-validated, and updated reflexively; no epistemic gate is introduced because it is generated within an existing phase, not at a new phase transition.",
+  "compressed": true,
+  "workflow_point": "generated within the ARCHITECT phase, added to the Artifact Hierarchy as Tier 2",
+  "mechanism": "work packages plus three-way dependency classification and transition states, replacing the prescriptive Build Sequence section",
+  "links": [
+    {
+      "type": "references",
+      "target": "invariant-0"
+    },
+    {
+      "type": "references",
+      "target": "invariant-2"
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

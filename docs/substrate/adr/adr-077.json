@@ -1,0 +1,53 @@
+{
+  "id": "adr-077",
+  "type": "adr",
+  "form": "index",
+  "title": "Applicability Check at BUILD Pattern Reuse",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-077-applicability-check-at-build-pattern-reuse.md",
+  "summary": "The BUILD skill (and `/rdd-refactor` when extending existing patterns) gains an Applicability Check, a stewardship-checkpoint prompt that fires when an existing pattern is explicitly referenced as the template for new code — the one operative trigger; structural-similarity and stewardship-flag detection are named as aspirational triggers with no current substrate. The check asks four composed questions (name a structural alternative; what's different about the new context; which original-context assumptions carry forward; which fitness properties does system-design.md declare, per ADR-076) and treats the user's substantive response as the load-bearing artifact. It is a Tier 2 conversational mechanism per ADR-058, addressing the BUILD-phase share of the Einstellung-effect failure chain named in Issue #13.",
+  "compressed": true,
+  "workflow_point": "BUILD (and /rdd-refactor) — pattern-reuse stewardship checkpoint",
+  "mechanism": "four-prompt Applicability Check triggered on explicit pattern-reuse reference",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-055",
+      "note": "the user's response is the load-bearing artifact, following ADR-055's belief-mapping principle that the question form is the structural intervention and the user's substantive response is the evidence"
+    },
+    {
+      "type": "applies",
+      "target": "adr-058",
+      "note": "classifies the applicability check as a Tier 2 conversational mechanism per ADR-058's two-tier sycophancy-resistance taxonomy, accepting reduced enforceability relative to structural mechanisms"
+    },
+    {
+      "type": "references",
+      "target": "adr-059"
+    },
+    {
+      "type": "applies",
+      "target": "adr-068",
+      "note": "the unassessable-risk fallback (offer grounding actions; record the decision visibly) follows ADR-068's Grounding Reframe extension when applicability-check prompts cannot be answered substantively"
+    },
+    {
+      "type": "applies",
+      "target": "adr-069",
+      "note": "the operative-vs-aspirational trigger split follows ADR-069's honest scope-of-claim standard — naming triggers that don't exist would create a reliability expectation the implementation cannot meet"
+    },
+    {
+      "type": "references",
+      "target": "adr-071"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-075",
+      "note": "ADR-075 (preservation scenarios, DECIDE) and this ADR are first- and second-line defenses against the same Issue #13 failure chain; ADR-075 is the structural, mechanically-anchored layer while this ADR is the cognitive layer at the BUILD application moment"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-076",
+      "note": "prompt 4 explicitly consumes ADR-076's fitness-property output (\"Which fitness properties does system-design.md declare for the affected module(s)?\"), making the ARCHITECT-time decomposition load-bearing at the BUILD pattern-reuse moment"
+    }
+  ]
+}

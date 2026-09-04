@@ -1,0 +1,37 @@
+{
+  "id": "adr-016",
+  "type": "adr",
+  "form": "index",
+  "title": "Synthesis Phase Subsumes Its Epistemic Gate",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-016-synthesis-subsumes-epistemic-gate.md",
+  "summary": "Establishes that the synthesis phase does not add a separate epistemic gate after its outline deliverable; instead the three-phase conversation (ADR-013) itself subsumes the gate function — Journey Review requires retrieval and articulation, Novelty Surfacing requires reflection and self-explanation, and the Framing Conversation requires articulation and generation. The synthesis essay, written outside the pipeline, is the terminal epistemic act of the entire RDD cycle, satisfying Invariant 1 at its highest level, while Invariant 2 is satisfied because every conversational step is generative rather than mere approval. This resolves the domain model's open question of whether synthesis needs its own gate.",
+  "compressed": true,
+  "workflow_point": "synthesis phase gate — resolved as none needed, subsumed by the conversation",
+  "mechanism": "three conversation phases mapped to specific epistemic acts, with the essay as terminal epistemic act",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-002",
+      "note": "Preserves ADR-002's principle that each skill owns its gate: the synthesis skill's gate is its own conversation structure, not a separate bolt-on."
+    },
+    {
+      "type": "applies",
+      "target": "adr-003",
+      "note": "ADR-003's pattern of assigning specific epistemic-act types to gates applies implicitly: the three conversation phases map to retrieval, reflection, articulation, and self-explanation."
+    },
+    {
+      "type": "extends",
+      "target": "adr-013",
+      "note": "The three-phase conversation structure defined in ADR-013 is reinterpreted here as also fulfilling the epistemic-gate function, rather than requiring a separate gate."
+    },
+    {
+      "type": "references",
+      "target": "invariant-1"
+    },
+    {
+      "type": "references",
+      "target": "invariant-2"
+    }
+  ]
+}

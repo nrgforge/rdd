@@ -1,0 +1,26 @@
+{
+  "id": "adr-023",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Field Guide Artifact",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-023-add-field-guide-artifact.md",
+  "summary": "Adds a Field Guide as a Tier 3 reference artifact that maps each system-design module to its current implementation state (what exists, partial, planned), connects domain model concepts to their code-level manifestations, surfaces design rationale that code alone cannot carry, points to specific files, directories, and patterns for exploration, and distinguishes settled areas from areas in flux. It is a pragmatic artifact (Invariant 3): agent-generated, user-validated, updated reflexively when the system design or implementation changes, and lives in a references directory; no epistemic gate is introduced because it is a reference artifact generated within existing phases, not at a new phase transition.",
+  "compressed": true,
+  "workflow_point": "reference artifact generated within existing phases (post-implementation), added to the Artifact Hierarchy as Tier 3",
+  "mechanism": "module-to-implementation-state mapping plus domain-concept-to-code tracing",
+  "links": [
+    {
+      "type": "references",
+      "target": "invariant-0"
+    },
+    {
+      "type": "references",
+      "target": "invariant-2"
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "adr-068",
+  "type": "adr",
+  "form": "index",
+  "title": "Grounding Reframe Extension — Fire on Significant Snapshot Findings with In-Cycle Course-Correction Implications",
+  "status": "Proposed",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-068-grounding-reframe-extension.md",
+  "summary": "Extends ADR-059's Grounding Reframe to fire in a second situation: when a susceptibility snapshot returns a finding that is specific, actionable, and applicable at the current phase boundary, not only when sycophancy risk is unassessable. The protocol body is unchanged — name what's uncertain, offer concrete grounding actions, make the cost of proceeding visible — only the trigger condition is broadened. Two Cycle 10 demonstrations (a DISCOVER per-entry pass correcting six flagged lines in product-discovery.md, and a MODEL belief-mapping check grounding the Invariant 8 commitment) are recorded as canonical examples calibrating what \"significant\" means.",
+  "compressed": true,
+  "workflow_point": "phase boundaries, immediately after a susceptibility snapshot returns findings",
+  "mechanism": "extended Grounding Reframe trigger (significant, actionable, in-cycle-applicable snapshot findings)",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-059",
+      "note": "Extends ADR-059's Grounding Reframe trigger condition to also fire on significant susceptibility-snapshot findings with in-cycle course-correction implications, not only on unassessable sycophancy risk."
+    },
+    {
+      "type": "references",
+      "target": "adr-060"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-066",
+      "note": "Couples to ADR-066's compound defense: ADR-066 specifies what the phase-boundary snapshot does, and this ADR specifies how the agent responds to the snapshot's significant findings via the extended Grounding Reframe."
+    },
+    {
+      "type": "references",
+      "target": "adr-067"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

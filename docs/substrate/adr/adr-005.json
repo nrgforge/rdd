@@ -1,0 +1,30 @@
+{
+  "id": "adr-005",
+  "type": "adr",
+  "form": "index",
+  "title": "Defer Fading Implementation",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-005-defer-fading-implementation.md",
+  "summary": "Implements epistemic gates at a fixed level for the first version — all gates present the same prompts regardless of user experience — and defers designing a fading mechanism (Invariant 6) to a future cycle, accepted as known design debt because fixed-level gates are strictly better than no gates and premature fading could undermine the learning mechanisms. Sets a revisit trigger: after 3-5 full RDD cycles with fixed-level gates, the orchestrator asks whether prompts still generate genuine effort or feel routine; if routine, a new research cycle on fading begins. Distinguishes what fades from what doesn't: the requirement to generate at every gate (Invariant 2) never fades, only the specificity of prompts fades, from guided (\"explain the key tradeoff in your own words\") to open (\"what's your understanding of this artifact?\").",
+  "compressed": true,
+  "workflow_point": "epistemic gates across the pipeline (fading itself deferred)",
+  "mechanism": "fixed-level prompts now, with a revisit trigger after 3-5 cycles",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-001"
+    },
+    {
+      "type": "references",
+      "target": "adr-003"
+    },
+    {
+      "type": "references",
+      "target": "invariant-6"
+    },
+    {
+      "type": "references",
+      "target": "invariant-2"
+    }
+  ]
+}

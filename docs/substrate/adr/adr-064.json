@@ -1,0 +1,76 @@
+{
+  "id": "adr-064",
+  "type": "adr",
+  "form": "index",
+  "title": "Compound Check — PostToolUse(Agent) Dispatch Log + Stop Hook Manifest Verification",
+  "status": "Updated by ADR-088",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-064-compound-check-hooks.md",
+  "summary": "Extends ADR-033's hook architecture with two hooks implementing the Harness-Layer compound check: a PostToolUse hook on the Agent tool that logs every Tier 1 subagent dispatch (mechanism, expected output path) to a session-scoped dispatch log, and a Stop hook that cross-references the ADR-063 manifest's required artifacts against that log, distinguishing missing-artifact/no-dispatch (State B), dispatched-but-no-artifact, artifact-without-dispatch (potential State C fabrication), and structural-assertion failures. The compound check makes sophisticated State C fabrication structurally detectable once a `docs/housekeeping/.migration-version` marker places the corpus in enforcement mode; pre-migration corpora run in non-blocking advisory mode. Also introduces the `docs/housekeeping/` directory for infrastructure artifacts under the centered-vs-infrastructure framing, and a non-blocking mtime-based re-audit reminder.",
+  "compressed": true,
+  "workflow_point": "PostToolUse on every Agent-tool dispatch; Stop hook at session end / phase transition",
+  "mechanism": "PostToolUse dispatch log cross-referenced with Stop-hook manifest check (compound check)",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "date": "2026-04-27",
+      "text": "ADR-088 amends the Stop hook's manifest check from blocking to advisory across all modes (v0.8.3 release). The compound check mechanism (PostToolUse dispatch log + Stop-hook cross-reference) is retained but its finding is surfaced as advisory rather than as block. The State-C \"structurally impossible\" claim is amended to \"structurally detectable.\" Skill-text anchoring (ADR-065) is the load-bearing enforcement layer; the Harness Layer adds visibility and detection.",
+      "by": "adr-088"
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-088",
+      "note": "ADR-088 amends the Stop hook's manifest check from blocking to advisory across all modes (v0.8.3 release). The compound check mechanism (PostToolUse dispatch log + Stop-hook cross-reference) is retained but its finding is surfaced as advisory rather than as block. The State-C \"structurally impossibl"
+    },
+    {
+      "type": "extends",
+      "target": "adr-033",
+      "note": "Extends ADR-033's cross-cutting hook architecture with two additional hooks (PostToolUse dispatch log and Stop hook manifest check), bringing the total plugin hook count to seven."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-063",
+      "note": "Consumes ADR-063's per-phase manifest format; this ADR adds the compound cross-reference (dispatch log versus manifest) that closes sophisticated State C, which the manifest alone cannot."
+    },
+    {
+      "type": "depends-on",
+      "target": "adr-065",
+      "note": "Depends on ADR-065's canonical dispatch-prompt skeleton (the `Output path:` line) for the PostToolUse hook to extract expected paths; without ADR-065's skill edits, the compound check degrades to dispatch-logged-but-path-unknown."
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-066",
+      "note": "Names ADR-066's User-Tooling Layer as the complementary substrate handling failure mode 6 (belief-mapping at user pushback), which this ADR's harness-layer hooks cannot address."
+    },
+    {
+      "type": "precedent-for",
+      "target": "adr-069",
+      "note": "This ADR's DECIDE-gate provenance pattern (agent proposes, user surfaces an unconsidered concern, agent composes a revised design) is recorded by ADR-069 as one instance of the methodology's settled finding on second-order critique."
+    },
+    {
+      "type": "precedent-for",
+      "target": "adr-070",
+      "note": "Commits to the centered-vs-infrastructure framing and the `docs/housekeeping/` placement, but defers the actual migration mechanics (file moves, reference updates) to ADR-070."
+    },
+    {
+      "type": "applies",
+      "target": "adr-074",
+      "note": "ADR-074's body-immutability rule (added after this ADR was written) is why this ADR's stale `docs/housekeeping/` path references are not corrected in its body even after ADR-085's `.rdd/` migration runs."
+    },
+    {
+      "type": "updated-by",
+      "target": "adr-085",
+      "note": "ADR-085's `.rdd/` migration makes the `docs/housekeeping/` path references throughout this ADR's Decision section historical; ADR-085 is the active path authority post-migration."
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

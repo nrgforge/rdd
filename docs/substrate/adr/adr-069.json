@@ -1,0 +1,63 @@
+{
+  "id": "adr-069",
+  "type": "adr",
+  "form": "index",
+  "title": "Methodology Scope-of-Claim — Competence Without Independent Second-Order Critique",
+  "status": "Proposed",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-069-methodology-scope-of-claim.md",
+  "summary": "States that RDD does not guarantee the agent independently generates second-order critique of its own output: Cycle 10 documented seven failure-mode instances (the agent composes a framing at a synthesis moment and the user follows along without evaluating) and one success-mode instance (the user evaluates the agent's composition against stated criteria) across four phases. The methodology's positive scope of claim rests on competent first-order analysis plus mechanisms that supply second-order critique from outside the in-context agent — Tier 1 specialist-subagent dispatches, conversational mechanisms inviting user second-order engagement, a phase-boundary compound defense, and provenance attribution — so the guarantee rests on those mechanisms firing, not on the agent's independent judgment.",
+  "compressed": true,
+  "workflow_point": "cross-cutting — methodology-level claim about agent second-order critique",
+  "mechanism": "named positive/negative scope-of-claim distinguishing mechanism-supplied from agent-independent second-order critique",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-040",
+      "note": "Cites the Attend-Interpret-Decide cycle (ADR-040) as one of the conversational mechanisms inviting user second-order engagement within the methodology's positive scope of claim."
+    },
+    {
+      "type": "applies",
+      "target": "adr-055",
+      "note": "Cites belief-mapping operationalization (ADR-055) as one of the conversational mechanisms constituting the methodology's positive scope of claim."
+    },
+    {
+      "type": "applies",
+      "target": "adr-056",
+      "note": "Cites the Question Toolkit (ADR-056) as one of the conversational mechanisms constituting the methodology's positive scope of claim."
+    },
+    {
+      "type": "applies",
+      "target": "adr-058",
+      "note": "Cites Tier 1 mechanisms (ADR-058) as the methodology's structural resistance to sycophancy within its positive scope of claim."
+    },
+    {
+      "type": "applies",
+      "target": "adr-059",
+      "note": "Cites the Grounding Reframe (ADR-059) as one of the conversational mechanisms constituting the methodology's positive scope of claim."
+    },
+    {
+      "type": "applies",
+      "target": "adr-062",
+      "note": "Cites assertion-aware observation (ADR-062) as one of the conversational mechanisms constituting the methodology's positive scope of claim."
+    },
+    {
+      "type": "references",
+      "target": "adr-063"
+    },
+    {
+      "type": "applies",
+      "target": "adr-066",
+      "note": "Cites the compound defense at phase boundaries (ADR-066) as a distinct component of the methodology's positive scope of claim, combining the User-Tooling Layer manifest check, susceptibility snapshot, and belief-mapping."
+    },
+    {
+      "type": "applies",
+      "target": "adr-068",
+      "note": "Cites the Grounding Reframe as extended by ADR-068 within the methodology's positive scope of claim."
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

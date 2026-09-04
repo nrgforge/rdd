@@ -1,0 +1,59 @@
+{
+  "id": "adr-088",
+  "type": "adr",
+  "form": "index",
+  "title": "ADR-064 Amendment — Phase-Manifest Check Demoted to Advisory; Compound Check Retained",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-088-adr-064-advisory-demotion.md",
+  "summary": "Partially supersedes ADR-064: the Stop hook's per-phase manifest check no longer blocks under any condition, emitting a model-visible advisory instead (repeated each Stop until the artifact appears or `**In-progress phase:**` is set); the compound check (PostToolUse dispatch log + Stop-hook cross-reference) is retained but its fabrication-signal finding is also surfaced as advisory rather than block. ADR-064's State-C claim is amended from \"structurally impossible\" to \"structurally detectable.\" With both checks advisory, skill-text anchoring (ADR-065) becomes the load-bearing enforcement layer; the Harness Layer's contribution shifts to visibility and detection, not prevention.",
+  "compressed": true,
+  "workflow_point": "Stop hook phase-manifest check and compound check, across all cycle modes",
+  "mechanism": "manifest check and compound-check findings demoted from blocking to model-visible advisory; skill-text anchoring (ADR-065) becomes the load-bearing enforcement layer",
+  "links": [
+    {
+      "type": "updates",
+      "target": "adr-064",
+      "note": "partially supersedes ADR-064 (IETF Updates analog): amends the Decision text's structural-prevention claim from \"structurally impossible\" to \"structurally detectable\" and demotes the phase-manifest check and compound check from blocking to advisory across all modes; ADR-064's compound-check architecture, fails-safe-to-allow rationale, and advisory-mode-vs-enforcement-mode framing remain current authority"
+    },
+    {
+      "type": "applies",
+      "target": "adr-065",
+      "note": "names ADR-065's skill-anchored dispatches as the load-bearing enforcement layer now that the manifest and compound checks are advisory-only"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-067",
+      "note": "the companion amendment; this ADR amends ADR-064 while ADR-089 separately amends ADR-067's Three-Tier Enforcement Classification to match the same v0.8.3 advisory-demotion reality"
+    },
+    {
+      "type": "applies",
+      "target": "adr-069",
+      "note": "the honest positive/negative scope-of-claim listing applies ADR-069's scope-of-claim discipline to the v0.8.3 advisory-demotion reality"
+    },
+    {
+      "type": "applies",
+      "target": "adr-074",
+      "note": "applies ADR-074's Step 2.5 supersession-header workflow and Step 3 downstream-artifact sweep (deferred to ARCHITECT/BUILD) for the ADR-064 update"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-079",
+      "note": "the v0.8.2 In-progress phase predicate (whose role this ADR's advisory demotion further amends) was introduced as an ADR-079-style extension via skill-text discipline, distinct from ADR-079's own In-progress gate field"
+    },
+    {
+      "type": "references",
+      "target": "adr-085"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-089",
+      "note": "the companion methodology-debt amendment; this ADR amends ADR-064 while ADR-089 amends ADR-067's Three-Tier Enforcement Classification to align with the same v0.8.3 advisory-demotion reality"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-090",
+      "note": "ADR-090 documents in full the role shift of the In-progress phase field (from load-bearing predicate to advisory-noise suppressor) that this ADR's advisory demotion causes"
+    }
+  ]
+}

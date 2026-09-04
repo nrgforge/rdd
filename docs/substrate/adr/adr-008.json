@@ -1,0 +1,29 @@
+{
+  "id": "adr-008",
+  "type": "adr",
+  "form": "index",
+  "title": "Forward and Backward Operating Modes for Product Discovery",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-008-forward-and-backward-operating-modes.md",
+  "summary": "The /rdd-discover skill operates in two modes. Forward mode (greenfield) runs between RESEARCH and MODEL, takes the essay as input, and produces the product discovery artifact (ADR-007) through stakeholder interviews, JTBD analysis, and assumption inversion. Backward mode (existing system) reads existing architecture, ADRs, and domain model to extract implicit product assumptions, validates them against actual user needs, and produces the same five-section artifact plus a Product Debt table (Assumption, Baked Into, Actual User Need, Gap Type, Resolution) that triggers backward propagation through existing invariant-amendment and ADR-supersession infrastructure. The mode is context-determined: backward mode is default when prior RDD artifacts exist, forward mode applies when starting fresh.",
+  "compressed": true,
+  "workflow_point": "the /rdd-discover skill, both greenfield and existing-system entry",
+  "mechanism": "forward mode (stakeholder interviews, JTBD, assumption inversion) vs. backward mode (Product Debt table audit)",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-006",
+      "note": "Defines the forward and backward operating modes for the Product Discovery phase established by ADR-006."
+    },
+    {
+      "type": "applies",
+      "target": "adr-007",
+      "note": "Both forward and backward modes produce the five-section artifact structure defined in ADR-007; backward mode adds a Product Debt table."
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-025",
+      "note": "ADR-025's template-level Conformance Audit is distinct from this ADR's product conformance: this ADR checks product assumptions against user needs, ADR-025 checks artifact format against the current skill version."
+    }
+  ]
+}

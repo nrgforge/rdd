@@ -1,0 +1,19 @@
+{
+  "id": "adr-009",
+  "type": "adr",
+  "form": "index",
+  "title": "Product Vocabulary Provenance in Domain Model",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-009-product-vocabulary-provenance.md",
+  "summary": "Adds a Product Origin column to the domain model's Concepts table that traces each system term to its Product Vocabulary source (for example, \"Open enrollment crunch\" (Benefits Admin) for the term EnrollmentWindow). Every concept with a user-facing origin must populate the column; infrastructure-only concepts use \"—\" with a brief note; divergence between product and system vocabulary is recorded, not resolved, as a design signal; concepts with multiple product origins list all sources. The /rdd-model skill is updated to read the product discovery artifact alongside the essay when extracting vocabulary.",
+  "compressed": true,
+  "workflow_point": "domain model's Concepts table, populated during MODEL",
+  "mechanism": "Product Origin column tracing system terms to Product Vocabulary sources",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-007",
+      "note": "Traces the domain model's Product Origin column back to the Product Vocabulary Table defined in ADR-007 §5, which is the column's source."
+    }
+  ]
+}

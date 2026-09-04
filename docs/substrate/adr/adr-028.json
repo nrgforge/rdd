@@ -1,0 +1,38 @@
+{
+  "id": "adr-028",
+  "type": "adr",
+  "form": "index",
+  "title": "Structural Experiments as Framing Mechanism",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-028-structural-experiments-as-framing-mechanism.md",
+  "summary": "Establishes structural experiments — quick, externalized, diagnostic trials in a candidate form (a paragraph, a sketch, a few bullet points) — as the framing conversation's primary mechanism for navigating the four dimensions of ADR-027, replacing discursive discussion of forms with trying them on. The agent proposes experiments and may draft a starting version, but the writer must produce their own; a failed experiment is treated as diagnostic, clarifying what the material needs, rather than wasted effort.",
+  "compressed": true,
+  "workflow_point": "SYNTHESIS Phase 3 framing conversation",
+  "mechanism": "structural experiments: quick, externalized, diagnostic trials in a candidate narrative form",
+  "links": [
+    {
+      "type": "refines",
+      "target": "adr-013",
+      "note": "replaces ADR-013's Phase 3 framing conversation's discursive discuss-and-select approach with try-and-discover structural experiments."
+    },
+    {
+      "type": "applies",
+      "target": "adr-016",
+      "note": "structural experiments naturally produce the epistemic engagement ADR-016 requires at the gate — trying on forms is inherently generative."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-027",
+      "note": "structural experiments are the mechanism for navigating ADR-027's four dimensions; the two ADRs are designed to work together, though experiments can run with a simpler vocabulary if the four-dimension model is not adopted."
+    },
+    {
+      "type": "feeds",
+      "target": "adr-029",
+      "note": "structural experiments that reveal incoherence may surface new research questions that trigger ADR-029's synthesis-to-research re-entry."
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    }
+  ]
+}

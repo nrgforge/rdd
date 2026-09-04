@@ -1,0 +1,30 @@
+{
+  "id": "adr-001",
+  "type": "adr",
+  "form": "index",
+  "title": "Replace Approval Gates with Epistemic Gates",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-001-replace-approval-gates-with-epistemic-gates.md",
+  "summary": "Replaces every approval gate in the RDD pipeline with an epistemic gate: at each phase transition the AI presents the artifact and epistemic act prompts drawn from six pedagogical frameworks, the user performs at least one epistemic act (a targeted explanation, prediction, reconstruction, or articulation), and only then does the pipeline advance. The AI acknowledges the response and notes obvious factual discrepancies rather than diagnosing understanding quality, adding an estimated 5-10 minutes per gate. This replaces the prior pattern of AI presents artifact, user says \"approved,\" pipeline advances.",
+  "compressed": true,
+  "workflow_point": "every phase-transition gate in the RDD pipeline",
+  "mechanism": "mandatory epistemic act (explanation, prediction, reconstruction, or articulation) before advancing",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-003"
+    },
+    {
+      "type": "references",
+      "target": "adr-004"
+    },
+    {
+      "type": "references",
+      "target": "invariant-1"
+    },
+    {
+      "type": "references",
+      "target": "invariant-2"
+    }
+  ]
+}

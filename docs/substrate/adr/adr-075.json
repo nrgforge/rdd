@@ -1,0 +1,35 @@
+{
+  "id": "adr-075",
+  "type": "adr",
+  "form": "index",
+  "title": "Preservation Scenarios in DECIDE",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-075-preservation-scenarios-in-decide.md",
+  "summary": "When DECIDE writes behavior scenarios for a feature, it also writes preservation scenarios in the same `scenarios.md` block, each asserting an existing observable behavior, contract, or invariant remains unchanged when the feature is exercised, in Given/When/Then form. When the feature genuinely cannot affect existing behavior, the block records a one-line judgment note instead of fabricating a scenario. DECIDE's Step 4 (Behavior Scenarios) is updated to require preservation scenarios for any feature touching existing modules, addressing the DECIDE-phase share of the Einstellung-effect failure chain named in Issue #13.",
+  "compressed": true,
+  "workflow_point": "DECIDE Step 4 (Behavior Scenarios) — preservation scenarios in scenarios.md",
+  "mechanism": "preservation scenario Given/When/Then block, or a one-line no-existing-behavior judgment note",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-055",
+      "note": "gives the Inversion Principle (ADR-055, operationalized as belief-mapping in DISCOVER) a DECIDE-phase scenario-level anchor; preservation scenarios are artifact entries distinct from belief-mapping's conversational question form, and both can fire"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-073",
+      "note": "preservation scenarios cover criterion-shaped invariants (\"X remains unchanged when Y is enabled\") at the scenario layer, composing with the Cycle Acceptance Criteria Table (ADR-073)"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-076",
+      "note": "addresses the DECIDE-phase share of the Issue #13 failure chain; ADR-076 addresses the ARCHITECT-phase share (fitness-criteria decomposition)"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-077",
+      "note": "addresses the DECIDE-phase share of the Issue #13 failure chain; ADR-077 (Applicability Check) addresses the BUILD-phase share, serving as the second-stage defense against authorship-time Einstellung when the DECIDE-time preservation-scenario selection misses a gap"
+    }
+  ]
+}

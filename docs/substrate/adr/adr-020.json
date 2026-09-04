@@ -1,0 +1,18 @@
+{
+  "id": "adr-020",
+  "type": "adr",
+  "form": "index",
+  "title": "Orientation Document Structure",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-020-orientation-document-structure.md",
+  "summary": "Fixes the Orientation Document's structure at exactly five sections, in order: (1) What this system is — one paragraph of essential purpose, not features or architecture; (2) Who it serves — stakeholder summary compressed from product discovery; (3) Key constraints — the top 3-5 quality attributes or invariants from the domain model that shape every decision; (4) How the artifacts fit together — the Artifact Hierarchy with one-line descriptions and when to read each; and (5) Current state — completed phases, settled decisions, and remaining Open Questions. No section should exceed a few short paragraphs, and the entire document must be readable in under five minutes.",
+  "compressed": true,
+  "workflow_point": "content structure of ORIENTATION.md (ADR-019)",
+  "mechanism": "fixed five-section template, each section sourced from a specific artifact",
+  "links": [
+    {
+      "type": "references",
+      "target": "invariant-4"
+    }
+  ]
+}

@@ -197,6 +197,21 @@
       "note": "prior audience-bifurcation ADR (research-artifact form)"
     },
     {
+      "type": "lineage",
+      "target": "adr-064",
+      "note": "prior audience-bifurcation ADR (centered-vs-infrastructure category naming); complete answer to its own problem under the alternative reading"
+    },
+    {
+      "type": "lineage",
+      "target": "adr-084",
+      "note": "prior audience-bifurcation ADR (agent-context placement: Pattern A audience-tagged sections vs. Pattern B companion file)"
+    },
+    {
+      "type": "lineage",
+      "target": "adr-085",
+      "note": "prior audience-bifurcation ADR (.rdd/ infrastructure relocation: process vs. product on the directory axis; the categories this ADR's locations must not split)"
+    },
+    {
       "type": "names",
       "target": "pattern-calibration-with-graduation-trigger",
       "note": "the C1 finding that opened the cycle: five ADRs compress to one Pattern record plus entries, provided the Substrate is auditable"
@@ -233,11 +248,7 @@
     },
     {
       "type": "references",
-      "target": "invariant-0"
-    },
-    {
-      "type": "references",
-      "target": "invariant-8"
+      "target": "invariant-1"
     }
   ]
 }

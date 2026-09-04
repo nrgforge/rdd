@@ -1,0 +1,18 @@
+{
+  "id": "adr-004",
+  "type": "adr",
+  "form": "index",
+  "title": "User Epistemic Responses Feed Forward into Subsequent Phases",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-004-epistemic-responses-feed-forward.md",
+  "summary": "The user's epistemic act responses at each gate become available as context for the next phase: in single-session RDD cycles the responses are already in conversation history, while for multi-session cycles the orchestrator instructs the AI to read prior gate responses when loading context for a new phase. No storage format is prescribed; the orchestrator's status table can summarize key responses at session resumption. Subsequent phases should attend to the user's stated understanding and emphasis, not just the formal artifacts, activating Invariant 7's bidirectional mechanism.",
+  "compressed": true,
+  "workflow_point": "context loading at the start of each subsequent phase",
+  "mechanism": "conversational carry-forward of gate responses (in-session) or AI-read summarization (cross-session)",
+  "links": [
+    {
+      "type": "references",
+      "target": "invariant-7"
+    }
+  ]
+}

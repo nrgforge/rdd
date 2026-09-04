@@ -1,0 +1,45 @@
+{
+  "id": "adr-082",
+  "type": "adr",
+  "form": "index",
+  "title": "Question-Isolation Protocol at RESEARCH Entry",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-082-question-isolation-protocol.md",
+  "summary": "`/rdd-research` gains a five-step research-entry sequence: the user articulates the research question(s) in the research log before any artifact-corpus read; the agent composes a constraint-removal prompt (\"what if [the most consequential existing artifact] were not available?\") and the user answers; the research-methods-reviewer dispatch (ADR-060) evaluates the combined question set against four criteria (need-vs-artifact framing, embedded conclusions, prior-art treatment, incongruity surfacing); the user revises or accepts flagged issues with rationale; only then does the research loop begin reading the corpus. Per ADR-067's decision procedure the protocol is classified as first-line structural (Skill-Structure Layer) with a cognitive component, not pure Tier 2.",
+  "compressed": true,
+  "workflow_point": "/rdd-research skill entry, before the artifact corpus is consulted",
+  "mechanism": "five-step question-isolation sequence: articulate question, constraint-removal prompt, research-methods-reviewer dispatch, revise, then research loop begins",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-055",
+      "note": "adds an explicit constraint-removal form to the Inversion Principle's (ADR-055) Question Toolkit, as the primary form for the research-entry moment"
+    },
+    {
+      "type": "applies",
+      "target": "adr-058",
+      "note": "classified as first-line structural (Skill-Structure Layer) with a cognitive component, using ADR-058's structural-vs-cognitive tiering, rather than pure Tier 2 (conversational)"
+    },
+    {
+      "type": "extends",
+      "target": "adr-060",
+      "note": "extends the research-methods-reviewer dispatch (ADR-060) with question-set review criteria (framing, embedded conclusions, prior-art treatment, incongruity surfacing) evaluated at research entry"
+    },
+    {
+      "type": "applies",
+      "target": "adr-067",
+      "note": "applies ADR-067's four-step decision procedure to classify the five-step research-entry sequence as first-line structural (Skill-Structure Layer) with a cognitive component"
+    },
+    {
+      "type": "applies",
+      "target": "adr-069",
+      "note": "the honest classification of the protocol's structural-vs-cognitive components, and the acknowledgment that pre-semantic priming is not addressed, follow ADR-069's scope-of-claim discipline"
+    },
+    {
+      "type": "distinguishes-from",
+      "target": "adr-077",
+      "note": "essay 015 grouped this protocol with ADR-077's applicability check under \"second-line cognitive\"; reconsidered at DECIDE — ADR-077 fires conversationally with no per-step structural anchor (Tier 2), while this protocol step-anchors a five-step sequence and so qualifies as first-line structural with a cognitive component"
+    }
+  ]
+}

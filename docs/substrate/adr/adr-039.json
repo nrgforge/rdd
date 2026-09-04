@@ -1,0 +1,23 @@
+{
+  "id": "adr-039",
+  "type": "adr",
+  "form": "index",
+  "title": "Agent as Gamemaster During Play",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-039-agent-as-gamemaster-during-play.md",
+  "summary": "Has the Orchestrating Agent take on a Gamemaster role during PLAY: proposing stakeholder roles and Points of Concentration drawn from Product Discovery and Interaction Specifications, introducing complications and inversions, reacting to the practitioner's discoveries, and creating conditions for encounter without directing the outcome. The boundary is structural, not a matter of degree — the Gamemaster shapes what the practitioner attends to (permitted under Invariant 3's pragmatic-action allowance) but never what they conclude, which remains the practitioner's generative work; a human gamemaster is equally valid for the method, with the agent implementing this role only because the plugin is the agent's instruction set.",
+  "compressed": true,
+  "workflow_point": "PLAY phase, agent's facilitation role",
+  "mechanism": "Gamemaster role: proposes roles and complications, reacts to discoveries, shaping attention rather than conclusions",
+  "links": [
+    {
+      "type": "addresses",
+      "target": "adr-038",
+      "note": "the Gamemaster role addresses the Epistemic Distance tension that ADR-038's Play phase introduces."
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

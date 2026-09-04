@@ -1,0 +1,44 @@
+{
+  "id": "adr-080",
+  "type": "adr",
+  "form": "index",
+  "title": "Scope-Adaptive Enforcement via Precondition Composition",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-080-scope-adaptive-enforcement.md",
+  "summary": "RDD adopts precondition composition as the scope-adaptive enforcement pattern. `tier1-phase-manifest.yaml` per-phase entries gain an optional `applicable_when` block listing conditions (initial primitives: `cycle_type_in`, `cycle_type_not_in`, `phase_not_skipped`, `parent_cycle_present`, `parent_cycle_absent`); when any condition is unmet, the hook skips the check with `onFail: CONTINUE` semantics and records the skip in the dispatch log. Existing manifest entries without `applicable_when` continue to fire unconditionally, so standard full-pipeline cycles are unaffected. Preconditions cannot skip the compound check (ADR-064) for dispatches that already fired.",
+  "compressed": true,
+  "workflow_point": "tier1-phase-manifest.yaml per-phase entries, evaluated by the Stop hook before each check",
+  "mechanism": "applicable_when precondition block with onFail: CONTINUE semantics",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-064",
+      "note": "preconditions cannot skip the compound check (ADR-064) for dispatches that did fire — the compound check remains unconditional for any dispatch that produced a dispatch-log entry"
+    },
+    {
+      "type": "extends",
+      "target": "adr-072",
+      "note": "generalizes ADR-072's Skipped phases field, itself already an instance of the precondition pattern, into a named applicable_when primitive (phase_not_skipped)"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-078",
+      "note": "the precondition primitives (cycle_type_in, parent_cycle_present, etc.) read the same per-entry fields ADR-078's multi-cycle schema declares"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-079",
+      "note": "ADR-079's in-progress-gate predicate is a relaxation that could later be expressed as a precondition under this ADR's framework, though it is not implemented as one here"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-081",
+      "note": "provides the enforcement primitive (legacy single-cycle format detection) that lets the hook treat pre-ADR-072 cycles permissively until ADR-081's migration path brings them under the new schema"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

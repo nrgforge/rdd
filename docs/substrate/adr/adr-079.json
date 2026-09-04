@@ -1,0 +1,40 @@
+{
+  "id": "adr-079",
+  "type": "adr",
+  "form": "index",
+  "title": "Non-Interrupting Stop Predicate for In-Progress Gate Conversations",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-079-non-interrupting-stop-predicate.md",
+  "summary": "The active cycle entry gains a `**In-progress gate:**` field (e.g., `decide → architect`) that the orchestrator sets at the start of an AID phase-boundary gate and clears when the gate-reflection note is written. While the field is set, the Stop hook returns allow without running the gate-reflection-note check for that named boundary, while other manifest checks for the source phase, and the compound check (ADR-064) for any dispatch that fires, continue to run. If the orchestrator fails to set the field the hook reverts to its existing blocking behavior (safe failure); if it fails to clear the field the note check is silently skipped, mitigated by a per-session advisory notice and a `/rdd-conform` heuristic.",
+  "compressed": true,
+  "workflow_point": "phase-boundary AID gate conversations; cycle-status.md top entry",
+  "mechanism": "In-progress gate field plus Stop hook non-interrupting predicate that skips only the gate-reflection-note check",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-063",
+      "note": "extends ADR-063's per-phase manifest format with an optional artifact_type: aid-cycle-gate-reflection field so the hook can selectively skip only the gate-reflection-note entry when In-progress gate is set"
+    },
+    {
+      "type": "applies",
+      "target": "adr-064",
+      "note": "the compound check (ADR-064) and revision-aware re-audit reminder continue to fire for non-gate dispatches during an in-progress gate; the in-progress-gate predicate relaxes only the gate's own artifact requirement"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-066",
+      "note": "the In-progress gate field declares that the gate-reflection note (ADR-066) is being produced during the gate; the note's appearance signals the gate's completion and clears the field"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-072",
+      "note": "uses the same structural pattern as ADR-072 (a per-entry field the hook reads before dispatching to the manifest check); the unsafe failure mode here is the analog of ADR-072's Fails-Safe-to-Allow risk applied to this field"
+    },
+    {
+      "type": "extends",
+      "target": "adr-078",
+      "note": "the In-progress gate field lives per cycle entry within ADR-078's multi-cycle stack schema"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "adr-049",
+  "type": "adr",
+  "form": "index",
+  "title": "Context Gathering as Embedded Protocol",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-049-context-gathering-as-embedded-protocol.md",
+  "summary": "Context Gathering is an embedded protocol, not a separate invocable skill. A five-step protocol (detect mode, prompt for breadcrumbs, fetch and read, synthesize orientation, validate with the user) is specified once in a shared reference section and each of the four Composable Skill Family skills' SKILL.md implements it, adapting step 4 (synthesize orientation) to its own downstream needs. User validation (step 5) automates fetching and synthesis while keeping the user's confirmation as the epistemic boundary.",
+  "compressed": true,
+  "workflow_point": "start of every Composable Skill Family skill invocation",
+  "mechanism": "five-step embedded Context Gathering protocol (detect mode, breadcrumbs, fetch, synthesize, validate)",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-048",
+      "note": "Implements the shared Context Gathering protocol that ADR-048 requires as the common foundation across its four composable skills."
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

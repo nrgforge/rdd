@@ -1,0 +1,54 @@
+{
+  "id": "adr-087",
+  "type": "adr",
+  "form": "index",
+  "title": "Validation Spikes as Research Method — with Grounding Reframe of the Beck Port",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-087-validation-spikes-in-research.md",
+  "summary": "The methodology adopts validation spikes as an optional step in research phases, holding the Beck-port framing (RDD as a port of Beck's time-value-of-money tidying argument) explicitly as an unverified claim rather than a load-bearing premise. Tightly-scoped prototyping is adopted as a research method alongside lit-review, literature search, and methods review, triggered (felt, not mechanical) at the research → discover gate when a claim risks downstream over-elaboration or when interaction-grounding would surface questions lit-review alone cannot reach; the practitioner records rationale whether or not a spike is run. The cycle-as-instance reflection — that research-phase findings are research-not-validation until tested against the world — is encoded as a standing scope-of-claim caveat on the corpus.",
+  "compressed": true,
+  "workflow_point": "research → discover gate — prototype-or-rationale decision point in /rdd-research",
+  "mechanism": "optional tightly-scoped validation spike, triggered by a felt over-elaboration/interaction-grounding question, with rationale recorded either way",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-069",
+      "note": "encodes the cycle-as-instance reflection as a standing caveat within ADR-069's methodology-wide scope-of-claim language"
+    },
+    {
+      "type": "references",
+      "target": "adr-070"
+    },
+    {
+      "type": "references",
+      "target": "adr-074"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-077",
+      "note": "included in the anti-elaboration mechanism family alongside Tidy First/YAGNI and this ADR's tightly-scoped prototyping, though ADR-077's primary disposition is anti-Einstellung (attentional suppression), not anti-elaboration — the shared disposition is secondary for ADR-077"
+    },
+    {
+      "type": "references",
+      "target": "adr-083"
+    },
+    {
+      "type": "applies",
+      "target": "adr-084",
+      "note": "offers a spike-test design (beyond the RESEARCH-phase probe's original scope) that would test whether ADR-084's companion-file pattern (Pattern B) measurably resolves audience-conflation in practice"
+    },
+    {
+      "type": "references",
+      "target": "adr-085"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

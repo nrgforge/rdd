@@ -1,0 +1,27 @@
+{
+  "id": "adr-021",
+  "type": "adr",
+  "form": "index",
+  "title": "Agent-Maintained Orientation Document with User Validation",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-021-orientation-document-maintenance-model.md",
+  "summary": "Establishes an agent-generates, user-validates model for the Orientation Document: the agent produces ORIENTATION.md as a Pragmatic Action by reading the current Artifact Trail and distilling it into the five-section structure (ADR-020); the user reviews it for accuracy as an indirect test of Authority (Invariant 0); the document is regenerated at natural milestones and on request, with a minimum of after RESEARCH (when only sections 1 and 5 can be populated); and generation and validation iterate to refine the draft. No new epistemic gate is introduced — the document's source artifacts already carry their own gates, so this validation is review-based rather than requiring a new epistemic act.",
+  "compressed": true,
+  "workflow_point": "generated after RESEARCH (minimum) and regenerated at milestones through ARCHITECT (Scoping handoff)",
+  "mechanism": "agent-generates/user-validates cycle, with pipeline state inferred from the artifact trail",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-020",
+      "note": "Generation distills the Artifact Trail into the five-section structure defined in ADR-020."
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

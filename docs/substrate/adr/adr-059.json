@@ -1,0 +1,19 @@
+{
+  "id": "adr-059",
+  "type": "adr",
+  "form": "index",
+  "title": "Grounding Reframe for Unassessable Sycophancy Risk",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-059-grounding-reframe.md",
+  "summary": "When sycophancy risk is unassessable — neither belief-mapping nor empirical contact is available and the agent cannot determine whether the user's confidence is earned or reinforced — the agent performs a Grounding Reframe: naming what is uncertain, offering concrete grounding actions (a spike, a test, a domain-expert consult, belief-mapping the assumption, reviewing the artifact trail, or explicitly acknowledging unverified ground), and making the cost of proceeding without grounding visible. The user chooses whether to pursue grounding or proceed with the limitation named.",
+  "compressed": true,
+  "workflow_point": "cross-cutting, whenever sycophancy risk is unassessable",
+  "mechanism": "Grounding Reframe pattern (name uncertainty, offer concrete grounding actions, surface the visible cost)",
+  "links": [
+    {
+      "type": "parallel-to",
+      "target": "adr-058",
+      "note": "The Grounding Reframe handles unassessable sycophancy risk, complementing ADR-058's Tier 1 mechanisms, which handle risk that has already been assessed."
+    }
+  ]
+}

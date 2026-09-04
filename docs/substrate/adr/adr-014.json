@@ -1,0 +1,19 @@
+{
+  "id": "adr-014",
+  "type": "adr",
+  "form": "index",
+  "title": "Worth-the-Calories Quality Gate",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-014-worth-the-calories-quality-gate.md",
+  "summary": "Establishes a quality gate applied during the synthesis framing conversation, composed of three tests before committing to the outline: the Davis Test (can the writer name which widely-held assumption the essay denies, using Davis's twelve categories of assumption denial?), the ABT Test (does the essay's central claim fit \"Context AND more context, BUT complication, THEREFORE consequence,\" with a genuinely surprising BUT?), and the Inversion Test (can the claim be stated as the negation of something the target audience currently believes?). If no framing passes all three, the honest and valid outcome is that the cycle did not produce an essay worth writing; this is authorial discipline the agent facilitates but the writer alone decides, not a system gate that blocks or approves.",
+  "compressed": true,
+  "workflow_point": "synthesis framing conversation, Phase 3 of ADR-013",
+  "mechanism": "three composed tests (Davis, ABT, Inversion) as authorial discipline, not a blocking gate",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-013",
+      "note": "The three-test quality gate is applied during the framing conversation, Phase 3 of ADR-013's synthesis conversation structure."
+    }
+  ]
+}

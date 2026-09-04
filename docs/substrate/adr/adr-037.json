@@ -1,0 +1,23 @@
+{
+  "id": "adr-037",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Interaction Specification Layer in DECIDE Phase",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-037-add-interaction-specification-layer.md",
+  "summary": "Adds Interaction Specifications as a DECIDE-phase artifact at docs/interaction-specs.md, written after scenarios and derived from Product Discovery's stakeholder models, specifying how each stakeholder works with the system at the workflow level — more concrete than scenarios, more stable than implementation details, organized by stakeholder with Super-Objective, Task, and Interaction mechanics fields. The derivation method from stakeholder model to task decomposition is left as an open design problem that evolves through use; the artifact should stay thin, per Invariant 4.",
+  "compressed": true,
+  "workflow_point": "DECIDE phase, after scenarios",
+  "mechanism": "interaction-specs.md: per-stakeholder task decompositions (Super-Objective, Task, Interaction mechanics) derived from Product Discovery's stakeholder models",
+  "links": [
+    {
+      "type": "enables",
+      "target": "adr-038",
+      "note": "Interaction Specifications create the Playable Surface that the Play phase (ADR-038) requires; without them, play has nothing structured to discover deviations from."
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    }
+  ]
+}

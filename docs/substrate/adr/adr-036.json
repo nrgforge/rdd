@@ -1,0 +1,13 @@
+{
+  "id": "adr-036",
+  "type": "adr",
+  "form": "index",
+  "title": "Research Log Archival at End of Cycle",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-036-research-log-archival-timing.md",
+  "summary": "Moves research log archival from the start of the next research cycle to the end of the current one: after the essay is written, citation- and argument-audited, gated, and reflected on, research-log.md is moved to research-logs/NNN-descriptive-name.md matching the essay number, so the next cycle starts with a clean log. If a research-log.md is found at the start of a new cycle, it is treated as an unarchived prior log (likely from an interrupted session) and archived before the new cycle proceeds.",
+  "compressed": true,
+  "workflow_point": "RESEARCH phase, end of cycle (after reflections)",
+  "mechanism": "archive research-log.md to research-logs/NNN-descriptive-name.md at cycle end rather than at the next cycle's start",
+  "links": []
+}

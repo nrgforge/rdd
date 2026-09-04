@@ -1,0 +1,32 @@
+{
+  "id": "adr-011",
+  "type": "adr",
+  "form": "index",
+  "title": "Product Discovery Epistemic Gate",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-011-product-discovery-epistemic-gate.md",
+  "summary": "Defines the Product Discovery epistemic gate: it presents 2 prompts drawn from a set of four (self-explanation, elaborative interrogation, retrieval practice, articulation), each filled with the specific stakeholders, jobs, tensions, and inversions from the artifact just produced, following the standard gate protocol of ADR-001. Because the user typically knows more about their own stakeholders than the AI does, the gate's primary function inverts the typical direction: it makes the user's tacit product knowledge explicit for downstream phases rather than testing the user's understanding of AI output.",
+  "compressed": true,
+  "workflow_point": "Product Discovery phase gate (after /rdd-discover)",
+  "mechanism": "2 of 4 prompt types with an inverted tacit-knowledge-surfacing function",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-001",
+      "note": "Gate behavior (wait for response, note discrepancies, ask whether to proceed/revise/loop back) follows the standard epistemic-gate protocol defined in ADR-001."
+    },
+    {
+      "type": "implements",
+      "target": "adr-002",
+      "note": "This is the Product Discovery skill's own gate definition, per ADR-002's principle that each skill owns its gate."
+    },
+    {
+      "type": "references",
+      "target": "invariant-1"
+    },
+    {
+      "type": "references",
+      "target": "invariant-2"
+    }
+  ]
+}

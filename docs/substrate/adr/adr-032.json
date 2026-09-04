@@ -1,0 +1,19 @@
+{
+  "id": "adr-032",
+  "type": "adr",
+  "form": "index",
+  "title": "Extract Specialist Subagents from Phase Skills",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-032-specialist-subagent-extraction.md",
+  "summary": "Extracts six specialist subagents from phase skills — citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, and spike-runner — each with defined input artifacts, output artifacts, and model (mostly sonnet; spike-runner inherits the parent model). Phase skills retain orchestration, epistemic gate conversations, ADR writing, scenario authoring, system design composition, and user interaction; the boundary is that work requiring back-and-forth with the user stays in a skill, while work that reads input artifacts and produces output artifacts becomes a subagent.",
+  "compressed": true,
+  "workflow_point": "phase skill design, across RESEARCH, DECIDE, and BUILD/CONFORM",
+  "mechanism": "extraction of six specialist subagents with per-subagent input/output artifacts and model assignment",
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-031",
+      "note": "operationalizes ADR-031's artifact-mediated communication requirement: Claude Code subagents have no conversation history, so file-based communication is structurally necessary, not just preferable."
+    }
+  ]
+}

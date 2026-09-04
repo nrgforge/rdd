@@ -1,0 +1,31 @@
+{
+  "id": "adr-003",
+  "type": "adr",
+  "form": "index",
+  "title": "Phase-Specific Epistemic Act Assignments",
+  "status": "Superseded by ADR-040",
+  "canonical_source": "docs/decisions/adr-003-phase-specific-epistemic-act-assignments.md",
+  "summary": "Assigns a primary epistemic act type to each of RDD's five gates: RESEARCH (self-explanation, reflection-on-action, articulation), MODEL (retrieval practice, self-explanation), DECIDE (elaborative interrogation, reflection), ARCHITECT (retrieval practice, articulation, reflection), and BUILD (reflection-in-action, self-explanation). Each gate presents 2-3 prompts, of which the user performs at least one, framed as an invitation to think aloud rather than a quiz, and filled with the specific artifact content and domain vocabulary just produced. Total epistemic cost across a full pipeline is approximately 30-45 minutes, within Invariant 4's 5-10-minute-per-gate constraint.",
+  "compressed": true,
+  "workflow_point": "each of the five RDD gates (RESEARCH, MODEL, DECIDE, ARCHITECT, BUILD)",
+  "mechanism": "fixed per-gate assignment of pedagogical-framework prompts (2-3 per gate)",
+  "supersession": [
+    {
+      "kind": "superseded-by",
+      "by": "adr-040",
+      "date": "2026-03-30",
+      "text": "ADR-040 replaces the fixed-assignment prompt table with an Attend-Interpret-Decide (AID) cycle. The pedagogical frameworks and prompts defined here remain valid as a candidate library the AID cycle can draw from, but they are no longer a fixed assignment — the agent selects its pedagogical move based on engagement signals, not phase identity. The \"5-10 minutes per gate\" constraint was replaced by Invariant 4 Amendment 13: \"Epistemic cost must be productive, not merely brief.\""
+    }
+  ],
+  "links": [
+    {
+      "type": "superseded-by",
+      "target": "adr-040",
+      "note": "ADR-040 replaces the fixed-assignment prompt table with the Attend-Interpret-Decide (AID) cycle; the frameworks defined here become a candidate library the cycle draws from."
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    }
+  ]
+}

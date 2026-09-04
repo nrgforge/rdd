@@ -1,0 +1,43 @@
+{
+  "id": "adr-062",
+  "type": "adr",
+  "form": "index",
+  "title": "Assertion-Aware Observation in AID Cycle",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-062-assertion-detection-hook.md",
+  "summary": "Embedded-conclusion detection (user assertions that embed framing, architectural, or design conclusions, with or without confidence markers) is an AID inline observation responsibility rather than a separate UserPromptSubmit pattern-matching hook, because lexical pattern matching was found to be both over-inclusive and under-inclusive. When the agent semantically detects an embedded conclusion near an artifact-production moment, it deploys open-question reframing from the question toolkit. This is a Tier 2 context-responsive mechanism that trades pre-prompt Architectural Isolation for semantic detection, relying on Tier 1 backstops (Susceptibility Snapshot, Framing Audit) to catch what inline detection misses.",
+  "compressed": true,
+  "workflow_point": "AID cycle Attend phase, at or near artifact-production moments",
+  "mechanism": "semantic embedded-conclusion detection with open-question reframing",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-033"
+    },
+    {
+      "type": "extends",
+      "target": "adr-040",
+      "note": "Extends the AID cycle's Attend phase (ADR-040) with embedded-conclusion detection as an additional susceptibility signal."
+    },
+    {
+      "type": "applies",
+      "target": "adr-056",
+      "note": "Deploys open-question reframing from the Question Toolkit (ADR-056) as the response when an embedded conclusion is detected."
+    },
+    {
+      "type": "extends",
+      "target": "adr-057",
+      "note": "Extends ADR-057's susceptibility-signal repertoire with embedded conclusions as a new signal type, detected inline rather than via a separate hook."
+    },
+    {
+      "type": "applies",
+      "target": "adr-058",
+      "note": "Classified as a Tier 2 context-responsive mechanism under ADR-058's two-tier floor, since it requires agent judgment about what constitutes a concerning assertion."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-061",
+      "note": "Names the Framing Audit (ADR-061) as a structural backstop providing isolated evaluation that catches embedded conclusions this ADR's inline detection misses."
+    }
+  ]
+}

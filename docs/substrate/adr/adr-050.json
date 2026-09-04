@@ -1,0 +1,20 @@
+{
+  "id": "adr-050",
+  "type": "adr",
+  "form": "index",
+  "title": "Reconstructed Facsimiles as Written Session Artifacts",
+  "status": "Proposed",
+  "cycle": "6",
+  "canonical_source": "docs/decisions/adr-050-reconstructed-facsimiles-as-session-artifacts.md",
+  "summary": "In context-reconstructive mode, reconstructed facsimiles (work decomposition and orientation summary always; vocabulary and testable behaviors optionally, for substantial sessions) are written as lightweight markdown files during Context Gathering rather than kept only in conversation. They live in a gitignored `session/` directory, marked with a `session-artifact: true` frontmatter flag, and are explicitly non-permanent and distinct from the RDD artifact trail; after the session the user discards, promotes, or leaves them in place.",
+  "compressed": true,
+  "workflow_point": "context-reconstructive mode, during Context Gathering",
+  "mechanism": "lightweight markdown session artifacts in a gitignored session/ directory",
+  "links": [
+    {
+      "type": "narrows",
+      "target": "adr-031",
+      "note": "Session artifacts are intentionally outside ADR-031's scope: ADR-031 governs provenance-durable artifact-mediated communication, while session artifacts are ephemeral working-memory externalization written for pragmatic reasons (surviving context compression), not architectural provenance."
+    }
+  ]
+}

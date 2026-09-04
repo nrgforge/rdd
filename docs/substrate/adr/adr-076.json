@@ -1,0 +1,43 @@
+{
+  "id": "adr-076",
+  "type": "adr",
+  "form": "index",
+  "title": "Fitness Criteria Decomposition in ARCHITECT",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-076-fitness-criteria-decomposition-in-architect.md",
+  "summary": "When ARCHITECT assigns a qualitative claim (\"transparent,\" \"seamless,\" \"backward-compatible,\" etc.) to a module's responsibility, the system-design step requires the claim to be decomposed into one or more testable fitness properties, recorded as `**Fitness:** <observable property> — <how observed/measured>` adjacent to the claim, before the ARCHITECT gate may pass. The qualitative claim is retained as the human-readable summary; the fitness properties are the verification anchors. Fitness properties carry forward into BUILD, becoming Cycle Acceptance Criteria Table entries (ADR-073) or preservation scenarios (ADR-075) where applicable, addressing the ARCHITECT-phase share of the Issue #13 failure chain.",
+  "compressed": true,
+  "workflow_point": "ARCHITECT system-design step — qualitative-claim decomposition gate",
+  "mechanism": "testable Fitness property statement per qualitative claim; gate refuses to advance when undecomposed",
+  "links": [
+    {
+      "type": "composes-with",
+      "target": "adr-073",
+      "note": "fitness properties that specify a verification layer become entries in the Cycle Acceptance Criteria Table (ADR-073)"
+    },
+    {
+      "type": "motivated-by",
+      "target": "adr-074",
+      "note": "rejects deferring the gate check to a periodic /rdd-conform audit for the same reason ADR-074's Step 3 rejects deferring its check to a periodic sweep — a forcing function at the moment of decision beats a later audit"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-075",
+      "note": "fitness properties that are scenario-decomposable may become preservation scenarios (ADR-075)"
+    },
+    {
+      "type": "consumed-by",
+      "target": "adr-077",
+      "note": "ADR-077's prompt 4 (\"Which fitness properties does system-design.md declare for the affected module(s)?\") consumes this ADR's decomposed fitness properties, making them load-bearing at the BUILD pattern-reuse moment"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

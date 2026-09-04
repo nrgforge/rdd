@@ -1,0 +1,27 @@
+{
+  "id": "adr-025",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Conformance Audit with Graduation",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-025-add-conformance-audit-with-graduation.md",
+  "summary": "Adds a Conformance Audit mechanism with four operations: audit (gap analysis against the current skill version, using structural-vs-format severity), remediation (auto-generate structural gaps, flag format gaps for the user), drift detection (a best-effort semantic sweep comparing artifacts against implementation), and graduation (fold RDD knowledge into native project docs and archive RDD artifacts, recurring at the subsystem level, not a one-time exit). All four operations are pragmatic actions: the audit produces a report and the user decides what to act on.",
+  "compressed": true,
+  "workflow_point": "RDD adoption on existing projects, skill-version upgrades, post-build drift checks, and graduation",
+  "mechanism": "four-operation conformance audit (audit, remediation, drift detection, graduation) with two-level severity (structural vs. format)",
+  "links": [
+    {
+      "type": "complements",
+      "target": "adr-008",
+      "note": "complements ADR-008's Product Conformance: this audit checks template alignment against the current skill version, ADR-008 checks product-assumption alignment."
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    },
+    {
+      "type": "references",
+      "target": "invariant-6"
+    }
+  ]
+}

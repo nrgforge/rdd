@@ -1,0 +1,24 @@
+{
+  "id": "adr-040",
+  "type": "adr",
+  "form": "index",
+  "title": "Replace Fixed-Template Gates with Attend-Interpret-Decide Cycle",
+  "status": "Proposed",
+  "cycle": "5",
+  "canonical_source": "docs/decisions/adr-040-adaptive-gates-attend-interpret-decide.md",
+  "summary": "Replaces the fixed-template epistemic gate protocol across all skill files with an Attend-Interpret-Decide (AID) cycle: the agent reads the cycle's conversation for engagement signals (Attend), forms a hypothesis about the user's engagement level — deep, adequate, surface, confused, or disengaged (Interpret) — and selects a contingent pedagogical move: challenge, probe, teach, clarify, or re-anchor (Decide). The gate is iterative and contingent on the user's response, ending when shared understanding is established rather than after a fixed number of turns; the decision is co-dependent with Invariant 4 Amendment 13, which shifts the constraint from duration to waste ('epistemic cost must be productive, not merely brief').",
+  "compressed": true,
+  "workflow_point": "epistemic gates, all RDD phases",
+  "mechanism": "Attend-Interpret-Decide (AID) cycle selecting a contingent pedagogical move per gate turn",
+  "links": [
+    {
+      "type": "supersedes",
+      "target": "adr-003",
+      "note": "replaces ADR-003's fixed per-phase pedagogical-framework assignment table with the AID cycle; ADR-003's frameworks and prompts remain valid as a candidate library the AID cycle draws from, no longer a fixed assignment."
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    }
+  ]
+}

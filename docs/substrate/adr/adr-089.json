@@ -1,0 +1,50 @@
+{
+  "id": "adr-089",
+  "type": "adr",
+  "form": "index",
+  "title": "ADR-067 Amendment — Harness-Layer Technique Revised to Advisory Detection",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-089-adr-067-harness-layer-revision.md",
+  "summary": "Partially supersedes ADR-067: the Three-Tier Enforcement Classification's Harness Layer row is amended to describe its two hooks (PostToolUse dispatch log; Stop-hook compound check) as operating in advisory disposition rather than blocking, and the decision-procedure's step 2 and the \"only structural defense\" State-C claim are revised from impossibility to detectability, reflecting ADR-088's advisory demotion of ADR-064. Substrate primacy is explicitly preserved: the Harness Layer remains primary for phase-boundary and silent-dispatch-fallback mechanisms; only its enforcement strength (not its domain coverage) changes.",
+  "compressed": true,
+  "workflow_point": "Three-Tier Enforcement Classification taxonomy — Harness Layer row and decision-procedure step 2",
+  "mechanism": "amended Harness-Layer technique description (advisory disposition) and State-C detectability claim; substrate primacy unchanged",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-060",
+      "note": "names ADR-060's research-methods-reviewer pre-research-loop dispatch as an example mechanism where Skill-Structure Layer is primary and the Harness Layer adds advisory dispatch-log verification"
+    },
+    {
+      "type": "applies",
+      "target": "adr-063",
+      "note": "ADR-063's manifest format is named as the implementing ADR for the Harness Layer substrate row, extended by ADR-064 (as updated by ADR-088) for the compound-check hooks"
+    },
+    {
+      "type": "applies",
+      "target": "adr-064",
+      "note": "amends the Harness-Layer classification row to reflect ADR-064's compound-check mechanism as updated by ADR-088"
+    },
+    {
+      "type": "applies",
+      "target": "adr-065",
+      "note": "names ADR-065's per-phase skill-anchored dispatch sites as the Skill-Structure-Layer-primary mechanism the Harness Layer's advisory detection complements, per the explicit example list in §5"
+    },
+    {
+      "type": "updates",
+      "target": "adr-067",
+      "note": "partially supersedes ADR-067 (IETF Updates analog): amends the Harness Layer row's enforcement-technique description and decision-procedure step 2 language to reflect ADR-088's advisory demotion; the Three-Tier substrate framing, four-step decision procedure structure, and substrate primacy ordering all remain current authority"
+    },
+    {
+      "type": "applies",
+      "target": "adr-074",
+      "note": "applies ADR-074's Step 2.5 supersession-header workflow and Step 3 downstream-artifact sweep (deferred to ARCHITECT/BUILD) for the ADR-067 update"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-088",
+      "note": "the companion methodology-debt amendment; ADR-088 amends ADR-064 while this ADR amends ADR-067's Three-Tier Enforcement Classification to align with the same v0.8.3 advisory-demotion reality — the two amendments land together"
+    }
+  ]
+}

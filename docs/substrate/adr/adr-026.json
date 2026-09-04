@@ -1,0 +1,24 @@
+{
+  "id": "adr-026",
+  "type": "adr",
+  "form": "index",
+  "title": "Formalize Scoped Cycles as First-Class Workflow Pattern",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-026-formalize-scoped-cycles.md",
+  "summary": "Formalizes Scoped Cycles as a first-class workflow pattern: the RDD pipeline can be constrained to a subsystem or feature, with its own artifact subfolder (e.g., docs/features/auth/), following the same phases and gate protocols as full-project cycles while respecting project-level architectural constraints. Scoped cycles typically end in graduation, folding knowledge into project-level docs; RDD is framed as a deep work tool reached for when a problem warrants structured thinking and set aside once the knowledge is absorbed.",
+  "compressed": true,
+  "workflow_point": "orchestrator workflow-mode selection, subsystem/feature scope",
+  "mechanism": "scoped cycle: scope to cycle to graduate lifecycle within existing pipeline phases and gates",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-006",
+      "note": "extends ADR-006's Scoping concept (a partial pipeline run for team handoff) into a full lifecycle: scope, cycle, graduate."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-025",
+      "note": "scoped cycles typically end with ADR-025's graduation, folding knowledge into project-level docs and archiving RDD artifacts."
+    }
+  ]
+}

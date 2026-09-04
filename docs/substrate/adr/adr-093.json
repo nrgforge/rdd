@@ -1,0 +1,39 @@
+{
+  "id": "adr-093",
+  "type": "adr",
+  "form": "index",
+  "title": "Argument-Auditor Scope Extends to Argument-Graph Consumption and Pyramid Expansion-Fidelity Verification",
+  "status": "Accepted (Cycle 018 BUILD shipped WP-B; v0.8.6)",
+  "cycle": "018",
+  "canonical_source": "docs/decisions/adr-093-argument-auditor-graph-traversal.md",
+  "summary": "The `argument-auditor` specialist subagent's responsibilities are extended to include Argument-Graph consumption, pyramid graph-traversal, and expansion-fidelity verification when the primary document is an Essay-Outline (per ADR-092), anchored in `agents/argument-auditor.md` as Skill-Structure Layer instructions rather than domain-model vocabulary alone. Essay-Outline becomes a fourth named genre; the auditor traverses the four-tier pyramid (Abstract, Argument-Graph, Citation-Embedded Outline, References), verifies the Pyramid Refinement compliance test at three boundaries plus reverse-direction, assigns P1/P2/P3 severity to violations, and reports a pyramid coverage map and expansion-fidelity findings. The three existing genres' behavior is unchanged.",
+  "compressed": true,
+  "workflow_point": "argument-audit dispatch on Essay-Outline genre documents (agents/argument-auditor.md)",
+  "mechanism": "pyramid graph-traversal across four tiers plus expansion-fidelity verification at three boundaries plus reverse-direction, anchored as a new Process step",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-067",
+      "note": "anchors the auditor's expanded scope in the Skill-Structure Layer substrate named in ADR-067 (as updated by ADR-089) — a concrete workflow step in agents/argument-auditor.md"
+    },
+    {
+      "type": "applies",
+      "target": "adr-089",
+      "note": "the Skill-Structure Layer substrate's primacy and technique for this mechanism are unchanged by ADR-089's Harness Layer revision, which only revised the Harness Layer's own technique description"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-091",
+      "note": "the ADR-092/ADR-093 separability (form vs. verification-mechanism as independently supersedable decisions) is methodology-pattern-derived, analogous to ADR-091's own separability from future ADRs that might amend the build skill independently of the dual-mode framing"
+    },
+    {
+      "type": "implements",
+      "target": "adr-092",
+      "note": "anchors the Skill-Structure Layer verification mechanism (pyramid graph-traversal + expansion-fidelity verification) that ADR-092 §5 requires for its Pyramid Refinement structural property, filed as a conceptually separate, independently-supersedable decision"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

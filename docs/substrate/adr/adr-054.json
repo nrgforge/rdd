@@ -1,0 +1,29 @@
+{
+  "id": "adr-054",
+  "type": "adr",
+  "form": "index",
+  "title": "Skill Composition Boundaries Within Build",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-054-skill-composition-boundaries.md",
+  "summary": "Build composes debug, refactor, and review as seamless mode shifts, not dispatched sub-workflows: each mode shift inherits the build session's orientation and current work package with no re-orientation, so skill boundaries are invisible during composition. Debug triggers on unexpected failures (errors unrelated to the current red-phase expectation, previously-passing tests breaking, behavior diverging from orientation); refactor triggers after green or at stewardship across the Three-Level Refactor; review triggers at stewardship checkpoints or on demand. Any skill can also be invoked standalone, running its own Context Gathering, with skill boundaries visible in that mode.",
+  "compressed": true,
+  "workflow_point": "BUILD phase, composition boundaries between build/debug/refactor/review",
+  "mechanism": "seamless mode shifts with full context inheritance (no re-orientation)",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-043",
+      "note": "Preserves the review skill's standalone utility character established in ADR-043 even as its build-time integration is redefined by this ADR."
+    },
+    {
+      "type": "supersedes",
+      "target": "adr-046",
+      "note": "Supersedes ADR-046's callout-based review integration mechanics with a seamless mode-shift composition model, while preserving the review skill's standalone character."
+    },
+    {
+      "type": "extends",
+      "target": "adr-048",
+      "note": "Extends ADR-048's skill decomposition by specifying explicit composition boundaries, triggers, and context-inheritance rules for build's invocation of debug, refactor, and review."
+    }
+  ]
+}

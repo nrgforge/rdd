@@ -1,0 +1,25 @@
+{
+  "id": "adr-073",
+  "type": "adr",
+  "form": "index",
+  "title": "Cycle Acceptance Criteria Table with Layer-Match Verification",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-073-cycle-acceptance-criteria-table.md",
+  "summary": "DECIDE produces (or explicitly identifies within `scenarios.md`) a Cycle Acceptance Criteria Table listing each emergent or aggregate acceptance criterion from product-discovery, recording for each the criterion text, the specified verification layer, the verification method (which scenarios compose to cover it), and a layer-match check (does verification exercise the specified layer or stub it out). BUILD gains Step 5.5 — Cycle Criterion Verification — which writes or identifies an integration test at the stated layer for any entry whose layer-match check is \"no.\" The table is required only when product-discovery names emergent, aggregate, or layer-specifying criteria; cycles with only atomic criteria record a one-line judgment instead.",
+  "compressed": true,
+  "workflow_point": "DECIDE (Cycle Acceptance Criteria Table in scenarios.md) and BUILD Step 5.5 (Cycle Criterion Verification)",
+  "mechanism": "four-column layer-match table bridging aggregate acceptance criteria to scenario-level verification",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-055",
+      "note": "the layer-match check operationalizes the Inversion Principle (ADR-055) as a structural prompt for \"what layer am I not verifying?\""
+    },
+    {
+      "type": "applies",
+      "target": "adr-074",
+      "note": "the table's risk of drifting from product-discovery is mitigated by the supersession workflow (ADR-074) when product-discovery's criteria themselves are revised"
+    }
+  ]
+}

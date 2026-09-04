@@ -1,0 +1,13 @@
+{
+  "id": "adr-034",
+  "type": "adr",
+  "form": "index",
+  "title": "Package RDD as Plugin `rdd` under `nrgforge`",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-034-plugin-packaging.md",
+  "summary": "Packages RDD as a Claude Code plugin named rdd under the nrgforge/rdd GitHub repository, using hyphenated skill namespacing (/rdd-research, /rdd-decide, /rdd-build, etc.) rather than the colon separator assumed in earlier drafts. The plugin ships skills/, agents/, hooks/, settings.json, and the ~800KB self-referential artifact corpus together, so the conformance audit's graduation operation can progressively condense process artifacts into reference material over time.",
+  "compressed": true,
+  "workflow_point": "plugin distribution and installation, outside the pipeline phases",
+  "mechanism": "plugin packaging under nrgforge/rdd with hyphenated skill namespacing",
+  "links": []
+}

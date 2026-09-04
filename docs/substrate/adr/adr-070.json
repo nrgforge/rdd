@@ -1,0 +1,48 @@
+{
+  "id": "adr-070",
+  "type": "adr",
+  "form": "index",
+  "title": "Housekeeping Directory Migration and rdd-conform Scope Extension",
+  "status": "Updated by ADR-085",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-070-housekeeping-migration.md",
+  "summary": "Specifies the mechanical migration of `docs/housekeeping/audits/` and `docs/housekeeping/cycle-status.md` into the housekeeping directory structure that ADR-064 committed to but deferred, creates `docs/housekeeping/gates/` for ADR-066's gate reflection notes, and updates path references across ADRs, essays, skill files, the ADR-063 manifest, the domain model, and ORIENTATION. The migration is a one-shot, idempotent operation triggered by `/rdd-conform migrate`, writing a `.migration-version` marker file that the Stop hook (ADR-064) reads to distinguish advisory mode (pre-migration) from enforcement mode (migrated). `rdd-conform` gains three new audit scopes: housekeeping directory organization, gate reflection note template alignment, and dispatch prompt format.",
+  "compressed": true,
+  "workflow_point": "one-shot migration via /rdd-conform migrate, run at a phase boundary or between cycles",
+  "mechanism": "one-shot idempotent corpus migration with version marker, plus three new rdd-conform audit scopes",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "date": "2026-04-27",
+      "text": "ADR-085 relocates infrastructure artifacts from `docs/housekeeping/` to `.rdd/` and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes.",
+      "by": "adr-085"
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-085",
+      "note": "ADR-085 relocates infrastructure artifacts from `docs/housekeeping/` to `.rdd/` and applies process-vs-product directory separation via the dotfile convention. ADR-070's centered-vs-infrastructure framing remains current; only the placement changes."
+    },
+    {
+      "type": "implements",
+      "target": "adr-063",
+      "note": "Updates every `path_template` value in ADR-063's manifest to the post-migration housekeeping paths."
+    },
+    {
+      "type": "implements",
+      "target": "adr-064",
+      "note": "Executes the housekeeping-directory migration (audits and cycle-status) that ADR-064 committed to but explicitly deferred to this ADR."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-065",
+      "note": "Coordinates with ADR-065: the migration updates the canonical `Output path:` values in skill-file dispatch prompts in lockstep with the manifest's path_template updates, so skill text and hook manifest do not disagree mid-transition."
+    },
+    {
+      "type": "implements",
+      "target": "adr-066",
+      "note": "Creates `docs/housekeeping/gates/` as required by ADR-066's gate reflection notes; unlike audits and cycle-status, this location has no pre-migration equivalent and is created rather than migrated."
+    }
+  ]
+}

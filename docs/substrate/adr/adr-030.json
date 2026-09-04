@@ -1,0 +1,29 @@
+{
+  "id": "adr-030",
+  "type": "adr",
+  "form": "index",
+  "title": "Outline as Two-Register Artifact",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-030-two-register-outline.md",
+  "summary": "Specifies the SYNTHESIS outline as a two-register artifact: an argumentative backbone (claims follow from evidence, framing does not overreach; verified by the argument audit) layered with a curatorial arrangement (selection, juxtaposition, scale shifts, the shimmer, personal voice; assessed by writer-and-agent judgment, with no formal verification mechanism). The backbone must hold even in lyric, hermit-crab, or indeterminate forms; the argument audit's scope is unchanged and continues to check only the logical register.",
+  "compressed": true,
+  "workflow_point": "SYNTHESIS outline production (Phase 3 output)",
+  "mechanism": "two-register outline: argumentative backbone (argument-audited) plus curatorial arrangement (judgment-assessed)",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-013",
+      "note": "adds structural specificity to what ADR-013's 'non-formulaic' outline means in practice; ADR-013's structure and citation/argument-audit requirements remain unchanged."
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-014",
+      "note": "ADR-014's worth-the-calories tests primarily evaluate the argumentative register; curatorial quality is a separate, interacting concern."
+    },
+    {
+      "type": "applies",
+      "target": "adr-028",
+      "note": "curatorial-register judgment during the framing conversation is informed by ADR-028's structural experiments."
+    }
+  ]
+}

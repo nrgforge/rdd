@@ -1,0 +1,44 @@
+{
+  "id": "adr-081",
+  "type": "adr",
+  "form": "index",
+  "title": "Grandfathered-Rule Migration for Pre-ADR-072 Cycles",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-081-grandfathered-rule-migration.md",
+  "summary": "The Stop hook detects pre-ADR-078 `cycle-status.md` files (single-entry, no `## Cycle Stack` header) and, within them, pre-ADR-072 entries lacking cycle-shape fields, and applies grandfathered enforcement: advisory-mode manifest checks regardless of the corpus-level `.migration-version` state, until the user runs a new `/rdd-conform` cycle-shape audit scope, manually adds current-schema fields, or graduates the cycle (ADR-025). The audit detects legacy entries, reads and prompts for missing fields, and writes a migrated entry into the current stack format while preserving the existing prose body verbatim. Cycle 8 (rdd-pair) is named as the validation case.",
+  "compressed": true,
+  "workflow_point": "Stop hook cycle-status.md legacy detection; /rdd-conform cycle-shape audit scope",
+  "mechanism": "grandfathered advisory-mode enforcement for pre-ADR-072 cycles, migrated via a /rdd-conform audit scope",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-025",
+      "note": "graduating a grandfathered cycle (ADR-025) closes it and ends the grandfathered window with it"
+    },
+    {
+      "type": "extends",
+      "target": "adr-070",
+      "note": "handles the per-cycle migration transition on top of ADR-070's corpus-level enforcement-mode/advisory-mode boundary (the .rdd/.migration-version file)"
+    },
+    {
+      "type": "applies",
+      "target": "adr-072",
+      "note": "grandfathers cycles that predate ADR-072's cycle-shape fields (Skipped phases, Paused, Cycle type) into advisory-mode enforcement until migrated"
+    },
+    {
+      "type": "applies",
+      "target": "adr-078",
+      "note": "detects pre-ADR-078 cycle-status.md files (single-entry, no Cycle Stack header) via ADR-078's legacy single-entry-format treatment, then migrates them to the current stack schema"
+    },
+    {
+      "type": "references",
+      "target": "adr-079"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-080",
+      "note": "ADR-080's precondition framework provides the mechanism by which grandfathered checks are skipped, though the detection of legacy format is hook logic rather than a precondition itself"
+    }
+  ]
+}

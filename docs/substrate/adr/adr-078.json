@@ -1,0 +1,44 @@
+{
+  "id": "adr-078",
+  "type": "adr",
+  "form": "index",
+  "title": "Multi-Cycle Schema in cycle-status.md",
+  "status": "Proposed",
+  "cycle": "016",
+  "canonical_source": "docs/decisions/adr-078-multi-cycle-schema.md",
+  "summary": "`docs/cycle-status.md` adopts a stack-based multi-cycle schema: a `## Cycle Stack` section holding `### Active:` and `### Paused:` entries, top of stack being the active cycle. Each entry carries per-cycle fields (cycle number, started date, current phase, cycle type, parent cycle, ADR-072's skipped-phases and paused fields, phase-at-pause, spawned-by). Spawning a nested cycle pauses the outer cycle by default (`pause-parent`) or, when explicitly declared with a `**Continue-parent rationale:**`, runs concurrently (`continue-parent`) with the outer cycle's enforcement suspended while the inner cycle is on top. The Stop hook reads only the top-of-stack entry; legacy single-entry cycle-status.md files are treated as a one-entry stack.",
+  "compressed": true,
+  "workflow_point": "cycle-status.md file structure, read by the Stop hook (top-of-stack entry)",
+  "mechanism": "stack-based Cycle Stack schema with pause-parent/continue-parent coupling and history-pseudostate resume",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-025"
+    },
+    {
+      "type": "extends",
+      "target": "adr-064",
+      "note": "the Stop hook's compound check (ADR-064) and revision-aware re-audit reminder continue to fire against the top-of-stack entry's non-skipped, non-paused phase"
+    },
+    {
+      "type": "extends",
+      "target": "adr-072",
+      "note": "folds ADR-072's two header fields (Skipped phases, Paused) in as per-entry fields within the richer Cycle Stack schema; ADR-072's field semantics remain current, only the placement migrates from per-file to per-entry"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-079",
+      "note": "composes with ADR-079 (non-interrupting Stop predicate) and ADR-080 to cover the full Issue #14 scope; ADR-079 separately addresses the in-progress-gate case that this ADR's broader schema does not itself resolve"
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-080",
+      "note": "composes with ADR-079 and ADR-080 (scope-adaptive enforcement via precondition composition) to cover the full Issue #14 scope"
+    },
+    {
+      "type": "precedent-for",
+      "target": "adr-081",
+      "note": "ADR-081 specifies the migration path bringing pre-ADR-078 cycle-status.md files under this ADR's stack schema"
+    }
+  ]
+}

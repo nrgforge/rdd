@@ -1,0 +1,13 @@
+{
+  "id": "adr-043",
+  "type": "adr",
+  "form": "index",
+  "title": "Code Review as Utility Skill",
+  "status": "Accepted",
+  "canonical_source": "docs/decisions/adr-043-code-review-utility-skill.md",
+  "summary": "Implements code review as a utility skill (/rdd-review) rather than a pipeline phase, since review must happen at variable granularity during build and the standalone MR-review use case has no pipeline context at all. It can be invoked at any time from any context, does not produce a phase artifact or gate pipeline progression, and integrates with build stewardship checks as an optional enhancement without replacing them; its output (questions for the reviewer's consideration) is deliberately ephemeral, since the success criterion is whether the reviewer can discuss the change with informed judgment, not whether a review record exists.",
+  "compressed": true,
+  "workflow_point": "utility skill, invocable at any time, optionally alongside build stewardship checkpoints",
+  "mechanism": "code review as a standalone utility skill, integrated with but independent from build stewardship",
+  "links": []
+}

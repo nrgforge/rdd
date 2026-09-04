@@ -1,0 +1,34 @@
+{
+  "id": "adr-065",
+  "type": "adr",
+  "form": "index",
+  "title": "Anchor Dispatch — Skill-Structure Fix for Step-Anchorable Mechanisms",
+  "status": "Proposed",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-065-anchor-dispatch-skill-structure-fix.md",
+  "summary": "Specifies the Skill-Structure Layer implementation of Invariant 8's anchoring requirement: for every Tier 1 mechanism whose dispatch can be anchored to a concrete workflow step, the governing skill must name the mechanism by its `subagent_type`, place the dispatch at a mechanically-unavoidable step, use a canonical prompt skeleton with a regex-parseable `Output path:` line, and place the dispatch at a structurally privileged position (top or bottom third, not the \"lost in the middle\" zone) of the skill file. The primary fix adds a Susceptibility Snapshot Dispatch subsection to each of the eight phase skills at the phase-end position, writing to `.rdd/audits/susceptibility-snapshot-{cycle}-{phase}.md`; existing dispatch sites (citation, argument, research-methods auditors) are audited against the canonical skeleton and position.",
+  "compressed": true,
+  "workflow_point": "phase-end of each of the eight RDD phase skills",
+  "mechanism": "canonical dispatch-prompt skeleton with regex-parseable Output path: line, placed at a structurally privileged skill-file position",
+  "links": [
+    {
+      "type": "precedent-for",
+      "target": "adr-064",
+      "note": "ADR-064's PostToolUse hook depends on this ADR's canonical dispatch-prompt skeleton (the `Output path:` line) to extract expected output paths; this ADR is a precondition for ADR-064's compound check."
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-066",
+      "note": "Names ADR-066's User-Tooling Layer pattern as the third alternative substrate (alongside this ADR's Skill-Structure Layer and ADR-064's Harness Layer) for anchoring Tier 1 mechanisms under Invariant 8."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-070",
+      "note": "Coupled to ADR-070's housekeeping path migration: the canonical paths in this ADR's dispatch skeletons must be updated in lockstep with ADR-070's migration to avoid skill-text and hook-manifest path mismatches."
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

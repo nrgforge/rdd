@@ -1,0 +1,52 @@
+{
+  "id": "adr-057",
+  "type": "adr",
+  "form": "index",
+  "title": "AID Susceptibility Extension with Inline Observation and Isolated Evaluation",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-057-aid-susceptibility-extension.md",
+  "summary": "Extends the AID cycle's Attend phase to notice susceptibility signals (rising assertion density, solution-space narrowing without user initiation, unmodified adoption of agent framing, confidence markers at artifact-production moments, declining engagement with alternatives) without evaluating them inline. Evaluation happens in an isolated context: a specialist subagent reads the observed signals and produces an advisory, non-blocking Susceptibility Snapshot artifact, dispatched at phase boundaries rather than continuously.",
+  "compressed": true,
+  "workflow_point": "AID cycle Attend phase (inline); phase boundaries (isolated evaluation dispatch)",
+  "mechanism": "inline susceptibility-signal observation with isolated-subagent Susceptibility Snapshot evaluation",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-031",
+      "note": "The Susceptibility Snapshot artifact follows Artifact-Mediated Communication (ADR-031) as a durable, inspectable specialist-subagent output."
+    },
+    {
+      "type": "extends",
+      "target": "adr-040",
+      "note": "Extends the AID cycle (ADR-040) with susceptibility-signal observation during Attend and isolated evaluation via a Susceptibility Snapshot."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-059",
+      "note": "The Susceptibility Snapshot's advisory findings are converted into actionable forks by the Grounding Reframe (ADR-059), mitigating the risk that an advisory snapshot is simply ignored."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-062",
+      "note": "Assertion-Aware Observation (ADR-062) provides mid-phase susceptibility coverage between this ADR's phase-boundary snapshots."
+    },
+    {
+      "type": "anchored-by",
+      "target": "adr-064",
+      "note": "Retroactively anchored (Cycle 10 backward-propagation note, 2026-04-09) by ADR-064's Harness Layer compound check, added as defense-in-depth for the snapshot's dispatch under Invariant 8."
+    },
+    {
+      "type": "anchored-by",
+      "target": "adr-065",
+      "note": "Retroactively anchored (Cycle 10 backward-propagation note, 2026-04-09) by ADR-065's Skill-Structure Layer, which adds per-phase susceptibility-snapshot dispatch sites at structurally privileged positions in each phase skill."
+    },
+    {
+      "type": "references",
+      "target": "adr-070"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

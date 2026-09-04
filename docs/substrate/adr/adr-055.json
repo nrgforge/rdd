@@ -1,0 +1,25 @@
+{
+  "id": "adr-055",
+  "type": "adr",
+  "form": "index",
+  "title": "Belief-Mapping Operationalization of Inversion Principle",
+  "status": "Proposed",
+  "cycle": "9",
+  "canonical_source": "docs/decisions/adr-055-belief-mapping-operationalization-of-inversion-principle.md",
+  "summary": "Operationalizes the Inversion Principle through belief-mapping questions (\"What would I need to believe for [the alternative] to be right?\") as the primary form, amending ADR-010's cross-cutting application from four locations to six by adding PLAY and SYNTHESIS. The Cycle 9 spike found adversarial framing (\"strongest case against X\") overcorrected 2-6x by activating Compliance Dynamics, while belief-mapping achieved near-zero preference-driven divergence; adversarial framing is deprecated as the default operationalization but remains available when the user explicitly requests it.",
+  "compressed": true,
+  "workflow_point": "cross-cutting: RESEARCH, PRODUCT DISCOVERY, DECIDE, ARCHITECT, PLAY, SYNTHESIS",
+  "mechanism": "belief-mapping question form (\"what would I need to believe for X to be right?\")",
+  "links": [
+    {
+      "type": "updates",
+      "target": "adr-010",
+      "note": "Amends ADR-010: expands the Inversion Principle's cross-cutting application from four locations to six (adding PLAY and SYNTHESIS) and specifies belief-mapping as the mandatory operationalized form."
+    },
+    {
+      "type": "applies",
+      "target": "adr-056",
+      "note": "Applies belief-mapping, one of the six research-grounded question forms cataloged in ADR-056, as the Inversion Principle's mandatory primary operationalization."
+    }
+  ]
+}

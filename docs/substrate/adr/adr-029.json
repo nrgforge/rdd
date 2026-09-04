@@ -1,0 +1,24 @@
+{
+  "id": "adr-029",
+  "type": "adr",
+  "form": "index",
+  "title": "Synthesis Can Re-Enter RESEARCH",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-029-synthesis-re-entry.md",
+  "summary": "Establishes that SYNTHESIS is usually terminal but can re-enter RESEARCH when structural experimentation (ADR-028) surfaces an incoherence the pipeline has not addressed, the writer cannot explain the material to the identified audience, or the framing conversation surfaces an unaddressed question. Re-entry is the writer's decision, not the agent's recommendation, and must be scoped narrowly to a specific research question at a specific scope, with the finding recorded in the research log before the pipeline loops back.",
+  "compressed": true,
+  "workflow_point": "SYNTHESIS, after framing, conditional re-entry to RESEARCH",
+  "mechanism": "conditional writer-triggered re-entry loop from SYNTHESIS back to RESEARCH, narrowly scoped",
+  "links": [
+    {
+      "type": "updates",
+      "target": "adr-012",
+      "note": "relaxes ADR-012's 'terminal phase' designation for synthesis to 'usually terminal' — synthesis remains optional and post-build but may loop back to RESEARCH when warranted."
+    },
+    {
+      "type": "motivated-by",
+      "target": "adr-028",
+      "note": "structural experiments (ADR-028) are the primary mechanism that surfaces the incoherence triggering re-entry."
+    }
+  ]
+}

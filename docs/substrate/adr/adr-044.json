@@ -1,0 +1,13 @@
+{
+  "id": "adr-044",
+  "type": "adr",
+  "form": "index",
+  "title": "Two Review Operating Modes",
+  "status": "Accepted",
+  "canonical_source": "docs/decisions/adr-044-two-review-operating-modes.md",
+  "summary": "Gives /rdd-review two operating modes selected by context: corpus-grounded review, invoked within an RDD project and scoped to a work package, which reads relevant ADRs, scenarios, domain model, and system design to synthesize orientation and ground review questions in the provenance chain; and context-reconstructive review (RDD-lite), invoked outside an RDD corpus, which gathers breadcrumbs (ticket URLs, MR links, doc pointers, discussion threads) from the reviewer and performs lightweight discovery to reconstruct orientation before surfacing questions. Mode is detected automatically — corpus-grounded when RDD artifacts exist and cover the work package in scope, falling back to context-reconstructive for uncovered areas — but the user can override in either direction.",
+  "compressed": true,
+  "workflow_point": "/rdd-review skill entry, mode selection",
+  "mechanism": "two review modes, corpus-grounded (reads existing RDD artifacts) and context-reconstructive (gathers breadcrumbs and reconstructs orientation), with automatic detection and user override",
+  "links": []
+}

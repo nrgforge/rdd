@@ -1,0 +1,34 @@
+{
+  "id": "adr-048",
+  "type": "adr",
+  "form": "index",
+  "title": "Composable Skill Family Replaces Monolithic Build",
+  "status": "Proposed",
+  "cycle": "6",
+  "canonical_source": "docs/decisions/adr-048-composable-skill-family.md",
+  "summary": "Decomposes the monolithic build skill into four composable skills sharing a Context Gathering foundation: `/rdd-build` (the outer TDD loop, composing the other three), `/rdd-debug`, `/rdd-refactor`, and the pre-existing `/rdd-review`. Each skill operates in both pipeline mode (full artifact corpus) and context-reconstructive mode (orientation from heterogeneous sources), and can be used standalone or composed within a build cycle.",
+  "compressed": true,
+  "workflow_point": "BUILD phase, skill-family architecture",
+  "mechanism": "decomposition into four composable skills sharing embedded Context Gathering",
+  "links": [
+    {
+      "type": "motivated-by",
+      "target": "adr-043",
+      "note": "The review skill's demonstrated two-mode pattern and standalone utility (ADR-043 through ADR-047) motivate decomposing build into a similar composable skill family."
+    },
+    {
+      "type": "motivated-by",
+      "target": "adr-047",
+      "note": "Cited alongside ADR-043 as part of the review skill's demonstrated two-mode pattern (ADR-043 through ADR-047) that motivates this decomposition."
+    },
+    {
+      "type": "references",
+      "target": "adr-049"
+    },
+    {
+      "type": "precedent-for",
+      "target": "adr-054",
+      "note": "The composition trigger semantics proposed here (build invoking inner skills with context inheritance) are new and are extended and specified in detail by ADR-054."
+    }
+  ]
+}

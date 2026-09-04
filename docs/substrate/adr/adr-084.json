@@ -1,0 +1,30 @@
+{
+  "id": "adr-084",
+  "type": "adr",
+  "form": "index",
+  "title": "Agent-Context Content Placement — Companion File or Audience-Tagging, Not Directory Separation",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-084-agent-context-content-placement.md",
+  "summary": "The methodology adopts per-artifact judgment between two patterns for agent-context content placement, with directory-level audience separation (e.g. `docs/agent/`) rejected. Pattern A (audience-tagged sections within the existing artifact) applies where human-facing and agent-facing material present the same facts differently; Pattern B (a companion file at a predictable path, `<artifact>.md` → `<artifact>.agents.md`) applies where the content is functionally divergent, with the felt threshold being whether audience-tagged volume would exceed roughly 50% of the human-facing baseline. `system-design.md` is the cycle's exemplary Pattern B case: the diagram and an F-pattern orientation lead stay in the human-facing file, and agent-context detail (driver table, fitness criteria, responsibility allocations, provenance chains) moves to `system-design.agents.md`.",
+  "compressed": true,
+  "workflow_point": "ARCHITECT restructuring of Tier-2 readables (e.g. system-design.md)",
+  "mechanism": "Pattern A (audience-tagged sections) or Pattern B (<artifact>.agents.md companion file), chosen per-artifact by a felt content-divergence threshold",
+  "links": [
+    {
+      "type": "distinguishes-from",
+      "target": "adr-070",
+      "note": "the process-vs-product housekeeping/ directory established by ADR-070 (superseded by ADR-085) is unaffected by this ADR's audience-based-separation rejection — process-vs-product and audience-vs-audience are categorically distinct axes"
+    },
+    {
+      "type": "distinguishes-from",
+      "target": "adr-083",
+      "note": "the MODEL gate's variability-across-corpora commitment concerns ADR-083's admissibility criteria for human-facing artifacts, not the Pattern A/B structural placement choice this ADR makes — the two are separate judgments"
+    },
+    {
+      "type": "distinguishes-from",
+      "target": "adr-085",
+      "note": "ADR-085's .rdd/ infrastructure relocation is a categorically different axis (process-vs-product) from this ADR's audience-based-separation rejection and is not constrained by it; the DISCOVER gate explicitly separated the two axes"
+    }
+  ]
+}

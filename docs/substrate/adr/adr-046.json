@@ -1,0 +1,26 @@
+{
+  "id": "adr-046",
+  "type": "adr",
+  "form": "index",
+  "title": "Code Review Integration with Build Stewardship",
+  "status": "Accepted",
+  "canonical_source": "docs/decisions/adr-046-review-build-integration.md",
+  "summary": "The `/rdd-review` skill integrates with the build phase as an optional enhancement to stewardship checkpoints: after a Tier 1 stewardship check completes at scenario group boundaries, the build skill may invoke `/rdd-review` in corpus-grounded mode to add epistemic review alongside architectural conformance. Reviewing each work package during build is the expected rhythm but not mandatory; outside build, the review skill operates independently with no stewardship connection.",
+  "compressed": true,
+  "workflow_point": "build phase, after Tier 1 stewardship checks",
+  "mechanism": "optional /rdd-review invocation in corpus-grounded mode",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-038"
+    },
+    {
+      "type": "references",
+      "target": "invariant-1"
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

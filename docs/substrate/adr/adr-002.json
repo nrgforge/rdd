@@ -1,0 +1,19 @@
+{
+  "id": "adr-002",
+  "type": "adr",
+  "form": "index",
+  "title": "Each Skill Owns Its Epistemic Gate Definition",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-002-skills-own-their-epistemic-gates.md",
+  "summary": "Each RDD skill defines its own epistemic gate as a new section in its SKILL.md file, rather than the orchestrator centralizing gate definitions. The orchestrator enforces only the protocol from ADR-001 (every gate must include at least one epistemic act; the user must produce something before advancing) but does not prescribe the specific prompts, so each skill crafts gate prompts tailored to the cognitive demands of its own artifact type (essay, domain model, ADRs, system design, code).",
+  "compressed": true,
+  "workflow_point": "gate definition, within each phase skill's SKILL.md",
+  "mechanism": "distributed gate ownership: orchestrator enforces protocol, skills author prompts",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-001",
+      "note": "Distributes ADR-001's epistemic-gate protocol across each skill's SKILL.md rather than centralizing gate definitions in the orchestrator."
+    }
+  ]
+}

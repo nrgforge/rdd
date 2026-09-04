@@ -1,0 +1,28 @@
+{
+  "id": "adr-053",
+  "type": "adr",
+  "form": "index",
+  "title": "Time Budget Mechanism Across Composable Skills",
+  "status": "Proposed",
+  "cycle": "6",
+  "canonical_source": "docs/decisions/adr-053-time-budget-mechanism.md",
+  "summary": "Each skill in the Composable Skill Family prompts for available time during or immediately after Context Gathering and adapts along a continuous spectrum with three guideposts — Deep (30+ minutes), Standard (10-30 minutes), Focused (under 10 minutes) — scaling work decomposition breadth, refactor depth, and stewardship frequency accordingly. User validation of orientation is never skipped regardless of budget, and the time budget is advisory only: the skill does not watch a clock and adapts mid-session if the developer wants to go deeper.",
+  "compressed": true,
+  "workflow_point": "each Composable Skill Family skill, during or immediately after Context Gathering",
+  "mechanism": "advisory time-budget prompt calibrating scope along a Deep/Standard/Focused spectrum",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-044",
+      "note": "Extends the review skill's existing time-prompt mechanism (ADR-044 interaction specifications) to all four skills in the Composable Skill Family."
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    },
+    {
+      "type": "references",
+      "target": "invariant-6"
+    }
+  ]
+}

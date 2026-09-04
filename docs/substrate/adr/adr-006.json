@@ -1,0 +1,23 @@
+{
+  "id": "adr-006",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Product Discovery Phase Between RESEARCH and MODEL",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-006-add-product-discovery-phase.md",
+  "summary": "Adds a Product Discovery phase to the RDD pipeline between RESEARCH and MODEL, implemented as a new skill (/rdd-discover) producing a product discovery artifact — changing the pipeline to RESEARCH → PRODUCT DISCOVERY → MODEL → DECIDE → ARCHITECT → BUILD. The phase runs after RESEARCH because it needs the essay's domain context, and before MODEL so Product Vocabulary informs Domain Model vocabulary extraction rather than the reverse. Existing epistemic gate infrastructure (ADR-001 through ADR-005) applies to the new phase without modification, since the new skill owns its own gate per ADR-002.",
+  "compressed": true,
+  "workflow_point": "new phase inserted between RESEARCH and MODEL",
+  "mechanism": "new /rdd-discover skill producing the product-discovery artifact",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-002",
+      "note": "The new /rdd-discover skill owns its own epistemic gate per ADR-002's skill-owns-gate principle."
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

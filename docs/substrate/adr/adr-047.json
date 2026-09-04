@@ -1,0 +1,18 @@
+{
+  "id": "adr-047",
+  "type": "adr",
+  "form": "index",
+  "title": "Collaborative Context-Gathering as Review Entry Point",
+  "status": "Accepted",
+  "canonical_source": "docs/decisions/adr-047-collaborative-context-gathering.md",
+  "summary": "Context-reconstructive review begins with a five-step collaborative context-gathering step: the reviewer provides pointers (ticket URLs, MR links, docs, discussion threads); the agent fetches and reads them with whatever tools are available; the agent synthesizes a brief orientation summary; the reviewer validates or corrects it, triggering re-synthesis if the correction is substantial; and only then does the agent surface review questions from the validated orientation.",
+  "compressed": true,
+  "workflow_point": "context-reconstructive review, entry point before question surfacing",
+  "mechanism": "five-step collaborative context-gathering protocol",
+  "links": [
+    {
+      "type": "references",
+      "target": "adr-044"
+    }
+  ]
+}

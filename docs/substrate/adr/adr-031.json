@@ -1,0 +1,18 @@
+{
+  "id": "adr-031",
+  "type": "adr",
+  "form": "index",
+  "title": "Artifact-Mediated Communication for Specialist Work",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-031-artifact-mediated-communication.md",
+  "summary": "Requires specialist work within RDD phases (citation auditing, argument auditing, literature review, conformance scanning) to communicate through artifact files rather than ephemeral conversation context, so findings persist for later review, future-cycle reference, and provenance. This applies to all proposed specialist subagents (citation-auditor, argument-auditor, lit-reviewer, conformance-scanner, orientation-writer, spike-runner); whether the rule is hard or context-dependent is left open, with the initial implementation treating it as a hard rule.",
+  "compressed": true,
+  "workflow_point": "specialist work within any RDD phase",
+  "mechanism": "artifact-mediated communication: specialist subagents read input artifacts and write output artifacts instead of relying on conversation context",
+  "links": [
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

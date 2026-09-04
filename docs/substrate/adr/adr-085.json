@@ -1,0 +1,50 @@
+{
+  "id": "adr-085",
+  "type": "adr",
+  "form": "index",
+  "title": "`.rdd/` Infrastructure Relocation — Process-vs-Product Directory Separation",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-085-rdd-infrastructure-relocation.md",
+  "summary": "Infrastructure artifacts (audits, gates, cycle-status.md, dispatch-log.jsonl, .migration-version, and ADR-050's session/ directory) relocate from `docs/housekeeping/` (ADR-070's placement) to a dotfile `.rdd/` directory at the repository root, so process artifacts are structurally distinguished from product artifacts under `docs/` without hiding them from inspection. Migration runs as a one-shot, idempotent `/rdd-conform migrate-to-rdd` operation that moves files, updates path references across the corpus (skills, hooks, manifests, ORIENTATION.md), and updates `.gitignore`. This partially supersedes ADR-070 (IETF Updates analog): ADR-070's centered-vs-infrastructure framing and migration mechanics remain current authority; only the directory placement changes.",
+  "compressed": true,
+  "workflow_point": "corpus directory structure — infrastructure artifact placement, migrated via /rdd-conform migrate-to-rdd",
+  "mechanism": "relocates .rdd/ infrastructure artifacts to a dotfile .rdd/ directory under the process-vs-product convention",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-050",
+      "note": "relocates ADR-050's session/ directory (BUILD context-reconstructive mode session artifacts, carrying session-artifact: true frontmatter) to .rdd/session/ under the same process-vs-product axis"
+    },
+    {
+      "type": "applies",
+      "target": "adr-064",
+      "note": "ADR-064's Stop/PostToolUse hook scripts consume manifest path_template values, which update from .rdd/ to .rdd/ paths as part of this migration; hook logic itself is unchanged"
+    },
+    {
+      "type": "applies",
+      "target": "adr-065",
+      "note": "ADR-065's canonical prompt skeleton (Output path: <path>) carries the new .rdd/ paths after migration; the skeleton format itself is unchanged"
+    },
+    {
+      "type": "updates",
+      "target": "adr-070",
+      "note": "partially supersedes ADR-070 (IETF Updates analog) — relocates infrastructure artifacts from docs/housekeeping/ to .rdd/ and applies process-vs-product directory separation via the dotfile convention; ADR-070's centered-vs-infrastructure framing and migration-mechanics pattern remain current authority, only the placement changes"
+    },
+    {
+      "type": "applies",
+      "target": "adr-074",
+      "note": "applies ADR-074's four-step supersession workflow to partially supersede ADR-070, including the deferred downstream-artifact sweep tracked per ADR-074's Step 3 fitness property"
+    },
+    {
+      "type": "distinguishes-from",
+      "target": "adr-084",
+      "note": "infrastructure-vs-product separation (this ADR) is categorically distinct from the audience-based directory separation ADR-084 rejects; the two axes must not be conflated"
+    },
+    {
+      "type": "applies",
+      "target": "adr-088",
+      "note": "the Stop hook's advisory-mode detection (per ADR-088 amending ADR-064) reads .rdd/.migration-version after this migration; ADR-088's supersession header on ADR-064 was expanded to note the resulting stale-path situation in ADR-064's immutable body"
+    }
+  ]
+}

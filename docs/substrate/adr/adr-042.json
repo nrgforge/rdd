@@ -1,0 +1,14 @@
+{
+  "id": "adr-042",
+  "type": "adr",
+  "form": "index",
+  "title": "Add /rdd-about Utility Skill for Self-Explanation and Version Awareness",
+  "status": "Proposed",
+  "cycle": "5",
+  "canonical_source": "docs/decisions/adr-042-rdd-about-utility-skill.md",
+  "summary": "Adds a /rdd-about utility skill that reports the current RDD plugin version from its package metadata, gives a roughly one-paragraph methodology overview in user-facing language ('reflection time', not 'epistemic gate'), and offers to go deeper on any phase, the adaptive-gate philosophy, or how RDD relates to the user's current project, calibrated to whether the user is exploring, committed, or mid-cycle. It is a utility outside the pipeline phases — informational, not procedural — that the orchestrator may offer when it detects a fresh project or an explicit request for orientation.",
+  "compressed": true,
+  "workflow_point": "utility skill, invoked on demand (outside pipeline phases)",
+  "mechanism": "/rdd-about: version report plus a one-paragraph, depth-calibrated methodology overview",
+  "links": []
+}

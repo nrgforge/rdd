@@ -1,0 +1,18 @@
+{
+  "id": "adr-012",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Synthesis as Optional Terminal Phase",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-012-add-synthesis-as-optional-terminal-phase.md",
+  "summary": "Adds Synthesis as an optional terminal phase to the RDD pipeline, implemented as a new skill (/rdd-synthesize), extending the pipeline to RESEARCH → PRODUCT DISCOVERY → MODEL → DECIDE → ARCHITECT → BUILD → [SYNTHESIS]. Synthesis runs after BUILD (or after whichever phase terminates the current pipeline run) and requires a substantial artifact trail as prerequisite; unlike the pipeline's gates it is not bounded by Invariant 4's 5-10 minute-per-gate cost — the agent conversation (journey review, novelty surfacing, framing) is bounded at roughly 30-60 minutes, and the essay itself is written by the user outside the pipeline on their own time. Deliverables are an outline co-produced within the pipeline and a synthesis essay written afterward in the user's own voice.",
+  "compressed": true,
+  "workflow_point": "new optional terminal phase after BUILD",
+  "mechanism": "new /rdd-synthesize skill: 30-60 minute conversation plus user-authored essay outside the pipeline",
+  "links": [
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

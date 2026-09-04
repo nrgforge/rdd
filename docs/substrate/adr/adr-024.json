@@ -1,0 +1,13 @@
+{
+  "id": "adr-024",
+  "type": "adr",
+  "form": "index",
+  "title": "Adopt Document Sizing Heuristics",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-024-adopt-document-sizing-heuristics.md",
+  "summary": "Adopts five cascading document sizing heuristics — Purpose Test, 3-5 Concept Rule, ~5,000 Word Guideline, Read Contract, and Position-Sensitive Placement, applied in that priority order — as the governing framework for RDD artifact structure. New artifacts (roadmap, field guide) must be designed within these constraints from the start; existing artifacts are evaluated against them but not necessarily split, since decomposing system-design.md requires judgment about its actual access patterns.",
+  "compressed": true,
+  "workflow_point": "artifact production across all RDD phases",
+  "mechanism": "five cascading document sizing heuristics",
+  "links": []
+}

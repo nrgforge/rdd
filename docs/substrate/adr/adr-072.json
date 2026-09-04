@@ -1,0 +1,56 @@
+{
+  "id": "adr-072",
+  "type": "adr",
+  "form": "index",
+  "title": "Cycle Shape Declaration — Skipped Phases and Paused State",
+  "status": "Updated by ADR-078",
+  "cycle": "015",
+  "canonical_source": "docs/decisions/adr-072-cycle-shape-declaration.md",
+  "summary": "`.rdd/cycle-status.md` gains two optional fields the Stop hook honors: `**Skipped phases:**`, a comma-separated list of phases the current cycle does not run, which the hook treats as having no required manifest artifacts; and `**Paused:**`, a dated line marking the cycle deliberately dormant, which short-circuits all per-phase manifest checks to allow. A new Pause Log section in cycle-status.md records each pause/resume event so the state stays visible rather than silent, preserving Invariant 8. The fields close a Stop-hook infinite-loop failure mode observed in Cycle 015 for mini-cycles (Mode D) and user-away sessions during an in-progress gate.",
+  "compressed": true,
+  "workflow_point": "cycle-status.md schema, read by the Stop hook before phase-manifest dispatch",
+  "mechanism": "Skipped phases / Paused declaration fields plus Pause Log audit trail",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "date": "2026-04-22",
+      "text": "ADR-078 (Multi-Cycle Schema) folds this ADR's two header fields (`**Skipped phases:**`, `**Paused:**`) in as per-entry fields within a richer `## Cycle Stack` schema. The semantics established here remain current; the field placement migrates from per-file to per-entry. The rest of this ADR remains authoritative for the field semantics and hook behavior.",
+      "by": "adr-078"
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-078",
+      "note": "ADR-078 (Multi-Cycle Schema) folds this ADR's two header fields (`**Skipped phases:**`, `**Paused:**`) in as per-entry fields within a richer `## Cycle Stack` schema. The semantics established here remain current; the field placement migrates from per-file to per-entry. The rest of this ADR remains "
+    },
+    {
+      "type": "distinguishes-from",
+      "target": "adr-025",
+      "note": "an indefinitely-paused cycle is a deliberately open state, not a closed one; this is distinct from Graduation (ADR-025), which formally closes a cycle"
+    },
+    {
+      "type": "applies",
+      "target": "adr-026",
+      "note": "scoped cycles (ADR-026) and mini-cycles gain explicit structural support for skipped phases without requiring per-cycle hook configuration"
+    },
+    {
+      "type": "extends",
+      "target": "adr-064",
+      "note": "the Stop hook (ADR-064) reads the new Skipped phases and Paused fields before dispatching to phase-manifest checks; the compound check and revision-aware re-audit reminder continue to fire for non-skipped, non-paused phases"
+    },
+    {
+      "type": "applies",
+      "target": "adr-070",
+      "note": "post-migration enforcement-mode corpora get the skip/pause structural benefit, consistent with ADR-070's advisory-mode-vs-enforcement-mode migration boundary"
+    },
+    {
+      "type": "references",
+      "target": "adr-071"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

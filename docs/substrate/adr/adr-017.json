@@ -1,0 +1,33 @@
+{
+  "id": "adr-017",
+  "type": "adr",
+  "form": "index",
+  "title": "Inversion Principle Extended to Narrative Framing",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-017-inversion-principle-extended-to-narrative-framing.md",
+  "summary": "Extends ADR-010's inversion-principle governance with a third level: a narrative framing technique available to the synthesis writer during the framing conversation, offering three inversions as optional lenses — \"what if the obvious takeaway is wrong,\" \"what if the process is more interesting than the product,\" and \"what if the reader's assumed context is the story.\" These are offered, not prescribed; the writer may use all, some, or none. ADR-010 is not superseded — its original two levels are unchanged; this adds a third, extending the relationship hierarchy to Invariant 0 → Inversion Principle → Assumption Inversions (product) / Narrative Inversions (synthesis framing).",
+  "compressed": true,
+  "workflow_point": "synthesis framing conversation, Phase 3 of ADR-013 (third level of the inversion principle)",
+  "mechanism": "three narrative-inversion lenses offered during framing, not prescribed",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-010",
+      "note": "Adds a third level (narrative framing technique in SYNTHESIS) to ADR-010's two-level inversion-principle governance, without superseding its original two levels."
+    },
+    {
+      "type": "applies",
+      "target": "adr-013",
+      "note": "The three narrative inversions are offered as lenses during ADR-013's Phase 3 framing conversation."
+    },
+    {
+      "type": "reinforces",
+      "target": "adr-014",
+      "note": "The narrative inversions reinforce the worth-the-calories quality gate: using inversions helps the writer deny assumptions rather than confirm them."
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

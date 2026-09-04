@@ -1,0 +1,13 @@
+{
+  "id": "adr-052",
+  "type": "adr",
+  "form": "index",
+  "title": "AI Smell Detection Embedded in Refactor Skill",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-052-ai-smell-detection-in-refactor-skill.md",
+  "summary": "The refactor skill embeds awareness of the full AI Smell Taxonomy (novel, exacerbated, accelerated tiers) in the Three-Level Refactor's level 1 (Smells) diagnostic step rather than delegating detection to a separate tool. Level 1 covers two code-inspectable smell catalogs, classical (Fowler) and AI-exacerbated (six patterns with AI-specific mechanisms); separately, the skill applies AI hygiene prompts for the three novel AI patterns (Constraint Decay, Slopsquatting, Intent Debt) that have no code-level signature and cannot be detected through inspection. Integration with the codebase-audit skill's Structural Health and Dependency & Coupling lenses is an optional supplement the build skill's stewardship checkpoints may invoke; the refactor skill's own diagnostic step does not require an audit.",
+  "compressed": true,
+  "workflow_point": "refactor skill, Three-Level Refactor level 1 (Smells) diagnostic step",
+  "mechanism": "AI Smell Taxonomy awareness embedded in smell diagnosis, plus separate AI hygiene prompts",
+  "links": []
+}

@@ -1,0 +1,23 @@
+{
+  "id": "adr-013",
+  "type": "adr",
+  "form": "index",
+  "title": "Synthesis Conversation Structure and Outline Deliverable",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-013-synthesis-conversation-structure.md",
+  "summary": "Structures the synthesis conversation into three phases after agent pre-work. Pre-conversation Artifact Trail Mining applies five novelty signals (explicit surprise statements, reframing events, assumption denials, negative case integrations, superseded decisions) to rank candidate discoveries. Phase 1 Journey Review walks the trail chronologically while the user recalls and articulates what happened; Phase 2 Novelty Surfacing has the user react to ranked candidates; Phase 3 Framing Conversation has agent and user co-produce the essay's central question, volta, and structural form using narrative frameworks as optional lenses. The outline is the deliverable and must be a springboard: non-formulaic, pre-populated with citations extracted from the research log and essays, and run through a citation audit (via /citation-audit) before finalizing, so no hallucinated source reaches the writer.",
+  "compressed": true,
+  "workflow_point": "the synthesis conversation (ADR-012's /rdd-synthesize skill)",
+  "mechanism": "artifact-trail mining via five novelty signals, then a three-phase conversation producing a citation-audited outline",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-012",
+      "note": "The three-phase conversation is bounded at 30-60 minutes, per the cost structure ADR-012 establishes for the Synthesis phase."
+    },
+    {
+      "type": "references",
+      "target": "invariant-3"
+    }
+  ]
+}

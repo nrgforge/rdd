@@ -1,0 +1,40 @@
+{
+  "id": "adr-086",
+  "type": "adr",
+  "form": "index",
+  "title": "AI-as-Orienter — Non-Adoption Pending Operational Criterion",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-086-ai-as-orienter-non-adoption.md",
+  "summary": "The methodology does not adopt AI-as-orienter (agent-mediated, interactive first-encounter schema-building) as a structural pattern in Cycle 017. Adoption is blocked pending an operational criterion that distinguishes it in observable behavior, not only stated intent, from the rejected AI-as-prosthetic pattern; the essay-grounded failure mode is usage drift, where an orienter role gradually shades into a prosthetic one. The methodology's default position (corpus directly readable; agent assists pragmatic work) holds, with in-place restructuring, companion files, F-pattern leads, and brief purpose-built on-ramps remaining as the admissible document-level interventions. The bounded AID-gate dialogue pattern is explicitly unaffected. Three named conditions (empirical study, a literature finding, or a structurally-bounded methodology-internal prototype) could warrant revisiting in a future cycle.",
+  "compressed": true,
+  "workflow_point": "DECIDE resolution of the AI-as-orienter vs. AI-as-prosthetic value tension (T5)",
+  "mechanism": "non-adoption pending an operational criterion; three named future-cycle conditions for revisiting",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-040",
+      "note": "the AID-gate-scope distinction (bounded agent-mediated dialogue is not AI-as-orienter) is composed against the existing AID gate pattern (ADR-040/041/056) and Question Toolkit"
+    },
+    {
+      "type": "applies",
+      "target": "adr-041",
+      "note": "the AID-gate-scope distinction (bounded agent-mediated dialogue is not AI-as-orienter) is composed against the existing AID gate pattern (ADR-040/041/056) and Question Toolkit"
+    },
+    {
+      "type": "applies",
+      "target": "adr-056",
+      "note": "the AID-gate-scope distinction (bounded agent-mediated dialogue is not AI-as-orienter) is composed against the existing AID gate pattern (ADR-040/041/056) and Question Toolkit"
+    },
+    {
+      "type": "applies",
+      "target": "adr-083",
+      "note": "applies ADR-083's Outcome Test to AI-as-orienter as a candidate intervention: it fails the test because the operational-criterion problem makes the outcome unverifiable, not because the pattern is conceptually rejected"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-084",
+      "note": "companion files (ADR-084 Pattern B) are named among the document-level interventions that remain available in place of AI-as-orienter"
+    }
+  ]
+}

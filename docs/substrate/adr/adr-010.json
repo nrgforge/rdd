@@ -1,0 +1,36 @@
+{
+  "id": "adr-010",
+  "type": "adr",
+  "form": "index",
+  "title": "Inversion Principle as Cross-Cutting Principle and Procedural Step",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-010-inversion-principle-governance.md",
+  "summary": "Establishes the Inversion Principle at two levels: a procedural step within /rdd-discover producing the Assumption Inversions section (ADR-007 §4), and a cross-cutting principle applied as a habit of mind across RESEARCH, PRODUCT DISCOVERY, DECIDE, and ARCHITECT, with ARCHITECT flagged as particularly important because architecture is where product assumptions calcify most permanently. The Inversion Principle is the mechanism serving the product dimension of the strengthened Invariant 0, not a new invariant of its own, preserving the coherence of the existing invariant set (0-7).",
+  "compressed": true,
+  "workflow_point": "procedural step in /rdd-discover; cross-cutting habit across RESEARCH, PRODUCT DISCOVERY, DECIDE, ARCHITECT",
+  "mechanism": "structured Assumption Inversions section plus cross-cutting inversion questions per phase",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "by": "adr-055",
+      "date": "2026-04-06",
+      "text": "Cross-cutting application expanded from four locations (RESEARCH, PRODUCT DISCOVERY, DECIDE, ARCHITECT) to six, adding PLAY (belief-mapping questions about the practitioner's design assumptions) and SYNTHESIS (belief-mapping applied to narrative framing). Form specified: belief-mapping questions (\"What would I need to believe for the alternative to be right?\") are the mandatory operationalization; adversarial framing deprecated as default."
+    }
+  ],
+  "links": [
+    {
+      "type": "implements",
+      "target": "adr-007",
+      "note": "The procedural-step application produces the Assumption Inversions section defined in ADR-007 §4."
+    },
+    {
+      "type": "updated-by",
+      "target": "adr-055",
+      "note": "ADR-055 expands cross-cutting application from four locations to six (adds PLAY and SYNTHESIS) and specifies belief-mapping questions as the mandatory operationalization, deprecating adversarial framing as default."
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    }
+  ]
+}

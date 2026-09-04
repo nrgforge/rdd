@@ -1,0 +1,28 @@
+{
+  "id": "adr-071",
+  "type": "adr",
+  "form": "index",
+  "title": "Lifecycle Composition in Build Stewardship",
+  "status": "Proposed",
+  "cycle": "015",
+  "canonical_source": "docs/decisions/adr-071-lifecycle-composition-in-build-stewardship.md",
+  "summary": "Lifecycle composition is named as a third category of integration risk in build stewardship, alongside test-suite composition (Composable Tests) and structural-boundary verification (Integration Verification + Stewardship Tier 1), covering risk at lifecycle boundaries where ownership and mutation rights over shared mutable state are ambiguous. The build skill is extended at three existing anchor points: a Lifecycle Composition subsection in Composable Tests (design-time prompt), a lifecycle-sequence verification paragraph in Step 5 Integration Verification (verification-time anchor), and a new sub-item 6e \"Shared mutable state\" under Stewardship Tier 1's Test quality item (review-time detector). The extension is scoped to the build skill only, anchored per Invariant 8 in the Skill-Structure Layer.",
+  "compressed": true,
+  "workflow_point": "BUILD stewardship — Composable Tests, Step 5 Integration Verification, Tier 1 review",
+  "mechanism": "three-anchor Lifecycle Composition category (design-time, verification-time, review-time)",
+  "links": [
+    {
+      "type": "composes-with",
+      "target": "adr-048",
+      "note": "other composable skills (debug, refactor, review) compose with build through ADR-048's mode-shift composition and inherit build's lifecycle-composition orientation without duplicating its checklist, which is why this ADR scopes the category to build alone"
+    },
+    {
+      "type": "references",
+      "target": "adr-052"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

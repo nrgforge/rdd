@@ -16,6 +16,9 @@
 - `lineage` → ADR-083: Cognitive-Economy Criterion as Outcome Test with In-Place-First Default — prior audience-bifurcation ADR (human-facing Outcome Test); read under the alternative reading as a complete answer to a different problem
 - `lineage` → ADR-095: Agent Outcome Test for Agent-Facing Artifact Admissibility — prior audience-bifurcation ADR (agent-facing admissibility)
 - `lineage` → ADR-092: Essay-Outline as the RESEARCH Artifact Form — prior audience-bifurcation ADR (research-artifact form)
+- `lineage` → ADR-064: Compound Check — PostToolUse(Agent) Dispatch Log + Stop Hook Manifest Verification — prior audience-bifurcation ADR (centered-vs-infrastructure category naming); complete answer to its own problem under the alternative reading
+- `lineage` → ADR-084: Agent-Context Content Placement — Companion File or Audience-Tagging, Not Directory Separation — prior audience-bifurcation ADR (agent-context placement: Pattern A audience-tagged sections vs. Pattern B companion file)
+- `lineage` → ADR-085: `.rdd/` Infrastructure Relocation — Process-vs-Product Directory Separation — prior audience-bifurcation ADR (.rdd/ infrastructure relocation: process vs. product on the directory axis; the categories this ADR's locations must not split)
 - `names` → Calibration-with-Graduation-Trigger Pattern — the C1 finding that opened the cycle: five ADRs compress to one Pattern record plus entries, provided the Substrate is auditable
 - `introduces` → Substrate — the record layer this ADR commits to
 - `introduces` → Surface View — the human-facing read derived from the Substrate
@@ -23,8 +26,7 @@
 - `introduces` → Typed Link — constraint 1: extensible link types
 - `introduces` → Note Discipline — constraint 2: every non-trivial link carries note text
 - `addresses` → Corpus Overwhelm — the reading-load component; Adjudication Load is ADR-100's
-- `references` → invariant-0
-- `references` → invariant-8
+- `references` → invariant-1
 
 ## Context
 

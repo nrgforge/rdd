@@ -1,0 +1,29 @@
+{
+  "id": "adr-027",
+  "type": "adr",
+  "form": "index",
+  "title": "Enrich Framing Conversation with Four-Dimension Navigation",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-027-four-dimension-framing-model.md",
+  "summary": "Enriches the SYNTHESIS framing conversation (ADR-013 Phase 3) with four simultaneous dimensions to navigate: discovery type (which novelty signal is strongest and what structural affinity it carries), narrative form (established patterns, hermit-crab forms, and meta-forms), audience constraint (medium as creative catalyst, not delivery spec), and epistemic posture (determined, exploratory, or indeterminate stance toward certainty). The existing narrative lenses (ABT, story spine, volta placement) and the three inversions (ADR-017) remain available as tools, organized within these dimensions rather than replaced.",
+  "compressed": true,
+  "workflow_point": "SYNTHESIS Phase 3 framing conversation",
+  "mechanism": "four-dimension navigation model (discovery type, narrative form, audience constraint, epistemic posture)",
+  "links": [
+    {
+      "type": "extends",
+      "target": "adr-013",
+      "note": "enriches ADR-013's Phase 3 framing conversation with the four-dimension navigation model, without restructuring the conversation's three-phase structure."
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-014",
+      "note": "ADR-014's worth-the-calories tests remain a separate assessment of the framing's interestingness, distinct from this ADR's dimensional completeness."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-017",
+      "note": "ADR-017's three narrative inversions remain available as tools, now organized within the narrative-form dimension rather than a flat list."
+    }
+  ]
+}

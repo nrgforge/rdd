@@ -1,0 +1,30 @@
+{
+  "id": "adr-060",
+  "type": "adr",
+  "form": "index",
+  "title": "Research Methods Subagent",
+  "status": "Proposed",
+  "cycle": "9",
+  "canonical_source": "docs/decisions/adr-060-research-methods-subagent.md",
+  "summary": "Adds a Research Methods Subagent, the eighth specialist subagent, that reads the research question set before the research phase begins and applies belief-mapping to each question, flagging questions that embed conclusions, presuppose architectures, or narrow the hypothesis space prematurely. The narrow first version produces a research design review artifact at `./.rdd/audits/research-design-review-NNN.md`; cross-cycle methodological pattern detection across research logs is deferred to a second version. It is dispatched by the orchestrator before /rdd-research's first research loop, and again before any research loop following a substantial essay revision, as a Tier 1 unconditional mechanism.",
+  "compressed": true,
+  "workflow_point": "before /rdd-research's first research loop, and before any subsequent loop after substantial revision",
+  "mechanism": "belief-mapping review of research questions by an isolated specialist subagent",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-031",
+      "note": "The subagent's research design review artifact follows Artifact-Mediated Communication (ADR-031)."
+    },
+    {
+      "type": "extends",
+      "target": "adr-032",
+      "note": "Adds an eighth specialist subagent (Research Methods Subagent) to the roster established by ADR-032."
+    },
+    {
+      "type": "applies",
+      "target": "adr-058",
+      "note": "Classified as a Tier 1 unconditional mechanism per ADR-058's two-tier enforcement floor; fires before every research phase regardless of context."
+    }
+  ]
+}

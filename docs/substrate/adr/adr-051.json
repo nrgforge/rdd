@@ -1,0 +1,20 @@
+{
+  "id": "adr-051",
+  "type": "adr",
+  "form": "index",
+  "title": "Work Decomposition from Available Sources",
+  "status": "Proposed",
+  "cycle": "6",
+  "canonical_source": "docs/decisions/adr-051-work-decomposition-from-available-sources.md",
+  "summary": "In context-reconstructive mode, the build skill derives work packages during Context Gathering from the ticket, codebase exploration, and Context Gathering breadcrumbs, using the roadmap's structural conventions: each package specifies scope, integration points, testable behaviors, dependencies classified as hard/implied/open, and an optional demo scenario. The user validates the decomposition before it is written as a reconstructed facsimile; the decomposition is approximate and user-validated, not architecturally authoritative like a roadmap-derived work package.",
+  "compressed": true,
+  "workflow_point": "context-reconstructive build mode, Context Gathering work-decomposition step",
+  "mechanism": "roadmap-convention work-package derivation with hard/implied/open dependency classification",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-050",
+      "note": "The validated work decomposition is written as a reconstructed facsimile per ADR-050's session-artifact mechanism."
+    }
+  ]
+}

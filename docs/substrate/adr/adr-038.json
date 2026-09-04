@@ -1,0 +1,37 @@
+{
+  "id": "adr-038",
+  "type": "adr",
+  "form": "index",
+  "title": "Add Play Phase After BUILD",
+  "status": "Proposed",
+  "canonical_source": "docs/decisions/adr-038-add-play-phase.md",
+  "summary": "Adds PLAY as an optional phase between BUILD and SYNTHESIS: the practitioner inhabits a stakeholder from Product Discovery through a three-movement structure (Inhabit, Explore, Reflect) using a Super-Objective (from discover) and Objective (from Interaction Specifications, ADR-037), bounded by felt understanding (Invariant 0) rather than a timebox (Invariant 4). Discoveries are recorded as Field Notes, categorized by feedback destination (missing scenario to DECIDE, usability friction to DISCOVER, new question to RESEARCH, challenged assumption to DISCOVER, delight to SYNTHESIS, interaction gap to Interaction Specifications), and play itself is the epistemic act, requiring no separate gate.",
+  "compressed": true,
+  "workflow_point": "pipeline, optional phase after BUILD, before SYNTHESIS",
+  "mechanism": "three-movement inhabitation structure (Inhabit, Explore, Reflect) per stakeholder producing categorized Field Notes",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-016",
+      "note": "play is itself the epistemic act, applying ADR-016's pattern that a phase can subsume its own gate; no new gate infrastructure is needed."
+    },
+    {
+      "type": "requires",
+      "target": "adr-037",
+      "note": "play requires the Playable Surface that Interaction Specifications (ADR-037) create; without them play has nothing structured against which to discover deviations."
+    },
+    {
+      "type": "composes-with",
+      "target": "adr-039",
+      "note": "the Epistemic Distance tension is mitigated by the Gamemaster role (ADR-039), which addresses distance specifically when inhabiting other stakeholders' roles."
+    },
+    {
+      "type": "references",
+      "target": "invariant-0"
+    },
+    {
+      "type": "references",
+      "target": "invariant-4"
+    }
+  ]
+}

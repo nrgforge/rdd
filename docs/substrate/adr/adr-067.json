@@ -1,0 +1,65 @@
+{
+  "id": "adr-067",
+  "type": "adr",
+  "form": "index",
+  "title": "Three-Tier Enforcement Classification as Methodology-Level Taxonomy",
+  "status": "Updated by ADR-089",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-067-three-tier-enforcement-classification.md",
+  "summary": "Adopts the Three-Tier Enforcement Classification as the methodology-level taxonomy operationalizing Invariant 8's anchoring requirement: Skill-Structure Layer (step-anchored dispatch in skill text, ADR-065), Harness Layer (PostToolUse dispatch log plus Stop hook manifest compound check, ADR-063/064), and User-Tooling Layer (graduating conversational mechanisms to artifact-producing form, ADR-066). A mechanism proposal is classified by a four-step decision procedure; one that fits none of the three substrates cannot be specified as unconditional (Tier 1) and must be marked best-effort or contingent instead. The three substrates are not a priority hierarchy — each is primary in its own domain — and a single mechanism may legitimately be anchored to more than one substrate at once.",
+  "compressed": true,
+  "workflow_point": "cross-cutting — classification procedure for any new Tier 1 mechanism proposal",
+  "mechanism": "three-substrate taxonomy with a four-step classification decision procedure",
+  "supersession": [
+    {
+      "kind": "updated-by",
+      "date": "2026-04-27",
+      "text": "ADR-089 amends the Harness Layer row's enforcement-technique description and the decision-procedure step 2 language to reflect ADR-088's advisory demotion (v0.8.3). The Three-Tier substrate framing, the four-step decision procedure structure, and the substrate primacy ordering all remain current authority. Only the Harness Layer's enforcement-technique description and the State-C claim language are amended (block → advisory; impossibility → detectability).",
+      "by": "adr-089"
+    }
+  ],
+  "links": [
+    {
+      "type": "updated-by",
+      "target": "adr-089",
+      "note": "ADR-089 amends the Harness Layer row's enforcement-technique description and the decision-procedure step 2 language to reflect ADR-088's advisory demotion (v0.8.3). The Three-Tier substrate framing, the four-step decision procedure structure, and the substrate primacy ordering all remain current aut"
+    },
+    {
+      "type": "applies",
+      "target": "adr-058",
+      "note": "Applies to any mechanism proposed as Tier 1 under ADR-058's two-tier enforcement floor; the classification is the procedure for meeting Invariant 8's anchoring requirement for such mechanisms."
+    },
+    {
+      "type": "catalogs",
+      "target": "adr-063",
+      "note": "Catalogs ADR-063 (manifest format) as one of the Harness Layer substrate's two implementing ADRs, for Tier 1 artifact-requirement specification."
+    },
+    {
+      "type": "catalogs",
+      "target": "adr-064",
+      "note": "Catalogs ADR-064 (compound check hooks) as one of the Harness Layer substrate's two implementing ADRs, for dispatch verification."
+    },
+    {
+      "type": "catalogs",
+      "target": "adr-065",
+      "note": "Catalogs ADR-065 (Anchor Dispatch) as the Skill-Structure Layer substrate's implementing ADR."
+    },
+    {
+      "type": "catalogs",
+      "target": "adr-066",
+      "note": "Catalogs ADR-066 (User-Tooling Layer / Graduate Conversational Mechanism) as the User-Tooling Layer substrate's implementing ADR."
+    },
+    {
+      "type": "references",
+      "target": "adr-070"
+    },
+    {
+      "type": "references",
+      "target": "adr-088"
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

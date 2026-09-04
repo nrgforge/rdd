@@ -1,0 +1,43 @@
+{
+  "id": "adr-090",
+  "type": "adr",
+  "form": "index",
+  "title": "In-Progress Phase Field — Advisory-Noise Suppressor After v0.8.3",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-090-in-progress-phase-role-shift.md",
+  "summary": "The `**In-progress phase:**` field's role is advisory-noise suppression, not phase-manifest-check enforcement; the field is optional and its absence does not produce a correctness failure. Introduced in v0.8.2 as a load-bearing predicate preventing a Stop-hook blocking loop, the field is obsolete in that role after ADR-088's v0.8.3 advisory demotion (the manifest check can no longer block, so it cannot cascade); its remaining function is to suppress the repeated missing-artifacts advisory during expected mid-phase work. Set at phase entry and removed at phase-exit readiness by the orchestrator, per the existing per-entry header field lifecycle.",
+  "compressed": true,
+  "workflow_point": "cycle-status.md active entry — In-progress phase field, read at each Stop event",
+  "mechanism": "advisory-noise suppression: suppresses the repeated per-phase manifest advisory during expected mid-phase work; optional, not correctness-critical",
+  "links": [
+    {
+      "type": "distinguishes-from",
+      "target": "adr-064",
+      "note": "the In-progress phase field's suppression is scoped to the per-phase manifest advisory only; the compound-check fabrication detection (ADR-064, as updated by ADR-088) is unaffected"
+    },
+    {
+      "type": "distinguishes-from",
+      "target": "adr-066",
+      "note": "the gate-reflection-note check (ADR-066, conditioned on the separate In-progress gate field) is unaffected by this field's suppression scope"
+    },
+    {
+      "type": "motivated-by",
+      "target": "adr-074",
+      "note": "documents the field's v0.8.2 to v0.8.3 role shift promptly to avoid the silent-drift failure mode ADR-074's body-immutability rule addresses"
+    },
+    {
+      "type": "references",
+      "target": "adr-078"
+    },
+    {
+      "type": "references",
+      "target": "adr-079"
+    },
+    {
+      "type": "applies",
+      "target": "adr-088",
+      "note": "ADR-088's advisory demotion of the phase-manifest check makes the field's original v0.8.2 load-bearing blocking-loop-prevention role obsolete, motivating this ADR's role-shift to advisory-noise suppressor"
+    }
+  ]
+}

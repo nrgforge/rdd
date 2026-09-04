@@ -1,0 +1,24 @@
+{
+  "id": "adr-063",
+  "type": "adr",
+  "form": "index",
+  "title": "Per-Phase Manifest as Harness-Layer Specification Format",
+  "status": "Proposed",
+  "cycle": "10",
+  "canonical_source": "docs/decisions/adr-063-per-phase-manifest-format.md",
+  "summary": "Adopts the YAML per-phase manifest format from Spike S2 as the canonical Harness-Layer specification for Tier 1 mechanism artifact requirements, living at `hooks/manifests/tier1-phase-manifest.yaml`. Each RDD phase lists required mechanisms with a canonical name, a path template (with `{cycle}` substitution), a byte-size floor, and required headers/fields, which a Stop hook checks against at phase end. The manifest fully catches State B (missing artifact) and trivial State C (thin fabricated stubs) but not sophisticated State C, which requires the compound check specified in ADR-064.",
+  "compressed": true,
+  "workflow_point": "phase-end (Stop hook), all RDD phases",
+  "mechanism": "YAML per-phase manifest of required Tier 1 mechanism artifacts (path, size floor, required headers/fields)",
+  "links": [
+    {
+      "type": "composes-with",
+      "target": "adr-064",
+      "note": "ADR-063 specifies the manifest format; ADR-064 specifies the hook mechanism (Stop hook) that consumes it, and the two decisions compose into the Harness-Layer compound check."
+    },
+    {
+      "type": "references",
+      "target": "invariant-8"
+    }
+  ]
+}

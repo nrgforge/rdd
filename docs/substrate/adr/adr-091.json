@@ -1,0 +1,45 @@
+{
+  "id": "adr-091",
+  "type": "adr",
+  "form": "index",
+  "title": "Dual-Mode BUILD — Auto-Mode and Gated-Mode as Methodology-Recognized Patterns",
+  "status": "Proposed",
+  "cycle": "017",
+  "canonical_source": "docs/decisions/adr-091-dual-mode-build.md",
+  "summary": "The methodology recognizes two legitimate BUILD patterns: gated mode (the existing canonical per-scenario-group EPISTEMIC GATE pattern) and auto mode (the agent executes the BUILD scope autonomously after high-level direction, with self-administered stewardship). Mode choice is judgment-applied along four axes (mechanical-vs-generative work character, practitioner availability, cycle stakes/reversibility, and stewardship locality — catching vs. teaching), declared per cycle entry as `**BUILD mode:** auto` or `gated` (default gated), settable and shiftable mid-phase by practitioner edit, with no cross-cycle inheritance. Auto mode does not catch design-alternative examination or scoping-judgment surfacing the way gated mode does; the methodology names this cost rather than claiming it away.",
+  "compressed": true,
+  "workflow_point": "BUILD entry — mode declaration on the active cycle-status.md entry, read by /rdd-build",
+  "mechanism": "**BUILD mode:** per-entry field selecting auto or gated BUILD, chosen along four judgment-applied axes",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-067",
+      "note": "classifies the BUILD mode field's skill-text adaptation as Skill-Structure Layer behavior per ADR-067 — the field conditions workflow steps but is not enforced by a hook predicate"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-072",
+      "note": "the BUILD mode field's lifecycle (set/shift/clear on the active cycle entry) follows the same per-entry header field pattern established by ADR-072, ADR-078, ADR-079, and ADR-090"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-078",
+      "note": "the BUILD mode field's lifecycle follows the same per-entry header field pattern established by ADR-072, ADR-078, ADR-079, and ADR-090"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-079",
+      "note": "the BUILD mode field's lifecycle follows the same per-entry header field pattern established by ADR-072, ADR-078, ADR-079, and ADR-090"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-087",
+      "note": "the four mode-selection axes are judgment-applied rather than mechanical, consistent with the methodology's existing posture on judgment-applied triggers (e.g., ADR-087's validation-spike trigger)"
+    },
+    {
+      "type": "parallel-to",
+      "target": "adr-090",
+      "note": "the BUILD mode field's lifecycle follows the same per-entry header field pattern established by ADR-072, ADR-078, ADR-079, and ADR-090"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "adr-041",
+  "type": "adr",
+  "form": "index",
+  "title": "Rename User-Facing Gate Language to \"Reflection Time\"",
+  "status": "Proposed",
+  "cycle": "5",
+  "canonical_source": "docs/decisions/adr-041-reflection-time-naming.md",
+  "summary": "Adopts a dual-register naming convention for epistemic gates: 'epistemic gate' remains the precise research/design term used in the domain model, essays, ADRs, and system design, while 'reflection time' is the user-facing term used in skill file text spoken to the user, the README, manifesto, and orientation document. Reflection time IS the epistemic gate, renamed for the audience that experiences it; because the term alone risks under-signaling Invariant 1's generative requirement, skill file authors must pair every instance of 'reflection time' with an immediate generative prompt from the AID cycle (ADR-040).",
+  "compressed": true,
+  "workflow_point": "user-facing gate language, all RDD phases",
+  "mechanism": "dual-register terminology: 'epistemic gate' (research/design) paired with 'reflection time' (user-facing), documented as an alias",
+  "links": [
+    {
+      "type": "applies",
+      "target": "adr-040",
+      "note": "the user-facing 'reflection time' pause is paired with the adaptive prompt supplied by ADR-040's AID cycle; the term names the pause, the AID cycle supplies the generative requirement."
+    },
+    {
+      "type": "references",
+      "target": "invariant-1"
+    }
+  ]
+}
