@@ -1,6 +1,8 @@
 # ADR-074: ADR Body Immutability, Status Mutability, and Supersession Workflow
 
-**Status:** Proposed
+> **Updated by ADR-099 on 2026-09-03.** For governance units authored after ADR-099 (Substrate-and-Surface Separation, §Authority option C), the immutable body in this ADR's sense is the Substrate record; the markdown ADR file at `docs/decisions/adr-NNN-<slug>.md` is a derived Surface View, regenerated from the record and marked as derived. Legacy units (ADRs 001 through 098) remain canonical in their files and this ADR applies to them unchanged; their Substrate index records change only when status metadata changes. The four-step supersession workflow, the header formats, and the drift-resolution decision tree remain current. ADR-099 §Authority also defines the status of a sub-decision nested inside an ADR (permitted only within DECIDE; ruled before the gate closes; otherwise filed as its own ADR), a pattern this ADR did not anticipate. Status prior to this header: Proposed (operating as accepted since Amendment #20).
+
+**Status:** Updated by ADR-099
 
 ## Context
 

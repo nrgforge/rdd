@@ -4143,3 +4143,154 @@ The Cycle 017 acceptance criteria are predominantly atomic with 1:1 scenario map
 **When** the cycle proceeds to ARCHITECT and BUILD
 **Then** no structural intervention is triggered by the pattern's recognition alone
 **And** the methodology's Tier-2 vocabulary (Practitioner Agency load-bearing; multi-cycle graduation triggers) is the operating mechanism for tracking the pattern across cycles
+
+## Cycle 020 Acceptance Criteria Table
+
+Two criteria from product-discovery (Cycle 020 additions) are emergent: observable only at integration on the real corpus or across cycles. All other Cycle 020 criteria are atomic with 1:1 scenario mapping and are omitted from the table.
+
+| Criterion | Specified layer | Verification method | Layer-match check |
+|---|---|---|---|
+| "The corpus you don't have to read, backed by the corpus the agent needs" (product-discovery, Solo Developer, Cycle 020; ADR-099) | Practitioner re-entry and gate reading on the real RDD corpus, not the five-record sample | ADR-099 scenarios 1, 2, 3, 7 compose on the Cycle 019 sample; BUILD Step 5.5 runs the derivation on this corpus and the practitioner reads a Surface View at the next gate; PLAY on re-entry | no (scenarios verify the sample; corpus scale is BUILD 5.5 and PLAY) |
+| "Fewer decisions handed back per loop" (product-discovery, Solo Developer, Cycle 020; ADR-100) | Lived gate experience across a cycle; the snapshot's triage evaluation across 2–4 cycles | ADR-100 scenarios 1 through 5 compose; susceptibility-snapshot triage evaluations at each boundary; ADR-100 graduation trigger | no (only multi-cycle observation and PLAY exercise the specified layer) |
+
+## Feature: Substrate-and-Surface Separation (ADR-099)
+
+### Scenario: Records with Typed Links derive to an overview and drill-in views
+**Given** a Substrate containing the Calibration-with-Graduation-Trigger Pattern record and five ADR records (094 through 098), each with Typed Links carrying note text
+**When** Derive Surface View runs
+**Then** an overview view lists the Pattern record first and the five application-point records beneath it, each with its typed cross-references co-located with a one-line summary
+**And** one drill-in view exists per record
+
+### Scenario: Drill-in view preserves focus+context
+**Given** the derived drill-in view for ADR-097
+**When** a reader opens it
+**Then** the view ends with a "Surrounding records" section naming every record linked to or from ADR-097 with its workflow point and mechanism
+**And** the view links back to the overview
+
+### Scenario: Surface View signals its own incompleteness
+**Given** a record whose schema declares it a compressed index (ADR-099 constraint 4)
+**When** its drill-in view is derived
+**Then** the view carries a visible marker stating the record is compressed and naming the canonical source
+
+### Scenario: Note Discipline validation rejects an unnoted non-trivial link
+**Given** a record with a Typed Link of any type other than `references` and no note text
+**When** schema validation runs
+**Then** validation fails, naming the record and the link
+
+### Scenario: Per-type schemas permit absent fields
+**Given** a Pattern record with no rejected-alternatives field and an ADR record with a rejected-alternatives field
+**When** schema validation runs
+**Then** both validate; the Pattern schema does not require rejected-alternatives and the ADR schema does
+
+### Scenario: Link types are extensible
+**Given** a record with a Typed Link of a type not in the starting set (for example `shares-structural-limit-with`) and note text
+**When** schema validation runs
+**Then** the record validates
+
+### Scenario: Regeneration is deterministic and single-source
+**Given** derived Surface Views exist for a Substrate
+**When** one record is edited and Derive Surface View runs again
+**Then** only the views that depend on that record change
+**And** running Derive Surface View a second time with no edits produces byte-identical output
+
+### Scenario: ADR record with sub-decisions nests them
+**Given** an ADR record for a decision with two named sub-decisions (the ADR-097 Target 2 and Target 3 shape)
+**When** the record is authored per the ADR schema
+**Then** the sub-decisions are held as nested commitments, each with its own rationale, and the drill-in view renders them as sub-sections rather than folding them into the top-level commitment
+
+### Preservation: Legacy ADR files are unchanged by derivation
+**Given** ADRs 001 through 098 as legacy prose files
+**When** Derive Surface View runs on a Substrate that contains index records for them
+**Then** no byte of any legacy ADR file changes
+
+### Preservation: The Stop hook manifest check is unaffected
+**Given** the Cycle 020 corpus with a Substrate and derived views present
+**When** the Stop hook manifest check runs at a phase boundary
+**Then** it produces the same result as before the Substrate existed; no new required artifacts and no new advisories
+
+### Preservation: Centered and infrastructure categories per ADR-085 hold
+**Given** the Substrate location ARCHITECT chooses
+**When** Substrate and Surface View files are written
+**Then** each file is either a centered artifact under `docs/` or an infrastructure artifact under `.rdd/`, and the ADR-085 categories are not split across the two
+
+## Feature: Substrate Authority Resolution (ADR-099 §Authority)
+
+*ADR-099 §Authority ruled option C by the practitioner at the DECIDE gate (2026-09-03). Scenarios are for option C.*
+
+### Scenario: A new governance unit is authored as a record and its markdown is derived
+**Given** the Author Substrate Record action has produced an ADR record after ADR-099 §Authority is accepted
+**When** Derive Surface View runs
+**Then** a markdown file exists at `docs/decisions/adr-NNN-<slug>.md` carrying a header that names the record as canonical
+**And** editing the markdown file and re-running Derive Surface View overwrites the edit
+
+### Scenario: A legacy unit is indexed, not migrated
+**Given** ADR-097 as a legacy prose ADR
+**When** the Substrate is built
+**Then** an index record for ADR-097 exists with identifier, title, status, Typed Links with note text, and a summary field marked compressed
+**And** the prose file is unchanged and remains canonical
+
+### Scenario: A legacy unit is promoted on supersession
+**Given** a cycle supersedes a legacy ADR
+**When** the superseding decision is authored as a record
+**Then** the legacy file receives the dated supersession header per ADR-074
+**And** the superseding record carries a `supersedes` Typed Link to the legacy unit's index record with note text
+
+### Preservation: Body immutability holds for legacy ADRs
+**Given** legacy ADRs 001 through 098
+**When** the Substrate index is created or updated
+**Then** no legacy ADR body changes; only status fields and dated headers change, per ADR-074
+
+## Feature: Pre-Triage and Plain-Language Presentation (ADR-100)
+
+### Scenario: The gate reflection note carries a triage record
+**Given** a phase boundary at which the susceptibility snapshot returned findings
+**When** the gate reflection note is written
+**Then** it contains a section titled "Susceptibility snapshot findings and orchestrator triage" holding a table with one row per finding and the columns finding, disposition (resolve, carry forward, or pivot), and what was done
+
+### Scenario: A framing-class finding is never silently resolved
+**Given** a snapshot or framing-audit finding that names an alternative framing the artifact did not choose
+**When** the orchestrator pre-triages
+**Then** the finding's disposition is pivot or carry forward with the alternative developed, or resolve with the alternative shown in the same practitioner-facing presentation
+**And** a resolve disposition with no practitioner-facing mention fails this scenario
+
+### Scenario: A pivot is presented with referenced content inline
+**Given** a pivot that cites an invariant, ADR section, scenario, or vocabulary term
+**When** it is presented to the practitioner
+**Then** the cited text or a one-line gloss appears inline at the point of use
+**And** no bare identifier stands alone as the reference
+
+### Scenario: A route-level choice is presented as an overridable default
+**Given** a route-level choice (for example the name chosen for a term)
+**When** it is presented
+**Then** the agent's choice is stated with the alternative named and an explicit invitation to override
+
+### Scenario: The agent runs the question form on itself before asking
+**Given** a pivot at a gate
+**When** it is presented
+**Then** the presentation contains both sides developed to comparable depth and the agent's recommendation before the practitioner's ruling is requested
+**And** the question form used is one of ADR-056's six
+
+### Scenario: The snapshot brief evaluates the triage record
+**Given** the susceptibility-snapshot dispatch at a phase boundary
+**When** the brief is composed
+**Then** it names the gate note's triage record as an input and asks whether any resolve disposition hid a destination change
+
+### Scenario: A reflexive cycle can opt into engine-level presentation
+**Given** a cycle declared at open as reflexive with engine-level presentation requested
+**When** findings are presented at a practitioner-facing moment
+**Then** engine-level dispositions are listed in the presentation, not only logged in the triage record
+
+### Preservation: The gate reflection note keeps every ADR-066 section
+**Given** ADR-100 in effect
+**When** a gate reflection note is written
+**Then** every section ADR-066 requires is present and the Stop hook manifest check passes
+
+### Preservation: Framing-audit findings are still surfaced, never auto-corrected
+**Given** an argument audit that returns framing findings
+**When** the orchestrator processes the audit
+**Then** no framing finding is corrected in the artifact without appearing in the practitioner-facing presentation
+
+### Preservation: The convergence-saturation verdict is still read at round end
+**Given** an audit round ends
+**When** pre-triage runs on its findings
+**Then** the ADR-094 verdict line is evaluated and the round decision (continue or stop) is recorded before findings are dispositioned

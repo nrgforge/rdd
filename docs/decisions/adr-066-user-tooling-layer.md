@@ -1,6 +1,8 @@
 # ADR-066: User-Tooling Layer — Graduating Conversational Mechanisms to Artifact-Producing Form
 
-**Status:** Proposed
+> **Updated by ADR-100 on 2026-09-03.** The gate reflection note's required structure gains one section: "Susceptibility snapshot findings and orchestrator triage" (or "Findings and orchestrator triage" at non-gate practitioner-facing moments), a table of finding, disposition (resolve / carry forward / pivot), and what was done. The rest of this ADR, including the reframe-derailed gate limitation, remains current and applies to the triage record as well. Status prior to this header: Proposed (operating as accepted).
+
+**Status:** Updated by ADR-100
 
 ## Context
 

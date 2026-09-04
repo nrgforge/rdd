@@ -1,8 +1,8 @@
 # System Design: Pedagogical RDD
 
-**Version:** 16.0
+**Version:** 17.0
 **Status:** Current
-**Last amended:** 2026-05-22
+**Last amended:** 2026-09-04
 
 ---
 
@@ -32,6 +32,12 @@ Plugin Manifest (.claude-plugin/plugin.json)
 │   lit-reviewer • spike-runner • conformance-scanner • orientation-writer
 │   research-methods-reviewer • susceptibility-snapshot-evaluator
 │
+├── Toolchain Layer ────────────────────────────────────────────── NEW in v17.0 (ADR-099)
+│   tools/substrate/validate.js  — Record Validator (per-type schemas; Note Discipline)
+│   tools/substrate/derive.js    — Surface Deriver (overview + drill-in views; derived ADR markdown; --check)
+│   docs/substrate/<type>/<id>.json — Substrate records (canonical for units authored after ADR-099)
+│   docs/views/                  — Surface Views (generated; never hand-edited)
+│
 └── Hooks Layer ────────────────────────────────────────────────── (7 hooks)
     invariant-reminder • epistemic-gate-enforcer • skill-activator
     orientation-trigger • sizing-check
@@ -57,6 +63,10 @@ essay → product-discovery.md → domain-model.md → ADRs + scenarios + intera
                               [full artifact trail] → synthesis outline → synthesis essay (user)
                                                      ↓
                                        ORIENTATION.md (derived at milestones)
+
+docs/substrate/<type>/<id>.json ──validate + derive──→ docs/views/ (overview, drill-in)
+                                                    ──→ docs/decisions/adr-NNN-*.md (records with form: full)
+                                                    ──→ docs/domain-model.md (marked region, terms)   [v17.0]
 
 field-notes.md feedback loop: → product-discovery.md (update mode), scenarios (missing),
                                 interaction-specs.md (gaps), research (new questions)
@@ -113,6 +123,33 @@ Eight subagents run in fresh contexts and communicate exclusively through file i
 ### Cross-cutting hooks
 
 Five context-injection hooks (PreToolUse / UserPromptSubmit / Stop / PostToolUse) plus two Harness Layer hooks. **All hooks are advisory in v0.8.3** — the Stop-hook manifest check emits model-visible notices but does not block. Skill-text discipline (ADR-065 anchored dispatches) is the load-bearing enforcement layer; the Harness Layer adds visibility and detection. Full descriptions in [system-design.agents.md § Cross-Cutting Hook Modules](./system-design.agents.md#cross-cutting-hook-modules).
+
+---
+
+### Toolchain (NEW in v17.0 — ADR-099)
+
+| Module | One-line purpose |
+|---|---|
+| **Substrate** (`docs/substrate/`) | Holds the canonical structured record for every governance unit authored after ADR-099 and an index record for every legacy unit. |
+| **Record Validator** (`tools/substrate/validate.js` + `schema/`) | Rejects any record that violates its per-type schema or Note Discipline, naming the record and the offending field or link. |
+| **Surface Deriver** (`tools/substrate/derive.js`) | Generates every Surface View from a validated Substrate in one deterministic pass and refuses to run on an invalid Substrate. |
+| **Surface Views** (`docs/views/`) | The human-facing read of the corpus: `overview.md` first, one drill-in per record on demand. Generated; never hand-edited. |
+
+---
+
+## How the Cycle 020 amendments fit
+
+Cycle 020 (ADRs 099 and 100 — *Corpus Topology and Agent-Navigable Compaction*) is the first cycle since Cycle 10 to add code. It answers the practitioner's report on returning after three months ("it takes a long time and it's a lot of text to read") with two commitments that address the two halves of Corpus Overwhelm the domain model names: reading load and Adjudication Load.
+
+1. **Substrate-and-Surface Separation (ADR-099).** Governance units authored from now on are written as typed JSON records under `docs/substrate/` (three types this cycle: `adr`, `pattern`, `term`); every human-facing view is generated from them by one tool. `docs/views/overview.md` is the read on re-entry; drill-in views keep surrounding records visible; a view of a legacy unit says it is a compressed index and names the canonical file. The markdown ADR at its usual path is regenerated from the record and carries a header saying so. Legacy ADRs 001–098 stay canonical in their files and get index records (the practitioner's ruling: option C). The architecture is committed; the format, the three record types, the locations, and the Node.js zero-dependency toolchain are ARCHITECT's decisions, each recorded with the alternative set aside in [system-design.agents.md § Cycle 020 amendments](./system-design.agents.md#cycle-020-amendments--v170-substrate-and-surface-separation-pre-triage-and-plain-language-presentation). No fourth artifact tier: records join Tier 3, the overview joins Tier 2.
+
+2. **Pre-triage and plain-language presentation (ADR-100).** Before any findings reach the practitioner, the orchestrator sorts them: resolve what it can, carry forward what can wait, and bring only pivots (a finding that changes what gets built, for whom, or why), with the belief-mapping already done on both sides. Route choices arrive as overridable defaults; engine detail is logged. The presentation is one screen with cited content quoted inline. The triage is written into the gate note and read by the isolated susceptibility snapshot at the next boundary, which is how the orchestrator's own content selection stays inspectable. The skill text that anchors this ships in BUILD; the mechanism has been practiced at every Cycle 020 gate.
+
+3. **What does not change.** No new hooks; the Stop hook manifest check is untouched (hook enforcement of the triage record is ADR-100's graduation target, not this cycle's). No new specialist subagents. No invariant changes. One pre-existing dispatch-hook defect (a bold-wrapped `Output path:` line leaves a trailing `**`) is fixed with a test fixture.
+
+4. **What BUILD measures.** Authoring roughly 98 legacy index records is the untested scaling case ADR-099 constraint 6 names; BUILD records the cost. BUILD Step 5.5 runs the derivation on this corpus and the practitioner reads the overview at the BUILD gate, which is the Acceptance Criteria Table's corpus-scale read. ADR-099 and ADR-100 themselves become the first full records, with a narrow audit round on the derived form.
+
+Both ADRs are Conditional Acceptance. Twelve modules are amended (Orchestrator, Decide, Model, Conform, the six other phase skills' snapshot briefs, the snapshot evaluator agent, the dispatch hook). The full module entries, responsibility matrix, integration contracts, fitness criteria, and test architecture live in the companion file. BUILD mode is auto per the DECIDE-gate default; target release v0.9.0.
 
 ---
 
@@ -191,7 +228,7 @@ The full module amendments, responsibility-matrix entries (24 new domain concept
 
 ## Roadmap
 
-See [`./roadmap.md`](./roadmap.md) for the active roadmap — work packages, classified dependencies, transition states, and open decision points. Cycle 017's BUILD work packages (the `/rdd-conform migrate-to-rdd` subcommand, the `/rdd-research` skill-text edit, hook-script and test-fixture path substitutions, field-guide regeneration, the code→doc dangling-reference graduation-check) are the active set going into BUILD.
+See [`./roadmap.md`](./roadmap.md) for the active roadmap — work packages, classified dependencies, transition states, and open decision points. Cycle 020's BUILD work packages (hook and path fixes; Substrate schemas and validator; Surface Deriver; the first corpus with ADR-099/100 as records; legacy index records with cost measured; ADR-099 and ADR-100 skill-text amendments; snapshot-brief and evaluator amendments; the ADR-100 grounding lit-review; sweep, Step 5.5 and v0.9.0 release) are the active set going into BUILD.
 
 ---
 
@@ -201,6 +238,7 @@ The full log of design amendments — Cycle 1 through Cycle 016 with rationale a
 
 | # | Date | What Changed |
 |---|------|------------|
+| 18 | 2026-09-04 | **System design v17.0 — Cycle 020 Substrate-and-Surface Separation (ADR-099) and Pre-Triage with Plain-Language Presentation (ADR-100).** Three new code modules (Substrate `docs/substrate/`; Record Validator `tools/substrate/validate.js` + per-type schemas for `adr`, `pattern`, `term`; Surface Deriver `tools/substrate/derive.js` producing `docs/views/` overview and drill-in views, derived ADR markdown for full records, and a marked region in `domain-model.md` for terms) and one generated artifact module (Surface Views, Tier 2). ARCHITECT decisions with alternatives recorded: plain JSON over YAML frontmatter and JSON-LD; Node.js zero-dependency runtime (already required by `hooks.json`); three record types now, invariant and scenario deferred; Substrate centered under `docs/` (product, not process); no fourth artifact tier; ADR-099 and ADR-100 authored as the first full records at BUILD with a narrow audit round on the derived form; no derivation hook (`/rdd-conform` runs `derive --check`). ADR-100: Orchestrator Stage Gates gains a Pre-triage step and a one-screen, inline-citation presentation rule; gate-note template gains the triage section; Question Toolkit gains the agent-first pass; all eight phase-skill snapshot briefs name the triage record; the snapshot evaluator gains a Triage evaluation section; manifest unchanged. Retrofit findings: stale `docs/essays/audits/` example paths in Decide and Conform skills (bug, WP-A); `tier1-verify-dispatch.sh` trailing-`**` defect (bug, WP-A). Twelve modules amended; zero new subagents; zero new hooks; zero invariant changes. Deferred ADR-056/066/074 sweep landing sites stated. Every qualitative claim carries an adjacent `**Fitness:**` line per ADR-076; "the read the practitioner uses" recorded as direction-not-constraint pending the ADR-099 graduation trigger. BUILD mode auto; target v0.9.0. |
 | 17 | 2026-05-22 | **System design v16.0 — Cycle 019 Empirical-Grounding Filter and related methodology amendments.** Five ADRs (094, 095, 096, 097, 098) at standalone scope with a reading-path artifact (`docs/decisions/cycle-019-adr-index.md`) as the navigation layer (per domain-model Amendment #28's restoration of the briefly-consolidated form). **ADR-094** introduced the **Convergence-Saturation Signal** as a Skill-Structure Layer mechanism at audit-round-end (default 3 rounds; rounds 4–5 conditional on the signal; form-change baseline-reset rule added at R3 — operationally demonstrated by Cycle 019's own R3 audit); applies to `agents/argument-auditor.md` (covering both argument-audit and framing-audit sections of the combined dispatch per ADR-061) and `agents/citation-auditor.md`. **ADR-095** introduced the **Agent Outcome Test** at Tier-2 — admissibility criterion for agent-facing artifacts parallel to ADR-083's human-facing test; consumer-naming requirement is necessary but not sufficient (the trivially-passing-answer failure mode is named). **ADR-096** introduced the **Patch-Switching Criterion** at Skill-Structure Layer — Pirolli & Card (1999) information-foraging applied at `/rdd-research` loop-end; verdict-line format (CONTINUE-this-patch / SWITCH-patch / SWITCH-to-synthesis) with reflexive-vs-genuine pre-mortem discrimination; late patch-additions accommodated (the Cycle 019 Loop 6 pattern). **ADR-097** introduced the **Empirical-Grounding Filter at DECIDE** as the cycle's central Tier-2 commitment — felt-trigger question at ADR-drafting against four grounding-mechanism paths (PLAY evidence; stakeholder demand; spike validation; structural operationalization); two non-grounded forms (Conditional Acceptance; `adr-deferred-` filename pattern); two senses of "standalone" (commitment-time vs. grounding-completion); discriminating-criterion gap (Target 2) acknowledged. **ADR-098** records FF1 + FF3 as named-deferrals with two-direction graduation triggers (harm OR reliance evidence). Domain-model Amendments #25 (24 new concepts; 5 actions; ~25 relationships; 6 open questions; 24 synonym aliases), #26 (R5 narrowing — PLAY-as-Filter / Distributed Remedy Architecture / Kitchen-Sink Outcome qualified), #28 (consolidation reversal, supersedes #27). Zero new modules; zero new specialist subagents; zero invariant changes; three modules amended (Argument Auditor Agent, Citation Auditor Agent, Research Skill); two cross-cutting documentation amendments (Orchestrator vocabulary additions; this system-design pair). BUILD debt small and pre-scanned (two skill-text amendments + ADR-094 naming clarification). Three Cycle 019 Open Questions carry forward to future cycles (corpus-level granularity; knowledge-graph corpus collapse; consolidation-as-F-P2-instance). Per ADR-076 each amendment carries decomposed `**Fitness:**` properties. BUILD mode anticipated as auto per ADR-091 (mechanical work; moderate stakes; catching-dominant stewardship). |
 | 16 | 2026-05-14 | **System design v15.0 — Cycle 018 Essay-Outline Form Change.** Introduced Essay-Outline as the canonical RESEARCH artifact form (ADR-092) — four sections (Abstract / Argument-Graph / Citation-Embedded Outline / References) under Pyramid Refinement as structural property; operational compliance test (a)/(b)/(c)/(d); Outline-Production Discipline (Synthesis Bullets, CONFIDENCE-LEVEL tags, named meta-moves) anchored conventionally in `/rdd-research` skill text; pyramid expansion fidelity anchored structurally in argument-audit. Outline-Coherence Signal as stewardship trigger with discrimination test (Boundary 1 → scope-suspect; Boundary 2 → discipline-suspect). Argument-auditor scope extended to Essay-Outline as fourth named genre per ADR-093 — pyramid graph-traversal, expansion-fidelity verification at three boundaries plus reverse-direction, META audit-time review, pyramid coverage map + expansion-fidelity findings as output additions. Skill-Structure Layer anchoring per ADR-067-as-updated-by-ADR-089 in `agents/argument-auditor.md`. Form change is RESEARCH-scoped; SYNTHESIZE pattern unchanged; reflections + synthesis essays retain narrative prose form. Filename pattern `essay-outline-NNN-<slug>.md` co-exists with legacy `NNN-*.md` (no retroactive migration). Two new ADRs (092, 093); domain-model Amendment 23 landed at MODEL (24 new concepts + 2 actions); zero new code modules; zero invariant changes; two modules amended (Research Skill, Argument Auditor Agent) plus four cross-cutting amendments. Per ADR-076 each amendment carries decomposed `**Fitness:**` properties. ADR-092 + ADR-093 ship together at BUILD (layer separation degrades to discipline-alone if either ships without the other). Scope-of-claim caveats encoded: CRESS scope-transfer-via-analogy; citation-comparison method-scope; Kim et al. Open Question 7 input-side susceptibility. |
 | 15 | 2026-04-28 | **System design v14.0 — Cycle 017 Readability & Comprehensibility.** Adopted companion-file pattern (ADR-084) — this document split from `system-design.agents.md`. Encoded Outcome Test as design principle (ADR-083). Path migration `.rdd/` → `.rdd/` (ADR-085, deferred sweep). Tier 1 Harness Layer demoted to advisory across all modes (ADRs 088 / 089 amending ADR-064 / ADR-067). In-progress phase field role-shift documented (ADR-090). Tightly-scoped prototyping added as Research-phase method (ADR-087 §3). AI-as-orienter explicitly non-adopted pending operational criterion (ADR-086). One new artifact module (`system-design.agents.md`); zero new code modules. Eight new ADRs (083–090); supersession headers on ADR-064 / ADR-067 / ADR-070; domain-model Amendment 22 landed at DECIDE. |

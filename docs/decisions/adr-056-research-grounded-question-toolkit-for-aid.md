@@ -1,6 +1,8 @@
 # ADR-056: Research-Grounded Question Toolkit for AID Cycle
 
-**Status:** Proposed
+> **Updated by ADR-100 on 2026-09-03.** The six question forms and the phase-specific mapping stand. What changes: the first pass of each form at a gate is performed by the agent on itself (both sides developed, recommendation stated), and the practitioner's epistemic act is the ruling on the surviving pivot point. Commitment gating in particular becomes agent-proposed, practitioner-confirmed. Read the "Non-formulaic requirement" and "Triple duty" paragraphs as applying to the agent's first pass; the practitioner-facing question is the pivot that survives it. Status prior to this header: Proposed (operating as accepted).
+
+**Status:** Updated by ADR-100
 **Extends:** ADR-040 (Replace Fixed-Template Gates with Attend-Interpret-Decide Cycle)
 
 ## Context

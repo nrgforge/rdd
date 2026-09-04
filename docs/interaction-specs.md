@@ -508,3 +508,41 @@
 ### Task: Hold the Three-Application F-P2 Pattern as an explicit cross-ADR question (cross-cutting)
 
 **Interaction mechanics:** When DECIDE drafts ADRs in cycles whose ADRs cluster around Tier-2-with-graduation-trigger scope choices, the practitioner-and-agent dyad acknowledges the F-P2 Pattern in the ADR rationale (per ADR-097 §"Three-Application F-P2 Pattern — held explicitly" and ADR-098 §"Three-Application F-P2 Pattern (continued)"). The pattern is held as the cycle's reflexive question: is the pattern coherent application of one principle (cross-project evidence supports vocabulary, not enforcement) or content-selection producing systematically less methodology-overhead at every consequential scope choice? The methodology's response is to record the pattern, accept the Tier-2 scopes as the operating commitment, and rely on the multi-cycle graduation triggers (ADR-097, ADR-095, ADR-098) to make the question assessable across future cycles applying these ADRs.
+
+---
+
+## Stakeholder: Solo Developer-Researcher (driving RDD on a project, Cycle 020)
+
+**Super-Objective:** "Decide where we're going and, when I care, how we get there. Don't make me read the engine, and don't hand me every layer of the onion. Come to me with real pivot points, in plain language."
+
+### Task: Rule on a pivot at reflection time (ADR-100)
+
+**Interaction mechanics:** At a phase gate the practitioner receives one screen: what changed, the route defaults the agent took, and one pivot. The pivot arrives with the belief-mapping already done (both sides developed, the agent's recommendation) and with any cited invariant, ADR section, or term quoted inline. The practitioner rules on the pivot in a sentence, or asks what a term means and receives a concrete explanation before ruling. The practitioner may override any route default by naming it. The triage record showing what the agent resolved and carried forward is in the gate note if the practitioner wants to look under the hood; it is not presented.
+
+### Task: Read the corpus at the resolution the moment needs (ADR-099)
+
+**Interaction mechanics:** On re-entry after time away, or at a gate that requires holding several decisions at once, the practitioner opens the overview Surface View, sees the governing records first with their cross-references beside them, and drills into one record when they choose. The drill-in keeps the surrounding records visible so the practitioner does not lose orientation. A view that is a compressed index of legacy prose says so and names the source. The practitioner does not edit a view; if something is wrong, the record is corrected and the view regenerates.
+
+### Task: Author a decision as a record (ADR-099 incl. §Authority)
+
+**Interaction mechanics:** At DECIDE the practitioner and agent author the decision as a Substrate record of the ADR type: the commitment, its warrants, the alternatives rejected with reasons, sub-decisions nested where they exist, the graduation trigger if any, and Typed Links to related records with a note on each link. Validation rejects an unnoted link or a missing required field for the type. The markdown ADR the practitioner is used to seeing is generated from the record and marked as derived. Legacy decisions the practitioner authored before this cycle are untouched.
+
+### Task: Rule on the authority question (ADR-099 §Authority)
+
+**Interaction mechanics:** Once, at the Cycle 020 DECIDE gate, the practitioner receives the authority options developed side by side (substrate canonical for new units with legacy indexed; substrate canonical everywhere; prose canonical with a derived index; dual by role) with the agent's recommendation and the reason each alternative was set aside, and rules in a sentence. The ruling is recorded in ADR-099 §Authority's status and drives the scenarios for that feature.
+
+## Stakeholder: AI Agent (Orchestrator, Cycle 020 operation)
+
+**Super-Objective:** "Hand the practitioner the destination questions with the analysis done, keep the engine inspectable, and never let my own triage become the place where consequential findings quietly drop."
+
+### Task: Pre-triage findings before presenting them (ADR-100)
+
+**Interaction mechanics:** When a loop, audit round, framing audit, or susceptibility snapshot returns findings, the orchestrator sorts each into resolve, carry forward, or pivot using the pivot criterion (does it change what gets built, for whom, or why). For each pivot it runs the phase's question form on itself, develops both sides, and states a recommendation. Framing-class findings are never dispositioned resolve without appearing in the presentation. The orchestrator writes the triage table into the gate reflection note before presenting, then presents one screen with cited content inlined.
+
+### Task: Compose the susceptibility-snapshot brief to read the triage record (ADR-100)
+
+**Interaction mechanics:** At each phase boundary the orchestrator's snapshot dispatch names the gate note's triage record as an input and asks the evaluator whether any resolve disposition hid a destination change and whether framing-class findings reached the practitioner. The evaluator's report is itself pre-triaged on return; findings about the triage are brought to the practitioner as pivots when they change the destination.
+
+### Task: Derive Surface Views and author Substrate records (ADR-099 incl. §Authority)
+
+**Interaction mechanics:** At artifact-creation moments the orchestrator authors or updates the Substrate record for the governance unit, with per-type fields and noted Typed Links, and runs validation. At phase exit it runs Derive Surface View and confirms the derived files changed only where records changed. Legacy units receive index records with a compressed summary; the orchestrator does not rewrite legacy prose.

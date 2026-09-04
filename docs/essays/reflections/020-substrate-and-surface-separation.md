@@ -1,0 +1,32 @@
+# Reflection 020: Substrate-and-Surface Separation
+
+*2026-05-23*
+
+## What the cycle was about, in retrospect
+
+Cycle 020 opened on an open thread from Cycle 019's DECIDE gate: the user-articulated *"uneven topology"* hypothesis, framed in a theater metaphor — five middle-of-the-road ADRs instead of one big bold choice that is easy to validate. The cycle's investigation confirmed the hypothesis structurally (five Cycle 019 ADRs apply one underlying Calibration-with-Graduation-Trigger Pattern at five workflow points), then moved past it. The center of gravity shifted from *ADR granularity* to *what holds the granular content separately from the user-facing surface.* The substrate-and-surface separation that emerged was not the question the cycle entered with; it was the answer the question pointed toward.
+
+## Three observations about how the cycle moved
+
+**The audit machinery earned its weight.** Citation audit caught a fabricated co-author and an ADR misattribution (ADR-072 mistaken for the centered-vs-infrastructure ADR; the actual reference is ADR-064). Argument audit R1 surfaced four substantive framing concerns. R3 reached Convergence-Saturation per ADR-094. The gate re-audit and grounding re-audit each caught body-coverage gaps from the prior corrections. Cycle 018's domain-model entry naming the iterative-audit pattern — *each correction pass introduces three to five new issues that the previous pass did not surface* — operated as named. The cycle's nine specialist dispatches were each load-bearing, none ceremonial.
+
+**The susceptibility snapshot caught what the in-cycle audits did not.** Argument audit R1–R3 found framing concerns but did not connect them to a structural reading: the cycle was likely framing-adopting on the user's "graph behind human-friendly format" hypothesis from Step 1.4. The snapshot, in isolated context, named the moderate framing signal and recommended two specific grounding actions before advancing to DISCOVER. Both actions produced findings that materially shifted the cycle's commitments. Loop 4 (cross-cycle topology) showed that Cycle 019's 5-ADR clustering is anomalous, not characteristic of other cycles' ADR sets. Loop 4b (gate-conversation-tooling alternative) showed that gate-tooling is necessary but not sufficient — complementary to substrate-and-surface, not competing with it. The Tier-1 architectural isolation defense (ADR-058) operated as designed.
+
+**Auto-mode + structural user-engagement preserved both efficiency and depth.** The practitioner authorized auto-mode at Loop 2 close. The orchestrator proceeded without per-loop confirmation through Loops 2–5 and Step 4 (Essay-Outline production + audits). The practitioner re-engaged at the framing-audit gate as required by protocol — framing audit findings are never auto-corrected per the framing-audit-surfacing memory. The combination preserved efficiency (no procedural confirmation overhead) while honoring the structural commitment to practitioner judgment at framing moments. Auto-mode worked because the methodology had specific points at which it required user engagement; without those structural moments, auto-mode would have run unchecked.
+
+## One observation about the cycle's content
+
+The substrate-and-surface separation, as the cycle's central commitment, has two readings the cycle could not settle. Under the convergent reading, the six prior audience-bifurcation ADRs (064, 083, 084, 085, 092, 095) were progressive moves toward an architectural commitment the methodology had not yet named explicitly; Cycle 020 names it. Under the alternative reading, those six ADRs were complete answers to genuinely different problems (placement, admissibility, relocation, form change); Cycle 020 is identifying a new architectural problem that prior cycles' moves did not address. The post-gate Loop 4 cross-cycle topology evidence strengthens the alternative reading more than the cycle's initial framing acknowledged — the topology-level multi-ADR clustering Cycle 019 produced does not recur in Cycle 017 or Cycle 018. Both readings remain held open at DECIDE, where the choice affects the amendment's appropriate tier (Skill-Structure Layer with stronger empirical grounding per ADR-097, or Tier-2 methodology vocabulary) and scope (methodology-wide architectural commitment, or cycle-internal proof-of-concept). The cycle's commitment is therefore precise about the architecture and honest about the framing — what is being committed is the substrate-and-surface separation as an architectural direction; what is held open is the warrant chain supporting it.
+
+## One observation about the practitioner-orchestrator collaboration
+
+The "one-question-at-a-time" feedback surfaced mid-Step 1 was load-bearing. The early batched-question pattern (multi-part questions presented as walls) was a degraded UX the practitioner named explicitly: *"It's not a good user experience to scroll to see everything then have to keep coming down to input all the answers."* After that, the gate conversation in particular was structured around one framing finding at a time, with substantive engagement on each. The earlier batched questions surfaced engagement breadth without depth; the sequential questions surfaced depth that informed the cycle's commitments. The feedback persisted to memory; future cycles will inherit the convention.
+
+## Open questions carried forward
+
+- Whether substrate-and-surface separation is the methodology-wide architectural commitment the convergent reading claims, or a Cycle-019-acute-problem answer the alternative reading claims. DECIDE engages both.
+- Whether the Calibration-with-Graduation-Trigger Pattern's diagnostic value is real or kitchen-sink. The cross-cycle evidence supports the pattern at the methodology-vocabulary level but not at the topology-clustering level; multi-cycle observation per ADR-097/098's graduation-trigger lineage is the appropriate response.
+- Whether gate-conversation-tooling improvements should ship as a Tier-2 conversational-tooling amendment or as a Skill-Structure Layer orchestrator amendment. ADR-CANDIDATE-020.5 scopes this for DECIDE.
+- Whether the six design constraints from the spike scale to multi-corpus authoring. The spike was tractable at five records; ~100 ADRs (full RDD corpus) was not tested.
+
+These are not failures of the cycle. They are the residual the cycle correctly recognized rather than over-claiming past.
