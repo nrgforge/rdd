@@ -6,6 +6,44 @@
 
 **Operating context.** BUILD ran in auto mode (ADR-091; the carried DECIDE-gate default, confirmed at entry as a route default, not overridden) under driving with disclosure (ARCHITECT-gate ruling 2026-09-04). The practitioner's one instruction was the resumption prompt. Work-package commits are the review points. Engine-level dispositions taken during BUILD are logged in the table below per ADR-100 rule 5 and are not presented unless the snapshot at this boundary finds one wrong. The triage tables in this note were written before the presentation was composed.
 
+## Belief-mapping question composed for this gate
+
+One pivot survived pre-triage (the engine, audit, and snapshot tables above hold everything else). The cycle's success observable (Acceptance Criteria Table row 1, from product-discovery in the practitioner's words: "the corpus you don't have to read, backed by the corpus the agent needs") is verified mechanically at Step 5.5 and by the practitioner's read at this gate. Belief-mapping run on the agent's side: what would need to be true for the overview *not* to be the read? That 1,179 lines is still reading load at corpus scale (the overview lists every typed link per entry, as the design specifies), or that the one-line summaries compress the wrong thing, or that the practitioner re-enters through the decision trail less often than through the product story (which is why product-discovery is the next derivation target). *For:* the overview is one file where the corpus was 100; every entry is a one-line summary with its provenance co-located; drill-ins keep surrounding records visible. *Recommendation:* it is the read; the next cycle measures whether it stays the read (the ADR-099 graduation trigger).
+
+> Is `docs/views/overview.md` the read you would use on re-entry instead of the raw artifacts, or does it fail, and if it fails, where: too long, wrong resolution, wrong thing summarized?
+
+Route default put with it: on a yes, `release: v0.9.0` is committed and tagged; both ADRs stay Conditional; play and synthesize remain optional. Disclosed with it: the fifth caught triage error (the WP-D count), the two lit-review framing-class findings (complacency safeguard against ADR-100's Relaxation clause; conditional isolated triage as an unnamed design point) carried whole to the next DECIDE, and that this cycle does not by itself lower agent token use (the practitioner asked; the agent said no, with the reason).
+
+## User's response
+
+> Yes let's proceed, though we could way for after play to do the release, or we could patch from Play if you think that's better.
+
+**Recorded:** the overview is the read (Acceptance Criteria row 1, practitioner half, satisfied on first read; the ADR-099 graduation trigger observes whether it stays so across two to four cycles). Release timing put back to the agent as a route choice; the agent recommended releasing now and patching from play (v0.9.1 for record and view fixes; a design amendment only if play finds the overview *form* wrong), on the grounds that the tag is the review point, the marketplace pulls from it, and both ADRs stay Conditional either way. The practitioner's "if you think that's better" is the override left with the agent; the release proceeds.
+
+## Pedagogical move selected
+
+**Challenge** (agent-side belief-mapping per ADR-100 rule 3; one ruling requested; route defaults listed with alternatives; snapshot-caught errors disclosed; engine dispositions logged above and not presented).
+
+## Commitment gating outputs
+
+**Settled premises (the practitioner is building on these going into play / the next cycle):**
+- ADR-099 and ADR-100 are operational: the toolchain runs on this corpus; the Surface Views exist and the practitioner used the overview as the gate read; the pre-triage mechanism is anchored in skill text and produced this gate (one ruling from roughly thirty triaged findings).
+- Both ADRs remain Conditional Acceptance; their graduation triggers count cycles (ADR-099: the views stay the read at gates and on re-entry for two to four cycles; ADR-100: the isolated snapshot's triage evaluations across two to four cycles, with Cycle 020 as cycle one at five caught errors over five boundaries).
+- v0.9.0 released from `5c33e2d` plus the version bump; play findings patch as v0.9.1.
+- Design Amendment #19's ten refinements stand by non-objection.
+
+**Open questions (held open going into play / the next cycle):**
+- Whether the overview at 1,179 lines stays the read, or the next cycle needs a shorter form (summary only; links in drill-ins) — the graduation-trigger observable.
+- The lit-review's tightens/adds/moves recommendations for ADR-100, two of them framing-class (complacency safeguard; conditional isolated triage), for the next DECIDE.
+- Interpretive consistency of the parallel-authored index records (near-synonym link types; a `/rdd-conform` normalization pass).
+- Agent-side token use: unchanged by this cycle; context routing from views and records is a candidate scope.
+- Convergent vs new-problem lineage reading (held caveat); the three-gate engagement-trend question (the next cycle's first gate is the observation point).
+
+**Specific commitments carried forward:**
+- Play, if run, re-enters through `docs/views/overview.md` and reads interaction-specs §Cycle 020 as its playable surface; field notes carry a `## Findings and orchestrator triage` section; corpus fixes go to records, then `derive`.
+- Next cycle's first derivation target: product-discovery.md (stakeholder and value-tension record types).
+- `/rdd-conform` backlog: 78 bare-`Proposed` ADRs; domain-model Concepts header; body-correction governance check; link-type normalization.
+
 ## BUILD-phase findings and orchestrator triage (engine dispositions and route defaults)
 
 | Finding | Disposition | What was done |

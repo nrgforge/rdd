@@ -152,7 +152,7 @@ All five Cycle 019 ADRs are Accepted; integration verification artifact records 
 
 **Derived from:** ADR-099 (Substrate-and-Surface Separation; §Authority option C ruled by the practitioner); ADR-100 (Pre-Triage and Plain-Language Presentation); system-design v17.0 Amendment #18 and BUILD Amendment #19; scenarios §Cycle 020 (18 scenarios + Acceptance Criteria Table); conformance-scan-decide-020
 **Cycle type:** Standard cycle (Mode A; first code modules since Cycle 10)
-**Shipped:** v0.9.0 (2026-09-04, pending the BUILD-gate ruling) — BUILD mode auto per ADR-091
+**Shipped:** v0.9.0 (2026-09-04) — BUILD mode auto per ADR-091; the BUILD-gate ruling: the overview is the re-entry read; release now, patch from play
 
 | WP | Title | Status |
 |----|-------|--------|
