@@ -140,9 +140,14 @@ After each research iteration, update the running log:
 
 ## Question 2: [question text]
 ...
+
+## Findings and orchestrator triage (loop N)
+| Finding | Disposition | What was done |
+|---|---|---|
+| ... | Resolved / Carried forward / Pivot | ... |
 ```
 
-Write the log to `./docs/essays/research-logs/research-log.md` and update it after each loop iteration.
+Write the log to `./docs/essays/research-logs/research-log.md` and update it after each loop iteration. **At each loop end, before the Patch-Switching verdict is presented, pre-triage the loop's findings (ADR-100 rule 5; orchestrator Stage Gates step 4) and append the record under `## Findings and orchestrator triage (loop N)`.** Only pivots and route defaults reach the practitioner in the loop-end summary; framing-class findings are never dispositioned resolve without being presented.
 
 #### Patch-Switching Criterion (ADR-096)
 
@@ -341,7 +346,7 @@ The agent runs on Sonnet in an isolated context and produces a **two-section** a
 
 Both sections are Tier 1 unconditional mechanisms — they run on every Essay-Outline.
 
-After the agent completes, read the audit report. The two sections are handled differently:
+After the agent completes, read the audit report. **Pre-triage first (ADR-100 rule 5).** Read the ADR-094 Convergence-Saturation Signal verdict line and record the round decision (continue or stop). Then sort every finding — argument and framing — into resolve, carry forward, or pivot, and append the record under a `## Findings and orchestrator triage` heading at the end of the audit report. A framing finding may not be dispositioned resolve without appearing in the gate presentation. The two sections are then handled differently:
 
 **Argument audit issues — agent corrects these directly:**
 1. **P1 issues:** Fix logical gaps, soften overreaching claims, resolve contradictions. For Essay-Outline expansion-fidelity P1 violations, the Discrimination Test routing names the response: Boundary 1 violations (Abstract conclusion with no Argument-Graph node) route to scope-suspect — the cycle may be researching more than one cohesive argument can carry; consider splitting the cycle. Boundary 2 violations (Argument-Graph node with no body content) route to discipline-suspect — re-run production with discipline tightening (no scope change required). See "Outline-Coherence Signal stewardship" below for the gate-level routing.
@@ -425,7 +430,7 @@ Then run the three-phase cycle:
 - **Confused** — responses show misalignment with Essay-Outline content, avoidance of specific topics, contradictions.
 - **Disengaged** — minimal responses, possible fatigue. If prior gates showed deep engagement, this is likely earned fatigue (suggest a break). If engagement has been thin throughout, this may be an opacity signal (the material exceeds current comprehension — shift toward teaching).
 
-**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type. **The interpretation is private — do not narrate engagement back to the user.**
+**3. Decide.** Select a pedagogical move. Use the Question Toolkit (defined in the orchestrator): first determine the epistemic goal, then review conversation and artifacts, then compose the question from goal + context + type. **The interpretation is private — do not narrate engagement back to the user.** Before this step, the orchestrator's Pre-triage step (`skills/rdd/SKILL.md` §Stage Gates step 4; ADR-100) has sorted the phase's findings into resolve, carry forward, and pivot with the triage record written into the gate note; the question composed here is the surviving pivot, and the presentation follows the orchestrator's presentation rule (one screen, one ruling, referenced content inlined).
 
 - **Deep engagement → Challenge.** Surface a tension the Essay-Outline didn't fully resolve. Use belief-mapping ("What would you need to believe for a different problem framing to be right?") or pre-mortem ("Assume this Essay-Outline led the project astray — what would have caused that?"). Reference specific Abstract conclusions, Argument-Graph claims, or body-section synthesis bullets directly. Do not use adversarial framing ("argue against this") as the default — belief-mapping achieves better balance without triggering compliance dynamics. Do not praise.
 - **Adequate engagement → Probe.** Reference specific Essay-Outline content directly — an Abstract conclusion, an Argument-Graph claim's warrants, or a body-section finding — and ask for reasoning: "The Essay-Outline's conclusion on [topic] rests on [specific Argument-Graph warrant chain]. Does that hold for what you're building, or does your context complicate it?" Pick the most consequential content; do not preface with "You asked about..." or any characterization of the user's prior engagement.
